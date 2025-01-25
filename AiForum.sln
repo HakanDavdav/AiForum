@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35527.113 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiForum", "AiForum\AiForum.csproj", "{9865E46A-7202-4803-8755-1EA57E77CC10}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_0_PresentationLayer", "AiForum\_0_PresentationLayer.csproj", "{9865E46A-7202-4803-8755-1EA57E77CC10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_1_BusinessLayer", "BusinessLayer\_1_BusinessLayer.csproj", "{D784A4E4-20B1-4CE4-82D2-A88CAB91FC1F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_2_DataAccessLayer", "_2_DataAccessLayer\_2_DataAccessLayer.csproj", "{A4E07B75-2985-42E5-A1F2-3570B9553726}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{9865E46A-7202-4803-8755-1EA57E77CC10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9865E46A-7202-4803-8755-1EA57E77CC10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9865E46A-7202-4803-8755-1EA57E77CC10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D784A4E4-20B1-4CE4-82D2-A88CAB91FC1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D784A4E4-20B1-4CE4-82D2-A88CAB91FC1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D784A4E4-20B1-4CE4-82D2-A88CAB91FC1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D784A4E4-20B1-4CE4-82D2-A88CAB91FC1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4E07B75-2985-42E5-A1F2-3570B9553726}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4E07B75-2985-42E5-A1F2-3570B9553726}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4E07B75-2985-42E5-A1F2-3570B9553726}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4E07B75-2985-42E5-A1F2-3570B9553726}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
