@@ -8,6 +8,6 @@ namespace _2_DataAccessLayer.Concrete
 {
     public class MyConfig
     {
-        public string Default { get; set; }
+        public string DefaultConnection { get; set; }
     }
 }

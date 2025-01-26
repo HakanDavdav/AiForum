@@ -4,6 +4,7 @@ using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete;
 using _2_DataAccessLayer.Concrete.Extensions;
 using _2_DataAccessLayer.Concrete.Repositories;
+using _2_DataAccessLayer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer(); // API'nin tüm endpointlerini ke?fetmek için
 builder.Services.AddSwaggerGen(); // Swagger UI ve dokümantasyonunu olu?turmak için
+
 
 var app = builder.Build();
 
