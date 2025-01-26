@@ -21,7 +21,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public UserDto GetUserByID(int id)
         {
-            throw new NotImplementedException();
+            return _userRepository.getById(id);
         }
     }
 }

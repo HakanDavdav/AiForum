@@ -12,10 +12,19 @@ builder.Services.AddDbContext<ApplicationDbContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddControllers();
-
+builder.Services.AddEndpointsApiExplorer(); // API'nin tüm endpointlerini ke?fetmek için
+builder.Services.AddSwaggerGen(); // Swagger UI ve dokümantasyonunu olu?turmak için
 
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+if (app.Environment.IsDevelopment())  // Yaln?zca geli?tirme ortam?nda aktif etmek isteyebilirsiniz
+{
+    app.UseSwagger(); // Swagger JSON dökümantasyonunu aktif eder
+    app.UseSwaggerUI(); // Swagger UI'yi aktif eder
+}
+
+
+app.MapControllers();
+
 
 app.Run();

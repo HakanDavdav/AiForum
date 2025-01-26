@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace _2_DataAccessLayer.Concrete
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : DbContext
     {
         private readonly MyConfig _config;
         public ApplicationDbContext(IOptions<MyConfig> config)
@@ -24,8 +24,12 @@ namespace _2_DataAccessLayer.Concrete
             optionsBuilder.UseSqlServer(_config.Default);
         }
 
-        DbSet<User> users { get; set; }
+        public DbSet<User> users { get; set; }
 
-
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            
+        }
     }
 }

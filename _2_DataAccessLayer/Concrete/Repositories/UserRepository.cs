@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
+using _2_DataAccessLayer.Concrete;
+using _2_DataAccessLayer.Concrete.Mappers;
+using _2_DataAccessLayer.Concrete.Dtos;
 
 namespace _2_DataAccessLayer.Concrete.Repositories
 {
@@ -21,9 +24,10 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             throw new NotImplementedException();
         }
 
-        public User getById(int id)
+        public UserDto getById(int id)
         {
-            throw new NotImplementedException();
+            UserDto user = _context.users.FirstOrDefault(p => p.userId == id).ToUserDto();
+            return user;
         }
 
         public User getByName(string name)
