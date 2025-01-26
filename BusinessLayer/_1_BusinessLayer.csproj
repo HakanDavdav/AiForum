@@ -31,8 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Concrete\" />
-    <Folder Include="Abstractions\" />
+    <Folder Include="Concrete\Extensions\" />
   </ItemGroup>
 
 </Project>

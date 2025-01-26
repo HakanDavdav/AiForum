@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace _2_DataAccessLayer.Concrete
 {
-    internal class MyConfig
+    public class MyConfig
     {
+        public string Default { get; set; }
     }
 }
