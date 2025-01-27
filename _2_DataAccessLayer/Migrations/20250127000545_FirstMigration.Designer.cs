@@ -11,7 +11,7 @@ using _2_DataAccessLayer.Concrete;
 namespace _2_DataAccessLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250126234114_FirstMigration")]
+    [Migration("20250127000545_FirstMigration")]
     partial class FirstMigration
     {
         /// <inheritdoc />
