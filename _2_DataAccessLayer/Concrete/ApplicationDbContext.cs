@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 
 namespace _2_DataAccessLayer.Concrete
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         private readonly MyConfig _config;
         public ApplicationDbContext(IOptions<MyConfig> config)
@@ -25,6 +25,10 @@ namespace _2_DataAccessLayer.Concrete
         }
 
         public DbSet<User> users { get; set; }
+        public DbSet<Post> posts {  get; set; }
+        public DbSet<Like> likes { get; set; }
+        public DbSet<Entry> entries {  get; set; }
+        public DbSet<Follow> follows { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

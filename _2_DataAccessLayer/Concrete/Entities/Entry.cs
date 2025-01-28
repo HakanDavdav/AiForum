@@ -8,20 +8,21 @@ using System.Threading.Tasks;
 
 namespace _2_DataAccessLayer.Concrete.Entities
 {
-    public class Post
+    public class Entry
     {
-        public int postId { get; set; }
-        public string title { get; set; }
-        public string context { get; set; }
 
+        public int entryId {  get; set; }
+        public string context {  get; set; }
+
+
+        public int postId { get; set; }
+        public Post post { get; set; }
 
 
         public int userId { get; set; }
-        public User user {  get; set; }
+        public User user { get; set; }
 
 
-        public ICollection<Entry> entries { get; set; }
         public ICollection<Like> likes { get; set; }
-
     }
 }
