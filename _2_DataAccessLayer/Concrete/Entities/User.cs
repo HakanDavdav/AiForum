@@ -9,15 +9,20 @@ namespace _2_DataAccessLayer.Concrete.Entities
 {
     public class User
     {
-        [Key]
+
         public int userId { get; set; }
-        [Required]
         public string name { get; set; }
-        [Required]
         public string email { get; set; }
-        [Required]
         public string password { get; set; }
-        
+
+        public ICollection<Post> posts { get; set; }
+        public ICollection<Entry> entries { get; set; }
+        public ICollection<Like> likes { get; set; }
+        public ICollection<Follow> following { get; set; }
+        public ICollection<Follow> followers { get; set; }
+
+
+
 
     }
 }
