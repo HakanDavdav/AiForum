@@ -5,6 +5,7 @@ using System.Runtime;
 using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Concrete.Entities;
+using _2_DataAccessLayer.Concrete.EntityConfigurations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -32,6 +33,12 @@ namespace _2_DataAccessLayer.Concrete
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new PostConfiguration());
+            modelBuilder.ApplyConfiguration(new FollowConfiguration());
+            modelBuilder.ApplyConfiguration(new EntryConfiguration());
+            modelBuilder.ApplyConfiguration(new LikeConfiguration());
+
             base.OnModelCreating(modelBuilder);
             
         }

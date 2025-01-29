@@ -13,8 +13,8 @@ namespace _2_DataAccessLayer.Concrete.Extensions
         public static void CreateOptions(this IServiceCollection services, IConfiguration configuration)
         {
             configuration = new ConfigurationBuilder()
-                    .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "..", "_2_DataAccessLayer"))  // Bu, çalıştırdığınız projedeki dizini alır
-                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)  // appsettings.json dosyasını ekliyoruz
+                    .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "..", "_2_DataAccessLayer"))  
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)  
                     .Build();
 
             services.Configure<MyConfig>(configuration.GetSection("ConnectionStrings"));

@@ -17,17 +17,25 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
 
             builder.HasMany(entry => entry.likes)
                 .WithOne(like => like.entry)
-                .HasForeignKey(like => like.entryId);
+                .HasForeignKey(like => like.entryId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(entry => entry.post)
                 .WithMany(post => post.entries)
-                .HasForeignKey(entry => entry.postId);
+                .HasForeignKey(entry => entry.postId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(entry => entry.user)
                 .WithMany(user => user.entries)
-                .HasForeignKey(entry => entry.userId);
+                .HasForeignKey(entry => entry.userId)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
             builder.Property(entry => entry.context).IsRequired();
+            builder.Property(entry => entry.userId)
+                .IsRequired(false);
+            builder.Property(entry => entry.postId)
+                .IsRequired(false);
         }
     }
 }

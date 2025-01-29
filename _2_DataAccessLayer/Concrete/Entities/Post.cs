@@ -16,7 +16,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
 
 
-        public int userId { get; set; }
+        public int? userId { get; set; }
         public User user {  get; set; }
 
 
