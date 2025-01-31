@@ -8,15 +8,14 @@ using _2_DataAccessLayer.Concrete.Entities;
 
 namespace _2_DataAccessLayer.Concrete.Mappers
 {
-    public static class UserToUserDto
+    public static class UserToUserRegisterDto
     {
-        public static UserDto ToUserDto(this User user)
+        public static UserRegisterDto ToRegisterUserDto(this User user)
         {
-            UserDto dto = new UserDto()
+            UserRegisterDto dto = new UserRegisterDto()
             {
-                email = user.email,
-                name = user.name,
-                userId = user.userId,
+               email = user.Email,
+               passwordHash = user.PasswordHash
             };
             return dto;
         }

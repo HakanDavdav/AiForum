@@ -11,7 +11,7 @@ namespace _2_DataAccessLayer.Abstractions
     public interface IUserRepository
     {
         public List<User> getAll();
-        public UserDto getById(int id);
+        public UserRegisterDto getById(int id);
         public User getByName(string name);
 
     }

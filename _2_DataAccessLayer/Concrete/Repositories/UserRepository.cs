@@ -24,9 +24,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             throw new NotImplementedException();
         }
 
-        public UserDto getById(int id)
+        public UserRegisterDto getById(int id)
         {
-            UserDto user = _context.users.FirstOrDefault(p => p.userId == id).ToUserDto();
+            UserRegisterDto user = _context.Users.FirstOrDefault(p => p.Id == id).ToUserDto();
             return user;
         }
 

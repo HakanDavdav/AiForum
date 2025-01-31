@@ -10,7 +10,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
 {
     public class Like
     {
-        public int likeID {  get; set; }
+        public int likeId {  get; set; }
 
 
         public int? postId { get; set; }

@@ -9,6 +9,6 @@ namespace _1_BusinessLayer.Abstractions
 {
     public interface IUserService
     {
-        public UserDto GetUserByID(int id);
+        public UserRegisterDto GetUserByID(int id);
     }
 }

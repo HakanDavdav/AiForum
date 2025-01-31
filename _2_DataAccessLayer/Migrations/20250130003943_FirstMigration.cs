@@ -15,7 +15,8 @@ namespace _2_DataAccessLayer.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -29,7 +30,9 @@ namespace _2_DataAccessLayer.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -51,27 +54,12 @@ namespace _2_DataAccessLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "users",
-                columns: table => new
-                {
-                    userId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    email = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    password = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_users", x => x.userId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -92,7 +80,7 @@ namespace _2_DataAccessLayer.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -114,7 +102,7 @@ namespace _2_DataAccessLayer.Migrations
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -131,8 +119,8 @@ namespace _2_DataAccessLayer.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -155,7 +143,7 @@ namespace _2_DataAccessLayer.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -184,15 +172,15 @@ namespace _2_DataAccessLayer.Migrations
                 {
                     table.PrimaryKey("PK_follows", x => x.followId);
                     table.ForeignKey(
-                        name: "FK_follows_users_followedId",
+                        name: "FK_follows_AspNetUsers_followedId",
                         column: x => x.followedId,
-                        principalTable: "users",
-                        principalColumn: "userId");
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_follows_users_followeeId",
+                        name: "FK_follows_AspNetUsers_followeeId",
                         column: x => x.followeeId,
-                        principalTable: "users",
-                        principalColumn: "userId");
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -209,10 +197,10 @@ namespace _2_DataAccessLayer.Migrations
                 {
                     table.PrimaryKey("PK_posts", x => x.postId);
                     table.ForeignKey(
-                        name: "FK_posts_users_userId",
+                        name: "FK_posts_AspNetUsers_userId",
                         column: x => x.userId,
-                        principalTable: "users",
-                        principalColumn: "userId");
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -229,15 +217,15 @@ namespace _2_DataAccessLayer.Migrations
                 {
                     table.PrimaryKey("PK_entries", x => x.entryId);
                     table.ForeignKey(
+                        name: "FK_entries_AspNetUsers_userId",
+                        column: x => x.userId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_entries_posts_postId",
                         column: x => x.postId,
                         principalTable: "posts",
                         principalColumn: "postId");
-                    table.ForeignKey(
-                        name: "FK_entries_users_userId",
-                        column: x => x.userId,
-                        principalTable: "users",
-                        principalColumn: "userId");
                 });
 
             migrationBuilder.CreateTable(
@@ -254,6 +242,11 @@ namespace _2_DataAccessLayer.Migrations
                 {
                     table.PrimaryKey("PK_likes", x => x.likeID);
                     table.ForeignKey(
+                        name: "FK_likes_AspNetUsers_userId",
+                        column: x => x.userId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_likes_entries_entryId",
                         column: x => x.entryId,
                         principalTable: "entries",
@@ -263,11 +256,6 @@ namespace _2_DataAccessLayer.Migrations
                         column: x => x.postId,
                         principalTable: "posts",
                         principalColumn: "postId");
-                    table.ForeignKey(
-                        name: "FK_likes_users_userId",
-                        column: x => x.userId,
-                        principalTable: "users",
-                        principalColumn: "userId");
                 });
 
             migrationBuilder.CreateIndex(
@@ -348,12 +336,6 @@ namespace _2_DataAccessLayer.Migrations
                 name: "IX_posts_userId",
                 table: "posts",
                 column: "userId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_users_email",
-                table: "users",
-                column: "email",
-                unique: true);
         }
 
         /// <inheritdoc />
@@ -384,16 +366,13 @@ namespace _2_DataAccessLayer.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
                 name: "entries");
 
             migrationBuilder.DropTable(
                 name: "posts");
 
             migrationBuilder.DropTable(
-                name: "users");
+                name: "AspNetUsers");
         }
     }
 }

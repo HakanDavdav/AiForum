@@ -13,7 +13,7 @@ using Microsoft.Extensions.Options;
 
 namespace _2_DataAccessLayer.Concrete
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<User,UserRole,int>
     {
         private readonly MyConfig _config;
         public ApplicationDbContext(IOptions<MyConfig> config)
@@ -25,7 +25,7 @@ namespace _2_DataAccessLayer.Concrete
             optionsBuilder.UseSqlServer(_config.DefaultConnection);
         }
 
-        public DbSet<User> users { get; set; }
+
         public DbSet<Post> posts {  get; set; }
         public DbSet<Like> likes { get; set; }
         public DbSet<Entry> entries {  get; set; }
