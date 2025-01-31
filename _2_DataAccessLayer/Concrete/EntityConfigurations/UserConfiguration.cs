@@ -13,7 +13,6 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.HasKey(user => user.userId);
 
             builder.HasMany(user => user.entries)
                 .WithOne(entry => entry.user)
@@ -42,7 +41,7 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
 
 
 
-            builder.Property(user => user.name).IsRequired();
+            builder.Property(user => user.username).IsRequired();
             builder.Property(user => user.email).IsRequired();
             builder.Property(user => user.password).IsRequired();
             builder.HasIndex(user => user.email).IsUnique();

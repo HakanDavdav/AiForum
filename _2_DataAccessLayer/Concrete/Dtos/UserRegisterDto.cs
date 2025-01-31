@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace _2_DataAccessLayer.Concrete.Dtos
 {
-    public class UserDto
+    public class UserRegisterDto
     {
         public int userId { get; set; }
-        public string name { get; set; }
+        public string username { get; set; }
+        public string password { get; set; }
         public string email { get; set; }
     }
 }

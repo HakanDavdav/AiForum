@@ -10,13 +10,14 @@ namespace _2_DataAccessLayer.Concrete.Mappers
 {
     public static class UserToUserDto
     {
-        public static UserDto ToUserDto(this User user)
+        public static UserRegisterDto ToUserDto(this User user)
         {
-            UserDto dto = new UserDto()
+            UserRegisterDto dto = new UserRegisterDto()
             {
                 email = user.email,
-                name = user.name,
+                username = user.username,
                 userId = user.userId,
+                password = user.password,
             };
             return dto;
         }

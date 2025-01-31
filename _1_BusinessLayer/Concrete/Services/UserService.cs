@@ -19,7 +19,7 @@ namespace _1_BusinessLayer.Concrete.Services
             }
         }
 
-        public UserDto GetUserByID(int id)
+        public UserRegisterDto GetUserByID(int id)
         {
             return _userRepository.getById(id);
         }

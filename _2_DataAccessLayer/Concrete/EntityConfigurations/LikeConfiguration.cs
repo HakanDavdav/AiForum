@@ -13,7 +13,7 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Like> builder)
         {
-            builder.HasKey(like => like.likeID);
+            builder.HasKey(like => like.likeId);
 
             builder.HasOne(like => like.post)
                 .WithMany(post => post.likes)
