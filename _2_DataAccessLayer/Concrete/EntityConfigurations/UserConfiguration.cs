@@ -13,6 +13,10 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
+<<<<<<< HEAD
+=======
+
+>>>>>>> c4fa1372ff0b120a693caa0e06b6b496f66ec313
 
             builder.HasMany(user => user.entries)
                 .WithOne(entry => entry.user)
@@ -41,10 +45,15 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
 
 
 
+<<<<<<< HEAD
             builder.Property(user => user.username).IsRequired();
             builder.Property(user => user.email).IsRequired();
             builder.Property(user => user.password).IsRequired();
             builder.HasIndex(user => user.email).IsUnique();
+=======
+            builder.Property(user => user.name).IsRequired();
+
+>>>>>>> c4fa1372ff0b120a693caa0e06b6b496f66ec313
         }
     }
 }

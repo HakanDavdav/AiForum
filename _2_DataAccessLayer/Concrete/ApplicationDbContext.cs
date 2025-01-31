@@ -25,6 +25,10 @@ namespace _2_DataAccessLayer.Concrete
             optionsBuilder.UseSqlServer(_config.DefaultConnection);
         }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> c4fa1372ff0b120a693caa0e06b6b496f66ec313
         public DbSet<Post> posts {  get; set; }
         public DbSet<Like> likes { get; set; }
         public DbSet<Entry> entries {  get; set; }

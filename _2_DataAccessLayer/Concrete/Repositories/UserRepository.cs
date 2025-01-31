@@ -26,7 +26,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public UserRegisterDto getById(int id)
         {
+<<<<<<< HEAD
             UserRegisterDto user = _context.users.FirstOrDefault(p => p.userId == id).ToUserDto();
+=======
+            UserRegisterDto user = _context.Users.FirstOrDefault(p => p.Id == id).ToUserDto();
+>>>>>>> c4fa1372ff0b120a693caa0e06b6b496f66ec313
             return user;
         }
 
