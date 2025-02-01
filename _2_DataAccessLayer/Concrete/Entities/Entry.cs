@@ -15,11 +15,11 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public string context {  get; set; }
 
 
-        public int? postId { get; set; }
+        public int postId { get; set; }
         public Post post { get; set; }
 
 
-        public int? userId { get; set; }
+        public int userId { get; set; }
         public User user { get; set; }
 
 

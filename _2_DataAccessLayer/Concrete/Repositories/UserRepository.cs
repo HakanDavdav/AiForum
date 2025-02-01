@@ -6,33 +6,48 @@ using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete;
-using _2_DataAccessLayer.Concrete.Mappers;
-using _2_DataAccessLayer.Concrete.Dtos;
+
 
 namespace _2_DataAccessLayer.Concrete.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : AbstractUserRepository
     {
-        private readonly ApplicationDbContext _context;
-        public UserRepository(ApplicationDbContext context)
+        public UserRepository(ApplicationDbContext context) : base(context)
         {
-            _context = context;
         }
 
-        public List<User> getAll()
+        public override void Delete(User t)
         {
-            throw new NotImplementedException();
+            _context.Users.Remove(t);
         }
 
-        public UserRegisterDto getById(int id)
+        public override List<User> GetAll()
         {
-            UserRegisterDto user = _context.Users.FirstOrDefault(p => p.Id == id).ToUserDto();
+            IQueryable<User> users = _context.Users;
+            return users.ToList();
+        }
+
+        public override User GetById(int id)
+        {
+            User user = _context.Users.Find(id);
             return user;
         }
 
-        public User getByName(string name)
+        public override User GetByName(string name)
         {
-            throw new NotImplementedException();
+            User user = _context.Users.FirstOrDefault(user => user.UserName == name);
+            return user;
+        }
+
+        public override void Insert(User t)
+        {
+            _context.Users.Add(t);
+        }
+
+        public override void Update(User t)
+        {
+            _context.Users.Attach(t);
+            //make changes
         }
     }
 }

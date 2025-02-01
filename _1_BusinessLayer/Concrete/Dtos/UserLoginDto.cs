@@ -4,14 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2_DataAccessLayer.Concrete.Dtos
+namespace _1_BusinessLayer.Concrete.Dtos
 {
-    public class UserRegisterDto
+    public class UserLoginDto
     {
-
         public string email { get; set; }
-        public string passwordHash { get; set; }
+        public string password { get; set; }
         
-
     }
 }

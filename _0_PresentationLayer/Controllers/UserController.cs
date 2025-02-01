@@ -7,8 +7,8 @@ namespace _0_PresentationLayer.Controllers
     [Route("AiForum")]
     public class UserController : ControllerBase
     {
-        private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly AbstractUserService _userService;
+        public UserController(AbstractUserService userService)
         {
             _userService = userService;
         }

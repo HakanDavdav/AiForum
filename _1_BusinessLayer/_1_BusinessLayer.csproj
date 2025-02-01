@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Concrete\Extensions\**" />
+    <EmbeddedResource Remove="Concrete\Extensions\**" />
+    <None Remove="Concrete\Extensions\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.1" />
@@ -33,8 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Concrete\Extensions\" />
-    <Folder Include="ValidationRules\" />
+    <Folder Include="Concrete\Mappers\" />
   </ItemGroup>
 
 </Project>

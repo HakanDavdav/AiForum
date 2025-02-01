@@ -13,10 +13,11 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public int postId { get; set; }
         public string title { get; set; }
         public string context { get; set; }
+        public int trendPoint { get; set; }
 
 
 
-        public int? userId { get; set; }
+        public int userId { get; set; }
         public User user {  get; set; }
 
 

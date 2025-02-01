@@ -10,8 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.CreateOptions(builder.Configuration);
 builder.Services.AddDbContext<ApplicationDbContext>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<AbstractUserRepository, UserRepository>();
+builder.Services.AddScoped<AbstractUserService, UserService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer(); // API'nin tüm endpointlerini ke?fetmek için
 builder.Services.AddSwaggerGen(); // Swagger UI ve dokümantasyonunu olu?turmak için

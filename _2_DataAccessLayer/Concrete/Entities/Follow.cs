@@ -14,11 +14,11 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
 
 
-        public int? followeeId { get; set; }
+        public int followeeId { get; set; }
         public User followee { get; set; }
 
 
-        public int? followedId { get; set; }
+        public int followedId { get; set; }
         public User followed { get; set; }
 
     }
