@@ -30,12 +30,10 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .HasForeignKey(like => like.entryId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Property(like => like.userId)
-                .IsRequired(false);
-            builder.Property(like => like.entryId)
-                .IsRequired(false);
-            builder.Property(like => like.postId)
-                .IsRequired(false);
+            builder.Property(like => like.userId).IsRequired();
+            builder.Property(like => like.entryId).IsRequired();
+            builder.Property(like => like.postId).IsRequired();
+
         }
     }
 }

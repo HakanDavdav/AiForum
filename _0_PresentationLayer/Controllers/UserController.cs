@@ -16,7 +16,7 @@ namespace _0_PresentationLayer.Controllers
         [HttpGet("{id}")]
         public IActionResult GetUserById(int id)
         {
-            var user = _userService.GetUserByID(id);
+            var user = _userService.TGetById(id);
             return Ok(user);
         }
     }

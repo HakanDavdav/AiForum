@@ -42,7 +42,9 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
 
 
 
-            builder.Property(user => user.name).IsRequired();
+            builder.Property(user => user.UserName).IsRequired();
+            builder.Property(user => user.PasswordHash).IsRequired();
+            builder.Property(user => user.Email).IsRequired();
 
         }
     }

@@ -33,8 +33,8 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
 
             builder.Property(post => post.title).IsRequired();
             builder.Property(post => post.context).IsRequired();
-            builder.Property(post => post.userId)
-                .IsRequired(false);
+            builder.Property(post => post.userId).IsRequired();
+
 
         }
     }

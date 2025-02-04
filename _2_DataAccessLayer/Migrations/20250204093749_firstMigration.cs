@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace _2_DataAccessLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class FirstMigration : Migration
+    public partial class firstMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,13 +32,14 @@ namespace _2_DataAccessLayer.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    imageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    city = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -165,8 +166,8 @@ namespace _2_DataAccessLayer.Migrations
                 {
                     followId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    followeeId = table.Column<int>(type: "int", nullable: true),
-                    followedId = table.Column<int>(type: "int", nullable: true)
+                    followeeId = table.Column<int>(type: "int", nullable: false),
+                    followedId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -191,7 +192,8 @@ namespace _2_DataAccessLayer.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     context = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    userId = table.Column<int>(type: "int", nullable: true)
+                    trendPoint = table.Column<int>(type: "int", nullable: false),
+                    userId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -210,8 +212,8 @@ namespace _2_DataAccessLayer.Migrations
                     entryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     context = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    postId = table.Column<int>(type: "int", nullable: true),
-                    userId = table.Column<int>(type: "int", nullable: true)
+                    postId = table.Column<int>(type: "int", nullable: false),
+                    userId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -232,15 +234,15 @@ namespace _2_DataAccessLayer.Migrations
                 name: "likes",
                 columns: table => new
                 {
-                    likeID = table.Column<int>(type: "int", nullable: false)
+                    likeId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    postId = table.Column<int>(type: "int", nullable: true),
-                    entryId = table.Column<int>(type: "int", nullable: true),
-                    userId = table.Column<int>(type: "int", nullable: true)
+                    postId = table.Column<int>(type: "int", nullable: false),
+                    entryId = table.Column<int>(type: "int", nullable: false),
+                    userId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_likes", x => x.likeID);
+                    table.PrimaryKey("PK_likes", x => x.likeId);
                     table.ForeignKey(
                         name: "FK_likes_AspNetUsers_userId",
                         column: x => x.userId,
