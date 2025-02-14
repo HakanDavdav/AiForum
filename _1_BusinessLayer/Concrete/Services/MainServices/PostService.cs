@@ -3,19 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using _1_BusinessLayer.Abstractions;
-using _2_DataAccessLayer.Abstractions;
+using _1_BusinessLayer.Abstractions.MainServices;
 using _2_DataAccessLayer.Concrete.Entities;
 
-namespace _1_BusinessLayer.Concrete.Services
+namespace _1_BusinessLayer.Concrete.Services.MainServices
 {
     public class PostService : AbstractPostService
     {
-        private readonly AbstractPostRepository _postRepository;
-        public PostService(AbstractPostRepository postRepository)
-        {
-            _postRepository = postRepository;
-        }
         public override void CreatePost(string text, int userId, string title)
         {
             throw new NotImplementedException();
@@ -28,28 +22,27 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override void TDelete(Post t)
         {
-            _postRepository.Delete(t);
+            throw new NotImplementedException();
         }
 
         public override List<Post> TGetAll()
         {
-            return _postRepository.GetAll();
+            throw new NotImplementedException();
         }
 
         public override Post TGetById(int id)
         {
-            return _postRepository.GetById(id);
+            throw new NotImplementedException();
         }
 
         public override void TInsert(Post t)
         {
-            _postRepository.Insert(t);
+            throw new NotImplementedException();
         }
 
         public override void TUpdate(Post t)
         {
-            _postRepository.Update(t);
-            //make changes
+            throw new NotImplementedException();
         }
     }
 }

@@ -42,8 +42,6 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
 
 
 
-            builder.Property(user => user.name).IsRequired();
-
         }
     }
 }

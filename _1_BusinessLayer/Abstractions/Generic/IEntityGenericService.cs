@@ -7,7 +7,7 @@ using _2_DataAccessLayer.Concrete.Entities;
 
 namespace _1_BusinessLayer.Abstractions.Generic
 {
-    public interface IGenericService<T> 
+    public interface IEntityGenericService<T> 
     {
         public void TInsert(T t);
         public void TDelete(T t);

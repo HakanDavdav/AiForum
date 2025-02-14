@@ -8,10 +8,10 @@ using _2_DataAccessLayer.Concrete.Repositories;
 
 namespace _1_BusinessLayer.Abstractions.Generic
 {
-    public abstract class AbstractGenericBaseService<T> : IGenericService<T> where T : class
+    public abstract class EntityAbstractGenericBaseService<T> : IEntityGenericService<T> where T : class
     {
        
-        protected AbstractGenericBaseService()
+        protected EntityAbstractGenericBaseService()
         {
             
         }
