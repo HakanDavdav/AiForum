@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace _2_DataAccessLayer.Concrete.Repositories
 {
@@ -21,13 +22,31 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override List<Post> GetAll()
         {
-            IQueryable<Post> posts = _context.posts;
+            IQueryable<Post> posts = _context.posts.Include(post => post.entries)
+                .ThenInclude(entry => entry.user)
+                .Include(post => post.likes);
             return posts.ToList();
         }
 
         public override Post GetById(int id)
         {
-            Post post = _context.posts.Find(id);
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            Post post = _context.posts.Include(post => post.entries)
+                .ThenInclude(entry => entry.user)
+                .Include(post => post.likes)
+                .FirstOrDefault(post => post.postId == id);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+            return post;
+        }
+
+        public override Post GetByTitle(string title)
+        {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            Post post = _context.posts.Include(post => post.entries)
+                .ThenInclude(entry => entry.user)
+                .Include(post => post.likes)
+                .FirstOrDefault(post => post.title == title);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return post;
         }
 

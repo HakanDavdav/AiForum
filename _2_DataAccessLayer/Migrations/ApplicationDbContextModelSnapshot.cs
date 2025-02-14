@@ -137,10 +137,10 @@ namespace _2_DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("postId")
+                    b.Property<int>("postId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("userId")
+                    b.Property<int>("userId")
                         .HasColumnType("int");
 
                     b.HasKey("entryId");
@@ -160,10 +160,10 @@ namespace _2_DataAccessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("followId"));
 
-                    b.Property<int?>("followedId")
+                    b.Property<int>("followedId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("followeeId")
+                    b.Property<int>("followeeId")
                         .HasColumnType("int");
 
                     b.HasKey("followId");
@@ -177,22 +177,22 @@ namespace _2_DataAccessLayer.Migrations
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.Like", b =>
                 {
-                    b.Property<int>("likeID")
+                    b.Property<int>("likeId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("likeID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("likeId"));
 
-                    b.Property<int?>("entryId")
+                    b.Property<int>("entryId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("postId")
+                    b.Property<int>("postId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("userId")
+                    b.Property<int>("userId")
                         .HasColumnType("int");
 
-                    b.HasKey("likeID");
+                    b.HasKey("likeId");
 
                     b.HasIndex("entryId");
 
@@ -219,7 +219,10 @@ namespace _2_DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("userId")
+                    b.Property<int>("trendPoint")
+                        .HasColumnType("int");
+
+                    b.Property<int>("userId")
                         .HasColumnType("int");
 
                     b.HasKey("postId");
@@ -245,6 +248,7 @@ namespace _2_DataAccessLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -266,6 +270,7 @@ namespace _2_DataAccessLayer.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -281,10 +286,15 @@ namespace _2_DataAccessLayer.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("name")
+                    b.Property<string>("city")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("imageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -387,12 +397,14 @@ namespace _2_DataAccessLayer.Migrations
                     b.HasOne("_2_DataAccessLayer.Concrete.Entities.Post", "post")
                         .WithMany("entries")
                         .HasForeignKey("postId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("_2_DataAccessLayer.Concrete.Entities.User", "user")
                         .WithMany("entries")
                         .HasForeignKey("userId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("post");
 
@@ -404,12 +416,14 @@ namespace _2_DataAccessLayer.Migrations
                     b.HasOne("_2_DataAccessLayer.Concrete.Entities.User", "followed")
                         .WithMany("followers")
                         .HasForeignKey("followedId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("_2_DataAccessLayer.Concrete.Entities.User", "followee")
                         .WithMany("followings")
                         .HasForeignKey("followeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("followed");
 
@@ -421,17 +435,20 @@ namespace _2_DataAccessLayer.Migrations
                     b.HasOne("_2_DataAccessLayer.Concrete.Entities.Entry", "entry")
                         .WithMany("likes")
                         .HasForeignKey("entryId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("_2_DataAccessLayer.Concrete.Entities.Post", "post")
                         .WithMany("likes")
                         .HasForeignKey("postId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("_2_DataAccessLayer.Concrete.Entities.User", "user")
                         .WithMany("likes")
                         .HasForeignKey("userId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("entry");
 
@@ -445,7 +462,8 @@ namespace _2_DataAccessLayer.Migrations
                     b.HasOne("_2_DataAccessLayer.Concrete.Entities.User", "user")
                         .WithMany("posts")
                         .HasForeignKey("userId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("user");
                 });

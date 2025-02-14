@@ -25,10 +25,9 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .HasForeignKey(follow => follow.followedId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Property(follow => follow.followeeId)
-                .IsRequired(false);
-            builder.Property(follow => follow.followedId)
-                .IsRequired(false);
+            builder.Property(follow => follow.followeeId).IsRequired();
+            builder.Property(follow => follow.followedId).IsRequired();
+
         }
     }
 }

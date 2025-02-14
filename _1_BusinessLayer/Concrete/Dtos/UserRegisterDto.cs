@@ -10,6 +10,7 @@ namespace _1_BusinessLayer.Concrete.Dtos
     {
         public string email { get; set; }
         public string password { get; set; }
+        public string confirmPassword { get; set; }
         public string confirmCode { get; set; }
     }
 }

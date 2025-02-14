@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace _2_DataAccessLayer.Concrete.Repositories
 {
@@ -21,13 +22,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override List<Entry> GetAll()
         {
-            IQueryable<Entry> allEntries = _context.entries;
+            IQueryable<Entry> allEntries = _context.entries
+                .Include(entry => entry.likes);
             return allEntries.ToList();
         }
 
         public override Entry GetById(int id)
         {
-            Entry entry = _context.entries.Find(id);
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            Entry entry = _context.entries
+                .Include(entry => entry.likes)
+                .FirstOrDefault(entry => entry.entryId == id);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return entry;
         }
 
