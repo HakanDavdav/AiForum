@@ -9,29 +9,46 @@ using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using _1_BusinessLayer.Abstractions.MainServices;
+using _1_BusinessLayer.Concrete.Services.MainServices;
+using _1_BusinessLayer.Abstractions.SideServices;
+using _1_BusinessLayer.Concrete.Services.SideServices;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.CreateOptions(builder.Configuration);
 builder.Services.AddDbContext<ApplicationDbContext>();
 
-//autowire for repositories to use in services
-builder.Services.AddScoped<AbstractEntryRepository,EntryRepository>();
+
+//autowiring repositories
+builder.Services.AddScoped<AbstractEntryRepository, EntryRepository>();
 builder.Services.AddScoped<AbstractFollowRepository, FollowRepository>();
 builder.Services.AddScoped<AbstractLikeRepository, LikeRepository>();
 builder.Services.AddScoped<AbstractPostRepository, PostRepository>();
-builder.Services.AddScoped<AbstractUserRepository, UserRepository>();
 builder.Services.AddScoped<AbstractUserRoleRepository, UserRoleRepository>();
+builder.Services.AddScoped<AbstractUserRepository, UserRepository>();
 
-//autowire for services to use in controller
-builder.Services.AddScoped<AbstractPostService, UserManager>();
+
+//autowiring side services
+builder.Services.AddScoped<AbstractMailService, MailService>();
+builder.Services.AddScoped<AbstractAuthenticationService, AuthenticationService>();
+//autowiring main services
+builder.Services.AddScoped<AbstractEntryService, EntryService>();
+builder.Services.AddScoped<AbstractPostService, PostService>();
 builder.Services.AddScoped<AbstractUserService, UserService>();
+//autowiring of IdentityTools
+builder.Services.AddScoped<SignInManager<User>>();
+builder.Services.AddScoped<UserManager<User>>();
 
-builder.Services.AddIdentity<User, IdentityRole>()
+
+
+
+//adding Identity on project
+builder.Services.AddIdentity<User, UserRole>()
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
 
-
+//adding Jwt Authentication on project
 builder.Services.AddAuthentication()
 .AddJwtBearer("main-scheme", jwtOptions =>
 {
@@ -43,7 +60,8 @@ builder.Services.AddAuthentication()
         ValidateAudience = true,
         ValidateIssuerSigningKey = true,
         ValidAudiences = builder.Configuration.GetSection("Jwt:ValidAudiences").Get<string[]>(),
-        ValidIssuers = builder.Configuration.GetSection("Jwt:ValidIssuers").Get<string[]>()
+        ValidIssuers = builder.Configuration.GetSection("Jwt:ValidIssuers").Get<string[]>(),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
 
     jwtOptions.MapInboundClaims = false;

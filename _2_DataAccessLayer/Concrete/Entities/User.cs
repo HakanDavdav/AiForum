@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,9 +11,12 @@ namespace _2_DataAccessLayer.Concrete.Entities
 {
     public class User : IdentityUser<int>
     {
-
-        public string imageUrl { get; set; }
-        public string city { get; set; }
+        [AllowNull]
+        public string? imageUrl { get; set; }
+        [AllowNull]
+        public string? city { get; set; }
+        [AllowNull]
+        public int? confirmationCode { get; set; }
 
 
         public ICollection<Post> posts { get; set; }
@@ -20,7 +24,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public ICollection<Like> likes { get; set; }
         public ICollection<Follow> followings { get; set; }
         public ICollection<Follow> followers { get; set; }
-        public UserRole UserRole { get; set; }
+
 
 
 

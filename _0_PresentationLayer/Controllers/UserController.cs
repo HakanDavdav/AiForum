@@ -1,32 +1,53 @@
 ﻿using _1_BusinessLayer.Abstractions.MainServices;
+using _1_BusinessLayer.Concrete.Dtos;
+using _1_BusinessLayer.Concrete.Mappers;
+using _2_DataAccessLayer.Concrete.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _0_PresentationLayer.Controllers
 {
+    [Route("AiForum/[controller]")]
     [ApiController]
-    [Route("AiForum")]
     public class UserController : ControllerBase
     {
         private readonly AbstractUserService _userService;
-        private readonly AbstractPostService _postService;
-        public UserController(AbstractUserService userService, AbstractPostService postService)
+        private readonly UserManager<User> _userManager;
+        public UserController(AbstractUserService userService, UserManager<User> userManager )
         {
             _userService = userService;
-            _postService = postService;
+            _userManager = userManager;
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetUserById(int id)
+        public IActionResult GetUser(int id)
         {
-            var user = _userService.TGetById(id);
-            return Ok(user);
+            return Ok();
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetPostById(int id)
+
+
+        [HttpPost("Register")]
+        public async Task<IActionResult> Register([FromBody] UserRegisterDto userRegisterDto)
         {
-            var post = _postService.TGetById(id);
-            return Ok(post);
+            var user = userRegisterDto.UserRegisterToUser();
+            var result = await _userManager.CreateAsync(user, userRegisterDto.password);
+            return Ok(result);
         }
+
+        [HttpPost("Login")]
+        public IActionResult Login(int id, [FromBody] UserLoginDto userLoginDto)
+        {
+            _userService.Login(userLoginDto);
+            return Ok();
+        }
+
+        [HttpPost("ConfirmationCode/{code}")]
+        public IActionResult ConfirmMail(int code) 
+        {
+            return Ok();
+        }
+
+
     }
 }
