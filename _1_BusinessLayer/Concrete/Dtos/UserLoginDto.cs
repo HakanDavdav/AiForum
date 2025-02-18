@@ -8,7 +8,7 @@ namespace _1_BusinessLayer.Concrete.Dtos
 {
     public class UserLoginDto
     {
-        public string email { get; set; }
+        public string emailOrUsername { get; set; }
         public string password { get; set; }
         
     }

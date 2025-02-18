@@ -21,6 +21,24 @@ namespace _1_BusinessLayer.Concrete.Mappers
             return user;
         }
 
-      
+        public static UserProfileDto UserToUserProfile(this User user)
+        {
+            var userProfileDto = new UserProfileDto
+            {
+                 username = user.UserName,
+                 imageUrl = user.imageUrl,
+                 city = user.city,
+                 entries = user.entries,
+                 posts = user.posts,
+                 followers = user.followers,
+                 followings = user.followings,
+                 likes = user.likes,
+                 profileName = user.profileName
+                 
+            };
+            return userProfileDto;
+        }
+
+
     }
 }

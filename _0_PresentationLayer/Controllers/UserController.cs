@@ -30,8 +30,7 @@ namespace _0_PresentationLayer.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterDto userRegisterDto)
         {
-            var user = userRegisterDto.UserRegisterToUser();
-            var result = await _userManager.CreateAsync(user, userRegisterDto.password);
+            var result = _userService.Register(userRegisterDto);
             return Ok(result);
         }
 

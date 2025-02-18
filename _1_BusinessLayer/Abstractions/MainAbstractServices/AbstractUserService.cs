@@ -9,6 +9,7 @@ using _1_BusinessLayer.Concrete.Dtos;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace _1_BusinessLayer.Abstractions.MainServices
 {
@@ -33,13 +34,13 @@ namespace _1_BusinessLayer.Abstractions.MainServices
         }
 
 
-        public abstract Task<User> getByName(string name);
-        public abstract Task<IdentityResult> ChangePassword(int id);
-        public abstract Task<Boolean> EditProfile(int id, UserProfileDto userProfileDto);
-        public abstract Task<IdentityResult> Register(UserRegisterDto userRegistered);
-        public abstract Task<SignInResult> Login(UserLoginDto userLogged);
-        public abstract Task<IdentityResult> Logout();
-        public abstract Task<IdentityResult> DeleteProfile(int id);
-        public abstract bool ConfirmEmail(int code, int id);
+        public abstract Task<ObjectResult> getByName(string name);
+        public abstract Task<ObjectResult> ChangePassword(int id);
+        public abstract Task<ObjectResult> EditProfile(int id, UserProfileDto userProfileDto);
+        public abstract Task<ObjectResult> Register(UserRegisterDto userRegistered);
+        public abstract Task<ObjectResult> Login(UserLoginDto userLogged);
+        public abstract Task<ObjectResult> Logout();
+        public abstract Task<ObjectResult> DeleteProfile(int id);
+        public abstract Task<ObjectResult> ConfirmEmail(int code, int id);
     }
 }

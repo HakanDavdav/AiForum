@@ -11,6 +11,7 @@ using _1_BusinessLayer.Concrete.Services.SideServices;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace _1_BusinessLayer.Concrete.Services.MainServices
 {
@@ -22,66 +23,123 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
         {
         }
 
-        public override async Task<IdentityResult> ChangePassword(int id)
+        public override async Task<ObjectResult> ChangePassword(int id)
         {
             throw new NotImplementedException();
         }
 
-        public override bool ConfirmEmail(int code, int id)
+        public override async Task<ObjectResult> ConfirmEmail(int code, int id)
         {
             var user = _userRepository.GetById(id);
-            return _authenticationService.CheckMail(user, id);
-        }
-
-        public override async Task<IdentityResult> DeleteProfile(int id)
-        {
-            var user = _userRepository.GetById(id);
-            var result = _userManager.DeleteAsync(user);
-            return await result;
-        }
-
-        public override async Task<Boolean> EditProfile(int id, UserProfileDto userProfileDto)
-        {
-            var user = _userRepository.GetById(id);
-            user.UserName = userProfileDto.username;
-            user.imageUrl = userProfileDto.imageUrl;
-            user.city = userProfileDto.city;
-            return true;
-        }
-
-        public override async Task<User> getByName(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override async Task<SignInResult> Login(UserLoginDto userLogged)
-        {
-            
-            var user = _userRepository.GetByEmail(userLogged.email);
-            if (_authenticationService.CheckMail(user))
+            if (user == null)
             {
-                var result = _signInManager.PasswordSignInAsync(userLogged.email, userLogged.password, false, false);
-                return await result;
+                return new NotFoundObjectResult(new { Message = "User not found" });
             }
             else
             {
-                SignInResult result = new SignInResult();
-                return SignInResult.Failed;
+                if (_authenticationService.CheckMail(user, id))
+                {
+                    return new OkObjectResult(new { Message = "Mail is confirmed", boolean = _authenticationService.CheckMail(user, id) });
+                }
+                else
+                {
+                    return new BadRequestObjectResult(new { Message = "Mail is not confirmed", boolean = _authenticationService.CheckMail(user, id) });
+                }
+                
+            }
+            
+        }
+
+        public override async Task<ObjectResult> DeleteProfile(int id)
+        {
+            var user = _userRepository.GetById(id);
+            if (user == null)
+            {
+                return new NotFoundObjectResult(new { Message = "User not found" });
+            }
+            else
+            {
+                var result = _userManager.DeleteAsync(user);
+                return new OkObjectResult(new { Message = "Deletion succesfull", IdentityResult = result });
+            }
+          
+        }
+
+        public override async Task<ObjectResult> EditProfile(int id, UserProfileDto userProfileDto)
+        {
+            var user = _userRepository.GetById(id);
+            if (user == null)
+            {
+                return new NotFoundObjectResult(new { Message = "User not found" });
+            }
+            else
+            {
+                user.UserName = userProfileDto.username;
+                user.imageUrl = userProfileDto.imageUrl;
+                user.city = userProfileDto.city;
+                return new OkObjectResult(new { Message = "Profile updated", UserProfileDto = user.UserToUserProfile() });
+            }
+           
+        }
+
+        public override async Task<ObjectResult> getByName(string name)
+        {
+            var user = _userRepository.GetByName(name);
+            if (user == null)
+            {
+                return new NotFoundObjectResult(new { Message = "User not found" });
+            }
+            else
+            {
+                return new OkObjectResult(new { Message = "User found by name", UserProfileDto = user.UserToUserProfile() });
+            }
+      
+        }
+
+        public override async Task<ObjectResult> Login(UserLoginDto userLogged)
+        {
+            
+            var user = _userRepository.GetByEmail(userLogged.emailOrUsername)??_userRepository.GetByUsername(userLogged.emailOrUsername);
+            if (_authenticationService.CheckMail(user))
+            {
+                var result = _signInManager.PasswordSignInAsync(userLogged.emailOrUsername, userLogged.password, false, false);
+                if (result.IsCompletedSuccessfully)
+                {
+                    return new OkObjectResult(new { Message = "Login successful", SignInResult = result });
+                }
+                else
+                {
+                    return new BadRequestObjectResult(new {Message = "Wrong password" , SignInResult = result});
+                }
+            }
+            else
+            {
+                return new BadRequestObjectResult(new { Message = "Mail has not confirmed." });
             }
                 
         }
 
-        public override async Task<IdentityResult> Logout()
+        public override async Task<ObjectResult> Logout()
         {
             throw new NotImplementedException();
         }
 
-        public override async Task<IdentityResult> Register(UserRegisterDto userRegistered )
+        
+        public override async Task<ObjectResult> Register(UserRegisterDto userRegistered )
         {
             var user = new User();
             var result = _userManager.CreateAsync(user, userRegistered.password);
-            _mailService.CreateMailConfirmationCode(user);
-            return await result;
+            if (result.IsCompletedSuccessfully)
+            {
+                _mailService.CreateMailConfirmationCode(user);
+                return new OkObjectResult(new { Message = "Profile creation is successful", IdentityResult = result });
+            }
+            else
+            {
+                return new BadRequestObjectResult(new { Message = "Profile creation is not successful", IdentityResult = result });
+            }
+           
+            
 
                          
         }

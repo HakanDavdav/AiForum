@@ -17,6 +17,8 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public string? city { get; set; }
         [AllowNull]
         public int? confirmationCode { get; set; }
+        [AllowNull]
+        public string? profileName { get; set; }
 
 
         public ICollection<Post> posts { get; set; }
