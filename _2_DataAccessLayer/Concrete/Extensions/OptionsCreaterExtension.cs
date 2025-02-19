@@ -18,6 +18,7 @@ namespace _2_DataAccessLayer.Concrete.Extensions
                     .Build();
 
             services.Configure<MyConfig>(configuration.GetSection("ConnectionStrings"));
+
         }
     }
 }

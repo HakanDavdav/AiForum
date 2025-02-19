@@ -20,6 +20,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public override void Delete(User t)
         {
             _context.Users.Remove(t);
+            _context.SaveChanges();
         }
 
         public override List<User> GetAll()
@@ -64,15 +65,47 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             return user;
         }
 
+        public override User GetByEmail(string email)
+        {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            User user = _context.Users.Include(user => user.posts).
+                                       ThenInclude(post => post.likes).
+                                       Include(user => user.entries).
+                                       ThenInclude(entries => entries.likes).
+                                       Include(user => user.likes).
+                                       Include(user => user.followers).
+                                       Include(user => user.followings).
+                                       FirstOrDefault(user => user.Email == email);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+            return user;
+        }
+
+
         public override void Insert(User t)
         {
             _context.Users.Add(t);
+            _context.SaveChanges();
         }
 
         public override void Update(User t)
         {
             _context.Users.Attach(t);
-            //make changes
+            _context.SaveChanges();
+        }
+
+        public override User GetByUsername(string username)
+        {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            User user = _context.Users.Include(user=>user.posts).
+                                       ThenInclude(post=>post.likes).
+                                       Include(user => user.entries).
+                                       ThenInclude(entries => entries.likes).
+                                       Include(user => user.likes).
+                                       Include(user => user.followers).
+                                       Include(user => user.followings).
+                                       FirstOrDefault(user => user.UserName == username);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+            return user;
         }
     }
 }

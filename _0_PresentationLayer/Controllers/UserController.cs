@@ -1,75 +1,51 @@
 ﻿using _1_BusinessLayer.Abstractions.MainServices;
 using _1_BusinessLayer.Concrete.Dtos;
-using _1_BusinessLayer.Concrete.Services.MainServices;
+using _1_BusinessLayer.Concrete.Mappers;
 using _2_DataAccessLayer.Concrete.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _0_PresentationLayer.Controllers
 {
+    [Route("AiForum/[controller]")]
     [ApiController]
-    [Route("User")]
     public class UserController : ControllerBase
     {
         private readonly AbstractUserService _userService;
-
-        public UserController(AbstractUserService userService) {
-            _userService = userService; 
-        }
-
-        [HttpPost("Register")]
-        public void Register()
+        private readonly UserManager<User> _userManager;
+        public UserController(AbstractUserService userService, UserManager<User> userManager )
         {
-            
+            _userService = userService;
+            _userManager = userManager;
         }
-        [HttpPost("Login")]
-        public void Login()
-        {
-            _userService.Login();
-        }
-
-        [HttpPost("EditProfile/{id}")]
-        public IActionResult EditProfile(int id, [FromBody] UserProfileDto userProfile)
-        {
-            if (id <= 0)
-                return BadRequest("Invalid user ID.");
-            var user = _userService.TGetById(id);
-            if (user == null)
-                return NotFound($"User with ID {id} not found.");
-            return Ok(user);
-
-            user.UserName = userProfile.username;
-            user.imageUrl = userProfile.imageUrl;
-            user.city = userProfile.city;
-
-        }
-
-        [HttpGet("{username}")]
-        public IActionResult GetUserByName(string username)
-        {
-            if (string.IsNullOrEmpty(username))
-                return BadRequest("Invalid username.");
-
-            var user = _userService.getByName(username);
-            if (user == null)
-                return NotFound($"User with username {username} not found.");
-
-            return Ok(user);
-        }
-
-
 
         [HttpGet("{id}")]
-        public IActionResult GetUserById(int id)
+        public IActionResult GetUser(int id)
         {
-            if (id <= 0)
-                return BadRequest("Invalid user ID.");
-            var user = _userService.TGetById(id);
-            if (user == null)
-                return NotFound($"User with ID {id} not found.");
-            return Ok(user);
-
+            return Ok();
         }
 
+
+
+        [HttpPost("Register")]
+        public async Task<IActionResult> Register([FromBody] UserRegisterDto userRegisterDto)
+        {
+            var result = _userService.Register(userRegisterDto);
+            return Ok(result);
+        }
+
+        [HttpPost("Login")]
+        public IActionResult Login(int id, [FromBody] UserLoginDto userLoginDto)
+        {
+            _userService.Login(userLoginDto);
+            return Ok();
+        }
+
+        [HttpPost("ConfirmationCode/{code}")]
+        public IActionResult ConfirmMail(int code) 
+        {
+            return Ok();
+        }
 
 
     }

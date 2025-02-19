@@ -15,5 +15,7 @@ namespace _2_DataAccessLayer.Abstractions
         {
         }
         public abstract User GetByName(string name);
+        public abstract User GetByEmail(string name);
+        public abstract User GetByUsername(string name);
     }
 }
