@@ -25,7 +25,7 @@ namespace _1_BusinessLayer.Abstractions.MainServices
             _mailService = mailService;
             _userRepository = userRepository;
         }
-        public abstract User getByName(string name);
+        public abstract User TgetByName(string name);
         public abstract void ChangePassword(string url);
         public abstract void ChangeUsername(string url);
         public abstract void ChangePP(int id);

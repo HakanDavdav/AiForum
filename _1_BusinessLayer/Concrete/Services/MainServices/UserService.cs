@@ -8,6 +8,7 @@ using _1_BusinessLayer.Abstractions.SideServices;
 using _1_BusinessLayer.Concrete.Services.SideServices;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
+using _2_DataAccessLayer.Concrete.Repositories;
 
 namespace _1_BusinessLayer.Concrete.Services.MainServices
 {
@@ -33,9 +34,9 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
             throw new NotImplementedException();
         }
 
-        public override User getByName(string name)
+        public override User TgetByName(string name)
         {
-            throw new NotImplementedException();
+            return _userRepository.GetByName(name);
         }
 
         public override void Login(User user)
@@ -45,32 +46,40 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
 
         public override void Register(string email, string password)
         {
-               
+            new User()
+            {
+                Email = email,
+                PasswordHash = password
+            };
+
+            _userRepository.Insert(t);
+            _authenticationService.GenerateJwtToken();   
         }
 
         public override void TDelete(User t)
         {
-            throw new NotImplementedException();
+            _userRepository.Delete(t);
         }
 
         public override List<User> TGetAll()
         {
-            throw new NotImplementedException();
+            return _userRepository.GetAll();    
         }
 
         public override User TGetById(int id)
         {
-            throw new NotImplementedException();
+            return _userRepository.GetById(id);
         }
 
         public override void TInsert(User t)
         {
-            throw new NotImplementedException();
+            _userRepository.Insert(t);
         }
 
         public override void TUpdate(User t)
         {
-            throw new NotImplementedException();
+            _userRepository.Update(t);
         }
+
     }
 }

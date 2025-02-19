@@ -8,6 +8,6 @@ namespace _1_BusinessLayer.Abstractions.SideServices
 {
     public abstract class AbstractMailService
     {
-        public abstract void CreateMailConfirmationCode();
+        public abstract void CreateMailConfirmationCode(string mail);
     }
 }
