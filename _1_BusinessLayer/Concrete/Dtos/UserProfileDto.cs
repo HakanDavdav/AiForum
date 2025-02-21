@@ -9,14 +9,14 @@ namespace _1_BusinessLayer.Concrete.Dtos
 {
     public class UserProfileDto
     {
-        public string profileName { get; set; }
-        public string username {  get; set; }
-        public string imageUrl { get; set; }
-        public string city { get; set; }
-        public ICollection<Post> posts { get; set; }
-        public ICollection<Entry> entries { get; set; }
-        public ICollection<Like> likes { get; set; }
-        public ICollection<Follow> followings { get; set; }
-        public ICollection<Follow> followers { get; set; }
+        public string ProfileName { get; set; }
+        public string Username {  get; set; }
+        public string ImageUrl { get; set; }
+        public string City { get; set; }
+        public ICollection<Post> Posts { get; set; }
+        public ICollection<Entry> Entries { get; set; }
+        public ICollection<Like> Likes { get; set; }
+        public ICollection<Follow> Followings { get; set; }
+        public ICollection<Follow> Followers { get; set; }
     }
 }

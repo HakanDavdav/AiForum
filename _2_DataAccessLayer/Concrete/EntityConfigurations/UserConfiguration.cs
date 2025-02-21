@@ -15,33 +15,32 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
         {
 
 
-            builder.HasMany(user => user.entries)
-                .WithOne(entry => entry.user)
-                .HasForeignKey(entry => entry.userId)
+            builder.HasMany(user => user.Entries)
+                .WithOne(entry => entry.User)
+                .HasForeignKey(entry => entry.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasMany(user => user.posts)
-                .WithOne(post => post.user)
-                .HasForeignKey(post => post.userId)
+            builder.HasMany(user => user.Posts)
+                .WithOne(post => post.User)
+                .HasForeignKey(post => post.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasMany(user => user.likes)
-                .WithOne(like => like.user)
-                .HasForeignKey(like => like.userId)
+            builder.HasMany(user => user.Likes)
+                .WithOne(like => like.User)
+                .HasForeignKey(like => like.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasMany(user => user.followings)
-                .WithOne(follow => follow.followee)
-                .HasForeignKey(follow => follow.followeeId)
+            builder.HasMany(user => user.Followings)
+                .WithOne(follow => follow.Followee)
+                .HasForeignKey(follow => follow.FolloweeId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasMany(user => user.followers)
-                .WithOne(follow => follow.followed)
-                .HasForeignKey(follow => follow.followedId)
+            builder.HasMany(user => user.Followers)
+                .WithOne(follow => follow.Followed)
+                .HasForeignKey(follow => follow.FollowedId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            
-
+            //User Properties are not fully required except ID because there are temporary guest users
 
 
         }

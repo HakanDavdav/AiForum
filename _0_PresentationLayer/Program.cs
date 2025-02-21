@@ -44,9 +44,30 @@ builder.Services.AddScoped<UserManager<User>>();
 
 
 //adding Identity on project
-builder.Services.AddIdentity<User, UserRole>()
+builder.Services.AddIdentity<User, UserRole>(options =>
+{
+    // Password policy
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireLowercase = true;
+
+    // Lockout policy
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
+
+    // User config
+    options.User.RequireUniqueEmail = true;
+
+    // SignIn config
+    options.SignIn.RequireConfirmedEmail = true;
+})
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
+
+
 
 //adding Jwt Authentication on project
 builder.Services.AddAuthentication()
@@ -67,6 +88,17 @@ builder.Services.AddAuthentication()
     jwtOptions.MapInboundClaims = false;
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+    
+    options.AddPolicy("UserPolicy", policy => policy.RequireRole("User","Admin"));
+    
+    options.AddPolicy("GuestPolicy", policy => policy.RequireRole("Guest","User","Admin"));
+
+});
+
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer(); // API'nin tüm endpointlerini ke?fetmek için
@@ -81,7 +113,7 @@ if (app.Environment.IsDevelopment())  // Yaln?zca geli?tirme ortam?nda aktif etm
     app.UseSwaggerUI(); // Swagger UI'yi aktif eder
 }
 
-
+app.UseStaticFiles();
 app.MapControllers();
 
 

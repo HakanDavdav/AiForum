@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace _2_DataAccessLayer.Concrete.Repositories
 {
@@ -14,32 +15,36 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
         }
 
-        public override void Delete(UserRole t)
+        public override async Task DeleteAsync(UserRole t)
         {
             _context.Roles.Remove(t);
+            await _context.SaveChangesAsync();
         }
 
-        public override List<UserRole> GetAll()
+        public override async Task<List<UserRole>> GetAllAsync()
         {
             IQueryable<UserRole> userRoles = _context.Roles;
-            return userRoles.ToList();
+            return await userRoles.ToListAsync();
         }
 
-        public override UserRole GetById(int id)
+        public override async Task<UserRole> GetByIdAsync(int id)
         {
-            UserRole role = _context.Roles.Find(id);
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            UserRole role = await _context.Roles.FindAsync(id);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return role;
         }
 
-        public override void Insert(UserRole t)
+        public override async Task InsertAsync(UserRole t)
         {
-            _context.Roles.Add(t);
+            await _context.Roles.AddAsync(t);
+            await _context.SaveChangesAsync();
         }
 
-        public override void Update(UserRole t)
+        public override async Task UpdateAsync(UserRole t)
         {
             _context.Roles.Attach(t);
-            //make changes
+            await _context.SaveChangesAsync();
         }
     }
 }

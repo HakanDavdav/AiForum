@@ -16,7 +16,6 @@ namespace _1_BusinessLayer.Abstractions.SideServices
         {
             _userRepository = userRepository;
         }
-        public abstract string GenerateJwtToken(User user);
 
         public abstract bool CheckMail(User user,int code);
         public abstract bool CheckMail(User user);

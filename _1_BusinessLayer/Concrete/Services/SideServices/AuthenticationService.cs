@@ -21,10 +21,11 @@ namespace _1_BusinessLayer.Concrete.Services.SideServices
 
         public override bool CheckMail(User user, int code)
         {
-            if(user.confirmationCode == code)
+            if(user.ConfirmationCode == code)
             {
-                user.confirmationCode = 00;
+                user.ConfirmationCode = 00;
                 user.EmailConfirmed = true;
+                _userRepository.Update(user);
                 return true;
             }
             else
@@ -46,28 +47,6 @@ namespace _1_BusinessLayer.Concrete.Services.SideServices
                 return false;
             }
         }
-
-        public override string GenerateJwtToken(User user)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var secretKey = Encoding.UTF8.GetBytes("SecretKey");
-            List<Claim> jwtUser = new List<Claim>()
-            {
-                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                 new Claim(ClaimTypes.Name, user.UserName),
-                 new Claim(ClaimTypes.Email, user.Email),
-
-            };
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(jwtUser),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-        }
-
 
     }
 }

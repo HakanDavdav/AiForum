@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace _2_DataAccessLayer.Concrete.Repositories
 {
@@ -14,32 +15,40 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
         }
 
-        public override void Delete(Follow t)
+        public override async Task DeleteAsync(Follow t)
         {
             _context.follows.Remove(t);
+            await _context.SaveChangesAsync();
         }
 
-        public override List<Follow> GetAll()
+
+        public override async Task<List<Follow>> GetAllAsync()
         {
-            IQueryable<Follow> follows = _context.follows;
-            return follows.ToList();
+            IQueryable<Follow> allFollows = _context.follows;
+            return await allFollows.ToListAsync();
         }
 
-        public override Follow GetById(int id)
+        public override async Task<Follow> GetByIdAsync(int id)
         {
-            Follow follow = _context.follows.Find(id);
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            Follow follow = await _context.follows
+                .FirstOrDefaultAsync(follow => follow.FollowId == id);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return follow;
         }
 
-        public override void Insert(Follow t)
+
+        public override async Task InsertAsync(Follow t)
         {
-            _context.follows.Add(t);
+            await _context.follows.AddAsync(t);
+            await _context.SaveChangesAsync();
         }
 
-        public override void Update(Follow t)
+        public override async Task UpdateAsync(Follow t)
         {
-             _context.follows.Attach(t);
-             //make changes
+            _context.follows.Attach(t);
+            await _context.SaveChangesAsync();
         }
+
     }
 }

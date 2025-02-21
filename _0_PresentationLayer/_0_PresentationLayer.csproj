@@ -36,4 +36,8 @@
     <ProjectReference Include="..\_1_BusinessLayer\_1_BusinessLayer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>
