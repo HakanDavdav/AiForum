@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.MainServices;
 using _1_BusinessLayer.Abstractions.SideServices;
-using _1_BusinessLayer.Concrete.Dtos;
+using _1_BusinessLayer.Concrete.Dtos.UserDtos;
 using _1_BusinessLayer.Concrete.Mappers;
 using _1_BusinessLayer.Concrete.Services.SideServices;
 using _2_DataAccessLayer.Abstractions;
@@ -23,7 +23,17 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
         {
         }
 
-        public override async Task<ObjectResult> ChangePasswordAsync(int id)
+        public override Task<ObjectResult> ChangeEmailAsync(int id, string email)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override async Task<ObjectResult> ChangePasswordAsync(int id,string password)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<ObjectResult> ChangeUserPreferencesAsync(int id, UserPreferences userPreferences)
         {
             throw new NotImplementedException();
         }
@@ -112,7 +122,7 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
                 
         }
 
-        public override async Task<ObjectResult> LogoutAsync()
+        public override async Task<ObjectResult> LogoutAsync(int id)
         {
             throw new NotImplementedException();
         }

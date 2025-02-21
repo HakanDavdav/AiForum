@@ -39,7 +39,7 @@ namespace _1_BusinessLayer.Concrete.Services.SideServices
             client.Send(mimeMessage);
             client.Disconnect(true);
             user.ConfirmationCode = code;
-            _userRepository.Update(user);
+            _userRepository.UpdateAsync(user);
             
 
         }

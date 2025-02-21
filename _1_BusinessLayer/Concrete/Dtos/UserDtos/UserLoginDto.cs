@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _1_BusinessLayer.Concrete.Dtos
+namespace _1_BusinessLayer.Concrete.Dtos.UserDtos
 {
     public class UserLoginDto
     {
         public string EmailOrUsername { get; set; }
         public string Password { get; set; }
-        
+
     }
 }

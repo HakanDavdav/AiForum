@@ -19,6 +19,8 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public int? ConfirmationCode { get; set; }
         [AllowNull]
         public string? ProfileName { get; set; }
+        [AllowNull]
+        public string? Personality { get; set; }
         
 
 

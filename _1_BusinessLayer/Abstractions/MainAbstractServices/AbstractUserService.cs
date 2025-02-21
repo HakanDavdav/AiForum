@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.SideServices;
-using _1_BusinessLayer.Concrete.Dtos;
+using _1_BusinessLayer.Concrete.Dtos.UserDtos;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -34,13 +34,15 @@ namespace _1_BusinessLayer.Abstractions.MainServices
 
 
         public abstract Task<ObjectResult> SearchUserAsync(string name);
-        public abstract Task<ObjectResult> ChangePasswordAsync(int id);
+        public abstract Task<ObjectResult> ChangePasswordAsync(int id, string password);
         public abstract Task<ObjectResult> EditProfileAsync(int id, UserProfileDto userProfileDto);
+        public abstract Task<ObjectResult> ChangeUserPreferencesAsync(int id, UserPreferences userPreferences);
         public abstract Task<ObjectResult> RegisterAsync(UserRegisterDto userRegistered);
         public abstract Task<ObjectResult> LoginAsync(UserLoginDto userLogged);
-        public abstract Task<ObjectResult> LogoutAsync();
+        public abstract Task<ObjectResult> LogoutAsync(int id);
         public abstract Task<ObjectResult> DeleteProfileAsync(int id);
         public abstract Task<ObjectResult> ConfirmEmailAsync(int code, int id);
         public abstract Task<ObjectResult> GetUserByIdAsync(int id);
+        public abstract Task<ObjectResult> ChangeEmailAsync(int id, string email);
     }
 }
