@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace _2_DataAccessLayer.Concrete.Repositories
 {
@@ -14,32 +15,41 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
         }
 
-        public override void Delete(Like t)
+
+
+        public override async Task DeleteAsync(Like t)
         {
             _context.likes.Remove(t);
+            await _context.SaveChangesAsync();
         }
 
-        public override List<Like> GetAll()
+        public override async Task<List<Like>> GetAllAsync()
         {
             IQueryable<Like> likes = _context.likes;
-            return likes.ToList();
+            return await likes.ToListAsync();
         }
 
-        public override Like GetById(int id)
+        public override async Task<Like> GetByIdAsync(int id)
         {
-            Like like = _context.likes.Find(id);
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            Like like = await _context.likes.FindAsync(id);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return like;
         }
 
-        public override void Insert(Like t)
+
+        public override async Task InsertAsync(Like t)
         {
-            _context.likes.Add(t);
+            await _context.likes.AddAsync(t);
+            await _context.SaveChangesAsync();
         }
 
-        public override void Update(Like t)
+
+        public override async Task UpdateAsync(Like t)
         {
             _context.likes.Attach(t);
-            //make changes
+            await _context.SaveChangesAsync();
         }
+
     }
 }

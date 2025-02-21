@@ -16,10 +16,10 @@ namespace _2_DataAccessLayer.Abstractions.Generic
             _context = context;
         }
 
-        public abstract void Delete(T t);
-        public abstract List<T> GetAll();
-        public abstract T GetById(int id);
-        public abstract void Insert(T t);
-        public abstract void Update(T t);
+        public abstract Task DeleteAsync(T t);
+        public abstract Task<List<T>> GetAllAsync();
+        public abstract Task<T> GetByIdAsync(int id);
+        public abstract Task InsertAsync(T t);
+        public abstract Task UpdateAsync(T t);
     }
 }

@@ -10,39 +10,16 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
 {
     public class PostService : AbstractPostService
     {
-        public override void CreatePost(string text, int userId, string title)
+        public override void CreatePostAsync(string text, int userId, string title)
         {
             throw new NotImplementedException();
         }
 
-        public override void EditPost(string text, int userId)
+        public override void EditPostAsync(string text, int userId)
         {
             throw new NotImplementedException();
         }
 
-        public override void TDelete(Post t)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override List<Post> TGetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Post TGetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void TInsert(Post t)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void TUpdate(Post t)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

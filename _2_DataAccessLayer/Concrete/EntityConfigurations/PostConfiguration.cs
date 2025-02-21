@@ -13,28 +13,27 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Post> builder)
         {
-            builder.HasKey(post => post.postId);
+            builder.HasKey(post => post.PostId);
 
-            builder.HasMany(post => post.entries)
-                .WithOne(entry => entry.post)
-                .HasForeignKey(entry => entry.postId)
+            builder.HasMany(post => post.Entries)
+                .WithOne(entry => entry.Post)
+                .HasForeignKey(entry => entry.PostId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasMany(post => post.likes)
-                .WithOne(like => like.post)
-                .HasForeignKey(like => like.postId)
+            builder.HasMany(post => post.Likes)
+                .WithOne(like => like.Post)
+                .HasForeignKey(like => like.PostId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(post => post.user)
-                .WithMany(user => user.posts)
-                .HasForeignKey(post => post.userId)
+            builder.HasOne(post => post.User)
+                .WithMany(user => user.Posts)
+                .HasForeignKey(post => post.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
 
-            builder.Property(post => post.title).IsRequired();
-            builder.Property(post => post.context).IsRequired();
-            builder.Property(post => post.userId).IsRequired();
-
+            builder.Property(post => post.Title).IsRequired();
+            builder.Property(post => post.Context).IsRequired();
+            builder.Property(post => post.UserId).IsRequired();
 
         }
     }

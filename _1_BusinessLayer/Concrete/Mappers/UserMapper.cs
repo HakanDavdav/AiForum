@@ -15,8 +15,8 @@ namespace _1_BusinessLayer.Concrete.Mappers
         {
             var user = new User
             {
-                Email = userRegisterDto.email,
-                UserName = userRegisterDto.username,
+                Email = userRegisterDto.Email,
+                UserName = userRegisterDto.Username,
             };
             return user;
         }
@@ -25,15 +25,15 @@ namespace _1_BusinessLayer.Concrete.Mappers
         {
             var userProfileDto = new UserProfileDto
             {
-                 username = user.UserName,
-                 imageUrl = user.imageUrl,
-                 city = user.city,
-                 entries = user.entries,
-                 posts = user.posts,
-                 followers = user.followers,
-                 followings = user.followings,
-                 likes = user.likes,
-                 profileName = user.profileName
+                 Username = user.UserName,
+                 ImageUrl = user.ImageUrl,
+                 City = user.City,
+                 Entries = user.Entries,
+                 Posts = user.Posts,
+                 Followers = user.Followers,
+                 Followings = user.Followings,
+                 Likes = user.Likes,
+                 ProfileName = user.ProfileName
                  
             };
             return userProfileDto;

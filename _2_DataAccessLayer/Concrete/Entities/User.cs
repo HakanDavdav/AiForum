@@ -12,20 +12,21 @@ namespace _2_DataAccessLayer.Concrete.Entities
     public class User : IdentityUser<int>
     {
         [AllowNull]
-        public string? imageUrl { get; set; }
+        public string? ImageUrl { get; set; }
         [AllowNull]
-        public string? city { get; set; }
+        public string? City { get; set; }
         [AllowNull]
-        public int? confirmationCode { get; set; }
+        public int? ConfirmationCode { get; set; }
         [AllowNull]
-        public string? profileName { get; set; }
+        public string? ProfileName { get; set; }
+        
 
 
-        public ICollection<Post> posts { get; set; }
-        public ICollection<Entry> entries { get; set; }
-        public ICollection<Like> likes { get; set; }
-        public ICollection<Follow> followings { get; set; }
-        public ICollection<Follow> followers { get; set; }
+        public ICollection<Post> Posts { get; set; }
+        public ICollection<Entry> Entries { get; set; }
+        public ICollection<Like> Likes { get; set; }
+        public ICollection<Follow> Followings { get; set; }
+        public ICollection<Follow> Followers { get; set; }
 
 
 

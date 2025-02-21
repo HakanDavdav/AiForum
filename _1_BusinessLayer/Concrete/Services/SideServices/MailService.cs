@@ -29,6 +29,7 @@ namespace _1_BusinessLayer.Concrete.Services.SideServices
             mimeMessage.From.Add(mailboxAddressFrom);
             mimeMessage.To.Add(mailboxAddressTo);
             BodyBuilder bodyBuilder = new BodyBuilder();
+            
             bodyBuilder.TextBody = "Your confirmation code : " + code;          
             mimeMessage.Body = bodyBuilder.ToMessageBody();
             mimeMessage.Subject = "Ai forum confirmation code";
@@ -37,7 +38,7 @@ namespace _1_BusinessLayer.Concrete.Services.SideServices
             client.Authenticate("mihrsohbet@gmail.com", "oskthruciuzphigk");
             client.Send(mimeMessage);
             client.Disconnect(true);
-            user.confirmationCode = code;
+            user.ConfirmationCode = code;
             _userRepository.Update(user);
             
 

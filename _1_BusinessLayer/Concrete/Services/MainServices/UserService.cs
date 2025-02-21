@@ -23,87 +23,80 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
         {
         }
 
-        public override async Task<ObjectResult> ChangePassword(int id)
+        public override async Task<ObjectResult> ChangePasswordAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public override async Task<ObjectResult> ConfirmEmail(int code, int id)
+        public override async Task<ObjectResult> ConfirmEmailAsync(int code, int id)
         {
-            var user = _userRepository.GetById(id);
+            var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
             {
                 return new NotFoundObjectResult(new { Message = "User not found" });
             }
             else
             {
-                if (_authenticationService.CheckMail(user, id))
+                if (_authenticationService.CheckMail(user, code))
                 {
-                    return new OkObjectResult(new { Message = "Mail is confirmed", boolean = _authenticationService.CheckMail(user, id) });
+                    return new OkObjectResult(new { Message = "Mail is confirmed", boolean = true });
                 }
                 else
                 {
-                    return new BadRequestObjectResult(new { Message = "Mail is not confirmed", boolean = _authenticationService.CheckMail(user, id) });
+                    return new BadRequestObjectResult(new { Message = "Mail is not confirmed", boolean = false });
                 }
                 
             }
             
         }
 
-        public override async Task<ObjectResult> DeleteProfile(int id)
+        public override async Task<ObjectResult> DeleteProfileAsync(int id)
         {
-            var user = _userRepository.GetById(id);
+            var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
             {
                 return new NotFoundObjectResult(new { Message = "User not found" });
             }
             else
             {
-                var result = _userManager.DeleteAsync(user);
+                var result = await _userManager.DeleteAsync(user);
                 return new OkObjectResult(new { Message = "Deletion succesfull", IdentityResult = result });
             }
           
         }
 
-        public override async Task<ObjectResult> EditProfile(int id, UserProfileDto userProfileDto)
+        public override async Task<ObjectResult> EditProfileAsync(int id, UserProfileDto userProfileDto)
         {
-            var user = _userRepository.GetById(id);
+            var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
             {
                 return new NotFoundObjectResult(new { Message = "User not found" });
             }
             else
             {
-                user.UserName = userProfileDto.username;
-                user.imageUrl = userProfileDto.imageUrl;
-                user.city = userProfileDto.city;
+                user.UserName = userProfileDto.Username;
+                user.ImageUrl = userProfileDto.ImageUrl;
+                user.City = userProfileDto.City;
                 return new OkObjectResult(new { Message = "Profile updated", UserProfileDto = user.UserToUserProfile() });
             }
            
         }
 
-        public override async Task<ObjectResult> getByName(string name)
+        public override async Task<ObjectResult> GetUserByIdAsync(int id)
         {
-            var user = _userRepository.GetByName(name);
-            if (user == null)
-            {
-                return new NotFoundObjectResult(new { Message = "User not found" });
-            }
-            else
-            {
-                return new OkObjectResult(new { Message = "User found by name", UserProfileDto = user.UserToUserProfile() });
-            }
-      
+            var user = await _userRepository.GetByIdAsync(id);
+            return new OkObjectResult(new { Message = "UserId Query successful", User = user });
         }
 
-        public override async Task<ObjectResult> Login(UserLoginDto userLogged)
+        public override async Task<ObjectResult> LoginAsync(UserLoginDto userLogged)
         {
             
-            var user = _userRepository.GetByEmail(userLogged.emailOrUsername)??_userRepository.GetByUsername(userLogged.emailOrUsername);
+            var user = await _userRepository.GetByEmailAsync(userLogged.EmailOrUsername)?? 
+                       await _userRepository.GetByUsernameAsync(userLogged.EmailOrUsername);
             if (_authenticationService.CheckMail(user))
             {
-                var result = _signInManager.PasswordSignInAsync(userLogged.emailOrUsername, userLogged.password, false, false);
-                if (result.IsCompletedSuccessfully)
+                var result = await _signInManager.PasswordSignInAsync(userLogged.EmailOrUsername, userLogged.Password, false, false);
+                if (result.Succeeded)
                 {
                     return new OkObjectResult(new { Message = "Login successful", SignInResult = result });
                 }
@@ -119,17 +112,17 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
                 
         }
 
-        public override async Task<ObjectResult> Logout()
+        public override async Task<ObjectResult> LogoutAsync()
         {
             throw new NotImplementedException();
         }
 
         
-        public override async Task<ObjectResult> Register(UserRegisterDto userRegistered )
+        public override async Task<ObjectResult> RegisterAsync(UserRegisterDto userRegistered )
         {
-            var user = new User();
-            var result = _userManager.CreateAsync(user, userRegistered.password);
-            if (result.IsCompletedSuccessfully)
+            var user = userRegistered.UserRegisterToUser();
+            IdentityResult result = await _userManager.CreateAsync(user, userRegistered.Password);
+            if (result.Succeeded)
             {
                 _mailService.CreateMailConfirmationCode(user);
                 return new OkObjectResult(new { Message = "Profile creation is successful", IdentityResult = result });
@@ -138,42 +131,18 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
             {
                 return new BadRequestObjectResult(new { Message = "Profile creation is not successful", IdentityResult = result });
             }
-           
-            
+                     
 
                          
         }
 
- 
-
-
-
-
-        //T methods//
-
-        public override void TDelete(User t)
+        public override Task<ObjectResult> SearchUserAsync(string name)
         {
-            _userRepository.Delete(t);
+            throw new NotImplementedException();
         }
 
-        public override List<User> TGetAll()
-        {
-            return _userRepository.GetAll();
-        }
 
-        public override User TGetById(int id)
-        {
-            return _userRepository.GetById(id);
-        }
 
-        public override void TInsert(User t)
-        {
-            _userRepository.Insert(t);
-        }
 
-        public override void TUpdate(User t)
-        {
-            _userRepository.Update(t);
-        }
     }
 }

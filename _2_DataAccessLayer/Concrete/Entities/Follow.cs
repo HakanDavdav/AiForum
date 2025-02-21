@@ -10,16 +10,16 @@ namespace _2_DataAccessLayer.Concrete.Entities
 {
     public class Follow
     {
-        public int followId {  get; set; }
+        public int FollowId {  get; set; }
 
 
 
-        public int followeeId { get; set; }
-        public User followee { get; set; }
+        public int FolloweeId { get; set; }
+        public User Followee { get; set; }
 
 
-        public int followedId { get; set; }
-        public User followed { get; set; }
+        public int FollowedId { get; set; }
+        public User Followed { get; set; }
 
     }
 }

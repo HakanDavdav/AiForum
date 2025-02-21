@@ -15,37 +15,46 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
         }
 
-        public override void Delete(Entry t)
+
+        public override async Task DeleteAsync(Entry t)
         {
-            _context.entries.Remove(t);   
+            _context.entries.Remove(t);
+            await _context.SaveChangesAsync();
         }
 
-        public override List<Entry> GetAll()
+
+        public override async Task<List<Entry>> GetAllAsync()
         {
             IQueryable<Entry> allEntries = _context.entries
-                .Include(entry => entry.likes);
-            return allEntries.ToList();
+            .Include(entry => entry.Likes);
+            return await allEntries.ToListAsync();
         }
 
-        public override Entry GetById(int id)
+        public override async Task<Entry> GetByIdAsync(int id)
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            Entry entry = _context.entries
-                .Include(entry => entry.likes)
-                .FirstOrDefault(entry => entry.entryId == id);
+            Entry entry = await _context.entries
+                .Include(entry => entry.Likes)
+                .FirstOrDefaultAsync(entry => entry.EntryId == id);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return entry;
         }
 
-        public override void Insert(Entry t)
+   
+        //would prefer _userManager
+        public override async Task InsertAsync(Entry t)
         {
-            _context.entries.Add(t);
+
+                await _context.entries.AddAsync(t);
+                await _context.SaveChangesAsync();
         }
 
-        public override void Update(Entry t)
+        public override async Task UpdateAsync(Entry t)
         {
             _context.entries.Attach(t);
-            //make changes
+            await _context.SaveChangesAsync();
         }
+
+
     }
 }

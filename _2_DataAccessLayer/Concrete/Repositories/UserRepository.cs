@@ -17,95 +17,85 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
         }
 
-        public override void Delete(User t)
+        public override async Task DeleteAsync(User t)
         {
             _context.Users.Remove(t);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public override List<User> GetAll()
+        public override async Task<List<User>> GetAllAsync()
         {
-            IQueryable<User> users = _context.Users.Include(user => user.posts).
-                                                    ThenInclude(post => post.likes).
-                                                    Include(user => user.entries).
-                                                    ThenInclude(entries => entries.likes).
-                                                    Include(user => user.likes).
-                                                    Include(user => user.followers).
-                                                    Include(user => user.followings);
-            return users.ToList();
+            IQueryable<User> users = _context.Users.Include(user => user.Posts).
+                                                    ThenInclude(post => post.Likes).
+                                                    Include(user => user.Entries).
+                                                    ThenInclude(entries => entries.Likes).
+                                                    Include(user => user.Likes).
+                                                    Include(user => user.Followers).
+                                                    Include(user => user.Followings);
+            return await users.ToListAsync();
         }
 
-        public override User GetById(int id)
+        public override async Task<User> GetByIdAsync(int id)
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            User user = _context.Users.Include(user => user.posts).
-                                       ThenInclude(post => post.likes).    
-                                       Include(user => user.entries).
-                                       ThenInclude(entries => entries.likes).
-                                       Include(user => user.likes).
-                                       Include(user => user.followers).
-                                       Include(user => user.followings).
-                                       FirstOrDefault(user => user.Id == id);
+            User user = await _context.Users.Include(user => user.Posts).
+                                       ThenInclude(post => post.Likes).    
+                                       Include(user => user.Entries).
+                                       ThenInclude(entries => entries.Likes).
+                                       Include(user => user.Likes).
+                                       Include(user => user.Followers).
+                                       Include(user => user.Followings).
+                                       FirstOrDefaultAsync(user => user.Id == id);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return user;
         }
 
-        public override User GetByName(string name)
+        public override async Task<User> GetByUsernameAsync(string name)
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            User user = _context.Users.Include(user => user.posts).
-                                       ThenInclude(post => post.likes).
-                                       Include(user => user.entries).
-                                       ThenInclude(entries => entries.likes).
-                                       Include(user => user.likes).
-                                       Include(user => user.followers).
-                                       Include(user => user.followings).        
-                                       FirstOrDefault(user => user.UserName == name);
+            User user = await _context.Users.Include(user => user.Posts).
+                                       ThenInclude(post => post.Likes).
+                                       Include(user => user.Entries).
+                                       ThenInclude(entries => entries.Likes).
+                                       Include(user => user.Likes).
+                                       Include(user => user.Followers).
+                                       Include(user => user.Followings).        
+                                       FirstOrDefaultAsync(user => user.UserName == name);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return user;
         }
 
-        public override User GetByEmail(string email)
+        public override async Task<User> GetByEmailAsync(string email)
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            User user = _context.Users.Include(user => user.posts).
-                                       ThenInclude(post => post.likes).
-                                       Include(user => user.entries).
-                                       ThenInclude(entries => entries.likes).
-                                       Include(user => user.likes).
-                                       Include(user => user.followers).
-                                       Include(user => user.followings).
-                                       FirstOrDefault(user => user.Email == email);
+            User user = await _context.Users.Include(user => user.Posts).
+                                       ThenInclude(post => post.Likes).
+                                       Include(user => user.Entries).
+                                       ThenInclude(entries => entries.Likes).
+                                       Include(user => user.Likes).
+                                       Include(user => user.Followers).
+                                       Include(user => user.Followings).
+                                       FirstOrDefaultAsync(user => user.Email == email);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return user;
         }
 
 
-        public override void Insert(User t)
+        public override async Task InsertAsync(User t)
         {
-            _context.Users.Add(t);
-            _context.SaveChanges();
+            await _context.Users.AddAsync(t);
+            await _context.SaveChangesAsync();
         }
 
-        public override void Update(User t)
+        public override async Task UpdateAsync(User t)
         {
             _context.Users.Attach(t);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public override User GetByUsername(string username)
+        public override Task<User> SearchUser(string query)
         {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            User user = _context.Users.Include(user=>user.posts).
-                                       ThenInclude(post=>post.likes).
-                                       Include(user => user.entries).
-                                       ThenInclude(entries => entries.likes).
-                                       Include(user => user.likes).
-                                       Include(user => user.followers).
-                                       Include(user => user.followings).
-                                       FirstOrDefault(user => user.UserName == username);
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-            return user;
+            throw new NotImplementedException();
         }
     }
 }

@@ -46,27 +46,28 @@ builder.Services.AddScoped<UserManager<User>>();
 //adding Identity on project
 builder.Services.AddIdentity<User, UserRole>(options =>
 {
-    // Parola gereksinimleri
-    options.Password.RequireDigit = true; // En az bir rakam gerektirir
-    options.Password.RequireLowercase = true; // En az bir küçük harf gerektirir
-    options.Password.RequireUppercase = true; // En az bir büyük harf gerektirir
-    options.Password.RequiredLength = 8; // Parolanýn minimum uzunluðu
-    options.Password.RequireNonAlphanumeric = false; // Özel karakter gereksinimi
+    // Password policy
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireLowercase = true;
 
-    // Kullanýcý adý gereksinimleri
-    options.User.RequireUniqueEmail = true; // E-posta adresi benzersiz olmalýdýr
+    // Lockout policy
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
 
-    // Kilitleme (Lockout) seçenekleri
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5); // Kilitlenme süresi
-    options.Lockout.MaxFailedAccessAttempts = 5; // Maksimum baþarýsýz giriþ sayýsý
-    options.Lockout.AllowedForNewUsers = true; // Yeni kullanýcýlar için kilitleme özelliði aktif mi?
+    // User config
+    options.User.RequireUniqueEmail = true;
 
-    // Hesap doðrulama (Email ve Phone)
-    options.SignIn.RequireConfirmedEmail = true; // E-posta doðrulamasý gereksinimi
-    options.SignIn.RequireConfirmedPhoneNumber = false; // Telefon numarasý doðrulamasý gereksinimi
+    // SignIn config
+    options.SignIn.RequireConfirmedEmail = true;
 })
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
+
+
 
 //adding Jwt Authentication on project
 builder.Services.AddAuthentication()
@@ -87,6 +88,17 @@ builder.Services.AddAuthentication()
     jwtOptions.MapInboundClaims = false;
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+    
+    options.AddPolicy("UserPolicy", policy => policy.RequireRole("User","Admin"));
+    
+    options.AddPolicy("GuestPolicy", policy => policy.RequireRole("Guest","User","Admin"));
+
+});
+
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer(); // API'nin tüm endpointlerini ke?fetmek için
@@ -101,7 +113,7 @@ if (app.Environment.IsDevelopment())  // Yaln?zca geli?tirme ortam?nda aktif etm
     app.UseSwaggerUI(); // Swagger UI'yi aktif eder
 }
 
-
+app.UseStaticFiles();
 app.MapControllers();
 
 

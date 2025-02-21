@@ -10,18 +10,18 @@ namespace _2_DataAccessLayer.Concrete.Entities
 {
     public class Like
     {
-        public int likeId {  get; set; }
+        public int LikeId {  get; set; }
 
 
-        public int postId { get; set; }
-        public Post post { get; set; }
+        public int PostId { get; set; }
+        public Post Post { get; set; }
 
 
-        public int entryId { get; set; }
-        public Entry entry { get; set; }
+        public int EntryId { get; set; }
+        public Entry Entry { get; set; }
 
 
-        public int userId { get; set; }
-        public User user { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
     }
 }

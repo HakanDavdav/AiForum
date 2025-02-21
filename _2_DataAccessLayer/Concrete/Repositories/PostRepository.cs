@@ -15,50 +15,65 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
         }
 
-        public override void Delete(Post t)
+
+        public override async Task DeleteAsync(Post t)
         {
             _context.posts.Remove(t);
+            await _context.SaveChangesAsync();
         }
 
-        public override List<Post> GetAll()
+        public override async Task<List<Post>> GetAllAsync()
         {
-            IQueryable<Post> posts = _context.posts.Include(post => post.entries)
-                .ThenInclude(entry => entry.user)
-                .Include(post => post.likes);
-            return posts.ToList();
+            IQueryable<Post> posts = _context.posts.Include(post => post.Entries)
+                .ThenInclude(entry => entry.User)
+                .Include(post => post.Likes);
+            return await posts.ToListAsync();
         }
 
-        public override Post GetById(int id)
+
+        public override async Task<Post> GetByIdAsync(int id)
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            Post post = _context.posts.Include(post => post.entries)
-                .ThenInclude(entry => entry.user)
-                .Include(post => post.likes)
-                .FirstOrDefault(post => post.postId == id);
+            Post post = await _context.posts.Include(post => post.Entries)
+                .ThenInclude(entry => entry.User)
+                .Include(post => post.Likes)
+                .FirstOrDefaultAsync(post => post.PostId == id);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return post;
         }
 
-        public override Post GetByTitle(string title)
+
+
+        public override async Task<Post> GetByTitleAsync(string title)
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            Post post = _context.posts.Include(post => post.entries)
-                .ThenInclude(entry => entry.user)
-                .Include(post => post.likes)
-                .FirstOrDefault(post => post.title == title);
+            Post post = await _context.posts.Include(post => post.Entries)
+                .ThenInclude(entry => entry.User)
+                .Include(post => post.Likes)
+                .FirstOrDefaultAsync(post => post.Title == title);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return post;
         }
 
-        public override void Insert(Post t)
+
+        public override async Task InsertAsync(Post t)
         {
-            _context.posts.Add(t);
+            await _context.posts.AddAsync(t);
+            await _context.SaveChangesAsync();
         }
 
-        public override void Update(Post t)
+
+        public override async Task UpdateAsync(Post t)
         {
             _context.posts.Attach(t);
-            //make changes
+            await _context.SaveChangesAsync();
+
         }
+
+        public override Task<Post> SearchForPost(string query)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

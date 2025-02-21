@@ -9,10 +9,10 @@ namespace _2_DataAccessLayer.Abstractions.Generic
 {
     public interface IGenericRepository<T> 
     {
-        public void Insert(T t);
-        public void Delete(T t);
-        public void Update(T t);
-        public List<T> GetAll();
-        public T GetById(int id);
+        public Task InsertAsync(T t);
+        public Task DeleteAsync(T t);
+        public Task UpdateAsync(T t);
+        public Task<List<T>> GetAllAsync();
+        public Task<T> GetByIdAsync(int id);
     }
 }

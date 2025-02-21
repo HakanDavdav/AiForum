@@ -13,26 +13,26 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Like> builder)
         {
-            builder.HasKey(like => like.likeId);
+            builder.HasKey(like => like.LikeId);
 
-            builder.HasOne(like => like.post)
-                .WithMany(post => post.likes)
-                .HasForeignKey(like => like.postId)
+            builder.HasOne(like => like.Post)
+                .WithMany(post => post.Likes)
+                .HasForeignKey(like => like.PostId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(like => like.user)
-                .WithMany(user => user.likes)
-                .HasForeignKey(like => like.userId)
+            builder.HasOne(like => like.User)
+                .WithMany(user => user.Likes)
+                .HasForeignKey(like => like.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(like => like.entry)
-                .WithMany(entry => entry.likes)
-                .HasForeignKey(like => like.entryId)
+            builder.HasOne(like => like.Entry)
+                .WithMany(entry => entry.Likes)
+                .HasForeignKey(like => like.EntryId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Property(like => like.userId).IsRequired();
-            builder.Property(like => like.entryId).IsRequired();
-            builder.Property(like => like.postId).IsRequired();
+            builder.Property(like => like.UserId).IsRequired();
+            builder.Property(like => like.EntryId).IsRequired();
+            builder.Property(like => like.PostId).IsRequired();
 
         }
     }

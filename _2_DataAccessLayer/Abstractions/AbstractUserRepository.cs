@@ -14,8 +14,8 @@ namespace _2_DataAccessLayer.Abstractions
         protected AbstractUserRepository(ApplicationDbContext context) : base(context)
         {
         }
-        public abstract User GetByName(string name);
-        public abstract User GetByEmail(string name);
-        public abstract User GetByUsername(string name);
+        public abstract Task<User> GetByEmailAsync(string email);
+        public abstract Task<User> GetByUsernameAsync(string name);
+        public abstract Task<User> SearchUser(string query);
     }
 }

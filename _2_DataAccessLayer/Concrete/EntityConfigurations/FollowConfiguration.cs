@@ -13,20 +13,20 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Follow> builder)
         {
-            builder.HasKey(follow => follow.followId);
+            builder.HasKey(follow => follow.FollowId);
 
-            builder.HasOne(follow => follow.followee)
-                .WithMany(followee => followee.followings)
-                .HasForeignKey(follow => follow.followeeId)
+            builder.HasOne(follow => follow.Followee)
+                .WithMany(followee => followee.Followings)
+                .HasForeignKey(follow => follow.FolloweeId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(follow => follow.followed)
-                .WithMany(followed => followed.followers)
-                .HasForeignKey(follow => follow.followedId)
+            builder.HasOne(follow => follow.Followed)
+                .WithMany(followed => followed.Followers)
+                .HasForeignKey(follow => follow.FollowedId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Property(follow => follow.followeeId).IsRequired();
-            builder.Property(follow => follow.followedId).IsRequired();
+            builder.Property(follow => follow.FolloweeId).IsRequired();
+            builder.Property(follow => follow.FollowedId).IsRequired();
 
         }
     }

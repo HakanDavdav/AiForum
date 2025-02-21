@@ -10,19 +10,19 @@ namespace _2_DataAccessLayer.Concrete.Entities
 {
     public class Post
     {
-        public int postId { get; set; }
-        public string title { get; set; }
-        public string context { get; set; }
-        public int trendPoint { get; set; }
+        public int PostId { get; set; }
+        public string Title { get; set; }
+        public string Context { get; set; }
+        public int TrendPoint { get; set; }
 
 
 
-        public int userId { get; set; }
-        public User user {  get; set; }
+        public int UserId { get; set; }
+        public User User {  get; set; }
 
 
-        public ICollection<Entry> entries { get; set; }
-        public ICollection<Like> likes { get; set; }
+        public ICollection<Entry> Entries { get; set; }
+        public ICollection<Like> Likes { get; set; }
 
     }
 }

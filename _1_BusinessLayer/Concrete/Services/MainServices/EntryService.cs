@@ -10,29 +10,16 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
 {
     public class EntryService : AbstractEntryService
     {
-        public override void TDelete(Entry t)
+        public override void CreateEntryAsync(string text, int userId, string title)
         {
             throw new NotImplementedException();
         }
 
-        public override List<Entry> TGetAll()
+        public override void EditEntryAsync(string text, int userId)
         {
             throw new NotImplementedException();
         }
 
-        public override Entry TGetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void TInsert(Entry t)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void TUpdate(Entry t)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }

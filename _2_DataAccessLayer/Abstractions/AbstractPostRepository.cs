@@ -14,6 +14,7 @@ namespace _2_DataAccessLayer.Abstractions
         protected AbstractPostRepository(ApplicationDbContext context) : base(context)
         {
         }
-        public abstract Post GetByTitle(string title);
+        public abstract Task<Post> GetByTitleAsync(string title);
+        public abstract Task<Post> SearchForPost(string query);
     }
 }
