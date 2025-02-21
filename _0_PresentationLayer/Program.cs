@@ -44,7 +44,27 @@ builder.Services.AddScoped<UserManager<User>>();
 
 
 //adding Identity on project
-builder.Services.AddIdentity<User, UserRole>()
+builder.Services.AddIdentity<User, UserRole>(options =>
+{
+    // Parola gereksinimleri
+    options.Password.RequireDigit = true; // En az bir rakam gerektirir
+    options.Password.RequireLowercase = true; // En az bir küçük harf gerektirir
+    options.Password.RequireUppercase = true; // En az bir büyük harf gerektirir
+    options.Password.RequiredLength = 8; // Parolanýn minimum uzunluðu
+    options.Password.RequireNonAlphanumeric = false; // Özel karakter gereksinimi
+
+    // Kullanýcý adý gereksinimleri
+    options.User.RequireUniqueEmail = true; // E-posta adresi benzersiz olmalýdýr
+
+    // Kilitleme (Lockout) seçenekleri
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5); // Kilitlenme süresi
+    options.Lockout.MaxFailedAccessAttempts = 5; // Maksimum baþarýsýz giriþ sayýsý
+    options.Lockout.AllowedForNewUsers = true; // Yeni kullanýcýlar için kilitleme özelliði aktif mi?
+
+    // Hesap doðrulama (Email ve Phone)
+    options.SignIn.RequireConfirmedEmail = true; // E-posta doðrulamasý gereksinimi
+    options.SignIn.RequireConfirmedPhoneNumber = false; // Telefon numarasý doðrulamasý gereksinimi
+})
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
 
