@@ -6,45 +6,48 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.SideServices;
+using _1_BusinessLayer.Concrete.Errors;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
 namespace _1_BusinessLayer.Concrete.Services.SideServices
 {
-    public class AuthenticationService : AbstractAuthenticationService
+    public class AuthenticationManager : AbstractAuthenticationManager
     {
-        public AuthenticationService(AbstractUserRepository userRepository) : base(userRepository)
+        public AuthenticationManager(AbstractUserRepository userRepository) : base(userRepository)
         {
         }
 
-        public override bool CheckMail(User user, int code)
+        public override async Task<IdentityResult> ValidateEmailAsync(User user, int code)
         {
             if(user.ConfirmationCode == code)
             {
                 user.ConfirmationCode = 00;
                 user.EmailConfirmed = true;
-                _userRepository.Update(user);
-                return true;
+                await _userRepository.UpdateAsync(user);
+                return IdentityResult.Success;
+
             }
             else
             {
                 user.EmailConfirmed= false;
-                return false;
+                return IdentityResult.Failed(new ValidationError("Confirmation code is wrong!"));
             }              
         }
 
 
-        public override bool CheckMail(User user)
+        public override IdentityResult CheckEmailValidation(User user)
         {
             if (user.EmailConfirmed == true)
             {
-                return true;
+                return IdentityResult.Success;
             }
             else
             {
-                return false;
+                return IdentityResult.Failed(new ValidationError("Your email is not confirmed!"));
             }
         }
 

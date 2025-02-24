@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace _2_DataAccessLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class FirstMigration : Migration
+    public partial class SecondMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,9 +32,11 @@ namespace _2_DataAccessLayer.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    imageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    city = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    confirmationCode = table.Column<int>(type: "int", nullable: true),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConfirmationCode = table.Column<int>(type: "int", nullable: true),
+                    ProfileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Personality = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -165,22 +167,22 @@ namespace _2_DataAccessLayer.Migrations
                 name: "follows",
                 columns: table => new
                 {
-                    followId = table.Column<int>(type: "int", nullable: false)
+                    FollowId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    followeeId = table.Column<int>(type: "int", nullable: false),
-                    followedId = table.Column<int>(type: "int", nullable: false)
+                    FolloweeId = table.Column<int>(type: "int", nullable: false),
+                    FollowedId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_follows", x => x.followId);
+                    table.PrimaryKey("PK_follows", x => x.FollowId);
                     table.ForeignKey(
-                        name: "FK_follows_AspNetUsers_followedId",
-                        column: x => x.followedId,
+                        name: "FK_follows_AspNetUsers_FollowedId",
+                        column: x => x.FollowedId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_follows_AspNetUsers_followeeId",
-                        column: x => x.followeeId,
+                        name: "FK_follows_AspNetUsers_FolloweeId",
+                        column: x => x.FolloweeId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
@@ -189,19 +191,19 @@ namespace _2_DataAccessLayer.Migrations
                 name: "posts",
                 columns: table => new
                 {
-                    postId = table.Column<int>(type: "int", nullable: false)
+                    PostId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    context = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    trendPoint = table.Column<int>(type: "int", nullable: false),
-                    userId = table.Column<int>(type: "int", nullable: false)
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Context = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TrendPoint = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_posts", x => x.postId);
+                    table.PrimaryKey("PK_posts", x => x.PostId);
                     table.ForeignKey(
-                        name: "FK_posts_AspNetUsers_userId",
-                        column: x => x.userId,
+                        name: "FK_posts_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
@@ -210,55 +212,55 @@ namespace _2_DataAccessLayer.Migrations
                 name: "entries",
                 columns: table => new
                 {
-                    entryId = table.Column<int>(type: "int", nullable: false)
+                    EntryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    context = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    postId = table.Column<int>(type: "int", nullable: false),
-                    userId = table.Column<int>(type: "int", nullable: false)
+                    Context = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PostId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_entries", x => x.entryId);
+                    table.PrimaryKey("PK_entries", x => x.EntryId);
                     table.ForeignKey(
-                        name: "FK_entries_AspNetUsers_userId",
-                        column: x => x.userId,
+                        name: "FK_entries_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_entries_posts_postId",
-                        column: x => x.postId,
+                        name: "FK_entries_posts_PostId",
+                        column: x => x.PostId,
                         principalTable: "posts",
-                        principalColumn: "postId");
+                        principalColumn: "PostId");
                 });
 
             migrationBuilder.CreateTable(
                 name: "likes",
                 columns: table => new
                 {
-                    likeId = table.Column<int>(type: "int", nullable: false)
+                    LikeId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    postId = table.Column<int>(type: "int", nullable: false),
-                    entryId = table.Column<int>(type: "int", nullable: false),
-                    userId = table.Column<int>(type: "int", nullable: false)
+                    PostId = table.Column<int>(type: "int", nullable: false),
+                    EntryId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_likes", x => x.likeId);
+                    table.PrimaryKey("PK_likes", x => x.LikeId);
                     table.ForeignKey(
-                        name: "FK_likes_AspNetUsers_userId",
-                        column: x => x.userId,
+                        name: "FK_likes_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_likes_entries_entryId",
-                        column: x => x.entryId,
+                        name: "FK_likes_entries_EntryId",
+                        column: x => x.EntryId,
                         principalTable: "entries",
-                        principalColumn: "entryId");
+                        principalColumn: "EntryId");
                     table.ForeignKey(
-                        name: "FK_likes_posts_postId",
-                        column: x => x.postId,
+                        name: "FK_likes_posts_PostId",
+                        column: x => x.PostId,
                         principalTable: "posts",
-                        principalColumn: "postId");
+                        principalColumn: "PostId");
                 });
 
             migrationBuilder.CreateIndex(
@@ -301,44 +303,44 @@ namespace _2_DataAccessLayer.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_entries_postId",
+                name: "IX_entries_PostId",
                 table: "entries",
-                column: "postId");
+                column: "PostId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_entries_userId",
+                name: "IX_entries_UserId",
                 table: "entries",
-                column: "userId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_follows_followedId",
+                name: "IX_follows_FollowedId",
                 table: "follows",
-                column: "followedId");
+                column: "FollowedId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_follows_followeeId",
+                name: "IX_follows_FolloweeId",
                 table: "follows",
-                column: "followeeId");
+                column: "FolloweeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_likes_entryId",
+                name: "IX_likes_EntryId",
                 table: "likes",
-                column: "entryId");
+                column: "EntryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_likes_postId",
+                name: "IX_likes_PostId",
                 table: "likes",
-                column: "postId");
+                column: "PostId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_likes_userId",
+                name: "IX_likes_UserId",
                 table: "likes",
-                column: "userId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_posts_userId",
+                name: "IX_posts_UserId",
                 table: "posts",
-                column: "userId");
+                column: "UserId");
         }
 
         /// <inheritdoc />

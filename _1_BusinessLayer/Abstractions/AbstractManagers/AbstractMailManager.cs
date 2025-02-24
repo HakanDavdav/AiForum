@@ -5,16 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace _1_BusinessLayer.Abstractions.SideServices
 {
-    public abstract class AbstractMailService
+    public abstract class AbstractMailManager
     {
         protected readonly AbstractUserRepository _userRepository;
-        protected AbstractMailService(AbstractUserRepository userRepository)
+        protected AbstractMailManager(AbstractUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
-        public abstract void CreateMailConfirmationCode(User user);
+        public abstract Task CreateMailConfirmationCodeAsync(User user);
     }
 }

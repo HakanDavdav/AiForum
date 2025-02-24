@@ -12,8 +12,8 @@ using _2_DataAccessLayer.Concrete;
 namespace _2_DataAccessLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250219154226_secondMigration")]
-    partial class secondMigration
+    [Migration("20250223013414_SecondMigration")]
+    partial class SecondMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -130,107 +130,107 @@ namespace _2_DataAccessLayer.Migrations
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.Entry", b =>
                 {
-                    b.Property<int>("entryId")
+                    b.Property<int>("EntryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("entryId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EntryId"));
 
-                    b.Property<string>("context")
+                    b.Property<string>("Context")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("postId")
+                    b.Property<int>("PostId")
                         .HasColumnType("int");
 
-                    b.Property<int>("userId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("entryId");
+                    b.HasKey("EntryId");
 
-                    b.HasIndex("postId");
+                    b.HasIndex("PostId");
 
-                    b.HasIndex("userId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("entries");
                 });
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.Follow", b =>
                 {
-                    b.Property<int>("followId")
+                    b.Property<int>("FollowId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("followId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FollowId"));
 
-                    b.Property<int>("followedId")
+                    b.Property<int>("FollowedId")
                         .HasColumnType("int");
 
-                    b.Property<int>("followeeId")
+                    b.Property<int>("FolloweeId")
                         .HasColumnType("int");
 
-                    b.HasKey("followId");
+                    b.HasKey("FollowId");
 
-                    b.HasIndex("followedId");
+                    b.HasIndex("FollowedId");
 
-                    b.HasIndex("followeeId");
+                    b.HasIndex("FolloweeId");
 
                     b.ToTable("follows");
                 });
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.Like", b =>
                 {
-                    b.Property<int>("likeId")
+                    b.Property<int>("LikeId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("likeId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LikeId"));
 
-                    b.Property<int>("entryId")
+                    b.Property<int>("EntryId")
                         .HasColumnType("int");
 
-                    b.Property<int>("postId")
+                    b.Property<int>("PostId")
                         .HasColumnType("int");
 
-                    b.Property<int>("userId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("likeId");
+                    b.HasKey("LikeId");
 
-                    b.HasIndex("entryId");
+                    b.HasIndex("EntryId");
 
-                    b.HasIndex("postId");
+                    b.HasIndex("PostId");
 
-                    b.HasIndex("userId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("likes");
                 });
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.Post", b =>
                 {
-                    b.Property<int>("postId")
+                    b.Property<int>("PostId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("postId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PostId"));
 
-                    b.Property<string>("context")
+                    b.Property<string>("Context")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("title")
+                    b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("trendPoint")
+                    b.Property<int>("TrendPoint")
                         .HasColumnType("int");
 
-                    b.Property<int>("userId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("postId");
+                    b.HasKey("PostId");
 
-                    b.HasIndex("userId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("posts");
                 });
@@ -246,9 +246,15 @@ namespace _2_DataAccessLayer.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ConfirmationCode")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -256,6 +262,9 @@ namespace _2_DataAccessLayer.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -274,11 +283,17 @@ namespace _2_DataAccessLayer.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Personality")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ProfileName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -289,18 +304,6 @@ namespace _2_DataAccessLayer.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("city")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("confirmationCode")
-                        .HasColumnType("int");
-
-                    b.Property<string>("imageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("profileName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -398,103 +401,103 @@ namespace _2_DataAccessLayer.Migrations
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.Entry", b =>
                 {
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.Post", "post")
-                        .WithMany("entries")
-                        .HasForeignKey("postId")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.Post", "Post")
+                        .WithMany("Entries")
+                        .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.User", "user")
-                        .WithMany("entries")
-                        .HasForeignKey("userId")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.User", "User")
+                        .WithMany("Entries")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("post");
+                    b.Navigation("Post");
 
-                    b.Navigation("user");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.Follow", b =>
                 {
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.User", "followed")
-                        .WithMany("followers")
-                        .HasForeignKey("followedId")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.User", "Followed")
+                        .WithMany("Followers")
+                        .HasForeignKey("FollowedId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.User", "followee")
-                        .WithMany("followings")
-                        .HasForeignKey("followeeId")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.User", "Followee")
+                        .WithMany("Followings")
+                        .HasForeignKey("FolloweeId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("followed");
+                    b.Navigation("Followed");
 
-                    b.Navigation("followee");
+                    b.Navigation("Followee");
                 });
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.Like", b =>
                 {
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.Entry", "entry")
-                        .WithMany("likes")
-                        .HasForeignKey("entryId")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.Entry", "Entry")
+                        .WithMany("Likes")
+                        .HasForeignKey("EntryId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.Post", "post")
-                        .WithMany("likes")
-                        .HasForeignKey("postId")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.Post", "Post")
+                        .WithMany("Likes")
+                        .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.User", "user")
-                        .WithMany("likes")
-                        .HasForeignKey("userId")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.User", "User")
+                        .WithMany("Likes")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("entry");
+                    b.Navigation("Entry");
 
-                    b.Navigation("post");
+                    b.Navigation("Post");
 
-                    b.Navigation("user");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.Post", b =>
                 {
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.User", "user")
-                        .WithMany("posts")
-                        .HasForeignKey("userId")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.User", "User")
+                        .WithMany("Posts")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("user");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.Entry", b =>
                 {
-                    b.Navigation("likes");
+                    b.Navigation("Likes");
                 });
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.Post", b =>
                 {
-                    b.Navigation("entries");
+                    b.Navigation("Entries");
 
-                    b.Navigation("likes");
+                    b.Navigation("Likes");
                 });
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.User", b =>
                 {
-                    b.Navigation("entries");
+                    b.Navigation("Entries");
 
-                    b.Navigation("followers");
+                    b.Navigation("Followers");
 
-                    b.Navigation("followings");
+                    b.Navigation("Followings");
 
-                    b.Navigation("likes");
+                    b.Navigation("Likes");
 
-                    b.Navigation("posts");
+                    b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618
         }

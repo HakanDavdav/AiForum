@@ -20,7 +20,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         public async Task<IActionResult> EditProfile(int id, [FromBody] UserProfileDto userProfileDto)
         {
             var result = await _userService.EditProfileAsync(id, userProfileDto);
-            return result;
+            return Ok();
         }
 
         [Authorize(Policy = "User")]
@@ -28,7 +28,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         public async Task<IActionResult> ChangePassword(int id, string password)
         {
             var result = await _userService.ChangePasswordAsync(id, password);
-            return result;
+            return Ok();
         }
 
         [Authorize(Policy = "User")]
@@ -36,7 +36,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         public async Task<IActionResult> ChangeEmail(int id, string email)
         {
             var result = await _userService.ChangeEmailAsync(id, email);
-            return result;
+            return Ok();
         }
 
         [Authorize(Policy = "User")]
@@ -44,7 +44,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         public async Task<IActionResult> ChangeUsername(int id, string username)
         {
             var result = await _userService.ChangePasswordAsync(id, username);
-            return result;
+            return Ok();
         }
 
 
@@ -53,7 +53,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         public async Task<IActionResult> ChangePreferences(int id, [FromBody] UserPreferences userPreferences)
         {
             var result = await _userService.ChangeUserPreferencesAsync(id, userPreferences);
-            return result;
+            return Ok();
         }
 
 

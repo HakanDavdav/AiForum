@@ -18,6 +18,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task DeleteAsync(Post t)
         {
+
             _context.posts.Remove(t);
             await _context.SaveChangesAsync();
         }

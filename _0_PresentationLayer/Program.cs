@@ -30,8 +30,8 @@ builder.Services.AddScoped<AbstractUserRepository, UserRepository>();
 
 
 //autowiring side services
-builder.Services.AddScoped<AbstractMailService, MailService>();
-builder.Services.AddScoped<AbstractAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<AbstractMailManager, MailManager>();
+builder.Services.AddScoped<AbstractAuthenticationManager, AuthenticationManager>();
 //autowiring main services
 builder.Services.AddScoped<AbstractEntryService, EntryService>();
 builder.Services.AddScoped<AbstractPostService, PostService>();
@@ -61,8 +61,7 @@ builder.Services.AddIdentity<User, UserRole>(options =>
     // User config
     options.User.RequireUniqueEmail = true;
 
-    // SignIn config
-    options.SignIn.RequireConfirmedEmail = true;
+   
 })
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();

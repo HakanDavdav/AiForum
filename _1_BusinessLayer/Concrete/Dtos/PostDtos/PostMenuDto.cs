@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _1_BusinessLayer.Concrete.Dtos
+namespace _1_BusinessLayer.Concrete.Dtos.PostDtos
 {
     public class PostMenuDto
     {

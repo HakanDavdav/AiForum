@@ -18,36 +18,36 @@ namespace _0_PresentationLayer.Controllers.GuestControllers
             _userService = userService;
         }
 
-        [Authorize(Policy = "Guest")]
+        
         [HttpGet("User/{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
             var result = await _userService.GetUserByIdAsync(id);
-            return result;
+            return Ok(result);
         }
 
-        [Authorize(Policy = "Guest")]
+        
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterDto userRegisterDto)
         {
             var result = await _userService.RegisterAsync(userRegisterDto);
-            return result;
+            return Ok(result);
         }
 
-        [Authorize(Policy = "Guest")]
+        
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(int id, [FromBody] UserLoginDto userLoginDto)
+        public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto)
         {
             var result = await _userService.LoginAsync(userLoginDto);
-            return result;
+            return Ok(result);
         }
 
-        [Authorize(Policy = "Guest")]
+        
         [HttpPost("ConfirmationCode")]
         public async Task<IActionResult> ConfirmMail(int code, int userId)
         {
             var result = await _userService.ConfirmEmailAsync(code, userId);
-            return result;
+            return Ok(result);
         }
 
 
