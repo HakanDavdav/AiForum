@@ -22,7 +22,9 @@ namespace _2_DataAccessLayer.Concrete
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(_config.DefaultConnection);
+            
+                
+                
         }
 
 
@@ -33,7 +35,7 @@ namespace _2_DataAccessLayer.Concrete
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+            
 
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new PostConfiguration());

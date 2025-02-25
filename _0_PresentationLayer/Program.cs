@@ -91,9 +91,9 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
     
-    options.AddPolicy("UserPolicy", policy => policy.RequireRole("User","Admin"));
+    options.AddPolicy("UserPolicy", policy => policy.RequireRole("StandardUser","Admin"));
     
-    options.AddPolicy("GuestPolicy", policy => policy.RequireRole("Guest","User","Admin"));
+    options.AddPolicy("GuestPolicy", policy => policy.RequireRole("Guest","StandardUser","Admin"));
 
 });
 

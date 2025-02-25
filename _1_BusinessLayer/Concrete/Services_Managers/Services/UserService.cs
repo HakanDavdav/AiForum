@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.MainServices;
@@ -44,13 +45,15 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
             {
+               
                 return IdentityResult.Failed(new NotFoundError("User not found"));
             }
             else
             {
-                var result = await _authenticationManager.ValidateEmailAsync(user, id);
+                var result = await _authenticationManager.ValidateEmailAsync(user, code);
                 if (result.Succeeded)
                 {
+                    var claim = new Claim(ClaimTypes.Role ,);
                     return IdentityResult.Success;
                 }
                 else
@@ -63,19 +66,48 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
 
         public override async Task<IdentityResult> DeleteProfileAsync(int id)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetByIdAsync(id);
+            if(user == null)
+            {
+                return IdentityResult.Failed();
+            }
+            else
+            {
+                await _userManager.DeleteAsync(user);
+                return IdentityResult.Success;
+            }
 
         }
 
-        public override async Task<IdentityResult> EditProfileAsync(int id, UserProfileDto userProfileDto)
+        public override async Task<IdentityResult> EditProfileAsync(int id, UserEditProfileDto userEditProfileDto)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetByIdAsync(id);
+            if(user == null)
+            {
+                return IdentityResult.Failed(new NotFoundError("User not found"));
+            }
+            else
+            {
+                user.City = userEditProfileDto.City;
+                user.ProfileName = userEditProfileDto.ProfileName;
+                user.ImageUrl = userEditProfileDto.ImageUrl;
+                await _userRepository.UpdateAsync(user);
+                return IdentityResult.Success;
+            }
 
         }
 
         public override async Task<IdentityResult> GetUserByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null)
+            {
+                return IdentityResult.Failed(new NotFoundError("User not found"));
+            }
+            else
+            {
+                return IdentityResult.Success;
+            }
 
         }
 
@@ -85,6 +117,7 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
                        await _userRepository.GetByUsernameAsync(userLogged.EmailOrUsername);
             if (user == null)
             {
+                //User not found
                 return IdentityResult.Failed(new NotFoundError("Invalid username or password"));
             }
             else
@@ -92,16 +125,19 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
                 var signInResult = await _signInManager.PasswordSignInAsync(user,userLogged.Password,false,false);
                 if (signInResult.Succeeded&&_authenticationManager.CheckEmailValidation(user).Succeeded)
                 {
+                    //Successfull
                     //SignInResult Mapped to IdentityResult object
                     return signInResult.ToIdentityResult();
                 }
                 else if(signInResult.Succeeded) 
                 {
+                    //Email not confirmed
                     //Passing _authenticationManager's errors
                     return IdentityResult.Failed(_authenticationManager.CheckEmailValidation(user).Errors.ToArray());
                 }
                 else
                 {
+                    //Invalid password or username
                     return signInResult.ToIdentityResult();
                 }
 
@@ -111,8 +147,8 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
 
         public override async Task<IdentityResult> LogoutAsync(int id)
         {
-            throw new NotImplementedException();
-
+            await _signInManager.SignOutAsync();
+            return IdentityResult.Success;
         }
 
         
@@ -123,10 +159,13 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
             if (result.Succeeded)
             {
                 await _mailManager.CreateMailConfirmationCodeAsync(user);
-                await _userManager.SetTwoFactorEnabledAsync(user, true);
+                return result.ToIdentityResult();
 
             }
-            return result;
+            else
+            {
+                return result.ToIdentityResult();
+            }
 
         }
 

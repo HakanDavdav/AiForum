@@ -15,45 +15,53 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         {
             _userService = userService;
         }
-        [Authorize(Policy = "User")]
+        [Authorize(Policy = "StandardUser")]
         [HttpPost("User/Settings/EditProfile")]
-        public async Task<IActionResult> EditProfile(int id, [FromBody] UserProfileDto userProfileDto)
+        public async Task<IActionResult> EditProfile(int id, [FromBody] UserEditProfileDto userEditProfileDto)
         {
-            var result = await _userService.EditProfileAsync(id, userProfileDto);
-            return Ok();
+            var result = await _userService.EditProfileAsync(id, userEditProfileDto);
+            return Ok(result);
         }
 
-        [Authorize(Policy = "User")]
+        [Authorize(Policy = "StandardUser")]
         [HttpPost("User/Settings/ChangePassword")]
         public async Task<IActionResult> ChangePassword(int id, string password)
         {
             var result = await _userService.ChangePasswordAsync(id, password);
-            return Ok();
+            return Ok(result);
         }
 
-        [Authorize(Policy = "User")]
+        [Authorize(Policy = "StandardUser")]
         [HttpPost("User/Settings/ChangeEmail")]
         public async Task<IActionResult> ChangeEmail(int id, string email)
         {
             var result = await _userService.ChangeEmailAsync(id, email);
-            return Ok();
+            return Ok(result);
         }
 
-        [Authorize(Policy = "User")]
+        [Authorize(Policy = "StandardUser")]
         [HttpPost("User/Settings/ChangeUsername")]
         public async Task<IActionResult> ChangeUsername(int id, string username)
         {
             var result = await _userService.ChangePasswordAsync(id, username);
-            return Ok();
+            return Ok(result);
         }
 
 
-        [Authorize(Policy = "User")]
+        [Authorize(Policy = "StandardUser")]
         [HttpPost("User/Settings/Preferences")]
         public async Task<IActionResult> ChangePreferences(int id, [FromBody] UserPreferences userPreferences)
         {
             var result = await _userService.ChangeUserPreferencesAsync(id, userPreferences);
-            return Ok();
+            return Ok(result);
+        }
+
+        [Authorize(Policy = "StandardUser")]
+        [HttpPost("User/Settings/Logout")]
+        public async Task<IActionResult> Logout(int id)
+        {
+            var result = await _userService.LogoutAsync(id);
+            return Ok(result);
         }
 
 

@@ -35,7 +35,7 @@ namespace _1_BusinessLayer.Abstractions.MainServices
 
         public abstract Task<IdentityResult> SearchUserAsync(string name);
         public abstract Task<IdentityResult> ChangePasswordAsync(int id, string password);
-        public abstract Task<IdentityResult> EditProfileAsync(int id, UserProfileDto userProfileDto);
+        public abstract Task<IdentityResult> EditProfileAsync(int id, UserEditProfileDto userEditProfileDto);
         public abstract Task<IdentityResult> ChangeUserPreferencesAsync(int id, UserPreferences userPreferences);
         public abstract Task<IdentityResult> RegisterAsync(UserRegisterDto userRegistered);
         public abstract Task<IdentityResult> LoginAsync(UserLoginDto userLogged);
