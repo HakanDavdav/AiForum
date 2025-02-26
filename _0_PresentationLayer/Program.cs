@@ -68,25 +68,6 @@ builder.Services.AddIdentity<User, UserRole>(options =>
 
 
 
-//adding Jwt Authentication on project
-builder.Services.AddAuthentication()
-.AddJwtBearer("main-scheme", jwtOptions =>
-{
-    jwtOptions.Authority = builder.Configuration["Jwt:Authority"];
-    jwtOptions.Audience = builder.Configuration["Jwt:Audience"];
-    jwtOptions.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateIssuerSigningKey = true,
-        ValidAudiences = builder.Configuration.GetSection("Jwt:ValidAudiences").Get<string[]>(),
-        ValidIssuers = builder.Configuration.GetSection("Jwt:ValidIssuers").Get<string[]>(),
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-    };
-
-    jwtOptions.MapInboundClaims = false;
-});
-
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
@@ -105,6 +86,22 @@ builder.Services.AddSwaggerGen(); // Swagger UI ve dokümantasyonunu olu?turmak i
 
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<UserRole>>();
+
+    string[] roles = new[] { "Admin", "StandardUser", "Guest" };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new UserRole { Name = role });
+        }
+    }
+}
+
 
 if (app.Environment.IsDevelopment())  // Yaln?zca geli?tirme ortam?nda aktif etmek isteyebilirsiniz
 {

@@ -14,6 +14,7 @@ using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using static Org.BouncyCastle.Asn1.Cmp.Challenge;
 
 namespace _1_BusinessLayer.Concrete.Services.MainServices
 {
@@ -25,14 +26,50 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
         {
         }
 
-        public override Task<IdentityResult> ChangeEmailAsync(int id, string email)
+        public override async Task<IdentityResult> ChangeEmailAsync(int id, string email)
         {
-            throw new NotImplementedException();
+            Random random = new Random();
+            int code = random.Next(100000, 1000000);
+            var user = await _userRepository.GetByIdAsync(id);
+            if(user == null)
+            {
+                return IdentityResult.Failed(new NotFoundError("User not found"));
+            }
+            else
+            {
+                try
+                {
+                    await _mailManager.CreateMailConfirmationCodeAsync(user);
+                }
+                catch (Exception ex) 
+                {
+                    return IdentityResult.Failed(new InternalServerError("Exception in mail service"));
+                }
+                var changeEmailResult = await _userManager.ChangeEmailAsync(user, email, code.ToString());
+            }
         }
 
-        public override async Task<IdentityResult> ChangePasswordAsync(int id,string password)
+        public override async Task<IdentityResult> ChangePasswordAsync(int id,string currentPassword, string newPassword)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetByIdAsync(id);
+            if(user == null)
+            {
+                return IdentityResult.Failed(new NotFoundError("User not found"));
+            }
+            else
+            {
+                var changePasswordResult = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+                if (changePasswordResult.Succeeded)
+                {
+                    //Successfull
+                    return changePasswordResult.ChangePasswordResultToIdentityResult();
+                }
+                else
+                {
+                    //Unsuccessfull
+                    return changePasswordResult.ChangePasswordResultToIdentityResult();
+                }
+            }
         }
 
         public override Task<IdentityResult> ChangeUserPreferencesAsync(int id, UserPreferences userPreferences)
@@ -53,7 +90,7 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
                 var result = await _authenticationManager.ValidateEmailAsync(user, code);
                 if (result.Succeeded)
                 {
-                    var claim = new Claim(ClaimTypes.Role ,);
+                    
                     return IdentityResult.Success;
                 }
                 else
@@ -69,7 +106,7 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
             var user = await _userRepository.GetByIdAsync(id);
             if(user == null)
             {
-                return IdentityResult.Failed();
+                return IdentityResult.Failed(new NotFoundError("User not found"));
             }
             else
             {
@@ -102,6 +139,7 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
             {
+                //User not found
                 return IdentityResult.Failed(new NotFoundError("User not found"));
             }
             else
@@ -126,19 +164,18 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
                 if (signInResult.Succeeded&&_authenticationManager.CheckEmailValidation(user).Succeeded)
                 {
                     //Successfull
-                    //SignInResult Mapped to IdentityResult object
-                    return signInResult.ToIdentityResult();
+                    return signInResult.SignInResultToIdentityResult();
                 }
                 else if(signInResult.Succeeded) 
                 {
                     //Email not confirmed
                     //Passing _authenticationManager's errors
-                    return IdentityResult.Failed(_authenticationManager.CheckEmailValidation(user).Errors.ToArray());
+                    return signInResult.SignInResultToIdentityResult(_authenticationManager.CheckEmailValidation(user).Errors.ToList());
                 }
                 else
                 {
                     //Invalid password or username
-                    return signInResult.ToIdentityResult();
+                    return signInResult.SignInResultToIdentityResult();
                 }
 
             }
@@ -155,18 +192,53 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
         public override async Task<IdentityResult> RegisterAsync(UserRegisterDto userRegistered )
         {
             var user = userRegistered.UserRegisterToUser();
-            var result = await _userManager.CreateAsync(user,userRegistered.Password);
-            if (result.Succeeded)
+            var createUserResult = await _userManager.CreateAsync(user,userRegistered.Password);
+            if (createUserResult.Succeeded)
             {
-                await _mailManager.CreateMailConfirmationCodeAsync(user);
-                return result.ToIdentityResult();
-
+                try
+                {
+                    await _mailManager.CreateMailConfirmationCodeAsync(user);
+                }
+                catch (Exception ex)
+                {   
+                    //If there is a Email connection exception do this;
+                    return createUserResult.CreateUserResultToIdentityResult(new List<IdentityError> { new InternalServerError("Exception in mail service") });
+                    throw;
+                }
+                //Successfull
+                return createUserResult.CreateUserResultToIdentityResult();
             }
             else
             {
-                return result.ToIdentityResult();
+                //Unsuccessfull
+                return createUserResult.CreateUserResultToIdentityResult();
             }
 
+        }
+
+        public override async Task<IdentityResult> SendEmailConfirmationCodeAsync(int id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null)
+            {
+                //User not found
+                return IdentityResult.Failed(new NotFoundError("User not found"));
+            }
+            else
+            {
+                try
+                {
+                    await _mailManager.CreateMailConfirmationCodeAsync(user);
+                }
+                catch(Exception ex)
+                {
+                    //If there is a Email connection exception do this;
+                    return IdentityResult.Failed(new InternalServerError("Exception in mail service"));
+                    throw;
+                }
+                //Succesfull
+                return IdentityResult.Success;
+            }
         }
 
         public override Task<IdentityResult> SearchUserAsync(string name)

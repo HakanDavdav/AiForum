@@ -11,6 +11,7 @@ using _2_DataAccessLayer.Concrete.Entities;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
@@ -52,9 +53,9 @@ namespace _1_BusinessLayer.Concrete.Services.SideServices
                 await _userRepository.UpdateAsync(user);
 
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is SmtpProtocolException || ex is DbUpdateException || ex is SmtpCommandException)
             {
-                throw;
+                throw; 
             }
             finally
             {

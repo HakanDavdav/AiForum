@@ -22,10 +22,10 @@ namespace _2_DataAccessLayer.Concrete
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            
-                
-                
+            optionsBuilder.UseSqlServer(_config.DefaultConnection);
+                           
         }
+
 
 
         public DbSet<Post> posts {  get; set; }
@@ -33,9 +33,10 @@ namespace _2_DataAccessLayer.Concrete
         public DbSet<Entry> entries {  get; set; }
         public DbSet<Follow> follows { get; set; }
 
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
 
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new PostConfiguration());

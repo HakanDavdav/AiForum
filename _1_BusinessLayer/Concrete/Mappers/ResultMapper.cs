@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Identity;
 
 public static class ResultMapper
 {
-    public static IdentityResult ToIdentityResult(this SignInResult result, List<IdentityError>? extraErrors = null)
+    public static IdentityResult SignInResultToIdentityResult(this SignInResult result, List<IdentityError>? extraErrors = null)
     {
-        if (result.Succeeded)
+        if (result.Succeeded&&extraErrors==null)
         {
             return IdentityResult.Success;
-            
+
         }
 
         var errors = new List<IdentityError>();
@@ -22,7 +22,7 @@ public static class ResultMapper
         {
             errors.Add(new UnauthorizedError("Two-factor authentication is required for login."));
         }
-        
+
         if (!result.Succeeded)
         {
             errors.Add(new UnauthorizedError("Invalid username or password."));
@@ -33,15 +33,18 @@ public static class ResultMapper
             errors.AddRange(extraErrors);
         }
 
-        return IdentityResult.Failed(errors.ToArray()); 
+        return IdentityResult.Failed(errors.ToArray());
     }
 
-   
-    public static IdentityResult ToIdentityResult(this IdentityResult result, List<IdentityError>? extraErrors = null)
+
+
+
+    public static IdentityResult CreateUserResultToIdentityResult(this IdentityResult result, List<IdentityError>? extraErrors = null)
     {
-        if (result.Succeeded)
+        if (result.Succeeded && extraErrors == null)
         {
             return IdentityResult.Success;
+
         }
 
         var errors = result.Errors.Select(error =>
@@ -57,12 +60,12 @@ public static class ResultMapper
                 "UserLockedOut" => new ForbiddenError("User account is locked due to multiple failed login attempts.") { Code = error.Code },
                 "InvalidToken" => new UnauthorizedError("Invalid verification token.") { Code = error.Code },
                 "UserNotConfirmed" => new ForbiddenError("User email is not confirmed.") { Code = error.Code },
-                "InvalidEmail" => new ValidationError("Email is invalid") {Code = error.Code },
+                "InvalidEmail" => new ValidationError("Email is invalid") { Code = error.Code },
                 _ => new InternalServerError($"Unexpected error: {error.Description}") { Code = error.Code }
             };
 
             return identityError;
-        }).ToList(); 
+        }).ToList();
 
         if (extraErrors != null)
         {
@@ -72,4 +75,34 @@ public static class ResultMapper
         return IdentityResult.Failed(errors.ToArray());
     }
 
+
+
+
+    public static IdentityResult ChangePasswordResultToIdentityResult(this IdentityResult result, List<IdentityError>? extraErrors = null)
+    {
+        if (result.Succeeded && extraErrors == null)
+        {
+            return IdentityResult.Success;
+        }
+
+        var errors = result.Errors.Select(error =>
+        {
+            IdentityError identityError = error.Code switch
+            {
+                "PasswordMismatch" => new UnauthorizedError("The password provided does not match the current password.") { Code = error.Code },              
+                "PasswordChangeFailed" => new InternalServerError("Password change operation failed unexpectedly.") { Code = error.Code },
+                _ => new ForbiddenError($"Unexpected error: {error.Description}") { Code = error.Code }
+            };
+
+            return identityError;
+        }).ToList();
+
+        if (extraErrors != null)
+        {
+            errors.AddRange(extraErrors);
+        }
+
+        return IdentityResult.Failed(errors.ToArray());
+    }
 }
+
