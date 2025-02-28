@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.AbstractServices;
-using _1_BusinessLayer.Abstractions.SideServices;
+using _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders;
+using _1_BusinessLayer.Concrete.Errors;
 using _2_DataAccessLayer.Abstractions;
+using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace _1_BusinessLayer.Concrete.Services
@@ -16,24 +18,56 @@ namespace _1_BusinessLayer.Concrete.Services
         {
         }
 
-        public override Task<IdentityResult> SendChangeEmailTokenAsync(string userId)
+        public override async Task<IdentityResult> SendChangeEmailTokenAsync(User user, string newEmail)
         {
-            _tokenSender
+            var tokenResult = await _tokenSender.SendEmail_EmailChangeTokenAsync(user, newEmail);
+            if (tokenResult.Succeeded)
+            {
+                return IdentityResult.Success;
+            }
+            else
+            {
+                return IdentityResult.Failed(tokenResult.Errors.Concat(new[] { new UnexpectedError("Token is not sent successfully") }).ToArray());
+            }
         }
 
-        public override Task<IdentityResult> SendConfirmEmailTokenAsync(string userId)
+        public override async Task<IdentityResult> SendConfirmEmailTokenAsync(User user)
         {
-            throw new NotImplementedException();
+            var tokenResult = await _tokenSender.SendEmail_EmailConfirmationTokenAsync(user);
+            if (tokenResult.Succeeded)
+            {
+                return IdentityResult.Success;
+            }
+            else
+            {
+                return IdentityResult.Failed(tokenResult.Errors.Concat(new[] { new UnexpectedError("Token is not sent successfully") }).ToArray());
+            }
         }
 
-        public override Task<IdentityResult> SendConfirmPhoneNumberTokenAsync(string userId)
+        public override async Task<IdentityResult> SendConfirmPhoneNumberTokenAsync(User user)
         {
-            throw new NotImplementedException();
+            var tokenResult = await _tokenSender.SendEmail_EmailConfirmationTokenAsync(user);
+            if (tokenResult.Succeeded)
+            {
+                return IdentityResult.Success;
+            }
+            else
+            {
+                return IdentityResult.Failed(tokenResult.Errors.Concat(new[] { new UnexpectedError("Token is not sent successfully") }).ToArray());
+            }
         }
 
-        public override Task<IdentityResult> SendResetPasswordTokenAsync(string userId)
+        public override async Task<IdentityResult> SendResetPasswordTokenAsync(User user)
         {
-            throw new NotImplementedException();
+            var tokenResult = await _tokenSender.SendEmail_ResetPasswordTokenAsync(user);
+            if (tokenResult.Succeeded)
+            {
+                return IdentityResult.Success;
+            }
+            else
+            {
+                return IdentityResult.Failed(tokenResult.Errors.Concat(new[] { new UnexpectedError("Token is not sent successfully") }).ToArray());
+            }
         }
     }
 }

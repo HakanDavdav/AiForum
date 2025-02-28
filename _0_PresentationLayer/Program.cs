@@ -9,11 +9,13 @@ using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using _1_BusinessLayer.Abstractions.MainServices;
-using _1_BusinessLayer.Abstractions.SideServices;
 using System.Text;
-using _1_BusinessLayer.Concrete.Senders;
-using _1_BusinessLayer.Concrete.Factories;
 using _1_BusinessLayer.Concrete.Services_Tools;
+using _1_BusinessLayer.Concrete.Tools.Senders;
+using _1_BusinessLayer.Concrete.Tools.Factories;
+using _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders;
+using _1_BusinessLayer.Abstractions.AbstractTools.AbstractFactories;
+using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,16 +32,17 @@ builder.Services.AddScoped<AbstractUserRoleRepository, UserRoleRepository>();
 builder.Services.AddScoped<AbstractUserRepository, UserRepository>();
 
 
-//autowiring side services
+//autowiring tools
 builder.Services.AddScoped<AbstractTokenFactory, TokenFactory>();
 builder.Services.AddScoped<AbstractTokenSender, TokenSender>();
-//autowiring main services
-builder.Services.AddScoped<AbstractEntryService, EntryService>();
-builder.Services.AddScoped<AbstractPostService, PostService>();
-builder.Services.AddScoped<AbstractUserService, UserService>();
+builder.Services.AddScoped<SmsBodyBuilder>();
+builder.Services.AddScoped<EmailBodyBuilder>();
 //autowiring of IdentityTools
 builder.Services.AddScoped<SignInManager<User>>();
 builder.Services.AddScoped<UserManager<User>>();
+//autowiring services
+builder.Services.AddScoped<AbstractUserService, UserService>();
+
 
 
 

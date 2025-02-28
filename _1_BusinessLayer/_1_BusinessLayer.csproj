@@ -43,4 +43,8 @@
     <ProjectReference Include="..\_2_DataAccessLayer\_2_DataAccessLayer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Abstractions\AbstractTools\AbstractBodyBuilders\" />
+  </ItemGroup>
+
 </Project>

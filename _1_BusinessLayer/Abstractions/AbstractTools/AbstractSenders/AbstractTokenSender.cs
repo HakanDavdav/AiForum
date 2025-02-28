@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _1_BusinessLayer.Abstractions.AbstractTools.AbstractFactories;
 using _1_BusinessLayer.Abstractions.AbstractTools.ITools;
-using _1_BusinessLayer.Concrete.Bodybuilders;
+using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace _1_BusinessLayer.Abstractions.SideServices
+namespace _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders
 {
     public abstract class AbstractTokenSender : ITokenSender
     {
@@ -19,9 +20,9 @@ namespace _1_BusinessLayer.Abstractions.SideServices
         protected readonly EmailBodyBuilder _emailBodyBuilder;
         protected readonly SmsBodyBuilder _smsBodyBuilder;
 
-        protected AbstractTokenSender(AbstractUserRepository userRepository, 
-            AbstractTokenFactory tokenFactory, 
-            EmailBodyBuilder emailBodyBuilder, 
+        protected AbstractTokenSender(AbstractUserRepository userRepository,
+            AbstractTokenFactory tokenFactory,
+            EmailBodyBuilder emailBodyBuilder,
             SmsBodyBuilder smsBodyBuilder)
         {
             _userRepository = userRepository;

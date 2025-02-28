@@ -18,13 +18,7 @@ namespace _0_PresentationLayer.Controllers.GuestControllers
             _userService = userService;
         }
 
-        
-        [HttpGet("User/{id}")]
-        public async Task<IActionResult> GetUserById(int userId)
-        {
-             
-        }
-
+       
         
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterDto userRegisterDto)
@@ -35,19 +29,20 @@ namespace _0_PresentationLayer.Controllers.GuestControllers
 
         
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto,string twoFactorToken)
+        public async Task<IActionResult> LoginTwoFactor([FromBody] UserLoginDto userLoginDto,string twoFactorToken)
         {
             var result = await _userService.Login(userLoginDto,twoFactorToken);
             return Ok(result);
         }
 
-        
-        [HttpPost("ConfirmationCode")]
-        public async Task<IActionResult> ConfirmMail(int userId,string twoFactorToken)
+        [HttpPost("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail([FromBody] UserLoginDto userLoginDto, string confirmMailToken)
         {
-            var result = await _userService.ConfirmEmail(userId,twoFactorToken);
+            var result = await _userService.ConfirmEmail(userLoginDto,confirmMailToken);
             return Ok(result);
         }
+
+        
 
 
     }

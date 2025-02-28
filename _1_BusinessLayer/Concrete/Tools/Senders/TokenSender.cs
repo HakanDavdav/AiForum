@@ -5,15 +5,16 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using _1_BusinessLayer.Abstractions.AbstractTools.AbstractFactories;
+using _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders;
 using _1_BusinessLayer.Abstractions.AbstractTools.ITools;
-using _1_BusinessLayer.Abstractions.SideServices;
-using _1_BusinessLayer.Concrete.Bodybuilders;
 using _1_BusinessLayer.Concrete.Errors;
+using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 
-namespace _1_BusinessLayer.Concrete.Senders
+namespace _1_BusinessLayer.Concrete.Tools.Senders
 {
     public class TokenSender : AbstractTokenSender
     {
@@ -35,11 +36,11 @@ namespace _1_BusinessLayer.Concrete.Senders
                 using (smtpClient = new SmtpClient("smtp.gmail.com"))
                 {
                     smtpClient.Port = 587; // TLS portu
-                    smtpClient.Credentials = new NetworkCredential("your-email@gmail.com", "your-app-password");
+                    smtpClient.Credentials = new NetworkCredential("mihrsohbet@gmail.com", "jkyp vxwy gicc cohs");
                     smtpClient.EnableSsl = true;
 
                     // E-posta mesajını oluşturma
-                    var mailMessage = new MailMessage("your-email@gmail.com", user.Email, subject, body);
+                    var mailMessage = new MailMessage("mihrsohbet@gmail.com", user.Email, subject, body);
 
                     // E-posta gönderme işlemi
                     await smtpClient.SendMailAsync(mailMessage);
@@ -63,16 +64,16 @@ namespace _1_BusinessLayer.Concrete.Senders
             SmtpClient smtpClient = null;
             try
             {
-                var token = await _tokenFactory.CreateChangeEmailTokenAsync(user,newMail);
+                var token = await _tokenFactory.CreateChangeEmailTokenAsync(user, newMail);
                 var (body, subject) = _emailBodyBuilder.BuildChangeEmailBody(token);
                 using (smtpClient = new SmtpClient("smtp.gmail.com"))
                 {
                     smtpClient.Port = 587; // TLS portu
-                    smtpClient.Credentials = new NetworkCredential("your-email@gmail.com", "your-app-password");
+                    smtpClient.Credentials = new NetworkCredential("mihrsohbet@gmail.com", "jkyp vxwy gicc cohs");
                     smtpClient.EnableSsl = true;
 
                     // E-posta mesajını oluşturma
-                    var mailMessage = new MailMessage("your-email@gmail.com", newMail, subject, body);
+                    var mailMessage = new MailMessage("mihrsohbet@gmail.com", newMail, subject, body);
 
                     // E-posta gönderme işlemi
                     await smtpClient.SendMailAsync(mailMessage);
@@ -101,11 +102,11 @@ namespace _1_BusinessLayer.Concrete.Senders
                 using (smtpClient = new SmtpClient("smtp.gmail.com"))
                 {
                     smtpClient.Port = 587; // TLS portu
-                    smtpClient.Credentials = new NetworkCredential("your-email@gmail.com", "your-app-password");
+                    smtpClient.Credentials = new NetworkCredential("mihrsohbet@gmail.com", "jkyp vxwy gicc cohs");
                     smtpClient.EnableSsl = true;
 
                     // E-posta mesajını oluşturma
-                    var mailMessage = new MailMessage("your-email@gmail.com", user.Email, subject, body);
+                    var mailMessage = new MailMessage("mihrsohbet@gmail.com", user.Email, subject, body);
 
                     // E-posta gönderme işlemi
                     await smtpClient.SendMailAsync(mailMessage);
@@ -135,11 +136,11 @@ namespace _1_BusinessLayer.Concrete.Senders
                 using (smtpClient = new SmtpClient("smtp.gmail.com"))
                 {
                     smtpClient.Port = 587; // TLS portu
-                    smtpClient.Credentials = new NetworkCredential("your-email@gmail.com", "your-app-password");
+                    smtpClient.Credentials = new NetworkCredential("mihrsohbet@gmail.com", "jkyp vxwy gicc cohs");
                     smtpClient.EnableSsl = true;
 
                     // E-posta mesajını oluşturma
-                    var mailMessage = new MailMessage("your-email@gmail.com", user.Email, subject, body);
+                    var mailMessage = new MailMessage("mihrsohbet@gmail.com", user.Email, subject, body);
 
                     // E-posta gönderme işlemi
                     await smtpClient.SendMailAsync(mailMessage);

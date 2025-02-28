@@ -1,4 +1,5 @@
 ﻿using _1_BusinessLayer.Concrete.Dtos.UserDtos;
+using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
@@ -7,11 +8,13 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
     {
         Task<IdentityResult> ChangeEmail(int userId,string newEmail ,string changeEmailToken);
         Task<IdentityResult> ChangePassword(int userId, string oldPassword, string newPassword);
-        Task<IdentityResult> ConfirmEmail(int userId, string confirmEmailToken);
         Task<IdentityResult> ConfirmPhoneNumber(int userId, string phoneConfirmationToken);
         Task<IdentityResult> Login(UserLoginDto userLoginDto, string twoFactorToken);
         Task<IdentityResult> Logout();
         Task<IdentityResult> PasswordReset(int userId, string newPassword, string resetPasswordToken);
         Task<IdentityResult> Register(UserRegisterDto userRegisterDto);
+        Task<IdentityResult> ActivateTwoFactorAuthentication(User user);
+        Task<IdentityResult> DisableTwoFactorAuthentication(User user);
+        Task<IdentityResult> ConfirmEmail(UserLoginDto userLoginDto, string emailConfirmationToken);
     }
 }

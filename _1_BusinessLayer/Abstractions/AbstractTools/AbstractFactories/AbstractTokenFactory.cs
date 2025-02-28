@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.AbstractTools.ITools;
-using _1_BusinessLayer.Concrete.Bodybuilders;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace _1_BusinessLayer.Abstractions.SideServices
+namespace _1_BusinessLayer.Abstractions.AbstractTools.AbstractFactories
 {
     public abstract class AbstractTokenFactory : ITokenFactory
     {

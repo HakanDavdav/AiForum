@@ -5,8 +5,8 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.AbstractServices.IServices;
+using _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders;
 using _1_BusinessLayer.Abstractions.MainServices;
-using _1_BusinessLayer.Abstractions.SideServices;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
 using _1_BusinessLayer.Concrete.Errors;
 using _1_BusinessLayer.Concrete.Mappers;
@@ -24,6 +24,11 @@ namespace _1_BusinessLayer.Concrete.Services_Tools
             UserManager<User> userManager, SignInManager<User> signInManager)
             : base(tokenSender, userRepository, userManager, signInManager)
         {
+        }
+
+        public override Task<IdentityResult> ActivateTwoFactorAuthentication(User user)
+        {
+            throw new NotImplementedException();
         }
 
         public override async Task<IdentityResult> ChangeEmail(int userId,string newEmail ,string changeEmailToken)
@@ -48,15 +53,21 @@ namespace _1_BusinessLayer.Concrete.Services_Tools
             return IdentityResult.Failed(new NotFoundError("User not found"));
         }
 
-        public override async Task<IdentityResult> ConfirmEmail(int userId, string emailConfirmationToken)
+        public override async Task<IdentityResult> ConfirmEmail(UserLoginDto userLoginDto, string emailConfirmationToken)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByEmailAsync(userLoginDto.EmailOrUsernameOrPhoneNumber) ??
+                       await _userRepository.GetByUsernameAsync(userLoginDto.EmailOrUsernameOrPhoneNumber);
             if (user != null)
             {
-                var confirmEmailResult = await _userManager.ConfirmEmailAsync(user,emailConfirmationToken);
-                return confirmEmailResult;
+                if (!await _userManager.IsEmailConfirmedAsync(user))
+                {
+                    var confirEmailResult = await _userManager.ConfirmEmailAsync(user, emailConfirmationToken);
+                    return confirEmailResult;
+                }
+                return IdentityResult.Failed(new UnexpectedError("Email is already confirmed"));
             }
             return IdentityResult.Failed(new NotFoundError("User not found"));
+               
         }
 
         public override async Task<IdentityResult> ConfirmPhoneNumber(int userId, string twoFactorToken)
@@ -78,6 +89,11 @@ namespace _1_BusinessLayer.Concrete.Services_Tools
             return IdentityResult.Failed(new NotFoundError("User not found"));
         }
 
+        public override Task<IdentityResult> DisableTwoFactorAuthentication(User user)
+        {
+            throw new NotImplementedException();
+        }
+
         public override async Task<IdentityResult> Login(UserLoginDto userLoginDto, string twoFactorToken)
         {
             var user = await _userRepository.GetByEmailAsync(userLoginDto.EmailOrUsernameOrPhoneNumber) ??
@@ -96,7 +112,7 @@ namespace _1_BusinessLayer.Concrete.Services_Tools
                 }
                 try { await _tokenSender.SendEmail_EmailConfirmationTokenAsync(user); } 
                 catch(Exception ex) { return IdentityResult.Failed(new UnexpectedError("Email connection error")); throw; };
-                return IdentityResult.Failed(new UnauthorizedError("Account is not confirmed"));
+                return IdentityResult.Failed(new UnauthorizedError("Account is not confirmed. Your confirmation code sent"));
             }
             return IdentityResult.Failed(new NotFoundError("User not found"));
         }

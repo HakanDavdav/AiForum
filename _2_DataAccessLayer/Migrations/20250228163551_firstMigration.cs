@@ -34,7 +34,6 @@ namespace _2_DataAccessLayer.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConfirmationCode = table.Column<int>(type: "int", nullable: true),
                     ProfileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Personality = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),

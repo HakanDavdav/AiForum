@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _1_BusinessLayer.Concrete.Services_Tools
+namespace _1_BusinessLayer.Concrete.Tools.BodyBuilders
 {
-    internal class FollowService
+    public class SmsBodyBuilder
     {
     }
 }

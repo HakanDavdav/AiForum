@@ -12,7 +12,7 @@ using _2_DataAccessLayer.Concrete;
 namespace _2_DataAccessLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250226114523_firstMigration")]
+    [Migration("20250228163551_firstMigration")]
     partial class firstMigration
     {
         /// <inheritdoc />
@@ -252,9 +252,6 @@ namespace _2_DataAccessLayer.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ConfirmationCode")
-                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)

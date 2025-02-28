@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.AbstractServices.IServices;
-using _1_BusinessLayer.Abstractions.SideServices;
+using _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
@@ -31,10 +31,12 @@ namespace _1_BusinessLayer.Abstractions.MainServices
             
         }
 
-        public abstract Task<IdentityResult> ChangeEmail(int userId,string newEmail ,string changeEmailToken);
+        public abstract Task<IdentityResult> ActivateTwoFactorAuthentication(User user);
+        public abstract Task<IdentityResult> ChangeEmail(int userId, string newEmail, string changeEmailToken);
         public abstract Task<IdentityResult> ChangePassword(int userId, string oldPassword, string newPassword);
-        public abstract Task<IdentityResult> ConfirmEmail(int userId, string confirmEmailToken);
+        public abstract Task<IdentityResult> ConfirmEmail(UserLoginDto userLoginDto, string emailConfirmationToken);
         public abstract Task<IdentityResult> ConfirmPhoneNumber(int userId, string phoneConfirmationToken);
+        public abstract Task<IdentityResult> DisableTwoFactorAuthentication(User user);
         public abstract Task<IdentityResult> Login(UserLoginDto userLoginDto, string twoFactorToken);
         public abstract Task<IdentityResult> Logout();
         public abstract Task<IdentityResult> PasswordReset(int userId, string newPassword, string resetPasswordToken);

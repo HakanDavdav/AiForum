@@ -17,28 +17,29 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
         [Authorize(Policy = "StandardUser")]
         [HttpPost("User/Settings/EditProfile")]
-        public async Task<IActionResult> EditProfile(int id, [FromBody] UserEditProfileDto userEditProfileDto)
+        public async Task<IActionResult> EditProfile([FromBody] UserEditProfileDto userEditProfileDto)
         {
             throw new NotImplementedException();
+
         }
 
         [Authorize(Policy = "StandardUser")]
         [HttpPost("User/Settings/ChangePassword")]
-        public async Task<IActionResult> ChangePassword(int id, string password)
+        public async Task<IActionResult> ChangePassword(string oldPassword ,string newPassword)
         {
             throw new NotImplementedException();
         }
 
         [Authorize(Policy = "StandardUser")]
         [HttpPost("User/Settings/ChangeEmail")]
-        public async Task<IActionResult> ChangeEmail(int id, string email)
+        public async Task<IActionResult> ChangeEmail(string changeEmailToken, string newEmail)
         {
             throw new NotImplementedException();
         }
 
         [Authorize(Policy = "StandardUser")]
         [HttpPost("User/Settings/ChangeUsername")]
-        public async Task<IActionResult> ChangeUsername(int id, string username)
+        public async Task<IActionResult> ChangeUsername(string username)
         {
             throw new NotImplementedException();
         }

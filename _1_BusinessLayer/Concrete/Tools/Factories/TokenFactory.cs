@@ -4,8 +4,8 @@ using System.Linq;
 
 using System.Text;
 using System.Threading.Tasks;
+using _1_BusinessLayer.Abstractions.AbstractTools.AbstractFactories;
 using _1_BusinessLayer.Abstractions.AbstractTools.ITools;
-using _1_BusinessLayer.Abstractions.SideServices;
 using _1_BusinessLayer.Concrete.Errors;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
@@ -16,11 +16,11 @@ using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
-namespace _1_BusinessLayer.Concrete.Factories
+namespace _1_BusinessLayer.Concrete.Tools.Factories
 {
     public class TokenFactory : AbstractTokenFactory
     {
-        public TokenFactory(AbstractUserRepository userRepository, UserManager<User> userManager) 
+        public TokenFactory(AbstractUserRepository userRepository, UserManager<User> userManager)
             : base(userRepository, userManager)
         {
         }
@@ -45,7 +45,7 @@ namespace _1_BusinessLayer.Concrete.Factories
         {
             return await _userManager.GeneratePasswordResetTokenAsync(user);
         }
-     
+
 
         public override async Task<string> CreateTwoFactorTokenAsync(User user)
         {
