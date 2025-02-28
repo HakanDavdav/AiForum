@@ -20,39 +20,34 @@ namespace _0_PresentationLayer.Controllers.GuestControllers
 
         
         [HttpGet("User/{id}")]
-        public async Task<IActionResult> GetUserById(int id)
+        public async Task<IActionResult> GetUserById(int userId)
         {
-            var result = await _userService.GetUserByIdAsync(id);
-            return Ok(result);
+             
         }
 
         
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterDto userRegisterDto)
         {
-            var result = await _userService.RegisterAsync(userRegisterDto);
+            var result = await _userService.Register(userRegisterDto);
             return Ok(result);
         }
 
         
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto)
+        public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto,string twoFactorToken)
         {
-            var result = await _userService.LoginAsync(userLoginDto);
+            var result = await _userService.Login(userLoginDto,twoFactorToken);
             return Ok(result);
         }
 
         
         [HttpPost("ConfirmationCode")]
-        public async Task<IActionResult> ConfirmMail(int code, int userId)
+        public async Task<IActionResult> ConfirmMail(int userId,string twoFactorToken)
         {
-            var result = await _userService.ConfirmEmailAsync(code, userId);
+            var result = await _userService.ConfirmEmail(userId,twoFactorToken);
             return Ok(result);
         }
-
-
-
-
 
 
     }

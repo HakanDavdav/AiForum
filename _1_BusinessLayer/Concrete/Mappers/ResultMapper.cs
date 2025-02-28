@@ -1,108 +1,48 @@
-﻿using _1_BusinessLayer.Concrete.Errors;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using _1_BusinessLayer.Concrete.Errors;
 using Microsoft.AspNetCore.Identity;
 
-public static class ResultMapper
+namespace _1_BusinessLayer.Concrete.Mappers
 {
-    public static IdentityResult SignInResultToIdentityResult(this SignInResult result, List<IdentityError>? extraErrors = null)
+    public static class ResultMapper
     {
-        if (result.Succeeded&&extraErrors==null)
+        public static IdentityResult ToIdentityResult(this SignInResult signInResult)
         {
-            return IdentityResult.Success;
+            var errors = new List<IdentityError>();
 
-        }
-
-        var errors = new List<IdentityError>();
-
-        if (result.IsLockedOut)
-        {
-            errors.Add(new UnauthorizedError("User account is locked due to multiple failed login attempts."));
-        }
-
-        if (result.RequiresTwoFactor)
-        {
-            errors.Add(new UnauthorizedError("Two-factor authentication is required for login."));
-        }
-
-        if (!result.Succeeded)
-        {
-            errors.Add(new UnauthorizedError("Invalid username or password."));
-        }
-
-        if (extraErrors != null)
-        {
-            errors.AddRange(extraErrors);
-        }
-
-        return IdentityResult.Failed(errors.ToArray());
-    }
-
-
-
-
-    public static IdentityResult CreateUserResultToIdentityResult(this IdentityResult result, List<IdentityError>? extraErrors = null)
-    {
-        if (result.Succeeded && extraErrors == null)
-        {
-            return IdentityResult.Success;
-
-        }
-
-        var errors = result.Errors.Select(error =>
-        {
-            IdentityError identityError = error.Code switch
+            if (signInResult.Succeeded)
             {
-                "DuplicateUserName" => new ConflictError("This username is already taken.") { Code = error.Code },
-                "DuplicateEmail" => new ConflictError("This email is already in use.") { Code = error.Code },
-                "PasswordTooShort" => new ValidationError("Password must be at least 8 characters long.") { Code = error.Code },
-                "PasswordRequiresUpper" => new ValidationError("Password must contain at least one uppercase letter.") { Code = error.Code },
-                "PasswordRequiresLower" => new ValidationError("Password must contain at least one lowercase letter.") { Code = error.Code },
-                "PasswordRequiresDigit" => new ValidationError("Password must contain at least one digit.") { Code = error.Code },
-                "UserLockedOut" => new ForbiddenError("User account is locked due to multiple failed login attempts.") { Code = error.Code },
-                "InvalidToken" => new UnauthorizedError("Invalid verification token.") { Code = error.Code },
-                "UserNotConfirmed" => new ForbiddenError("User email is not confirmed.") { Code = error.Code },
-                "InvalidEmail" => new ValidationError("Email is invalid") { Code = error.Code },
-                _ => new InternalServerError($"Unexpected error: {error.Description}") { Code = error.Code }
-            };
+                return IdentityResult.Success;
+            }
 
-            return identityError;
-        }).ToList();
-
-        if (extraErrors != null)
-        {
-            errors.AddRange(extraErrors);
-        }
-
-        return IdentityResult.Failed(errors.ToArray());
-    }
-
-
-
-
-    public static IdentityResult ChangePasswordResultToIdentityResult(this IdentityResult result, List<IdentityError>? extraErrors = null)
-    {
-        if (result.Succeeded && extraErrors == null)
-        {
-            return IdentityResult.Success;
-        }
-
-        var errors = result.Errors.Select(error =>
-        {
-            IdentityError identityError = error.Code switch
+            if (signInResult.IsLockedOut)
             {
-                "PasswordMismatch" => new UnauthorizedError("The password provided does not match the current password.") { Code = error.Code },              
-                "PasswordChangeFailed" => new InternalServerError("Password change operation failed unexpectedly.") { Code = error.Code },
-                _ => new ForbiddenError($"Unexpected error: {error.Description}") { Code = error.Code }
-            };
+                errors.Add(new ForbiddenError("The user account is locked out."));
+                
+            }
 
-            return identityError;
-        }).ToList();
+            if (signInResult.IsNotAllowed)
+            {
+                errors.Add(new UnauthorizedError("The user is not allowed to sign in."));
+               
+            }
 
-        if (extraErrors != null)
-        {
-            errors.AddRange(extraErrors);
+            if (signInResult.RequiresTwoFactor)
+            {
+                errors.Add(new ValidationError("Two-factor authentication is required."));
+                
+            }
+
+            if (!signInResult.Succeeded && !signInResult.IsLockedOut && !signInResult.IsNotAllowed && !signInResult.RequiresTwoFactor)
+            {
+                errors.Add(new UnexpectedError("An unexpected error occurred during the sign-in process."));                
+            }
+
+            return IdentityResult.Failed(errors.ToArray());
         }
-
-        return IdentityResult.Failed(errors.ToArray());
     }
 }
-

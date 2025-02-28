@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.MainServices;
 using _2_DataAccessLayer.Concrete.Entities;
 
-namespace _1_BusinessLayer.Concrete.Services.MainServices
+namespace _1_BusinessLayer.Concrete.Services_Tools
 {
     public class PostService : AbstractPostService
     {
@@ -20,6 +20,6 @@ namespace _1_BusinessLayer.Concrete.Services.MainServices
             throw new NotImplementedException();
         }
 
-        
+
     }
 }

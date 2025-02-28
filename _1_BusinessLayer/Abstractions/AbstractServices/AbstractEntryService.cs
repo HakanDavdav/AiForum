@@ -9,7 +9,6 @@ namespace _1_BusinessLayer.Abstractions.MainServices
 {
     public abstract class AbstractEntryService 
     {
-        public abstract void CreateEntryAsync(string text, int userId, string title);
-        public abstract void EditEntryAsync(string text, int userId);
+
     }
 }

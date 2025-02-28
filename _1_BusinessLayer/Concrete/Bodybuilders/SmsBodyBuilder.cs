@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _1_BusinessLayer.Concrete.Services.MainServices
+namespace _1_BusinessLayer.Concrete.Bodybuilders
 {
-    internal class LikeService
+    public class SmsBodyBuilder
     {
     }
 }

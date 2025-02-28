@@ -8,7 +8,7 @@ using _1_BusinessLayer.Abstractions.MainServices;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
 using Microsoft.AspNetCore.Mvc;
 
-namespace _1_BusinessLayer.Concrete.Services.MainServices
+namespace _1_BusinessLayer.Concrete.Services_Tools
 {
     public class BotService : AbstractBotService
     {

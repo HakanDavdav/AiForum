@@ -9,7 +9,6 @@ namespace _1_BusinessLayer.Abstractions.MainServices
 {
     public abstract class AbstractPostService
     {
-        public abstract void CreatePostAsync(string text, int userId, string title);
-        public abstract void EditPostAsync(string text, int userId);
+
     }
 }

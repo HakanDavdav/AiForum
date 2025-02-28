@@ -9,10 +9,11 @@ using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using _1_BusinessLayer.Abstractions.MainServices;
-using _1_BusinessLayer.Concrete.Services.MainServices;
 using _1_BusinessLayer.Abstractions.SideServices;
-using _1_BusinessLayer.Concrete.Services.SideServices;
 using System.Text;
+using _1_BusinessLayer.Concrete.Senders;
+using _1_BusinessLayer.Concrete.Factories;
+using _1_BusinessLayer.Concrete.Services_Tools;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,8 +31,8 @@ builder.Services.AddScoped<AbstractUserRepository, UserRepository>();
 
 
 //autowiring side services
-builder.Services.AddScoped<AbstractMailManager, MailManager>();
-builder.Services.AddScoped<AbstractAuthenticationManager, AuthenticationManager>();
+builder.Services.AddScoped<AbstractTokenFactory, TokenFactory>();
+builder.Services.AddScoped<AbstractTokenSender, TokenSender>();
 //autowiring main services
 builder.Services.AddScoped<AbstractEntryService, EntryService>();
 builder.Services.AddScoped<AbstractPostService, PostService>();
@@ -60,8 +61,8 @@ builder.Services.AddIdentity<User, UserRole>(options =>
 
     // User config
     options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedAccount = true;
 
-   
 })
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();

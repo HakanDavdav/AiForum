@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _1_BusinessLayer.Concrete.Services.MainServices
+namespace _1_BusinessLayer.Concrete.Services_Tools
 {
     internal class FollowService
     {

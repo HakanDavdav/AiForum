@@ -11,13 +11,7 @@ namespace _1_BusinessLayer.Abstractions.MainAbstractServices
 {
     public abstract class AbstractBotService
     {
-        protected readonly AbstractUserService _userService;
-        protected AbstractBotService(AbstractUserService userService)
-        {
-            _userService = userService;
-        }
-        public abstract Task<ObjectResult> CreateBotAsync(int userId, CreateBotUserDto createBotUserDto);
-        public abstract Task<ObjectResult> CustomizeBotAsync(int botId, BotUserProfileDto botUserProfileDto);
-        public abstract Task<ObjectResult> DeleteBotAsync(int botId);
+
+
     }
 }

@@ -16,6 +16,8 @@ namespace _2_DataAccessLayer.Concrete
     public class ApplicationDbContext : IdentityDbContext<User,UserRole,int>
     {
         private readonly MyConfig _config;
+
+
         public ApplicationDbContext(IOptions<MyConfig> config)
         {
             _config = config.Value;
@@ -23,20 +25,17 @@ namespace _2_DataAccessLayer.Concrete
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(_config.DefaultConnection);
-                           
+
         }
-
-
 
         public DbSet<Post> posts {  get; set; }
         public DbSet<Like> likes { get; set; }
         public DbSet<Entry> entries {  get; set; }
         public DbSet<Follow> follows { get; set; }
 
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            
 
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new PostConfiguration());
