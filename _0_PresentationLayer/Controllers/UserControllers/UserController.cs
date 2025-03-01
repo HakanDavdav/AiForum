@@ -4,7 +4,6 @@ using _1_BusinessLayer.Concrete.Dtos.UserDtos;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Utilities;
 
 namespace _0_PresentationLayer.Controllers.UserControllers
 {
@@ -17,93 +16,86 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         {
             _userService = userService;
         }
-        [Authorize(Policy = "StandardUser")]
-        [HttpPatch("User/Profile/EditProfile")]
+        [Authorize]
+        [HttpPatch("User/Settings/EditProfile")]
         public async Task<IActionResult> EditProfile([FromBody] UserEditProfileDto userEditProfileDto)
         {
-            var result = await _userService.EditProfile(int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), userEditProfileDto);
+#pragma warning disable CS8604 // Possible null reference argument.
+            var result = await _userService.EditProfile(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value),userEditProfileDto);
+#pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
-            
+
         }
 
-        [Authorize(Policy = "StandardUser")]
-        [HttpPatch("User/Settings/Password")]
+        [Authorize]
+        [HttpPatch("User/Settings/EditPreferences")]
+        public async Task<IActionResult> EditPreferences(int id, [FromBody] UserPreferencesDto userPreferencesDto)
+        {
+#pragma warning disable CS8604 // Possible null reference argument.
+            var result = await _userService.EditPreferences(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value),userPreferencesDto);
+#pragma warning restore CS8604 // Possible null reference argument.
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpPatch("User/Settings/ChangePassword")]
         public async Task<IActionResult> ChangePassword(string oldPassword ,string newPassword)
         {
-            var result = await _userService.ChangePassword(int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), oldPassword, newPassword);
+#pragma warning disable CS8604 // Possible null reference argument.
+            var result = await _userService.ChangePassword(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value),oldPassword,newPassword);
+#pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
         }
 
-        [Authorize(Policy = "StandardUser")]
-        [HttpPatch("User/Settings/Email")]
+        [Authorize]
+        [HttpPatch("User/Settings/ChangeEmail")]
         public async Task<IActionResult> ChangeEmail(string changeEmailToken, string newEmail)
         {
-            var result = await _userService.ChangeEmail(int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value),newEmail,changeEmailToken);
+#pragma warning disable CS8604 // Possible null reference argument.
+            var result = await _userService.ChangeEmail(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), newEmail, changeEmailToken);
+#pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
         }
 
-        [Authorize(Policy = "StandardUser")]
-        [HttpPatch("User/Settings/Username")]
-        public async Task<IActionResult> ChangeUsername(string newUsername)
+        [Authorize]
+        [HttpPatch("User/Settings/ChangeUsername")]
+        public async Task<IActionResult> ChangeUsername(string oldUsername, string newUsername)
         {
-            throw new NotImplementedException();
+#pragma warning disable CS8604 // Possible null reference argument.
+            var result = await _userService.ChangeUsername(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value),oldUsername,newUsername);
+#pragma warning restore CS8604 // Possible null reference argument.
+            return Ok(result);
         }
 
-        [Authorize(Policy = "StandardUser")]
-        [HttpPatch("User/Settings/PhoneNumber")]
-        public async Task<IActionResult> ChangePhoneNumber(string newPhoneNumber)
+        [Authorize]
+        [HttpPatch("User/Settings/TwoFactorActivation")]
+        public async Task<IActionResult> ActivateTwoFactor()
         {
-            throw new NotImplementedException();
+#pragma warning disable CS8604 // Possible null reference argument.
+            var result = await _userService.ActivateTwoFactorAuthentication(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
+#pragma warning restore CS8604 // Possible null reference argument.
+            return Ok(result);
+
         }
 
-        [Authorize(Policy = "StandardUser")]
-        [HttpPatch("User/Settings/PhoneNumberConfirmation")]
-        public async Task<IActionResult> ConfirmPhoneNumber(string changePhoneNumberToken)
+        [Authorize]
+        [HttpPatch("User/Settings/TwoFactorDeactivation")]
+        public async Task<IActionResult> DeactivateTwoFactor([FromBody] UserEditProfileDto userEditProfileDto)
         {
-            throw new NotImplementedException();
+#pragma warning disable CS8604 // Possible null reference argument.
+            var result = await _userService.EditProfile(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), userEditProfileDto);
+#pragma warning restore CS8604 // Possible null reference argument.
+            return Ok(result);
+
         }
 
 
-        [Authorize(Policy = "StandardUser")]
-        [HttpPatch("User/Settings/Preferences")]
-        public async Task<IActionResult> ChangePreferences([FromBody] UserPreferencesDto userPreferencesDto)
-        {
-            throw new NotImplementedException();
-        }
-
-        [Authorize(Policy = "StandardUser")]
+        [Authorize]
         [HttpPost("User/Settings/Logout")]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Logout(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        [Authorize(Policy = "StandardUser")]
-        [HttpPatch("User/Settings/TwoFactorAuthActivation")]
-        public async Task<IActionResult> ActivateTwoFactorAuth()
-        {
-            throw new NotImplementedException();
-        }
-
-        [Authorize(Policy = "StandardUser")]
-        [HttpPatch("User/Settings/TwoFactorAuthDeactivation")]
-        public async Task<IActionResult> DeActivateTwoFactorAuth()
-        {
-            throw new NotImplementedException();
-        }
-
-        [Authorize(Policy = "StandardUser")]
-        [HttpPatch("User/Settings/PasswordResetViaEmail")]
-        public async Task<IActionResult> EmailPasswordReset(string PasswordResetToken, string newEmail)
-        {
-            throw new NotImplementedException();
-        }
-
-        [Authorize(Policy = "StandardUser")]
-        [HttpPatch("User/Settings/PasswordResetViaSms")]
-        public async Task<IActionResult> SmsPasswordReset(string passwordResetToken, string newPassword)
-        {
-            throw new NotImplementedException();
+            var result = await _userService.Logout();
+            return Ok(result);
         }
 
 

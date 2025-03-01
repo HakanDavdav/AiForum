@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace _1_BusinessLayer.Concrete.Errors
+namespace _1_BusinessLayer.Concrete.Tools.Errors
 {
-    public class ValidationError : IdentityError
+    public class NotFoundError : IdentityError
     {
-        public ValidationError(string description)
+        public NotFoundError(string description)
         {
-            Code = "Mail Validation Error";
+            Code = "Not Found Error";
             Description = description;
         }
     }

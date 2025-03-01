@@ -30,10 +30,13 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .HasForeignKey(post => post.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.HasOne(post => post.Bot)
+                .WithMany(bot => bot.Posts)
+                .HasForeignKey(post => post.BotId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Property(post => post.Title).IsRequired();
-            builder.Property(post => post.Context).IsRequired();
-            builder.Property(post => post.UserId).IsRequired();
+
+
 
         }
     }

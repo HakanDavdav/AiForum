@@ -14,12 +14,11 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
         Task<IdentityResult> Logout();
         Task<IdentityResult> PasswordReset(int userId, string newPassword, string resetPasswordToken);
         Task<IdentityResult> Register(UserRegisterDto userRegisterDto);
-        Task<IdentityResult> ActivateTwoFactorAuthentication(User user);
-        Task<IdentityResult> DisableTwoFactorAuthentication(User user);
+        Task<IdentityResult> ActivateTwoFactorAuthentication(int userId);
+        Task<IdentityResult> DisableTwoFactorAuthentication(int userId);
         Task<IdentityResult> ConfirmEmail(UserLoginDto userLoginDto, string emailConfirmationToken);
         Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto);
         Task<IdentityResult> EditPreferences(int userId, UserPreferencesDto userPreferencesDto);
-        Task<IdentityResult> CreateProfile(int userId, UserPreferencesDto userPreferencesDto);
 
 
 

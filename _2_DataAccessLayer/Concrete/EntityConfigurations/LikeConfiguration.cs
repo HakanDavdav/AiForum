@@ -20,19 +20,21 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .HasForeignKey(like => like.PostId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(like => like.User)
-                .WithMany(user => user.Likes)
-                .HasForeignKey(like => like.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
-
             builder.HasOne(like => like.Entry)
                 .WithMany(entry => entry.Likes)
                 .HasForeignKey(like => like.EntryId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Property(like => like.UserId).IsRequired();
-            builder.Property(like => like.EntryId).IsRequired();
-            builder.Property(like => like.PostId).IsRequired();
+            builder.HasOne(like => like.User)
+                .WithMany(user => user.Likes)
+                .HasForeignKey(like => like.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(like => like.Bot)
+                .WithMany(bot => bot.Likes)
+                .HasForeignKey(like => like.BotId)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
         }
     }

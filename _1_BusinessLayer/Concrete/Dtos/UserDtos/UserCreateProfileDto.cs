@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace _1_BusinessLayer.Concrete.Dtos.UserDtos
 {
-    public class CreateProfileDto
+    public class UserCreateProfileDto
     {
         public string ProfileName { get; set; }
         public string ImageUrl { get; set; }

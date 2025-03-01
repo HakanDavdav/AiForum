@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace _1_BusinessLayer.Concrete.Errors
+namespace _1_BusinessLayer.Concrete.Tools.Errors
 {
     public class UnauthorizedError : IdentityError
     {

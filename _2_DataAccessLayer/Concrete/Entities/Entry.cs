@@ -21,6 +21,8 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
         public int UserId { get; set; }
         public User User { get; set; }
+        public int BotId { get; set; }
+        public Bot Bot { get; set; }
 
 
         public ICollection<Like> Likes { get; set; }

@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace _1_BusinessLayer.Concrete.Errors
+namespace _1_BusinessLayer.Concrete.Tools.Errors
 {
-    public class NotFoundError : IdentityError
+    public class UnexpectedError : IdentityError
     {
-        public NotFoundError(string description)
+        public UnexpectedError(string description)
         {
-            Code = "Not Found Error";
+            Code = "Unexpected Error";
             Description = description;
         }
     }

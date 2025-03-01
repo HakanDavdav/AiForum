@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace _1_BusinessLayer.Concrete.Errors
+namespace _1_BusinessLayer.Concrete.Tools.Errors
 {
-    public class InternalServerError : IdentityError
+    public class ValidationError : IdentityError
     {
-        public InternalServerError(string description)
+        public ValidationError(string description)
         {
-            Code = "Internal server error";
+            Code = "Mail Validation Error";
             Description = description;
         }
     }

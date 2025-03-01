@@ -7,7 +7,7 @@ using _1_BusinessLayer.Concrete.Dtos.UserDtos;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 
-namespace _1_BusinessLayer.Concrete.Mappers
+namespace _1_BusinessLayer.Concrete.Tools.Mappers
 {
     public static class UserMapper
     {
@@ -25,21 +25,21 @@ namespace _1_BusinessLayer.Concrete.Mappers
         {
             var userProfileDto = new UserProfileDto
             {
-                 Username = user.UserName,
-                 ImageUrl = user.ImageUrl,
-                 City = user.City,
-                 Entries = user.Entries,
-                 Posts = user.Posts,
-                 Followers = user.Followers,
-                 Followings = user.Followings,
-                 Likes = user.Likes,
-                 ProfileName = user.ProfileName
-                 
+                Username = user.UserName,
+                ImageUrl = user.ImageUrl,
+                City = user.City,
+                Entries = user.Entries,
+                Posts = user.Posts,
+                Followers = user.Followers,
+                Followings = user.Followings,
+                Likes = user.Likes,
+                ProfileName = user.ProfileName
+
             };
             return userProfileDto;
         }
 
-        public static User Update_UserEditProfileDtoToUser(this UserEditProfileDto userEditProfileDto,User user)
+        public static User Update_UserEditProfileDtoToUser(this UserEditProfileDto userEditProfileDto, User user)
         {
             user.ProfileName = userEditProfileDto.ProfileName;
             user.ImageUrl = userEditProfileDto.ImageUrl;
@@ -47,11 +47,19 @@ namespace _1_BusinessLayer.Concrete.Mappers
             return user;
         }
 
-        public static UserPreferences Update_UserEditPreferencesDtoToUserPreferences(this UserPreferencesDto userPreferencesDto, UserPreferences userPreferences)
+        public static User Update_UserCreateProfileDtoToUser(this UserCreateProfileDto userCreateProfileDto, User user)
+        {
+            user.ProfileName = userCreateProfileDto.ProfileName;
+            user.City = userCreateProfileDto.City;
+            user.ImageUrl = userCreateProfileDto.ImageUrl;
+            return user;
+        }
+
+
+        public static UserPreference Update_UserEditPreferencesDtoToUserPreferences(this UserPreferencesDto userPreferencesDto, UserPreference userPreferences)
         {
             userPreferences.PostPerPage = userPreferencesDto.PostPerPage;
             userPreferences.EntryPerPage = userPreferencesDto.EntryPerPage;
-            userPreferences.DailyBotMessageCount = userPreferencesDto.DailyBotMessageCount;
             userPreferences.Notifications = userPreferencesDto.Notifications;
             userPreferences.Theme = userPreferencesDto.Theme;
             return userPreferences;

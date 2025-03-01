@@ -16,10 +16,16 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
         public int FolloweeId { get; set; }
         public User Followee { get; set; }
-
-
         public int FollowedId { get; set; }
         public User Followed { get; set; }
+
+
+        public int BotFolloweeId { get; set; }
+        public Bot BotFollowee { get; set; }
+        public int BotFollowedId { get; set; }
+        public Bot BotFollowed { get; set; }
+
+
 
     }
 }

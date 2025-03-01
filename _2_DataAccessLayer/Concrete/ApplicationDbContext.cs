@@ -32,6 +32,9 @@ namespace _2_DataAccessLayer.Concrete
         public DbSet<Like> likes { get; set; }
         public DbSet<Entry> entries {  get; set; }
         public DbSet<Follow> follows { get; set; }
+        public DbSet<Notification> notifications { get; set; }
+        public DbSet<Bot> bots { get; set; }
+        public DbSet<UserPreference> userPreferences { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -42,6 +45,9 @@ namespace _2_DataAccessLayer.Concrete
             modelBuilder.ApplyConfiguration(new FollowConfiguration());
             modelBuilder.ApplyConfiguration(new EntryConfiguration());
             modelBuilder.ApplyConfiguration(new LikeConfiguration());
+            modelBuilder.ApplyConfiguration(new NotificationConfiguration());
+            modelBuilder.ApplyConfiguration(new BotConfiguration());
+            modelBuilder.ApplyConfiguration(new UserPreferenceConfiguration());
 
             base.OnModelCreating(modelBuilder);
             

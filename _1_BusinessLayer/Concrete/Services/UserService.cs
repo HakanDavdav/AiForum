@@ -8,8 +8,8 @@ using _1_BusinessLayer.Abstractions.AbstractServices.IServices;
 using _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders;
 using _1_BusinessLayer.Abstractions.MainServices;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
-using _1_BusinessLayer.Concrete.Errors;
-using _1_BusinessLayer.Concrete.Mappers;
+using _1_BusinessLayer.Concrete.Tools.Errors;
+using _1_BusinessLayer.Concrete.Tools.Mappers;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -26,8 +26,9 @@ namespace _1_BusinessLayer.Concrete.Services_Tools
         {
         }
 
-        public override async Task<IdentityResult> ActivateTwoFactorAuthentication(User user)
+        public override async Task<IdentityResult> ActivateTwoFactorAuthentication(int userId)
         {
+            var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
             {
                 var twoFactorResult = await _userManager.SetTwoFactorEnabledAsync(user, true);
@@ -36,8 +37,9 @@ namespace _1_BusinessLayer.Concrete.Services_Tools
             return IdentityResult.Failed(new NotFoundError("User not found"));
         }
 
-        public override async Task<IdentityResult> DisableTwoFactorAuthentication(User user)
+        public override async Task<IdentityResult> DisableTwoFactorAuthentication(int userId)
         {
+            var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
             {
                 var twoFactorResult = await _userManager.SetTwoFactorEnabledAsync(user,true);
@@ -163,7 +165,7 @@ namespace _1_BusinessLayer.Concrete.Services_Tools
             var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
             {
-                var updated
+                //
             }
             return  IdentityResult.Failed(new NotFoundError("User not found"));
         }
@@ -186,8 +188,15 @@ namespace _1_BusinessLayer.Concrete.Services_Tools
             var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
             {
-                var 
+                if (user.UserName==oldUsername)
+                {
+                    user.UserName = newUsername;
+                    await _userRepository.UpdateAsync(user);
+                    return IdentityResult.Success;
+                }
+                return IdentityResult.Failed(new UnauthorizedError("Wrong username"));
             }
+            return IdentityResult.Failed(new NotFoundError("User not found"));
         }
     }
 }

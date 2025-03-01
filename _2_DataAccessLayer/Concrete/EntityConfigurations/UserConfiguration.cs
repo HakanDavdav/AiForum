@@ -14,7 +14,21 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
         public void Configure(EntityTypeBuilder<User> builder)
         {
 
+            builder.HasMany(user => user.Bots)
+                .WithOne(bot => bot.User)
+                .HasForeignKey(bot => bot.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
+            builder.HasOne(user => user.UserPreference)
+                .WithOne(userPreference => userPreference.User)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasMany(user => user.Notifications)
+                .WithOne(notification => notification.User)
+                .HasForeignKey(notification => notification.UserId)
+                .OnDelete(DeleteBehavior.NoAction); ;
+                
+                
             builder.HasMany(user => user.Entries)
                 .WithOne(entry => entry.User)
                 .HasForeignKey(entry => entry.UserId)
@@ -40,7 +54,6 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .HasForeignKey(follow => follow.FollowedId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            //User Properties are not fully required except ID because there are temporary guest users
 
 
         }

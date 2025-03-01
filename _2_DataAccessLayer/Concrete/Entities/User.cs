@@ -18,9 +18,13 @@ namespace _2_DataAccessLayer.Concrete.Entities
         [AllowNull]
         public string? ProfileName { get; set; }
 
-        
 
 
+        public UserPreference UserPreference { get; set; }
+        public int UserPreferenceId {  get; set; }
+
+        public ICollection<Notification> Notifications {  get; set; }
+        public ICollection<Bot> Bots { get; set; }
         public ICollection<Post> Posts { get; set; }
         public ICollection<Entry> Entries { get; set; }
         public ICollection<Like> Likes { get; set; }

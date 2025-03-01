@@ -21,5 +21,9 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public User User { get; set; }
         public int FromUserId { get; set; }
         public User FromUser { get; set; }
+        public int FromBotId { get; set; }
+        public Bot FromBot { get; set; }
+
+
     }
 }

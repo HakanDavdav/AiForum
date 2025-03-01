@@ -6,14 +6,13 @@ using System.Threading.Tasks;
 
 namespace _2_DataAccessLayer.Concrete.Entities
 {
-    public class UserPreferences
+    public class UserPreference
     {
-        public int UserPreferencesId {  get; set; }
+        public int UserPreferenceId {  get; set; }
 
         public string Theme {  get; set; }
         public int EntryPerPage { get; set; }
         public int PostPerPage {  get; set; }
-        public int DailyBotMessageCount { get; set; }
         public bool Notifications {  get; set; }
 
         public User User { get; set; }
