@@ -29,7 +29,7 @@ namespace _0_PresentationLayer.Controllers.GuestControllers
 
         
         [HttpPost("Login")]
-        public async Task<IActionResult> LoginTwoFactor([FromBody] UserLoginDto userLoginDto,string twoFactorToken)
+        public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto,string? twoFactorToken = "null")
         {
             var result = await _userService.Login(userLoginDto,twoFactorToken);
             return Ok(result);

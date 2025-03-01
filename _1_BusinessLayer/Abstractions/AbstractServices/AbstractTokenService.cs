@@ -23,9 +23,14 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices
             _userRepository = userRepository;
         }
 
-        public abstract Task<IdentityResult> SendChangeEmailTokenAsync(User user, string newEmail);
-        public abstract Task<IdentityResult> SendConfirmEmailTokenAsync(User user);
-        public abstract Task<IdentityResult> SendConfirmPhoneNumberTokenAsync(User user);
-        public abstract Task<IdentityResult> SendResetPasswordTokenAsync(User user);
+        public abstract Task<IdentityResult> SendEmail_ChangeEmailTokenAsync(User user, string newEmail);
+        public abstract Task<IdentityResult> SendEmail_ConfirmEmailTokenAsync(User user);
+        public abstract Task<IdentityResult> SendEmail_ResetPasswordTokenAsync(User user);
+        public abstract Task<IdentityResult> SendEmail_TwoFactorTokenAsync(User user);
+
+        public abstract Task<IdentityResult> SendSms_ChangePhoneNumberTokenAsync(User user, string newPhoneNumber);
+        public abstract Task<IdentityResult> SendSms_ConfirmPhoneNumberTokenAsync(User user);
+        public abstract Task<IdentityResult> SendSms_ResetPasswordTokenAsync(User user);
+        public abstract Task<IdentityResult> SendSms_TwoFactorTokenAsync(User user);
     }
 }

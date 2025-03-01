@@ -35,8 +35,9 @@ namespace _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders
         public abstract Task<IdentityResult> SendEmail_EmailConfirmationTokenAsync(User user);
         public abstract Task<IdentityResult> SendEmail_ResetPasswordTokenAsync(User user);
         public abstract Task<IdentityResult> SendEmail_TwoFactorTokenAsync(User user);
-        public abstract Task<IdentityResult> SendSms_EmailChangeTokenAsync(User user, string newMail);
-        public abstract Task<IdentityResult> SendSms_EmailConfirmationTokenAsync(User user);
+
+        public abstract Task<IdentityResult> SendSms_PhoneNumberChangeTokenAsync(User user, string newPhoneNumber);
+        public abstract Task<IdentityResult> SendSms_PhoneNumberConfirmationTokenAsync(User user);
         public abstract Task<IdentityResult> SendSms_ResetPasswordTokenAsync(User user);
         public abstract Task<IdentityResult> SendSms_TwoFactorTokenAsync(User user);
     }

@@ -26,9 +26,24 @@ namespace _1_BusinessLayer.Concrete.Services_Tools
         {
         }
 
-        public override Task<IdentityResult> ActivateTwoFactorAuthentication(User user)
+        public override async Task<IdentityResult> ActivateTwoFactorAuthentication(User user)
         {
-            throw new NotImplementedException();
+            if (user != null)
+            {
+                var twoFactorResult = await _userManager.SetTwoFactorEnabledAsync(user, true);
+                return twoFactorResult;
+            }
+            return IdentityResult.Failed(new NotFoundError("User not found"));
+        }
+
+        public override async Task<IdentityResult> DisableTwoFactorAuthentication(User user)
+        {
+            if (user != null)
+            {
+                var twoFactorResult = await _userManager.SetTwoFactorEnabledAsync(user,true);
+                return twoFactorResult;
+            }
+            return IdentityResult.Failed(new NotFoundError("User not found"));
         }
 
         public override async Task<IdentityResult> ChangeEmail(int userId,string newEmail ,string changeEmailToken)
@@ -89,10 +104,6 @@ namespace _1_BusinessLayer.Concrete.Services_Tools
             return IdentityResult.Failed(new NotFoundError("User not found"));
         }
 
-        public override Task<IdentityResult> DisableTwoFactorAuthentication(User user)
-        {
-            throw new NotImplementedException();
-        }
 
         public override async Task<IdentityResult> Login(UserLoginDto userLoginDto, string twoFactorToken)
         {
@@ -112,7 +123,7 @@ namespace _1_BusinessLayer.Concrete.Services_Tools
                 }
                 try { await _tokenSender.SendEmail_EmailConfirmationTokenAsync(user); } 
                 catch(Exception ex) { return IdentityResult.Failed(new UnexpectedError("Email connection error")); throw; };
-                return IdentityResult.Failed(new UnauthorizedError("Account is not confirmed. Your confirmation code sent"));
+                return IdentityResult.Failed(new UnauthorizedError("Account is not confirmed. Your confirmation code has sent"));
             }
             return IdentityResult.Failed(new NotFoundError("User not found"));
         }
@@ -122,8 +133,7 @@ namespace _1_BusinessLayer.Concrete.Services_Tools
             await _signInManager.SignOutAsync();
             return IdentityResult.Success;
         }
-
-        
+      
 
         public override async Task<IdentityResult> PasswordReset(int userId, string newPassword ,string resetPasswordToken)
         {
@@ -146,6 +156,38 @@ namespace _1_BusinessLayer.Concrete.Services_Tools
                 return createUserResult;
             }
             return IdentityResult.Failed(new NotFoundError("User not found"));
+        }
+
+        public override async Task<IdentityResult> EditPreferences(int userId, UserPreferencesDto userPreferencesDto)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user != null)
+            {
+                var updated
+            }
+            return  IdentityResult.Failed(new NotFoundError("User not found"));
+        }
+
+        public override async Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user != null)
+            {
+                var updatedUser = userEditProfileDto.Update_UserEditProfileDtoToUser(user);
+                await _userRepository.UpdateAsync(updatedUser);
+                return IdentityResult.Success;
+            }
+            return IdentityResult.Failed(new NotFoundError("User not found"));
+
+        }
+
+        public override async Task<IdentityResult> ChangeUsername(int userId, string oldUsername, string newUsername)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user != null)
+            {
+                var 
+            }
         }
     }
 }

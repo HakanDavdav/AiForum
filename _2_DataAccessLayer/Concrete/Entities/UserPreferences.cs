@@ -14,7 +14,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public int EntryPerPage { get; set; }
         public int PostPerPage {  get; set; }
         public int DailyBotMessageCount { get; set; }
-        public int Notifications {  get; set; }
+        public bool Notifications {  get; set; }
 
         public User User { get; set; }
         public int UserId { get; set; }

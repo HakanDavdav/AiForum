@@ -11,8 +11,8 @@ namespace _1_BusinessLayer.Abstractions.AbstractTools.ITools
         Task <IdentityResult> SendEmail_TwoFactorTokenAsync(User user);
 
 
-        Task<IdentityResult> SendSms_EmailChangeTokenAsync(User user, string newMail);
-        Task<IdentityResult> SendSms_EmailConfirmationTokenAsync(User user);
+        Task<IdentityResult> SendSms_PhoneNumberChangeTokenAsync(User user, string newPhoneNumber);
+        Task<IdentityResult> SendSms_PhoneNumberConfirmationTokenAsync(User user);
         Task<IdentityResult> SendSms_ResetPasswordTokenAsync(User user);
         Task<IdentityResult> SendSms_TwoFactorTokenAsync(User user);
     }

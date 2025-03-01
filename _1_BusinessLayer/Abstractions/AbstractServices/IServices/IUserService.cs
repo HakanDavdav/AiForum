@@ -8,6 +8,7 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
     {
         Task<IdentityResult> ChangeEmail(int userId,string newEmail ,string changeEmailToken);
         Task<IdentityResult> ChangePassword(int userId, string oldPassword, string newPassword);
+        Task<IdentityResult> ChangeUsername(int userId, string oldUsername, string newUsername);
         Task<IdentityResult> ConfirmPhoneNumber(int userId, string phoneConfirmationToken);
         Task<IdentityResult> Login(UserLoginDto userLoginDto, string twoFactorToken);
         Task<IdentityResult> Logout();
@@ -16,5 +17,11 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
         Task<IdentityResult> ActivateTwoFactorAuthentication(User user);
         Task<IdentityResult> DisableTwoFactorAuthentication(User user);
         Task<IdentityResult> ConfirmEmail(UserLoginDto userLoginDto, string emailConfirmationToken);
+        Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto);
+        Task<IdentityResult> EditPreferences(int userId, UserPreferencesDto userPreferencesDto);
+        Task<IdentityResult> CreateProfile(int userId, UserPreferencesDto userPreferencesDto);
+
+
+
     }
 }

@@ -39,6 +39,24 @@ namespace _1_BusinessLayer.Concrete.Mappers
             return userProfileDto;
         }
 
+        public static User Update_UserEditProfileDtoToUser(this UserEditProfileDto userEditProfileDto,User user)
+        {
+            user.ProfileName = userEditProfileDto.ProfileName;
+            user.ImageUrl = userEditProfileDto.ImageUrl;
+            user.City = userEditProfileDto.City;
+            return user;
+        }
+
+        public static UserPreferences Update_UserEditPreferencesDtoToUserPreferences(this UserPreferencesDto userPreferencesDto, UserPreferences userPreferences)
+        {
+            userPreferences.PostPerPage = userPreferencesDto.PostPerPage;
+            userPreferences.EntryPerPage = userPreferencesDto.EntryPerPage;
+            userPreferences.DailyBotMessageCount = userPreferencesDto.DailyBotMessageCount;
+            userPreferences.Notifications = userPreferencesDto.Notifications;
+            userPreferences.Theme = userPreferencesDto.Theme;
+            return userPreferences;
+        }
+
 
     }
 }

@@ -161,12 +161,12 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
 
 
 
-        public override async Task<IdentityResult> SendSms_EmailConfirmationTokenAsync(User user)
+        public override async Task<IdentityResult> SendSms_PhoneNumberConfirmationTokenAsync(User user)
         {
             throw new NotImplementedException();
         }
 
-        public override async Task<IdentityResult> SendSms_EmailChangeTokenAsync(User user, string newMail)
+        public override async Task<IdentityResult> SendSms_PhoneNumberChangeTokenAsync(User user, string newMail)
         {
             throw new NotImplementedException();
         }

@@ -17,8 +17,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public string? City { get; set; }
         [AllowNull]
         public string? ProfileName { get; set; }
-        [AllowNull]
-        public string? Personality { get; set; }
+
         
 
 
