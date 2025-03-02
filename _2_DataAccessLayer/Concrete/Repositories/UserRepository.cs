@@ -29,9 +29,10 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                                                     ThenInclude(post => post.Likes).
                                                     Include(user => user.Entries).
                                                     ThenInclude(entries => entries.Likes).
-                                                    Include(user => user.Likes).
                                                     Include(user => user.Followers).
-                                                    Include(user => user.Followings);
+                                                    Include(user => user.Followings).
+                                                    Include(user => user.Bots);
+                                                        
             return await users.ToListAsync();
         }
 
@@ -39,13 +40,13 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             User user = await _context.Users.Include(user => user.Posts).
-                                       ThenInclude(post => post.Likes).    
-                                       Include(user => user.Entries).
-                                       ThenInclude(entries => entries.Likes).
-                                       Include(user => user.Likes).
-                                       Include(user => user.Followers).
-                                       Include(user => user.Followings).
-                                       FirstOrDefaultAsync(user => user.Id == id);
+                                                    ThenInclude(post => post.Likes).
+                                                    Include(user => user.Entries).
+                                                    ThenInclude(entries => entries.Likes).
+                                                    Include(user => user.Followers).
+                                                    Include(user => user.Followings).
+                                                    Include(user => user.Bots).
+                                                    FirstOrDefaultAsync(user => user.Id == id);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return user;
         }
@@ -54,13 +55,13 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             User user = await _context.Users.Include(user => user.Posts).
-                                       ThenInclude(post => post.Likes).
-                                       Include(user => user.Entries).
-                                       ThenInclude(entries => entries.Likes).
-                                       Include(user => user.Likes).
-                                       Include(user => user.Followers).
-                                       Include(user => user.Followings).        
-                                       FirstOrDefaultAsync(user => user.UserName == name);
+                                                    ThenInclude(post => post.Likes).
+                                                    Include(user => user.Entries).
+                                                    ThenInclude(entries => entries.Likes).
+                                                    Include(user => user.Followers).
+                                                    Include(user => user.Followings).
+                                                    Include(user => user.Bots).
+                                                    FirstOrDefaultAsync(user => user.UserName == name);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return user;
         }

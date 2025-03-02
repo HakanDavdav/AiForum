@@ -26,8 +26,13 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public override async Task<List<Post>> GetAllAsync()
         {
             IQueryable<Post> posts = _context.posts.Include(post => post.Entries)
-                .ThenInclude(entry => entry.User)
-                .Include(post => post.Likes);
+                                                   .ThenInclude(entry => entry.User)
+                                                   .Include(post => post.Entries)
+                                                   .ThenInclude(entry => entry.Likes)
+                                                   .ThenInclude(like => like.User)
+                                                   .Include(post => post.Likes)
+                                                   .ThenInclude(like => like.User)
+                                                   .Include(post => post.User);
             return await posts.ToListAsync();
         }
 
@@ -36,9 +41,14 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             Post post = await _context.posts.Include(post => post.Entries)
-                .ThenInclude(entry => entry.User)
-                .Include(post => post.Likes)
-                .FirstOrDefaultAsync(post => post.PostId == id);
+                                            .ThenInclude(entry => entry.User)
+                                            .Include(post => post.Entries)
+                                            .ThenInclude(entry => entry.Likes)
+                                            .ThenInclude(like => like.User)
+                                            .Include(post => post.Likes)
+                                            .ThenInclude(like => like.User)
+                                            .Include(post => post.User)
+                                            .FirstOrDefaultAsync(post => post.PostId == id);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return post;
         }
@@ -48,10 +58,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public override async Task<Post> GetByTitleAsync(string title)
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            Post post = await _context.posts.Include(post => post.Entries)
-                .ThenInclude(entry => entry.User)
-                .Include(post => post.Likes)
-                .FirstOrDefaultAsync(post => post.Title == title);
+            Post post = await _context.posts.FirstOrDefaultAsync(post => post.Title == title);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return post;
         }
