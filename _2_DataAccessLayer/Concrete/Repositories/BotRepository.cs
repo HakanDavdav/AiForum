@@ -24,7 +24,17 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             throw new NotImplementedException();
         }
 
+        public override Task<List<Bot>> GetAllWithInfoAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public override Task<Bot> GetByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<Bot> GetByIdWithInfoAsync(int id)
         {
             throw new NotImplementedException();
         }

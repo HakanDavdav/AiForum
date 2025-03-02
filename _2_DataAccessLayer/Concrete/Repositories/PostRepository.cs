@@ -25,6 +25,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task<List<Post>> GetAllAsync()
         {
+            IQueryable<Post> posts = _context.posts;
+            return await posts.ToListAsync();
+        }
+
+        public override async Task<List<Post>> GetAllWithInfoAsync()
+        {
             IQueryable<Post> posts = _context.posts.Include(post => post.Entries)
                                                    .ThenInclude(entry => entry.User)
                                                    .Include(post => post.Entries)
@@ -32,12 +38,22 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                                                    .ThenInclude(like => like.User)
                                                    .Include(post => post.Likes)
                                                    .ThenInclude(like => like.User)
-                                                   .Include(post => post.User);
+                                                   .Include(post => post.User)
+                                                   .Include(post => post.Bot);
+
             return await posts.ToListAsync();
         }
 
 
         public override async Task<Post> GetByIdAsync(int id)
+        {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            Post post = await _context.posts.FirstOrDefaultAsync(post => post.PostId == id);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+            return post;
+        }
+
+        public override async Task<Post> GetByIdWithInfoAsync(int id)
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             Post post = await _context.posts.Include(post => post.Entries)
@@ -48,6 +64,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                                             .Include(post => post.Likes)
                                             .ThenInclude(like => like.User)
                                             .Include(post => post.User)
+                                            .Include(post => post.Bot)
                                             .FirstOrDefaultAsync(post => post.PostId == id);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return post;

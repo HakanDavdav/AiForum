@@ -23,33 +23,53 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task<List<Notification>> GetAllAsync()
         {
-            IQueryable<Notification> notifications = _context.notifications
-                                                             .Include(notification => notification.User)
-                                                             .Include(notification => notification.FromUser)
-                                                             .Include(notification => notification.FromBot);
+            IQueryable<Notification> notifications = _context.notifications;                                                         
             return await notifications.ToListAsync();
         }
 
-        public override async Task<List<Notification>> GetAllByUserId(int id)
+        public override async Task<List<Notification>> GetAllWithInfoAsync()
         {
             IQueryable<Notification> userNotifications = _context.notifications
-                                                                 .Where(notification => notification.UserId == id)
                                                                  .Include(notification => notification.User)
                                                                  .Include(notification => notification.FromUser)
                                                                  .Include(notification => notification.FromBot);
             return await userNotifications.ToListAsync();
         }
 
+        public override async Task<List<Notification>> GetAllByUserId(int id)
+        {
+            IQueryable<Notification> userNotifications = _context.notifications.Where(notification => notification.UserId == id);
+            return await userNotifications.ToListAsync();
+        }
+
+        public override async Task<List<Notification>> GetAllByUserIdWithInfo(int id)
+        {
+            IQueryable<Notification> userNotifications = _context.notifications.Where(notification => notification.UserId == id)
+                                                                              .Include(notification => notification.User)
+                                                                              .Include(notification => notification.FromUser)
+                                                                              .Include(notification => notification.FromBot);
+            return await userNotifications.ToListAsync();
+        }
+      
+
         public override async Task<Notification> GetByIdAsync(int id)
         {
-            var notification = await _context.notifications
-                                             .Include(notification => notification.User)
-                                             .Include(notification => notification.FromUser)
-                                             .Include(notification => notification.FromBot)
-                                             .FirstOrDefaultAsync(notification => notification.NotificationId == id);
-#pragma warning disable CS8603 // Possible null reference return.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            var notification = await _context.notifications.FirstOrDefaultAsync(notification => notification.NotificationId == id);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return notification;
-#pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        public override async Task<Notification> GetByIdWithInfoAsync(int id)
+        {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+
+            var notification = await _context.notifications.Include(notification => notification.User)
+                                                           .Include(notification => notification.FromUser)
+                                                           .Include(notification => notification.FromBot)
+                                                           .FirstOrDefaultAsync(notification => notification.NotificationId == id);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+            return notification;
         }
 
         public override async Task InsertAsync(Notification t)

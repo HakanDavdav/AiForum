@@ -15,6 +15,7 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
         {
             builder.HasOne(UserPreference => UserPreference.User)
                .WithOne(User => User.UserPreference)
+               .HasForeignKey<UserPreference>(userpreference => userpreference.UserId)
                .OnDelete(DeleteBehavior.NoAction);
         }
     }

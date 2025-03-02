@@ -25,12 +25,17 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task<List<Entry>> GetAllAsync()
         {
+            IQueryable<Entry> allEntries = _context.entries;                                                
+            return await allEntries.ToListAsync();
+        }
+
+        public override async Task<List<Entry>> GetAllWithInfoAsync()
+        {
             IQueryable<Entry> allEntries = _context.entries
                                                    .Include(entry => entry.Likes)
                                                    .ThenInclude(like => like.User)
                                                    .Include(entry => entry.Likes)
                                                    .ThenInclude(like => like.Bot)
-                                                   .Include(entry => entry.Post)
                                                    .Include(entry => entry.User)
                                                    .Include(entry => entry.Bot);
             return await allEntries.ToListAsync();
@@ -39,16 +44,27 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public override async Task<Entry> GetByIdAsync(int id)
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            Entry entry = await _context.entries.Include(entry => entry.Likes)
-                                                .ThenInclude(like => like.User)
-                                                .Include(entry => entry.Post)
-                                                .Include(entry => entry.User)     
-                                                .FirstOrDefaultAsync(entry => entry.EntryId == id);
+            Entry entry = await _context.entries.FirstOrDefaultAsync(entry => entry.EntryId == id);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return entry;
         }
 
-   
+        public override async Task<Entry> GetByIdWithInfoAsync(int id)
+        {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            Entry entry = await _context.entries.Include(entry => entry.Likes)
+                                                .ThenInclude(like => like.User)
+                                                .Include(entry => entry.Likes)
+                                                .ThenInclude(like => like.Bot)
+                                                .Include(entry => entry.User)
+                                                .Include(entry => entry.Bot)
+                                                .FirstOrDefaultAsync(entry => entry.EntryId == id);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+            return entry;
+
+        }
+
+
         //would prefer _userManager
         public override async Task InsertAsync(Entry t)
         {

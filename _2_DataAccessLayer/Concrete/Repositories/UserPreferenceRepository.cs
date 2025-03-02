@@ -27,6 +27,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             return await userPreferences.ToListAsync();
         }
 
+        public override Task<List<UserPreference>> GetAllWithInfoAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public override async Task<UserPreference> GetByIdAsync(int id)
         {
             var userPreferences = await _context.userPreferences.FirstOrDefaultAsync(userpreference => userpreference.UserPreferenceId == id);
@@ -35,9 +40,27 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 #pragma warning restore CS8603 // Possible null reference return.
         }
 
+        public override async Task<UserPreference> GetByIdWithInfoAsync(int id)
+        {
+            var userPreferences = await _context.userPreferences.Include(userpreference => userpreference.User)
+                                                                .FirstOrDefaultAsync(userpreference => userpreference.UserPreferenceId == id);
+#pragma warning disable CS8603 // Possible null reference return.
+            return userPreferences;
+#pragma warning restore CS8603 // Possible null reference return.
+        }
+
         public override async Task<UserPreference> GetByUserId(int id)
         {
             var userPreference = await _context.userPreferences.FirstOrDefaultAsync(userpreference => userpreference.UserId == id);
+#pragma warning disable CS8603 // Possible null reference return.
+            return userPreference;
+#pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        public override async Task<UserPreference> GetByUserIdWithInfo(int id)
+        {
+            var userPreference = await _context.userPreferences.Include(userPreference => userPreference.User)
+                                                               .FirstOrDefaultAsync(userpreference => userpreference.UserId == id);
 #pragma warning disable CS8603 // Possible null reference return.
             return userPreference;
 #pragma warning restore CS8603 // Possible null reference return.

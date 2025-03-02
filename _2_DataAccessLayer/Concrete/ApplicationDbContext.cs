@@ -48,6 +48,7 @@ namespace _2_DataAccessLayer.Concrete
             modelBuilder.ApplyConfiguration(new NotificationConfiguration());
             modelBuilder.ApplyConfiguration(new BotConfiguration());
             modelBuilder.ApplyConfiguration(new UserPreferenceConfiguration());
+            modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
 
             base.OnModelCreating(modelBuilder);
             

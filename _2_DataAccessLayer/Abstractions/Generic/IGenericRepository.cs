@@ -14,5 +14,7 @@ namespace _2_DataAccessLayer.Abstractions.Generic
         public Task UpdateAsync(T t);
         public Task<List<T>> GetAllAsync();
         public Task<T> GetByIdAsync(int id);
+        public Task<T> GetByIdWithInfoAsync (int id);
+        public Task<List<T>> GetAllWithInfoAsync();
     }
 }

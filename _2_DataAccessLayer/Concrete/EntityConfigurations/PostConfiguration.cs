@@ -36,8 +36,6 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .OnDelete(DeleteBehavior.NoAction);
 
 
-
-
         }
     }
 }

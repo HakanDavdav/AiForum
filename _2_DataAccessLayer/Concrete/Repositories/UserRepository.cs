@@ -25,18 +25,33 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task<List<User>> GetAllAsync()
         {
+            IQueryable<User> users = _context.Users;                                                     
+            return await users.ToListAsync();
+        }
+
+        public override async Task<List<User>> GetAllWithInfoAsync()
+        {
             IQueryable<User> users = _context.Users.Include(user => user.Posts).
                                                     ThenInclude(post => post.Likes).
                                                     Include(user => user.Entries).
                                                     ThenInclude(entries => entries.Likes).
                                                     Include(user => user.Followers).
                                                     Include(user => user.Followings).
-                                                    Include(user => user.Bots);
-                                                        
+                                                    Include(user => user.Bots).
+                                                    Include(user => user.UserPreference).
+                                                    Include(user => user.UserRole);
             return await users.ToListAsync();
         }
 
         public override async Task<User> GetByIdAsync(int id)
+        {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            User user = await _context.Users.FirstOrDefaultAsync(user => user.Id == id);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+            return user;
+        }
+
+        public override async Task<User> GetByIdWithInfoAsync(int id)
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             User user = await _context.Users.Include(user => user.Posts).
@@ -46,6 +61,8 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                                                     Include(user => user.Followers).
                                                     Include(user => user.Followings).
                                                     Include(user => user.Bots).
+                                                    Include(user => user.UserPreference).
+                                                    Include(user => user.UserRole).
                                                     FirstOrDefaultAsync(user => user.Id == id);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return user;
@@ -54,14 +71,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public override async Task<User> GetByUsernameAsync(string name)
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            User user = await _context.Users.Include(user => user.Posts).
-                                                    ThenInclude(post => post.Likes).
-                                                    Include(user => user.Entries).
-                                                    ThenInclude(entries => entries.Likes).
-                                                    Include(user => user.Followers).
-                                                    Include(user => user.Followings).
-                                                    Include(user => user.Bots).
-                                                    FirstOrDefaultAsync(user => user.UserName == name);
+            User user = await _context.Users.FirstOrDefaultAsync(user => user.UserName == name);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return user;
         }
@@ -69,14 +79,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public override async Task<User> GetByEmailAsync(string email)
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            User user = await _context.Users.Include(user => user.Posts).
-                                       ThenInclude(post => post.Likes).
-                                       Include(user => user.Entries).
-                                       ThenInclude(entries => entries.Likes).
-                                       Include(user => user.Likes).
-                                       Include(user => user.Followers).
-                                       Include(user => user.Followings).
-                                       FirstOrDefaultAsync(user => user.Email == email);
+            User user = await _context.Users.FirstOrDefaultAsync(user => user.Email == email);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return user;
         }
@@ -98,5 +101,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             throw new NotImplementedException();
         }
+
     }
 }

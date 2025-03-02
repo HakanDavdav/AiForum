@@ -27,10 +27,27 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             return await userRoles.ToListAsync();
         }
 
+        public override async Task<List<UserRole>> GetAllWithInfoAsync()
+        {
+            IQueryable<UserRole> userRoles = _context.Roles
+                                                     .Include(userRole => userRole.User);
+            return await userRoles.ToListAsync();
+        }
+
         public override async Task<UserRole> GetByIdAsync(int id)
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            UserRole role = await _context.Roles.FindAsync(id);
+            UserRole role = await _context.Roles.FirstOrDefaultAsync(userRole => userRole.Id == id);
+                        
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+            return role;
+        }
+
+        public override async Task<UserRole> GetByIdWithInfoAsync(int id)
+        {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            UserRole role = await _context.Roles.Include(userRole => userRole.User)
+                                                .FirstOrDefaultAsync(userRole => userRole.Id == id);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return role;
         }

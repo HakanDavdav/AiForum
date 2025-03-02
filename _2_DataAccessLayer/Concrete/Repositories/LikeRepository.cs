@@ -25,14 +25,28 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task<List<Like>> GetAllAsync()
         {
+            IQueryable<Like> likes = _context.likes;
+            return await likes.ToListAsync();
+        }
+
+        public override async Task<List<Like>> GetAllWithInfoAsync()
+        {
             IQueryable<Like> likes = _context.likes.Include(like => like.User)
-                                                   .Include(like => like.Bot)
-                                                   .Include(like => like.Post)
-                                                   .Include(like => like.Entry);
+                                       .Include(like => like.Bot)
+                                       .Include(like => like.Post)
+                                       .Include(like => like.Entry);
             return await likes.ToListAsync();
         }
 
         public override async Task<Like> GetByIdAsync(int id)
+        {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            Like like = await _context.likes.FirstOrDefaultAsync(like => like.LikeId == id);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+            return like;
+        }
+
+        public override async Task<Like> GetByIdWithInfoAsync(int id)
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             Like like = await _context.likes.Include(like => like.User)
@@ -43,7 +57,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return like;
         }
-
 
         public override async Task InsertAsync(Like t)
         {

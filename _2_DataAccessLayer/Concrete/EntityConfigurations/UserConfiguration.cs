@@ -54,8 +54,6 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .HasForeignKey(follow => follow.FollowedId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-
-
         }
     }
 }
