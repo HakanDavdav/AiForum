@@ -18,7 +18,7 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
         Task<IdentityResult> DisableTwoFactorAuthentication(int userId);
         Task<IdentityResult> ConfirmEmail(UserLoginDto userLoginDto, string emailConfirmationToken);
         Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto);
-        Task<IdentityResult> EditPreferences(int userId, UserPreferencesDto userPreferencesDto);
+        Task<IdentityResult> EditPreferences(int userId, UserEditPreferencesDto userPreferencesDto);
 
 
 

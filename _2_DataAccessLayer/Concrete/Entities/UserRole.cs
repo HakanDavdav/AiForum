@@ -9,7 +9,6 @@ namespace _2_DataAccessLayer.Concrete.Entities
 {
     public class UserRole : IdentityRole<int>
     {
-        public User User { get; set; }
-        public int UserId { get; set; }
+
     }
 }

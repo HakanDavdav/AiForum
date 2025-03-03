@@ -7,13 +7,14 @@ using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace _2_DataAccessLayer.Concrete.Repositories
 {
     public class UserRepository : AbstractUserRepository
     {
-        public UserRepository(ApplicationDbContext context) : base(context)
+        public UserRepository(ApplicationDbContext context, UserManager<User> userManager) : base(context, userManager)
         {
         }
 
@@ -38,8 +39,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                                                     Include(user => user.Followers).
                                                     Include(user => user.Followings).
                                                     Include(user => user.Bots).
-                                                    Include(user => user.UserPreference).
-                                                    Include(user => user.UserRole);
+                                                    Include(user => user.UserPreference);                                                
             return await users.ToListAsync();
         }
 
@@ -62,7 +62,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                                                     Include(user => user.Followings).
                                                     Include(user => user.Bots).
                                                     Include(user => user.UserPreference).
-                                                    Include(user => user.UserRole).
                                                     FirstOrDefaultAsync(user => user.Id == id);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return user;
@@ -97,10 +96,16 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public override Task<User> SearchUser(string query)
+        public override Task<User> SearchUserAsync(string query)
         {
             throw new NotImplementedException();
         }
 
+        //Identity does not have any roles in it's own user table
+        public override async Task<List<string>> GetUserRolesAsync(User user)
+        {
+           List<string> roles = (List<string>)await _userManager.GetRolesAsync(user);
+            return roles;
+        }
     }
 }

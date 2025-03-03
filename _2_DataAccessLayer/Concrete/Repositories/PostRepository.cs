@@ -30,16 +30,32 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         }
 
         public override async Task<List<Post>> GetAllWithInfoAsync()
-        {
-            IQueryable<Post> posts = _context.posts.Include(post => post.Entries)
+        {                                          
+                                                   //Post Owner User
+            IQueryable<Post> posts = _context.posts.Include(post => post.User)
+                                                   //Post Owner Bot
+                                                   .Include(post => post.Bot)
+                                                   //Entry Owner User
+                                                   .Include(post => post.Entries)
                                                    .ThenInclude(entry => entry.User)
+                                                   //Entry Owner Bot
+                                                   .Include(post => post.Entries)
+                                                   .ThenInclude(entry => entry.Bot)
+                                                   //Entry Likes With Liked Users
                                                    .Include(post => post.Entries)
                                                    .ThenInclude(entry => entry.Likes)
                                                    .ThenInclude(like => like.User)
+                                                   //Entry Likes With Liked Bots
+                                                   .Include(post => post.Entries)
+                                                   .ThenInclude(entry => entry.Likes)
+                                                   .ThenInclude(like => like.Bot)
+                                                   //Post User Likes And Bot Likes
                                                    .Include(post => post.Likes)
                                                    .ThenInclude(like => like.User)
-                                                   .Include(post => post.User)
-                                                   .Include(post => post.Bot);
+                                                   ////Post User Likes And Bot Likes
+                                                   .Include(post => post.Likes)
+                                                   .ThenInclude(like => like.Bot);
+
 
             return await posts.ToListAsync();
         }
@@ -55,17 +71,32 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task<Post> GetByIdWithInfoAsync(int id)
         {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            Post post = await _context.posts.Include(post => post.Entries)
-                                            .ThenInclude(entry => entry.User)
-                                            .Include(post => post.Entries)
-                                            .ThenInclude(entry => entry.Likes)
-                                            .ThenInclude(like => like.User)
-                                            .Include(post => post.Likes)
-                                            .ThenInclude(like => like.User)
-                                            .Include(post => post.User)
-                                            .Include(post => post.Bot)
-                                            .FirstOrDefaultAsync(post => post.PostId == id);
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.                                                   
+                                                   //Post Owner User
+            Post post = await _context.posts.Include(post => post.User)
+                                                   //Post Owner Bot
+                                                   .Include(post => post.Bot)
+                                                   //Entry Owner User
+                                                   .Include(post => post.Entries)
+                                                   .ThenInclude(entry => entry.User)
+                                                   //Entry Owner Bot
+                                                   .Include(post => post.Entries)
+                                                   .ThenInclude(entry => entry.Bot)
+                                                   //Entry Likes With Liked Users
+                                                   .Include(post => post.Entries)
+                                                   .ThenInclude(entry => entry.Likes)
+                                                   .ThenInclude(like => like.User)
+                                                   //Entry Likes With Liked Bots
+                                                   .Include(post => post.Entries)
+                                                   .ThenInclude(entry => entry.Likes)
+                                                   .ThenInclude(like => like.Bot)
+                                                   //Post User Likes And Bot Likes
+                                                   .Include(post => post.Likes)
+                                                   .ThenInclude(like => like.User)
+                                                   ////Post User Likes And Bot Likes
+                                                   .Include(post => post.Likes)
+                                                   .ThenInclude(like => like.Bot)
+                                                   .FirstOrDefaultAsync(post => post.PostId == id);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return post;
         }

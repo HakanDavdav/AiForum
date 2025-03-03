@@ -29,10 +29,10 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
         [Authorize]
         [HttpPatch("User/Settings/EditPreferences")]
-        public async Task<IActionResult> EditPreferences(int id, [FromBody] UserPreferencesDto userPreferencesDto)
+        public async Task<IActionResult> EditPreferences(int id, [FromBody] UserEditPreferencesDto userEditPreferencesDto)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
-            var result = await _userService.EditPreferences(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value),userPreferencesDto);
+            var result = await _userService.EditPreferences(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value),userEditPreferencesDto);
 #pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
         }
@@ -80,10 +80,10 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
         [Authorize]
         [HttpPatch("User/Settings/TwoFactorDeactivation")]
-        public async Task<IActionResult> DeactivateTwoFactor([FromBody] UserEditProfileDto userEditProfileDto)
+        public async Task<IActionResult> DeactivateTwoFactor()
         {
 #pragma warning disable CS8604 // Possible null reference argument.
-            var result = await _userService.EditProfile(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), userEditProfileDto);
+            var result = await _userService.DisableTwoFactorAuthentication((int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
 #pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
 
@@ -92,7 +92,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
         [Authorize]
         [HttpPost("User/Settings/Logout")]
-        public async Task<IActionResult> Logout(int id)
+        public async Task<IActionResult> Logout()
         {
             var result = await _userService.Logout();
             return Ok(result);

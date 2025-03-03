@@ -49,7 +49,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 #pragma warning restore CS8603 // Possible null reference return.
         }
 
-        public override async Task<UserPreference> GetByUserId(int id)
+        public override async Task<UserPreference> GetByUserIdAsync(int id)
         {
             var userPreference = await _context.userPreferences.FirstOrDefaultAsync(userpreference => userpreference.UserId == id);
 #pragma warning disable CS8603 // Possible null reference return.
@@ -57,7 +57,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 #pragma warning restore CS8603 // Possible null reference return.
         }
 
-        public override async Task<UserPreference> GetByUserIdWithInfo(int id)
+        public override async Task<UserPreference> GetByUserIdWithInfoAsync(int id)
         {
             var userPreference = await _context.userPreferences.Include(userPreference => userPreference.User)
                                                                .FirstOrDefaultAsync(userpreference => userpreference.UserId == id);

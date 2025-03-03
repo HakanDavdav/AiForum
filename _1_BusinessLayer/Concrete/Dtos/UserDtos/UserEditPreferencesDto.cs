@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace _1_BusinessLayer.Concrete.Dtos.UserDtos
 {
-    public class UserPreferencesDto
+    public class UserEditPreferencesDto
     {
         public string Theme { get; set; }
         public int EntryPerPage { get; set; }

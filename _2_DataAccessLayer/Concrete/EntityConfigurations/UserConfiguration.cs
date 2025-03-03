@@ -23,12 +23,16 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .WithOne(userPreference => userPreference.User)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasMany(user => user.Notifications)
+            builder.HasMany(user => user.ReceivedNotifications)
                 .WithOne(notification => notification.User)
                 .HasForeignKey(notification => notification.UserId)
-                .OnDelete(DeleteBehavior.NoAction); ;
-                
-                
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasMany(user => user.SentNotifications)
+                .WithOne(notification => notification.FromUser)
+                .HasForeignKey(notification => notification.FromUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             builder.HasMany(user => user.Entries)
                 .WithOne(entry => entry.User)
                 .HasForeignKey(entry => entry.UserId)

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace _2_DataAccessLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class firstMigration : Migration
+    public partial class SecondMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,7 +35,6 @@ namespace _2_DataAccessLayer.Migrations
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProfileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Personality = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -163,13 +162,60 @@ namespace _2_DataAccessLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "bots",
+                columns: table => new
+                {
+                    BotId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BotProfileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BotPersonality = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Instructions = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DailyBotMessageCount = table.Column<int>(type: "int", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_bots", x => x.BotId);
+                    table.ForeignKey(
+                        name: "FK_bots_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "userPreferences",
+                columns: table => new
+                {
+                    UserPreferenceId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Theme = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EntryPerPage = table.Column<int>(type: "int", nullable: false),
+                    PostPerPage = table.Column<int>(type: "int", nullable: false),
+                    Notifications = table.Column<bool>(type: "bit", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_userPreferences", x => x.UserPreferenceId);
+                    table.ForeignKey(
+                        name: "FK_userPreferences_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "follows",
                 columns: table => new
                 {
                     FollowId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FolloweeId = table.Column<int>(type: "int", nullable: false),
-                    FollowedId = table.Column<int>(type: "int", nullable: false)
+                    FollowedId = table.Column<int>(type: "int", nullable: false),
+                    BotFolloweeId = table.Column<int>(type: "int", nullable: false),
+                    BotFollowedId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -184,6 +230,51 @@ namespace _2_DataAccessLayer.Migrations
                         column: x => x.FolloweeId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_follows_bots_BotFollowedId",
+                        column: x => x.BotFollowedId,
+                        principalTable: "bots",
+                        principalColumn: "BotId");
+                    table.ForeignKey(
+                        name: "FK_follows_bots_BotFolloweeId",
+                        column: x => x.BotFolloweeId,
+                        principalTable: "bots",
+                        principalColumn: "BotId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "notifications",
+                columns: table => new
+                {
+                    NotificationId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Context = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    FromUserId = table.Column<int>(type: "int", nullable: false),
+                    FromBotId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_notifications", x => x.NotificationId);
+                    table.ForeignKey(
+                        name: "FK_notifications_AspNetUsers_FromUserId",
+                        column: x => x.FromUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_notifications_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_notifications_bots_FromBotId",
+                        column: x => x.FromBotId,
+                        principalTable: "bots",
+                        principalColumn: "BotId");
                 });
 
             migrationBuilder.CreateTable(
@@ -195,7 +286,8 @@ namespace _2_DataAccessLayer.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Context = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TrendPoint = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    BotId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -205,6 +297,11 @@ namespace _2_DataAccessLayer.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_posts_bots_BotId",
+                        column: x => x.BotId,
+                        principalTable: "bots",
+                        principalColumn: "BotId");
                 });
 
             migrationBuilder.CreateTable(
@@ -215,7 +312,8 @@ namespace _2_DataAccessLayer.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Context = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PostId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    BotId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -225,6 +323,11 @@ namespace _2_DataAccessLayer.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_entries_bots_BotId",
+                        column: x => x.BotId,
+                        principalTable: "bots",
+                        principalColumn: "BotId");
                     table.ForeignKey(
                         name: "FK_entries_posts_PostId",
                         column: x => x.PostId,
@@ -240,7 +343,8 @@ namespace _2_DataAccessLayer.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PostId = table.Column<int>(type: "int", nullable: false),
                     EntryId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    BotId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -250,6 +354,11 @@ namespace _2_DataAccessLayer.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_likes_bots_BotId",
+                        column: x => x.BotId,
+                        principalTable: "bots",
+                        principalColumn: "BotId");
                     table.ForeignKey(
                         name: "FK_likes_entries_EntryId",
                         column: x => x.EntryId,
@@ -302,6 +411,16 @@ namespace _2_DataAccessLayer.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_bots_UserId",
+                table: "bots",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_entries_BotId",
+                table: "entries",
+                column: "BotId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_entries_PostId",
                 table: "entries",
                 column: "PostId");
@@ -312,6 +431,16 @@ namespace _2_DataAccessLayer.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_follows_BotFollowedId",
+                table: "follows",
+                column: "BotFollowedId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_follows_BotFolloweeId",
+                table: "follows",
+                column: "BotFolloweeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_follows_FollowedId",
                 table: "follows",
                 column: "FollowedId");
@@ -320,6 +449,11 @@ namespace _2_DataAccessLayer.Migrations
                 name: "IX_follows_FolloweeId",
                 table: "follows",
                 column: "FolloweeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_likes_BotId",
+                table: "likes",
+                column: "BotId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_likes_EntryId",
@@ -337,9 +471,35 @@ namespace _2_DataAccessLayer.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_notifications_FromBotId",
+                table: "notifications",
+                column: "FromBotId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_notifications_FromUserId",
+                table: "notifications",
+                column: "FromUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_notifications_UserId",
+                table: "notifications",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_posts_BotId",
+                table: "posts",
+                column: "BotId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_posts_UserId",
                 table: "posts",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_userPreferences_UserId",
+                table: "userPreferences",
+                column: "UserId",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -367,6 +527,12 @@ namespace _2_DataAccessLayer.Migrations
                 name: "likes");
 
             migrationBuilder.DropTable(
+                name: "notifications");
+
+            migrationBuilder.DropTable(
+                name: "userPreferences");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -374,6 +540,9 @@ namespace _2_DataAccessLayer.Migrations
 
             migrationBuilder.DropTable(
                 name: "posts");
+
+            migrationBuilder.DropTable(
+                name: "bots");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

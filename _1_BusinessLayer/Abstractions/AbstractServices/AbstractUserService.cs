@@ -17,17 +17,19 @@ namespace _1_BusinessLayer.Abstractions.MainServices
     {
         protected readonly AbstractTokenSender _tokenSender;
         protected readonly AbstractUserRepository _userRepository;
+        protected readonly AbstractUserPreferenceRepository _userPreferenceRepository;
         protected readonly UserManager<User> _userManager;
         protected readonly SignInManager<User> _signInManager;
 
 
         protected AbstractUserService(AbstractTokenSender tokenSender, AbstractUserRepository userRepository,
-            UserManager<User> userManager, SignInManager<User> signInManager)
+            UserManager<User> userManager, SignInManager<User> signInManager, AbstractUserPreferenceRepository userPreferenceRepository)
         {
             _userRepository = userRepository;
             _tokenSender = tokenSender;
             _userManager = userManager;
             _signInManager = signInManager;
+            _userPreferenceRepository = userPreferenceRepository;
             
         }
 
@@ -38,7 +40,7 @@ namespace _1_BusinessLayer.Abstractions.MainServices
         public abstract Task<IdentityResult> ConfirmEmail(UserLoginDto userLoginDto, string emailConfirmationToken);
         public abstract Task<IdentityResult> ConfirmPhoneNumber(int userId, string phoneConfirmationToken);
         public abstract Task<IdentityResult> DisableTwoFactorAuthentication(int userId);
-        public abstract Task<IdentityResult> EditPreferences(int userId, UserPreferencesDto userPreferencesDto);
+        public abstract Task<IdentityResult> EditPreferences(int userId, UserEditPreferencesDto userPreferencesDto);
         public abstract Task<IdentityResult> EditProfile(int userId ,UserEditProfileDto userEditProfileDto);
         public abstract Task<IdentityResult> Login(UserLoginDto userLoginDto, string twoFactorToken);
         public abstract Task<IdentityResult> Logout();

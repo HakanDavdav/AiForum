@@ -3,19 +3,16 @@ using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete;
 using _2_DataAccessLayer.Concrete.Extensions;
 using _2_DataAccessLayer.Concrete.Repositories;
-using _2_DataAccessLayer;
 using Microsoft.AspNetCore.Identity;
 using _2_DataAccessLayer.Concrete.Entities;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using _1_BusinessLayer.Abstractions.MainServices;
-using System.Text;
 using _1_BusinessLayer.Concrete.Services_Tools;
 using _1_BusinessLayer.Concrete.Tools.Senders;
 using _1_BusinessLayer.Concrete.Tools.Factories;
 using _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders;
 using _1_BusinessLayer.Abstractions.AbstractTools.AbstractFactories;
 using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
+using _1_BusinessLayer.Abstractions.AbstractServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,9 +25,10 @@ builder.Services.AddScoped<AbstractEntryRepository, EntryRepository>();
 builder.Services.AddScoped<AbstractFollowRepository, FollowRepository>();
 builder.Services.AddScoped<AbstractLikeRepository, LikeRepository>();
 builder.Services.AddScoped<AbstractPostRepository, PostRepository>();
-builder.Services.AddScoped<AbstractUserRoleRepository, UserRoleRepository>();
 builder.Services.AddScoped<AbstractUserRepository, UserRepository>();
-
+builder.Services.AddScoped<AbstractBotRepository, BotRepository>();
+builder.Services.AddScoped<AbstractNotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<AbstractUserPreferenceRepository, UserPreferenceRepository>();
 
 //autowiring tools
 builder.Services.AddScoped<AbstractTokenFactory, TokenFactory>();
@@ -42,6 +40,7 @@ builder.Services.AddScoped<SignInManager<User>>();
 builder.Services.AddScoped<UserManager<User>>();
 //autowiring services
 builder.Services.AddScoped<AbstractUserService, UserService>();
+builder.Services.AddScoped<AbstractTokenService, TokenService>();
 
 
 

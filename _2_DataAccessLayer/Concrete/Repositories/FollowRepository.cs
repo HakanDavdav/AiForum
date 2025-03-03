@@ -31,7 +31,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public override async Task<List<Follow>> GetAllWithInfoAsync()
         {
             IQueryable<Follow> allFollows = _context.follows.Include(follow => follow.Followee)
-                                                            .Include(follow => follow.Followed);
+                                                            .Include(follow => follow.Followed)
+                                                            .Include(follow => follow.BotFollowee)
+                                                            .Include(follow => follow.BotFollowed);
             return await allFollows.ToListAsync();
         }
 
@@ -47,8 +49,10 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             Follow follow = await _context.follows.Include(follow => follow.Followee)
-                                                  .Include(follow => follow.Followed)
-                                                  .FirstOrDefaultAsync(follow => follow.FollowId == id);
+                                                            .Include(follow => follow.Followed)
+                                                            .Include(follow => follow.BotFollowee)
+                                                            .Include(follow => follow.BotFollowed)
+                                                            .FirstOrDefaultAsync(follow => follow.FollowId == id);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return follow;
         }

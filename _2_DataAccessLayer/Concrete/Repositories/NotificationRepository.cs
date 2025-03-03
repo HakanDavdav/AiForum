@@ -36,13 +36,13 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             return await userNotifications.ToListAsync();
         }
 
-        public override async Task<List<Notification>> GetAllByUserId(int id)
+        public override async Task<List<Notification>> GetAllByUserIdAsync(int id)
         {
             IQueryable<Notification> userNotifications = _context.notifications.Where(notification => notification.UserId == id);
             return await userNotifications.ToListAsync();
         }
 
-        public override async Task<List<Notification>> GetAllByUserIdWithInfo(int id)
+        public override async Task<List<Notification>> GetAllByUserIdWithInfoAsync(int id)
         {
             IQueryable<Notification> userNotifications = _context.notifications.Where(notification => notification.UserId == id)
                                                                               .Include(notification => notification.User)

@@ -29,7 +29,7 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .HasForeignKey(like => like.BotId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasMany(bot => bot.Notifications)
+            builder.HasMany(bot => bot.SentNotifications)
                 .WithOne(notification => notification.FromBot)
                 .HasForeignKey(notification => notification.FromBotId)
                 .OnDelete(DeleteBehavior.NoAction);

@@ -14,18 +14,19 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
         public void Configure(EntityTypeBuilder<Notification> builder)
         {
             builder.HasOne(notification => notification.User)
-                .WithMany(user => user.Notifications)
+                .WithMany(user => user.ReceivedNotifications)
                 .HasForeignKey(notification => notification.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
            
             builder.HasOne(notification => notification.FromUser)
-                .WithMany(fromUser => fromUser.Notifications)
+                .WithMany(fromUser => fromUser.SentNotifications)
                 .HasForeignKey(notification => notification.FromUserId)
                 .OnDelete(DeleteBehavior.NoAction);
             
             builder.HasOne(notification => notification.FromBot)
-                .WithMany(fromBot => fromBot.Notifications)
-                .HasForeignKey(notification => notification.FromBotId);
+                .WithMany(fromBot => fromBot.SentNotifications)
+                .HasForeignKey(notification => notification.FromBotId)
+                .OnDelete(DeleteBehavior.NoAction);
                 
         }
     }

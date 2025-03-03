@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using _1_BusinessLayer.Concrete.Errors;
+using _1_BusinessLayer.Concrete.Tools.Errors;
 using Microsoft.AspNetCore.Identity;
 
 namespace _1_BusinessLayer.Concrete.Tools.Mappers
@@ -39,7 +39,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
 
             if (!signInResult.Succeeded && !signInResult.IsLockedOut && !signInResult.IsNotAllowed && !signInResult.RequiresTwoFactor)
             {
-                errors.Add(new UnexpectedError("An unexpected error occurred during the sign-in process."));
+                errors.Add(new UnauthorizedError("Invalid account info"));
             }
 
             return IdentityResult.Failed(errors.ToArray());

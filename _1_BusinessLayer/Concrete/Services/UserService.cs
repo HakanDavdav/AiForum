@@ -20,9 +20,10 @@ namespace _1_BusinessLayer.Concrete.Services_Tools
 {
     public class UserService : AbstractUserService
     {
-        public UserService(AbstractTokenSender tokenSender, AbstractUserRepository userRepository,
-            UserManager<User> userManager, SignInManager<User> signInManager)
-            : base(tokenSender, userRepository, userManager, signInManager)
+        public UserService(AbstractTokenSender tokenSender, AbstractUserRepository userRepository, 
+            UserManager<User> userManager, SignInManager<User> signInManager,
+            AbstractUserPreferenceRepository userPreferenceRepository) 
+            : base(tokenSender, userRepository, userManager, signInManager, userPreferenceRepository)
         {
         }
 
@@ -155,17 +156,33 @@ namespace _1_BusinessLayer.Concrete.Services_Tools
                 var createUserResult = await _userManager.CreateAsync(user, userRegisterDto.Password);
                 try { await _tokenSender.SendEmail_EmailConfirmationTokenAsync(user); } 
                 catch (Exception ex) { return IdentityResult.Failed(new UnexpectedError("Email connection error")); throw; }
+                if (createUserResult.Succeeded)
+                {
+                    await _userPreferenceRepository.InsertAsync(new UserPreference
+                    {
+                        EntryPerPage = 15,
+                        Notifications = true,
+                        Theme = "White",
+                        PostPerPage = 40,
+                        UserId = user.Id
+                    });
+                    await _userManager.AddToRoleAsync(user,"StandardUser");
+                    return createUserResult;
+                }
                 return createUserResult;
             }
             return IdentityResult.Failed(new NotFoundError("User not found"));
         }
 
-        public override async Task<IdentityResult> EditPreferences(int userId, UserPreferencesDto userPreferencesDto)
+        public override async Task<IdentityResult> EditPreferences(int userId, UserEditPreferencesDto userPreferencesDto)
         {
             var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
             {
-                //
+                var userPreference = await _userPreferenceRepository.GetByUserIdAsync(userId);
+                userPreference = userPreferencesDto.Update_UserEditPreferencesDtoToUserPreferences(userPreference);
+                await _userPreferenceRepository.UpdateAsync(userPreference);
+                return IdentityResult.Success;
             }
             return  IdentityResult.Failed(new NotFoundError("User not found"));
         }

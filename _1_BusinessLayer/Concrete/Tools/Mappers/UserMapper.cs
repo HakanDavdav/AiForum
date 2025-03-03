@@ -56,7 +56,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
         }
 
 
-        public static UserPreference Update_UserEditPreferencesDtoToUserPreferences(this UserPreferencesDto userPreferencesDto, UserPreference userPreferences)
+        public static UserPreference Update_UserEditPreferencesDtoToUserPreferences(this UserEditPreferencesDto userPreferencesDto, UserPreference userPreferences)
         {
             userPreferences.PostPerPage = userPreferencesDto.PostPerPage;
             userPreferences.EntryPerPage = userPreferencesDto.EntryPerPage;
