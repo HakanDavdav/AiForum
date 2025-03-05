@@ -13,6 +13,7 @@ using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
+using MailKit;
 
 namespace _1_BusinessLayer.Concrete.Tools.Senders
 {
@@ -48,9 +49,8 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
 
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is TimeoutException || ex is ServiceNotAuthenticatedException || ex is SmtpException)
             {
-                return IdentityResult.Failed(new InternalServerError("Mail connection error"));
                 throw;
             }
             finally
@@ -81,9 +81,8 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
 
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is TimeoutException || ex is ServiceNotAuthenticatedException || ex is SmtpException)
             {
-                return IdentityResult.Failed(new InternalServerError("Mail connection error"));
                 throw;
             }
             finally
@@ -114,9 +113,8 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
 
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is TimeoutException || ex is ServiceNotAuthenticatedException || ex is SmtpException)
             {
-                return IdentityResult.Failed(new InternalServerError("Mail connection error"));
                 throw;
             }
             finally
@@ -148,9 +146,8 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
 
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is TimeoutException || ex is ServiceNotAuthenticatedException || ex is SmtpException)
             {
-                return IdentityResult.Failed(new InternalServerError("Mail connection error"));
                 throw;
             }
             finally
@@ -161,15 +158,11 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
 
 
 
-        public override async Task<IdentityResult> SendSms_PhoneNumberConfirmationTokenAsync(User user)
+        public override async Task<IdentityResult> SendSms_PhoneNumberConfirmationTokenAsync(User user, string phoneNumber)
         {
             throw new NotImplementedException();
         }
 
-        public override async Task<IdentityResult> SendSms_PhoneNumberChangeTokenAsync(User user, string newMail)
-        {
-            throw new NotImplementedException();
-        }
 
         public override async Task<IdentityResult> SendSms_ResetPasswordTokenAsync(User user)
         {
@@ -180,5 +173,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
         {
             throw new NotImplementedException();
         }
+
+        
     }
 }

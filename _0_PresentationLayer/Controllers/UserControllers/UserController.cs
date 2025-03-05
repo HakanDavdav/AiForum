@@ -83,7 +83,18 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         public async Task<IActionResult> DeactivateTwoFactor()
         {
 #pragma warning disable CS8604 // Possible null reference argument.
-            var result = await _userService.DisableTwoFactorAuthentication((int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
+            var result = await _userService.DisableTwoFactorAuthentication(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
+#pragma warning restore CS8604 // Possible null reference argument.
+            return Ok(result);
+
+        }
+
+        [Authorize]
+        [HttpPatch("User/Settings/AddPhoneNumber")]
+        public async Task<IActionResult> ConfirmPhoneNumber(string confirmPhoneNumberToken)
+        {
+#pragma warning disable CS8604 // Possible null reference argument.
+            var result = await _userService.ConfirmPhoneNumber((int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), confirmPhoneNumberToken));
 #pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
 

@@ -22,7 +22,7 @@ namespace _1_BusinessLayer.Abstractions.AbstractTools.AbstractFactories
         }
 
         public abstract Task<string> CreateChangeEmailTokenAsync(User user, string newEmail);
-        public abstract Task<string> CreateChangePhoneNumberTokenAsync(User user, string phoneNumber);
+        public abstract Task<string> CreateConfirmPhoneNumberTokenAsync(User user, string phoneNumber);
         public abstract Task<string> CreateMailConfirmationTokenAsync(User user);
         public abstract Task<string> CreatePasswordResetTokenAsync(User user);
         public abstract Task<string> CreateTwoFactorTokenAsync(User user);

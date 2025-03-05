@@ -30,7 +30,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Factories
             return await _userManager.GenerateChangeEmailTokenAsync(user, newEmail);
         }
 
-        public override async Task<string> CreateChangePhoneNumberTokenAsync(User user, string phoneNumber)
+        public override async Task<string> CreateConfirmPhoneNumberTokenAsync(User user, string phoneNumber)
         {
             return await _userManager.GenerateChangePhoneNumberTokenAsync(user, phoneNumber);
         }

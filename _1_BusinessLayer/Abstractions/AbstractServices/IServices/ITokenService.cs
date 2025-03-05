@@ -15,10 +15,19 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
         Task<IdentityResult> SendEmail_ResetPasswordTokenAsync(User user);
         Task<IdentityResult> SendEmail_TwoFactorTokenAsync(User user);
 
-        Task<IdentityResult> SendSms_ChangePhoneNumberTokenAsync(User user,string newPhoneNumber);
-        Task<IdentityResult> SendSms_ConfirmPhoneNumberTokenAsync(User user);
+        Task<IdentityResult> SendSms_ConfirmPhoneNumberTokenAsync(User user, string newPhoneNumber);
         Task<IdentityResult> SendSms_ResetPasswordTokenAsync(User user);
         Task<IdentityResult> SendSms_TwoFactorTokenAsync(User user);
+
+
+        Task<IdentityResult> SendEmail_ChangeEmailTokenAsync(int id, string newEmail);
+        Task<IdentityResult> SendEmail_ConfirmEmailTokenAsync(int id);
+        Task<IdentityResult> SendEmail_ResetPasswordTokenAsync(int id);
+        Task<IdentityResult> SendEmail_TwoFactorTokenAsync(int id);
+
+        Task<IdentityResult> SendSms_ConfirmPhoneNumberTokenAsync(int id, string newPhoneNumber);
+        Task<IdentityResult> SendSms_ResetPasswordTokenAsync(int id);
+        Task<IdentityResult> SendSms_TwoFactorTokenAsync(int id);
 
 
     }

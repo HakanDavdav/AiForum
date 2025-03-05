@@ -88,14 +88,14 @@ namespace _1_BusinessLayer.Concrete.Services_Tools
                
         }
 
-        public override async Task<IdentityResult> ConfirmPhoneNumber(int userId, string twoFactorToken)
+        public override async Task<IdentityResult> ConfirmPhoneNumber(int userId, string phoneConfirmationToken)
         {
             var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
             {
                 if (user.PhoneNumber != null)
                 {
-                    var confirmPhoneNumberResult = await _userManager.VerifyChangePhoneNumberTokenAsync(user, twoFactorToken, user.PhoneNumber);
+                    var confirmPhoneNumberResult = await _userManager.VerifyChangePhoneNumberTokenAsync(user, phoneConfirmationToken, user.PhoneNumber);
                     if (confirmPhoneNumberResult == true)
                     {
                         return IdentityResult.Success;
@@ -124,8 +124,7 @@ namespace _1_BusinessLayer.Concrete.Services_Tools
                     var signInResult = await _signInManager.PasswordSignInAsync(user,userLoginDto.Password,false,false);
                     return signInResult.ToIdentityResult();
                 }
-                try { await _tokenSender.SendEmail_EmailConfirmationTokenAsync(user); } 
-                catch(Exception ex) { return IdentityResult.Failed(new UnexpectedError("Email connection error")); throw; };
+                await _tokenSender.SendEmail_EmailConfirmationTokenAsync(user); 
                 return IdentityResult.Failed(new UnauthorizedError("Account is not confirmed. Your confirmation code has sent"));
             }
             return IdentityResult.Failed(new NotFoundError("User not found"));
@@ -154,10 +153,10 @@ namespace _1_BusinessLayer.Concrete.Services_Tools
             if (user != null)
             {
                 var createUserResult = await _userManager.CreateAsync(user, userRegisterDto.Password);
-                try { await _tokenSender.SendEmail_EmailConfirmationTokenAsync(user); } 
-                catch (Exception ex) { return IdentityResult.Failed(new UnexpectedError("Email connection error")); throw; }
+                await _tokenSender.SendEmail_EmailConfirmationTokenAsync(user); 
                 if (createUserResult.Succeeded)
                 {
+                    //Default preference
                     await _userPreferenceRepository.InsertAsync(new UserPreference
                     {
                         EntryPerPage = 15,
