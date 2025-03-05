@@ -11,7 +11,7 @@ using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 
 
-namespace _1_BusinessLayer.Abstractions.MainServices
+namespace _1_BusinessLayer.Abstractions.AbstractServices
 {
     public abstract class AbstractUserService : IUserService
     {
@@ -30,7 +30,7 @@ namespace _1_BusinessLayer.Abstractions.MainServices
             _userManager = userManager;
             _signInManager = signInManager;
             _userPreferenceRepository = userPreferenceRepository;
-            
+
         }
 
         public abstract Task<IdentityResult> ActivateTwoFactorAuthentication(int userId);
@@ -41,7 +41,7 @@ namespace _1_BusinessLayer.Abstractions.MainServices
         public abstract Task<IdentityResult> ConfirmPhoneNumber(int userId, string phoneConfirmationToken);
         public abstract Task<IdentityResult> DisableTwoFactorAuthentication(int userId);
         public abstract Task<IdentityResult> EditPreferences(int userId, UserEditPreferencesDto userPreferencesDto);
-        public abstract Task<IdentityResult> EditProfile(int userId ,UserEditProfileDto userEditProfileDto);
+        public abstract Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto);
         public abstract Task<IdentityResult> Login(UserLoginDto userLoginDto, string twoFactorToken);
         public abstract Task<IdentityResult> Logout();
         public abstract Task<IdentityResult> PasswordReset(int userId, string newPassword, string resetPasswordToken);

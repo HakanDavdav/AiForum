@@ -12,34 +12,31 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
     {
         public static IdentityResult ToIdentityResult(this SignInResult signInResult)
         {
-            var errors = new List<IdentityError>();
-
             if (signInResult.Succeeded)
             {
                 return IdentityResult.Success;
             }
 
+            var errors = new List<IdentityError>();
+
             if (signInResult.IsLockedOut)
             {
                 errors.Add(new ForbiddenError("The user account is locked out."));
-
             }
 
             if (signInResult.IsNotAllowed)
             {
-                errors.Add(new UnauthorizedError("The user is not allowed to sign in."));
-
+                errors.Add(new UnauthorizedError("The user is not allowed to sign in or not confirmed."));
             }
 
             if (signInResult.RequiresTwoFactor)
             {
-                errors.Add(new ValidationError("Two-factor authentication is required."));
-
+                errors.Add(new UnauthorizedError("Two-factor authentication is required."));
             }
 
-            if (!signInResult.Succeeded && !signInResult.IsLockedOut && !signInResult.IsNotAllowed && !signInResult.RequiresTwoFactor)
+            if (errors.Count == 0)
             {
-                errors.Add(new UnauthorizedError("Invalid account info"));
+                errors.Add(new UnexpectedError("An unexpected error occurred."));
             }
 
             return IdentityResult.Failed(errors.ToArray());

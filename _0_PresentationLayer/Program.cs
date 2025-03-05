@@ -5,8 +5,6 @@ using _2_DataAccessLayer.Concrete.Extensions;
 using _2_DataAccessLayer.Concrete.Repositories;
 using Microsoft.AspNetCore.Identity;
 using _2_DataAccessLayer.Concrete.Entities;
-using _1_BusinessLayer.Abstractions.MainServices;
-using _1_BusinessLayer.Concrete.Services_Tools;
 using _1_BusinessLayer.Concrete.Tools.Senders;
 using _1_BusinessLayer.Concrete.Tools.Factories;
 using _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders;
@@ -89,6 +87,7 @@ builder.Services.AddSwaggerGen(); // Swagger UI ve dokümantasyonunu olu?turmak i
 
 
 var app = builder.Build();
+
 
 using (var scope = app.Services.CreateScope())
 {

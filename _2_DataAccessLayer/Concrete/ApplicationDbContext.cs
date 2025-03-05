@@ -38,7 +38,7 @@ namespace _2_DataAccessLayer.Concrete
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+
 
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new PostConfiguration());
@@ -53,5 +53,6 @@ namespace _2_DataAccessLayer.Concrete
             base.OnModelCreating(modelBuilder);
             
         }
+        
     }
 }

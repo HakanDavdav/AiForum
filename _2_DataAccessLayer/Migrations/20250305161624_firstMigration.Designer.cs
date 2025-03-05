@@ -12,8 +12,8 @@ using _2_DataAccessLayer.Concrete;
 namespace _2_DataAccessLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250303000041_SecondMigration")]
-    partial class SecondMigration
+    [Migration("20250305161624_firstMigration")]
+    partial class firstMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

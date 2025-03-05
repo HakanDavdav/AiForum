@@ -1,4 +1,4 @@
-﻿using _1_BusinessLayer.Abstractions.MainServices;
+﻿using _1_BusinessLayer.Abstractions.AbstractServices;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Authorization;

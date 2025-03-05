@@ -141,7 +141,7 @@ namespace _1_BusinessLayer.Concrete.Services
         {
             if (user.PhoneNumber != null)
             {
-                var tokenResult = await _tokenSender.SendSms_PhoneNumberConfirmationTokenAsync(user);
+                var tokenResult = await _tokenSender.SendSms_PhoneNumberConfirmationTokenAsync(user, newPhoneNumber);
                 if (tokenResult.Succeeded)
                 {
                     return IdentityResult.Success;
@@ -158,7 +158,7 @@ namespace _1_BusinessLayer.Concrete.Services
             {
                 if (user.PhoneNumber != null)
                 {
-                    var tokenResult = await _tokenSender.SendSms_PhoneNumberConfirmationTokenAsync(user);
+                    var tokenResult = await _tokenSender.SendSms_PhoneNumberConfirmationTokenAsync(user, newPhoneNumber);
                     if (tokenResult.Succeeded)
                     {
                         return IdentityResult.Success;
@@ -174,8 +174,8 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> SendSms_ResetPasswordTokenAsync(User user)
         {
-            if (user.PhoneNumber != null)
-            
+            if (user.PhoneNumber != null) 
+            { 
                 var tokenResult = await _tokenSender.SendSms_ResetPasswordTokenAsync(user);
                 if (tokenResult.Succeeded)
                 {

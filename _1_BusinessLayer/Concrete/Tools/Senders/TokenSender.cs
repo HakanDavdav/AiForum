@@ -73,7 +73,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
                     smtpClient.EnableSsl = true;
 
                     // E-posta mesajını oluşturma
-                    var mailMessage = new MailMessage("mihrsohbet@gmail.com", newMail, subject, body);
+                    var mailMessage = new MailMessage("mihrsohbet@gmail.com", user.Email, subject, body);
 
                     // E-posta gönderme işlemi
                     await smtpClient.SendMailAsync(mailMessage);
