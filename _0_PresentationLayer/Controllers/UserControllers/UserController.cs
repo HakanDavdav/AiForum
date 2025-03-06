@@ -91,10 +91,10 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
         [Authorize]
         [HttpPatch("User/Settings/Security/AddPhoneNumber")]
-        public async Task<IActionResult> ConfirmPhoneNumber(string confirmPhoneNumberToken)
+        public async Task<IActionResult> AddPhoneNumber(string confirmPhoneNumberToken)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
-            var result = await _userService.ConfirmPhoneNumber((int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value)), confirmPhoneNumberToken);
+            var result = await _userService.AddPhoneNumber((int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value)), confirmPhoneNumberToken);
 #pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
 

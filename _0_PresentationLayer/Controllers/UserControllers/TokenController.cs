@@ -28,23 +28,6 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
 
         [Authorize]
-        [HttpPost("User/Settings/SendEmailTwoFactorToken")]
-        public async Task<IActionResult> SendEmail_TwoFactorToken()
-        {
-            var result = await _tokenService.SendEmail_TwoFactorTokenAsync(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
-            return Ok(result);
-        }
-
-        [Authorize]
-        [HttpPost("User/Settings/SendEmailResetPasswordToken")]
-        public async Task<IActionResult> SendEmail_ResetPasswordToken()
-        {
-            var result = await _tokenService.SendEmail_ResetPasswordTokenAsync(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
-            return Ok(result);
-        }
-
-
-        [Authorize]
         [HttpPost("User/Settings/SendSmsConfirmPhoneNumberToken")]
         public async Task<IActionResult> SendSms_ConfirmPhoneNumberToken(string newPhoneNumber)
         {
@@ -52,22 +35,14 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             return Ok(result);
         }
 
+
         [Authorize]
-        [HttpPost("User/Settings/SendSmsResetPasswordToken")]
-        public async Task<IActionResult> SendSms_ResetPasswordToken()
+        [HttpPost("User/Settings/SendResetPasswordToken")]
+        public async Task<IActionResult> SendEmail_ResetPasswordToken(string provider)
         {
-            var result = await _tokenService.SendSms_ResetPasswordTokenAsync(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
+            var result = await _tokenService.Send_ResetPasswordTokenAsync(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), provider);
             return Ok(result);
         }
 
-
-        [Authorize]
-        [HttpPost("User/Settings/SendSmsTwoFactorToken")]
-        public async Task<IActionResult> SendSms_TwoFactorToken()
-        {
-            var result = await _tokenService.SendSms_TwoFactorTokenAsync(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
-            return Ok(result);
-        }
-     
     }   
 }

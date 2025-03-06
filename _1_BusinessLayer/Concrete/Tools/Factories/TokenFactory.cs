@@ -47,9 +47,9 @@ namespace _1_BusinessLayer.Concrete.Tools.Factories
         }
 
 
-        public override async Task<string> CreateTwoFactorTokenAsync(User user)
+        public override async Task<string> CreateTwoFactorTokenAsync(User user,string provider)
         {
-            return await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultAuthenticatorProvider);
+           return await _userManager.GenerateTwoFactorTokenAsync(user, provider);
         }
     }
 }

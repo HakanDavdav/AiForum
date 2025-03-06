@@ -7,12 +7,11 @@ namespace _1_BusinessLayer.Abstractions.AbstractTools.ITools
     {
         Task<IdentityResult> SendEmail_EmailChangeTokenAsync(User user, string newMail);
         Task<IdentityResult> SendEmail_EmailConfirmationTokenAsync(User user);
-        Task<IdentityResult> SendEmail_ResetPasswordTokenAsync(User user);
-        Task <IdentityResult> SendEmail_TwoFactorTokenAsync(User user);
-
-
         Task<IdentityResult> SendSms_PhoneNumberConfirmationTokenAsync(User user, string newPhoneNumber);
-        Task<IdentityResult> SendSms_ResetPasswordTokenAsync(User user);
-        Task<IdentityResult> SendSms_TwoFactorTokenAsync(User user);
+
+
+
+        Task<IdentityResult> Send_ResetPasswordTokenAsync(User user,string provider);
+        Task<IdentityResult> Send_TwoFactorTokenAsync(User user, string provider);
     }
 }

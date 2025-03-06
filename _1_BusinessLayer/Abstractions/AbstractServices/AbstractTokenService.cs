@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.AbstractServices.IServices;
 using _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders;
+using _1_BusinessLayer.Concrete.Dtos.UserDtos;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete.Repositories;
@@ -23,25 +24,9 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices
             _userRepository = userRepository;
         }
 
-        public abstract Task<IdentityResult> SendEmail_ChangeEmailTokenAsync(User user, string newEmail);
         public abstract Task<IdentityResult> SendEmail_ChangeEmailTokenAsync(int id, string newEmail);
-
-        public abstract Task<IdentityResult> SendEmail_ConfirmEmailTokenAsync(User user);
         public abstract Task<IdentityResult> SendEmail_ConfirmEmailTokenAsync(int id);
-
-        public abstract Task<IdentityResult> SendEmail_ResetPasswordTokenAsync(User user);
-        public abstract Task<IdentityResult> SendEmail_ResetPasswordTokenAsync(int id);
-
-        public abstract Task<IdentityResult> SendEmail_TwoFactorTokenAsync(User user);
-        public abstract Task<IdentityResult> SendEmail_TwoFactorTokenAsync(int id);
-
-        public abstract Task<IdentityResult> SendSms_ConfirmPhoneNumberTokenAsync(User user, string newPhoneNumber);
         public abstract Task<IdentityResult> SendSms_ConfirmPhoneNumberTokenAsync(int id, string newPhoneNumber);
-
-        public abstract Task<IdentityResult> SendSms_ResetPasswordTokenAsync(User user);
-        public abstract Task<IdentityResult> SendSms_ResetPasswordTokenAsync(int id);
-
-        public abstract Task<IdentityResult> SendSms_TwoFactorTokenAsync(User user);
-        public abstract Task<IdentityResult> SendSms_TwoFactorTokenAsync(int id);
+        public abstract Task<IdentityResult> Send_ResetPasswordTokenAsync(int id, string provider);
     }
 }

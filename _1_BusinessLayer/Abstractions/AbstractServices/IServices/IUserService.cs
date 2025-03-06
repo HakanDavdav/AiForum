@@ -9,9 +9,11 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
         Task<IdentityResult> ChangeEmail(int userId,string newEmail ,string changeEmailToken);
         Task<IdentityResult> ChangePassword(int userId, string oldPassword, string newPassword);
         Task<IdentityResult> ChangeUsername(int userId, string oldUsername, string newUsername);
-        Task<IdentityResult> ConfirmPhoneNumber(int userId, string phoneConfirmationToken);
-        Task<IdentityResult> Login(UserLoginDto userLoginDto, string twoFactorToken);
+        Task<IdentityResult> AddPhoneNumber(int userId, string phoneConfirmationToken);
+        Task<IdentityResult> LoginTwoFactor(UserLoginDto userLoginDto, string twoFactorToken, string provider);
+        Task<IdentityResult> LoginDefault(UserLoginDto userLoginDto);
         Task<IdentityResult> Logout();
+        Task<IdentityResult> ChooseProvider(string provider, string usernameEmailOrPhoneNumber);
         Task<IdentityResult> PasswordReset(int userId, string newPassword, string resetPasswordToken);
         Task<IdentityResult> Register(UserRegisterDto userRegisterDto);
         Task<IdentityResult> ActivateTwoFactorAuthentication(int userId);

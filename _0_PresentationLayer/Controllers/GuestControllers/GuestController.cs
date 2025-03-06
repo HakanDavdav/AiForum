@@ -28,11 +28,26 @@ namespace _0_PresentationLayer.Controllers.GuestControllers
 
         
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto,string twoFactorToken = "null")
+        public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto)
         {
-            var result = await _userService.Login(userLoginDto,twoFactorToken);
+            var result = await _userService.LoginDefault(userLoginDto);          
             return Ok(result);
         }
+
+        [HttpPost("ChooseProvider")]
+        public async Task<IActionResult> ChooseProvider([FromBody] UserLoginDto userLoginDto, string provider)
+        {
+            var result = await _userService.ChooseProvider(provider, provider);
+            return Ok(result);
+        }
+
+        [HttpPost("TwoFactorLogin")]
+        public async Task<IActionResult> LoginTwoFactor([FromBody] UserLoginDto userLoginDto, string twoFactorToken, string provider)
+        {
+            var result = await _userService.LoginTwoFactor(userLoginDto,twoFactorToken,provider);
+            return Ok(result);
+        }
+
 
         [HttpPost("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail([FromBody] UserLoginDto userLoginDto, string confirmMailToken)
@@ -40,9 +55,7 @@ namespace _0_PresentationLayer.Controllers.GuestControllers
             var result = await _userService.ConfirmEmail(userLoginDto,confirmMailToken);
             return Ok(result);
         }
-
-        
-
+       
 
     }
 }

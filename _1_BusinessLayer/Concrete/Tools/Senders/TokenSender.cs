@@ -91,89 +91,97 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
             }
         }
 
-        public override async Task<IdentityResult> SendEmail_ResetPasswordTokenAsync(User user)
+        public override Task<IdentityResult> SendSms_PhoneNumberConfirmationTokenAsync(User user, string newPhoneNumber)
         {
-            SmtpClient smtpClient = null;
-            try
+            throw new NotImplementedException();
+        }
+
+
+
+        public override async Task<IdentityResult> Send_ResetPasswordTokenAsync(User user, string provider)
+        {
+            if (provider == "Email")
             {
-                var token = await _tokenFactory.CreatePasswordResetTokenAsync(user);
-                var (body, subject) = _emailBodyBuilder.BuildPasswordResetBody(token);
-                using (smtpClient = new SmtpClient("smtp.gmail.com"))
+                SmtpClient smtpClient = null;
+                try
                 {
-                    smtpClient.Port = 587; // TLS portu
-                    smtpClient.Credentials = new NetworkCredential("mihrsohbet@gmail.com", "jkyp vxwy gicc cohs");
-                    smtpClient.EnableSsl = true;
+                    var token = await _tokenFactory.CreatePasswordResetTokenAsync(user);
+                    var (body, subject) = _emailBodyBuilder.BuildPasswordResetBody(token);
+                    using (smtpClient = new SmtpClient("smtp.gmail.com"))
+                    {
+                        smtpClient.Port = 587; // TLS portu
+                        smtpClient.Credentials = new NetworkCredential("mihrsohbet@gmail.com", "jkyp vxwy gicc cohs");
+                        smtpClient.EnableSsl = true;
 
-                    // E-posta mesajını oluşturma
-                    var mailMessage = new MailMessage("mihrsohbet@gmail.com", user.Email, subject, body);
+                        // E-posta mesajını oluşturma
+                        var mailMessage = new MailMessage("mihrsohbet@gmail.com", user.Email, subject, body);
 
-                    // E-posta gönderme işlemi
-                    await smtpClient.SendMailAsync(mailMessage);
-                    return IdentityResult.Success;
+                        // E-posta gönderme işlemi
+                        await smtpClient.SendMailAsync(mailMessage);
+                        return IdentityResult.Success;
 
+                    }
+                }
+                catch (Exception ex) when (ex is TimeoutException || ex is ServiceNotAuthenticatedException || ex is SmtpException)
+                {
+                    throw;
+                }
+                finally
+                {
+                    smtpClient?.Dispose();
                 }
             }
-            catch (Exception ex) when (ex is TimeoutException || ex is ServiceNotAuthenticatedException || ex is SmtpException)
+            else if(provider == "Sms")
             {
-                throw;
+                throw new NotImplementedException();
             }
-            finally
+            else
             {
-                smtpClient?.Dispose();
+                throw new NotImplementedException();
             }
         }
 
-
-        public override async Task<IdentityResult> SendEmail_TwoFactorTokenAsync(User user)
+        public override async Task<IdentityResult> Send_TwoFactorTokenAsync(User user, string provider)
         {
-            SmtpClient smtpClient = null;
-            try
+            if (provider == "Email")
             {
-                var token = await _tokenFactory.CreateTwoFactorTokenAsync(user);
-                var (body, subject) = _emailBodyBuilder.BuildTwoFactorBody(token);
-                using (smtpClient = new SmtpClient("smtp.gmail.com"))
+                SmtpClient smtpClient = null;
+                try
                 {
-                    smtpClient.Port = 587; // TLS portu
-                    smtpClient.Credentials = new NetworkCredential("mihrsohbet@gmail.com", "jkyp vxwy gicc cohs");
-                    smtpClient.EnableSsl = true;
+                    var token = await _tokenFactory.CreatePasswordResetTokenAsync(user);
+                    var (body, subject) = _emailBodyBuilder.BuildPasswordResetBody(token);
+                    using (smtpClient = new SmtpClient("smtp.gmail.com"))
+                    {
+                        smtpClient.Port = 587; // TLS portu
+                        smtpClient.Credentials = new NetworkCredential("mihrsohbet@gmail.com", "jkyp vxwy gicc cohs");
+                        smtpClient.EnableSsl = true;
 
-                    // E-posta mesajını oluşturma
-                    var mailMessage = new MailMessage("mihrsohbet@gmail.com", user.Email, subject, body);
+                        // E-posta mesajını oluşturma
+                        var mailMessage = new MailMessage("mihrsohbet@gmail.com", user.Email, subject, body);
 
-                    // E-posta gönderme işlemi
-                    await smtpClient.SendMailAsync(mailMessage);
-                    return IdentityResult.Success;
+                        // E-posta gönderme işlemi
+                        await smtpClient.SendMailAsync(mailMessage);
+                        return IdentityResult.Success;
 
+                    }
+                }
+                catch (Exception ex) when (ex is TimeoutException || ex is ServiceNotAuthenticatedException || ex is SmtpException)
+                {
+                    throw;
+                }
+                finally
+                {
+                    smtpClient?.Dispose();
                 }
             }
-            catch (Exception ex) when (ex is TimeoutException || ex is ServiceNotAuthenticatedException || ex is SmtpException)
+            else if (provider == "Sms")
             {
-                throw;
+                throw new NotImplementedException();
             }
-            finally
+            else
             {
-                smtpClient?.Dispose();
+                throw new NotImplementedException();
             }
         }
-
-
-
-        public override async Task<IdentityResult> SendSms_PhoneNumberConfirmationTokenAsync(User user, string phoneNumber)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        public override async Task<IdentityResult> SendSms_ResetPasswordTokenAsync(User user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task<IdentityResult> SendSms_TwoFactorTokenAsync(User user)
-        {
-            throw new NotImplementedException();
-        }
-
-        
     }
 }

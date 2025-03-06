@@ -33,11 +33,8 @@ namespace _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders
 
         public abstract Task<IdentityResult> SendEmail_EmailChangeTokenAsync(User user, string newMail);
         public abstract Task<IdentityResult> SendEmail_EmailConfirmationTokenAsync(User user);
-        public abstract Task<IdentityResult> SendEmail_ResetPasswordTokenAsync(User user);
-        public abstract Task<IdentityResult> SendEmail_TwoFactorTokenAsync(User user);
-
         public abstract Task<IdentityResult> SendSms_PhoneNumberConfirmationTokenAsync(User user, string newPhoneNumber);
-        public abstract Task<IdentityResult> SendSms_ResetPasswordTokenAsync(User user);
-        public abstract Task<IdentityResult> SendSms_TwoFactorTokenAsync(User user);
+        public abstract Task<IdentityResult> Send_ResetPasswordTokenAsync(User user, string provider);
+        public abstract Task<IdentityResult> Send_TwoFactorTokenAsync(User user, string provider);
     }
 }

@@ -8,6 +8,6 @@ namespace _1_BusinessLayer.Abstractions.AbstractTools.ITools
         Task<string> CreateConfirmPhoneNumberTokenAsync(User user, string phoneNumber);
         Task<string> CreateMailConfirmationTokenAsync(User user);
         Task<string> CreatePasswordResetTokenAsync(User user);
-        Task<string> CreateTwoFactorTokenAsync(User user);
+        Task<string> CreateTwoFactorTokenAsync(User user,string provider);
     }
 }

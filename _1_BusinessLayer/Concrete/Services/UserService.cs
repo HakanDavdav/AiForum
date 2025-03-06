@@ -89,7 +89,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         }
 
-        public override async Task<IdentityResult> ConfirmPhoneNumber(int userId, string phoneConfirmationToken)
+        public override async Task<IdentityResult> AddPhoneNumber(int userId, string phoneConfirmationToken)
         {
             var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
@@ -109,24 +109,46 @@ namespace _1_BusinessLayer.Concrete.Services
         }
 
 
-        public override async Task<IdentityResult> Login(UserLoginDto userLoginDto, string twoFactorToken)
+        public override async Task<IdentityResult> LoginTwoFactor(UserLoginDto userLoginDto, string twoFactorToken, string provider)
         {
             var user = await _userRepository.GetByEmailAsync(userLoginDto.EmailOrUsernameOrPhoneNumber) ??
                        await _userRepository.GetByUsernameAsync(userLoginDto.EmailOrUsernameOrPhoneNumber);
             if (user != null)
             {
+                var twoFactorSignInResult = await _signInManager.TwoFactorSignInAsync(provider, twoFactorToken, false, false);
+                return twoFactorSignInResult.ToIdentityResult();
+            }
+            return IdentityResult.Failed(new NotFoundError("User not found"));
+        }
+
+        public override async Task<IdentityResult> LoginDefault(UserLoginDto userLoginDto)
+        {
+            var user = await _userRepository.GetByEmailAsync(userLoginDto.EmailOrUsernameOrPhoneNumber) ??
+                       await _userRepository.GetByUsernameAsync(userLoginDto.EmailOrUsernameOrPhoneNumber);
+            if(user != null)
+            {
                 if (await _signInManager.CanSignInAsync(user))
                 {
-                    if (await _signInManager.IsTwoFactorEnabledAsync(user))
+                    var passwordSignInResult = await _signInManager.PasswordSignInAsync(user, userLoginDto.Password, false, false);
+                    if (passwordSignInResult.RequiresTwoFactor)
                     {
-                        var signInTwoFactorResult = await _signInManager.TwoFactorAuthenticatorSignInAsync(twoFactorToken, false, false);
-                        return signInTwoFactorResult.ToIdentityResult();
+                        return IdentityResult.Failed(new UnauthorizedError("Two factor authentication required, Please choose your two-factor provider"));
                     }
-                    var signInResult = await _signInManager.PasswordSignInAsync(user, userLoginDto.Password, false, false);
-                    return signInResult.ToIdentityResult();
+                    return passwordSignInResult.ToIdentityResult();               
                 }
                 await _tokenSender.SendEmail_EmailConfirmationTokenAsync(user);
                 return IdentityResult.Failed(new UnauthorizedError("Account is not confirmed. Your confirmation code has sent"));
+            }
+            return IdentityResult.Failed(new NotFoundError("User not found"));
+        }
+
+        public override async Task<IdentityResult> ChooseProvider(string provider, string usernameEmailOrPhoneNumber)
+        {
+            var user = await _userRepository.GetByEmailAsync(usernameEmailOrPhoneNumber) ??
+                      await _userRepository.GetByUsernameAsync(usernameEmailOrPhoneNumber);
+            if (user != null)
+            {
+                await _tokenSender.Send_TwoFactorTokenAsync(user,provider);
             }
             return IdentityResult.Failed(new NotFoundError("User not found"));
         }

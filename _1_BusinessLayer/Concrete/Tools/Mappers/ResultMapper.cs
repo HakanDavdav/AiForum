@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Concrete.Tools.Errors;
+using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace _1_BusinessLayer.Concrete.Tools.Mappers
@@ -26,17 +27,12 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
 
             if (signInResult.IsNotAllowed)
             {
-                errors.Add(new UnauthorizedError("The user is not allowed to sign in or not confirmed."));
-            }
-
-            if (signInResult.RequiresTwoFactor)
-            {
-                errors.Add(new UnauthorizedError("Two-factor authentication is required."));
+                errors.Add(new UnauthorizedError("The user is not allowed to sign in."));
             }
 
             if (errors.Count == 0)
             {
-                errors.Add(new UnexpectedError("An unexpected error occurred."));
+                errors.Add(new UnexpectedError("Incorrect user information"));
             }
 
             return IdentityResult.Failed(errors.ToArray());
