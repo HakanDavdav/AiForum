@@ -7,17 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace _0_PresentationLayer.Controllers.UserControllers
 {
-    [Route("AiForum")]
+    [Route("AiForum/User/Settings")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserIdentityController : ControllerBase
     {
-        private readonly AbstractUserService _userService;
-        public UserController(AbstractUserService userService)
+        private readonly AbstractUserIdentityService _userService;
+        public UserIdentityController(AbstractUserIdentityService userService)
         {
             _userService = userService;
         }
         [Authorize]
-        [HttpPatch("User/Settings/EditProfile")]
+        [HttpPatch("EditProfile")]
         public async Task<IActionResult> EditProfile([FromBody] UserEditProfileDto userEditProfileDto)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -28,7 +28,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize]
-        [HttpPatch("User/Settings/EditPreferences")]
+        [HttpPatch("EditPreferences")]
         public async Task<IActionResult> EditPreferences([FromBody] UserEditPreferencesDto userEditPreferencesDto)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -38,7 +38,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize]
-        [HttpPatch("User/Settings/Security/ChangePassword")]
+        [HttpPatch("Security/ChangePassword")]
         public async Task<IActionResult> ChangePassword(string oldPassword ,string newPassword)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -48,7 +48,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize]
-        [HttpPatch("User/Settings/Security/ChangeEmail")]
+        [HttpPatch("Security/ChangeEmail")]
         public async Task<IActionResult> ChangeEmail(string changeEmailToken, string newEmail)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -58,7 +58,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize]
-        [HttpPatch("User/Settings/Security/ChangeUsername")]
+        [HttpPatch("Security/ChangeUsername")]
         public async Task<IActionResult> ChangeUsername(string oldUsername, string newUsername)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -68,7 +68,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize]
-        [HttpPatch("User/Settings/Security/TwoFactorActivation")]
+        [HttpPatch("Security/TwoFactorActivation")]
         public async Task<IActionResult> ActivateTwoFactor()
         {
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -79,7 +79,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize]
-        [HttpPatch("User/Settings/Security/TwoFactorDeactivation")]
+        [HttpPatch("Security/TwoFactorDeactivation")]
         public async Task<IActionResult> DeactivateTwoFactor()
         {
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -90,22 +90,42 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize]
-        [HttpPatch("User/Settings/Security/AddPhoneNumber")]
-        public async Task<IActionResult> AddPhoneNumber(string confirmPhoneNumberToken)
+        [HttpPatch("Security/ConfirmPhoneNumber")]
+        public async Task<IActionResult> ConfirmPhoneNumber(string confirmPhoneNumberToken)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
-            var result = await _userService.AddPhoneNumber((int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value)), confirmPhoneNumberToken);
+            var result = await _userService.ConfirmPhoneNumber((int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value)), confirmPhoneNumberToken);
 #pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
 
         }
 
+        [Authorize]
+        [HttpPatch("Security/SetPhoneNumber")]
+        public async Task<IActionResult> SetPhoneNumber(string newPhoneNumber)
+        {
+#pragma warning disable CS8604 // Possible null reference argument.
+            var result = await _userService.SetPhoneNumber((int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value)), newPhoneNumber);
+#pragma warning restore CS8604 // Possible null reference argument.
+            return Ok(result);
+
+        }
 
         [Authorize]
-        [HttpPost("User/Settings/Logout")]
+        [HttpPost("Settings/Logout")]
         public async Task<IActionResult> Logout()
         {
             var result = await _userService.Logout();
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpPost("UserChooseProviderAndSendToken")]
+        public async Task<IActionResult> ChooseProviderAndSendToken(string provider, string operation, string? newEmail = null, string? newPhoneNumber = null)
+        {
+#pragma warning disable CS8604 // Possible null reference argument.
+            var result = await _userService.ChooseProviderAndSendToken((int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value)), provider, operation, newEmail, newPhoneNumber);
+#pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
         }
 

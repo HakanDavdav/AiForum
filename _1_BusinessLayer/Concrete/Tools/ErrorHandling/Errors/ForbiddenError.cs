@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace _1_BusinessLayer.Concrete.Tools.Errors
+namespace _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors
 {
     public class ForbiddenError : IdentityError
     {

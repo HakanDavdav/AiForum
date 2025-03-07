@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.AbstractTools.AbstractFactories;
 using _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders;
 using _1_BusinessLayer.Abstractions.AbstractTools.ITools;
-using _1_BusinessLayer.Concrete.Tools.Errors;
 using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
@@ -148,8 +147,8 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
                 SmtpClient smtpClient = null;
                 try
                 {
-                    var token = await _tokenFactory.CreatePasswordResetTokenAsync(user);
-                    var (body, subject) = _emailBodyBuilder.BuildPasswordResetBody(token);
+                    var token = await _tokenFactory.CreateTwoFactorTokenAsync(user, provider);
+                    var (body, subject) = _emailBodyBuilder.BuildTwoFactorBody(token);
                     using (smtpClient = new SmtpClient("smtp.gmail.com"))
                     {
                         smtpClient.Port = 587; // TLS portu

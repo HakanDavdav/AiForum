@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace _1_BusinessLayer.Concrete.Tools.Errors
+namespace _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors
 {
-    public class ConflictError : IdentityError
+    public class InternalServerError : IdentityError
     {
-        public ConflictError(string description)
+        public InternalServerError(string description)
         {
-            Code = "Conflicted replicated data error";
+            Code = "Internal server error";
             Description = description;
         }
     }

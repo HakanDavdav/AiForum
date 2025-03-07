@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace _1_BusinessLayer.Concrete.Tools.Errors
+namespace _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors
 {
-    public class ValidationError : IdentityError
+    public class UnauthorizedError : IdentityError
     {
-        public ValidationError(string description)
+        public UnauthorizedError(string description)
         {
-            Code = "Mail Validation Error";
+            Code = "Unauthorized";
             Description = description;
         }
     }

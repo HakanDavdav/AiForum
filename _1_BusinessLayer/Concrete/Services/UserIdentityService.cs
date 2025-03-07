@@ -8,7 +8,7 @@ using _1_BusinessLayer.Abstractions.AbstractServices;
 using _1_BusinessLayer.Abstractions.AbstractServices.IServices;
 using _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
-using _1_BusinessLayer.Concrete.Tools.Errors;
+using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.Mappers;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
@@ -18,9 +18,9 @@ using static Org.BouncyCastle.Asn1.Cmp.Challenge;
 
 namespace _1_BusinessLayer.Concrete.Services
 {
-    public class UserService : AbstractUserService
+    public class UserIdentityService : AbstractUserIdentityService
     {
-        public UserService(AbstractTokenSender tokenSender, AbstractUserRepository userRepository,
+        public UserIdentityService(AbstractTokenSender tokenSender, AbstractUserRepository userRepository,
             UserManager<User> userManager, SignInManager<User> signInManager,
             AbstractUserPreferenceRepository userPreferenceRepository)
             : base(tokenSender, userRepository, userManager, signInManager, userPreferenceRepository)
@@ -72,10 +72,10 @@ namespace _1_BusinessLayer.Concrete.Services
             return IdentityResult.Failed(new NotFoundError("User not found"));
         }
 
-        public override async Task<IdentityResult> ConfirmEmail(UserLoginDto userLoginDto, string emailConfirmationToken)
+        public override async Task<IdentityResult> ConfirmEmail(string emailConfirmationToken, string EmailOrUsernameOrPassword)
         {
-            var user = await _userRepository.GetByEmailAsync(userLoginDto.EmailOrUsernameOrPhoneNumber) ??
-                       await _userRepository.GetByUsernameAsync(userLoginDto.EmailOrUsernameOrPhoneNumber);
+            var user = await _userRepository.GetByEmailAsync(EmailOrUsernameOrPassword) ??
+                       await _userRepository.GetByUsernameAsync(EmailOrUsernameOrPassword);
             if (user != null)
             {
                 if (!await _userManager.IsEmailConfirmedAsync(user))
@@ -89,7 +89,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         }
 
-        public override async Task<IdentityResult> AddPhoneNumber(int userId, string phoneConfirmationToken)
+        public override async Task<IdentityResult> ConfirmPhoneNumber(int userId, string phoneConfirmationToken)
         {
             var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
@@ -108,14 +108,26 @@ namespace _1_BusinessLayer.Concrete.Services
             return IdentityResult.Failed(new NotFoundError("User not found"));
         }
 
+        public override async Task<IdentityResult> SetPhoneNumber(int userId, string newPhoneNumber)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user != null)
+            {
+                user.PhoneNumber = newPhoneNumber;
+                await _userRepository.UpdateAsync(user);
+                return IdentityResult.Success;
+            }
+            return IdentityResult.Failed(new NotFoundError("User not found"));
+        }
+
 
         public override async Task<IdentityResult> LoginTwoFactor(UserLoginDto userLoginDto, string twoFactorToken, string provider)
         {
-            var user = await _userRepository.GetByEmailAsync(userLoginDto.EmailOrUsernameOrPhoneNumber) ??
-                       await _userRepository.GetByUsernameAsync(userLoginDto.EmailOrUsernameOrPhoneNumber);
+            var user = await _userRepository.GetByEmailAsync(userLoginDto.usernameOrEmailOrPhoneNumber) ??
+                       await _userRepository.GetByUsernameAsync(userLoginDto.usernameOrEmailOrPhoneNumber);
             if (user != null)
             {
-                var twoFactorSignInResult = await _signInManager.TwoFactorSignInAsync(provider, twoFactorToken, false, false);
+                var twoFactorSignInResult = await _signInManager.TwoFactorSignInAsync(provider, twoFactorToken, false, true);
                 return twoFactorSignInResult.ToIdentityResult();
             }
             return IdentityResult.Failed(new NotFoundError("User not found"));
@@ -123,13 +135,13 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> LoginDefault(UserLoginDto userLoginDto)
         {
-            var user = await _userRepository.GetByEmailAsync(userLoginDto.EmailOrUsernameOrPhoneNumber) ??
-                       await _userRepository.GetByUsernameAsync(userLoginDto.EmailOrUsernameOrPhoneNumber);
+            var user = await _userRepository.GetByEmailAsync(userLoginDto.usernameOrEmailOrPhoneNumber) ??
+                       await _userRepository.GetByUsernameAsync(userLoginDto.usernameOrEmailOrPhoneNumber);
             if(user != null)
             {
                 if (await _signInManager.CanSignInAsync(user))
                 {
-                    var passwordSignInResult = await _signInManager.PasswordSignInAsync(user, userLoginDto.Password, false, false);
+                    var passwordSignInResult = await _signInManager.PasswordSignInAsync(user, userLoginDto.Password, false, true);
                     if (passwordSignInResult.RequiresTwoFactor)
                     {
                         return IdentityResult.Failed(new UnauthorizedError("Two factor authentication required, Please choose your two-factor provider"));
@@ -142,15 +154,63 @@ namespace _1_BusinessLayer.Concrete.Services
             return IdentityResult.Failed(new NotFoundError("User not found"));
         }
 
-        public override async Task<IdentityResult> ChooseProvider(string provider, string usernameEmailOrPhoneNumber)
+        public override async Task<IdentityResult> ChooseProviderAndSendToken
+            (int userId, string provider, string operation, string newEmail, string newPhoneNumber)
+
         {
-            var user = await _userRepository.GetByEmailAsync(usernameEmailOrPhoneNumber) ??
-                      await _userRepository.GetByUsernameAsync(usernameEmailOrPhoneNumber);
-            if (user != null)
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
             {
-                await _tokenSender.Send_TwoFactorTokenAsync(user,provider);
+                return IdentityResult.Failed(new NotFoundError("User not found"));
             }
-            return IdentityResult.Failed(new NotFoundError("User not found"));
+
+            switch (operation)
+            {              
+                case "ChangeEmail":
+                    if (string.IsNullOrEmpty(newEmail))
+                        return IdentityResult.Failed(new ValidationError("New email is required"));
+                    await _tokenSender.SendEmail_EmailChangeTokenAsync(user, newEmail);
+                    break;
+
+                case "ConfirmPhoneNumber":
+                    if (string.IsNullOrEmpty(newPhoneNumber))
+                        return IdentityResult.Failed(new ValidationError("New phone number is required"));
+                    await _tokenSender.SendSms_PhoneNumberConfirmationTokenAsync(user, newPhoneNumber);
+                    break;
+
+                default:
+                    return IdentityResult.Failed(new ForbiddenError("Invalid operation"));
+            }
+
+            return IdentityResult.Success;
+        }
+
+        public override async Task<IdentityResult> ChooseProviderAndSendToken
+            (string provider, string operation, string usernameOrEmailOrPhoneNumber)
+
+        {
+            var user = await _userRepository.GetByEmailAsync(usernameOrEmailOrPhoneNumber) ??
+                       await _userRepository.GetByUsernameAsync(usernameOrEmailOrPhoneNumber);
+            if (user == null)
+            {
+                return IdentityResult.Failed(new NotFoundError("User not found"));
+            }
+
+            switch (operation)
+            {
+                case "TwoFactor":
+                    await _tokenSender.Send_TwoFactorTokenAsync(user, provider);
+                    break;
+
+                case "ResetPassword":
+                    await _tokenSender.Send_ResetPasswordTokenAsync(user, provider);
+                    break;              
+
+                default:
+                    return IdentityResult.Failed(new ForbiddenError("Invalid operation"));
+            }
+
+            return IdentityResult.Success;
         }
 
         public override async Task<IdentityResult> Logout()
@@ -160,12 +220,14 @@ namespace _1_BusinessLayer.Concrete.Services
         }
 
 
-        public override async Task<IdentityResult> PasswordReset(int userId, string newPassword, string resetPasswordToken)
+        public override async Task<IdentityResult> PasswordReset(string usernameOrEmailOrPhoneNumber, string resetPasswordToken, string newPassword)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByEmailAsync(usernameOrEmailOrPhoneNumber) ??
+                      await _userRepository.GetByUsernameAsync(usernameOrEmailOrPhoneNumber);
             if (user != null)
             {
-                var passwordResetResult = _userManager.ResetPasswordAsync(user, resetPasswordToken, newPassword);
+                var passwordResetResult = await _userManager.ResetPasswordAsync(user, resetPasswordToken, newPassword);
+                return passwordResetResult;
             }
             return IdentityResult.Failed(new NotFoundError("User not found"));
         }
@@ -194,32 +256,6 @@ namespace _1_BusinessLayer.Concrete.Services
                 return createUserResult;
             }
             return IdentityResult.Failed(new NotFoundError("User not found"));
-        }
-
-        public override async Task<IdentityResult> EditPreferences(int userId, UserEditPreferencesDto userPreferencesDto)
-        {
-            var user = await _userRepository.GetByIdAsync(userId);
-            if (user != null)
-            {
-                var userPreference = await _userPreferenceRepository.GetByUserIdAsync(userId);
-                userPreference = userPreferencesDto.Update_UserEditPreferencesDtoToUserPreferences(userPreference);
-                await _userPreferenceRepository.UpdateAsync(userPreference);
-                return IdentityResult.Success;
-            }
-            return IdentityResult.Failed(new NotFoundError("User not found"));
-        }
-
-        public override async Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto)
-        {
-            var user = await _userRepository.GetByIdAsync(userId);
-            if (user != null)
-            {
-                var updatedUser = userEditProfileDto.Update_UserEditProfileDtoToUser(user);
-                await _userRepository.UpdateAsync(updatedUser);
-                return IdentityResult.Success;
-            }
-            return IdentityResult.Failed(new NotFoundError("User not found"));
-
         }
 
         public override async Task<IdentityResult> ChangeUsername(int userId, string oldUsername, string newUsername)

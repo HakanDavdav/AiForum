@@ -9,10 +9,12 @@ namespace _1_BusinessLayer.Concrete.Dtos.UserDtos
 {
     public class UserProfileDto
     {
+        public string UserId { get; set; }
         public string ProfileName { get; set; }
-        public string Username { get; set; }
         public string ImageUrl { get; set; }
         public string City { get; set; }
+        public UserPreference UserPreference { get; set; }
+        public ICollection<Bot> Bots { get; set; }
         public ICollection<Post> Posts { get; set; }
         public ICollection<Entry> Entries { get; set; }
         public ICollection<Like> Likes { get; set; }

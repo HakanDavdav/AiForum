@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace _1_BusinessLayer.Concrete.Tools.Errors
+namespace _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors
 {
-    public class UnauthorizedError : IdentityError
+    public class ConflictError : IdentityError
     {
-        public UnauthorizedError(string description)
+        public ConflictError(string description)
         {
-            Code = "Unauthorized";
+            Code = "Conflicted replicated data error";
             Description = description;
         }
     }

@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace _1_BusinessLayer.Concrete.Tools.Errors
+namespace _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors
 {
-    public class InternalServerError : IdentityError
+    public class UnexpectedError : IdentityError
     {
-        public InternalServerError(string description)
+        public UnexpectedError(string description)
         {
-            Code = "Internal server error";
+            Code = "Unexpected Error";
             Description = description;
         }
     }

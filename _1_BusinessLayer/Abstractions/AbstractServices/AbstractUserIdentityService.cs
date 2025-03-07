@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace _1_BusinessLayer.Abstractions.AbstractServices
 {
-    public abstract class AbstractUserService : IUserService
+    public abstract class AbstractUserIdentityService : IUserIdentityService
     {
         protected readonly AbstractTokenSender _tokenSender;
         protected readonly AbstractUserRepository _userRepository;
@@ -22,7 +22,7 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices
         protected readonly SignInManager<User> _signInManager;
 
 
-        protected AbstractUserService(AbstractTokenSender tokenSender, AbstractUserRepository userRepository,
+        protected AbstractUserIdentityService(AbstractTokenSender tokenSender, AbstractUserRepository userRepository,
             UserManager<User> userManager, SignInManager<User> signInManager, AbstractUserPreferenceRepository userPreferenceRepository)
         {
             _userRepository = userRepository;
@@ -34,19 +34,19 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices
         }
 
         public abstract Task<IdentityResult> ActivateTwoFactorAuthentication(int userId);
-        public abstract Task<IdentityResult> AddPhoneNumber(int userId, string phoneConfirmationToken);
+        public abstract Task<IdentityResult> ConfirmPhoneNumber(int userId, string phoneConfirmationToken);
         public abstract Task<IdentityResult> ChangeEmail(int userId, string newEmail, string changeEmailToken);
         public abstract Task<IdentityResult> ChangePassword(int userId, string oldPassword, string newPassword);
         public abstract Task<IdentityResult> ChangeUsername(int userId, string oldUsername, string newUsername);
-        public abstract Task<IdentityResult> ChooseProvider(string provider, string usernameEmailOrPhoneNumber);
-        public abstract Task<IdentityResult> ConfirmEmail(UserLoginDto userLoginDto, string emailConfirmationToken);
+        public abstract Task<IdentityResult> ChooseProviderAndSendToken(int userId, string provider, string operation, string newEmail, string newPhoneNumber);
+        public abstract Task<IdentityResult> ChooseProviderAndSendToken(string provider, string operation, string usernameOrEmailOrPhoneNumber);
+        public abstract Task<IdentityResult> ConfirmEmail(string emailConfirmationToken, string usernameEmailOrPhoneNumber);
         public abstract Task<IdentityResult> DisableTwoFactorAuthentication(int userId);
-        public abstract Task<IdentityResult> EditPreferences(int userId, UserEditPreferencesDto userPreferencesDto);
-        public abstract Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto);
         public abstract Task<IdentityResult> LoginDefault(UserLoginDto userLoginDto);
         public abstract Task<IdentityResult> LoginTwoFactor(UserLoginDto userLoginDto, string twoFactorToken, string provider);
         public abstract Task<IdentityResult> Logout();
-        public abstract Task<IdentityResult> PasswordReset(int userId, string newPassword, string resetPasswordToken);
+        public abstract Task<IdentityResult> PasswordReset(string usernameOrEmailOrPhoneNumber, string resetPasswordToken, string newPassword);
         public abstract Task<IdentityResult> Register(UserRegisterDto userRegisterDto);
+        public abstract Task<IdentityResult> SetPhoneNumber(int userId, string newPhoneNumber);
     }
 }

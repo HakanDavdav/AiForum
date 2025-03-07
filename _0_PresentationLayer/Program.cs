@@ -37,8 +37,8 @@ builder.Services.AddScoped<EmailBodyBuilder>();
 builder.Services.AddScoped<SignInManager<User>>();
 builder.Services.AddScoped<UserManager<User>>();
 //autowiring services
-builder.Services.AddScoped<AbstractUserService, UserService>();
-builder.Services.AddScoped<AbstractTokenService, TokenService>();
+builder.Services.AddScoped<AbstractUserIdentityService, UserIdentityService>();
+
 
 
 
