@@ -12,7 +12,7 @@ namespace _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult
         IdentityResult? IdentityResult;
         T? Data;
 
-        public static ObjectIdentityResult<T> Succededx(T? data)
+        public static ObjectIdentityResult<T> Succeded(T data)
         {
             return new ObjectIdentityResult<T>()
             {
@@ -26,7 +26,6 @@ namespace _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult
             return new ObjectIdentityResult<T>()
             {
                 IdentityResult = Failed(errors),
-                Data = data
             };
         }
     }

@@ -62,10 +62,21 @@ namespace _1_BusinessLayer.Concrete.Services
 
         }
 
+        public override async Task<ObjectIdentityResult<List<Notification>>> GetNotifications(int userId)
+        {
+            var notifications = await _notificationRepository.GetAllByUserIdWithInfoAsync(userId);
+            return ObjectIdentityResult<List<Notification>>.Succeded(notifications);
+            
+        }
+
         public override async Task<ObjectIdentityResult<User>> GetUserProfile(int userId)
         {
-            var userWithInfo = await _userRepository.GetByIdWithInfoAsync(userId);
-            return ObjectIdentityResult<User>.Succededx(userWithInfo);
+            var user = await _userRepository.GetByIdWithInfoAsync(userId);
+            if(user != null)
+            {
+                return ObjectIdentityResult<User>.Succeded(user);
+            }
+            return ObjectIdentityResult<User>.Failed(null,new IdentityError[] { new NotFoundError("User not found") });
         }
     }
 }

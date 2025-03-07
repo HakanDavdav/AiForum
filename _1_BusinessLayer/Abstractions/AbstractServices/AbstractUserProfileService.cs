@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace _1_BusinessLayer.Abstractions.AbstractServices
 {
-    public abstract class AbstractUserProfileService : IUserProfileService
+    public abstract class AbstractUserProfileService: IUserProfileService
     {
         protected readonly AbstractUserRepository _userRepository;
         protected readonly AbstractUserPreferenceRepository _userPreferenceRepository;
@@ -25,9 +25,11 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices
             _userRepository = userRepository;
             _userPreferenceRepository = userPreferenceRepository;
         }
+
         public abstract Task<IdentityResult> CreateProfile(int userId, UserCreateProfileDto userCreateProfileDto);
         public abstract Task<IdentityResult> EditPreferences(int userId, UserEditPreferencesDto userEditPreferencesDto);
         public abstract Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto);
+        public abstract Task<ObjectIdentityResult<List<Notification>>> GetNotifications(int userId);
         public abstract Task<ObjectIdentityResult<User>> GetUserProfile(int userId);
     }
 }

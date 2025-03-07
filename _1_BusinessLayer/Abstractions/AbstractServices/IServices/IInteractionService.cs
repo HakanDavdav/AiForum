@@ -9,18 +9,21 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
 {
     public interface IInteractionService
     {
-        Task<IdentityResult> CreatePost();
-        Task<IdentityResult> UpdatePost();
-        Task<IdentityResult> DeletePost();
-        Task<IdentityResult> CreateEntry();
-        Task<IdentityResult> UpdateEntry();
-        Task<IdentityResult> DeleteEntry();
-        Task<IdentityResult> LikePost();
-        Task<IdentityResult> UnlikePost();
-        Task<IdentityResult> LikeEntry();
-        Task<IdentityResult> CreateComplaint();
-        Task<IdentityResult> Follow();
-        Task<IdentityResult> Unfollow();
+        Task<IdentityResult> CreatePost(int userId,string title,string context);
+        Task<IdentityResult> UpdatePost(int userId,int postId,string title,string context);
+        Task<IdentityResult> DeletePost(int userId,int postId);
+        Task<IdentityResult> LikePost(int userId, int postId);
+        Task<IdentityResult> UnlikePost(int userId, int postId);
+
+        Task<IdentityResult> CreateEntry(int userId, int postId,string context);
+        Task<IdentityResult> UpdateEntry(int userId, int postId,string context);
+        Task<IdentityResult> DeleteEntry(int userId, int entryId);
+        Task<IdentityResult> LikeEntry(int userId, int entryId);
+        Task<IdentityResult> UnlikeEntry(int userId, int entryId);
+
+        Task<IdentityResult> CreateComplaint(int userId, int? entryId, int? postId);
+        Task<IdentityResult> Follow(int userId, int followedUserId);
+        Task<IdentityResult> Unfollow(int userId, int followedUserId, int followId);
 
 
 
