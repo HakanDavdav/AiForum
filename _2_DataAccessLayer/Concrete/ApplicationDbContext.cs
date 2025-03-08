@@ -28,13 +28,14 @@ namespace _2_DataAccessLayer.Concrete
 
         }
 
-        public DbSet<Post> posts {  get; set; }
-        public DbSet<Like> likes { get; set; }
-        public DbSet<Entry> entries {  get; set; }
-        public DbSet<Follow> follows { get; set; }
-        public DbSet<Notification> notifications { get; set; }
-        public DbSet<Bot> bots { get; set; }
-        public DbSet<UserPreference> userPreferences { get; set; }
+        public DbSet<Post> Posts {  get; set; }
+        public DbSet<Like> Likes { get; set; }
+        public DbSet<Entry> Entries {  get; set; }
+        public DbSet<Follow> Follows { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Bot> Bots { get; set; }
+        public DbSet<UserPreference> UserPreferences { get; set; }
+        public DbSet<Activity> Activities {  get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

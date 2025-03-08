@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace _2_DataAccessLayer.Concrete.Repositories
 {
@@ -14,39 +15,65 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
         }
 
-        public override Task DeleteAsync(Bot t)
+        public override async Task DeleteAsync(Bot t)
         {
-            throw new NotImplementedException();
+            _context.Bots.Remove(t);
+            await _context.SaveChangesAsync();
         }
 
-        public override Task<List<Bot>> GetAllAsync()
+        public override async Task<List<Bot>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            IQueryable<Bot> bots = _context.Bots;
+            return await bots.ToListAsync();
         }
 
-        public override Task<List<Bot>> GetAllWithInfoAsync()
+        public override async Task<List<Bot>> GetAllWithInfoAsync()
         {
-            throw new NotImplementedException();
+            IQueryable<Bot> bots = _context.Bots.Include(bot => bot.Posts)
+                                                .ThenInclude(post => post.Likes)
+                                                .Include(bot => bot.Entries)
+                                                .ThenInclude(entry => entry.Likes)
+                                                .Include(bot => bot.Likes)
+                                                .Include(bot => bot.Followers)
+                                                .Include(bot => bot.Followings)
+                                                .Include(bot => bot.User);
+            return await bots.ToListAsync();
         }
 
-        public override Task<Bot> GetByIdAsync(int id)
+        public override async Task<Bot> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var bot =  await _context.Bots.FirstOrDefaultAsync(bot => bot.BotId == id);
+#pragma warning disable CS8603 // Possible null reference return.
+            return bot;
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
-        public override Task<Bot> GetByIdWithInfoAsync(int id)
+        public override async Task<Bot> GetByIdWithInfoAsync(int id)
         {
-            throw new NotImplementedException();
+            var bot = await _context.Bots.Include(bot => bot.Posts)
+                                          .ThenInclude(post => post.Likes)
+                                          .Include(bot => bot.Entries)
+                                          .ThenInclude(entry => entry.Likes)
+                                          .Include(bot => bot.Likes)
+                                          .Include(bot => bot.Followers)
+                                          .Include(bot => bot.Followings)
+                                          .Include(bot => bot.User)
+                                          .FirstOrDefaultAsync(bot => bot.BotId == id);
+#pragma warning disable CS8603 // Possible null reference return.
+            return bot;
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
-        public override Task InsertAsync(Bot t)
+        public override async Task InsertAsync(Bot t)
         {
-            throw new NotImplementedException();
+            _context.Bots.Add(t);
+            await _context.SaveChangesAsync();
         }
 
-        public override Task UpdateAsync(Bot t)
+        public override async Task UpdateAsync(Bot t)
         {
-            throw new NotImplementedException();
+            _context.Update(t);
+            await _context.SaveChangesAsync();
         }
     }
 }

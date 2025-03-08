@@ -18,20 +18,20 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task DeleteAsync(Entry t)
         {
-            _context.entries.Remove(t);
+            _context.Entries.Remove(t);
             await _context.SaveChangesAsync();
         }
 
 
         public override async Task<List<Entry>> GetAllAsync()
         {
-            IQueryable<Entry> allEntries = _context.entries;                                                
+            IQueryable<Entry> allEntries = _context.Entries;                                                
             return await allEntries.ToListAsync();
         }
 
         public override async Task<List<Entry>> GetAllWithInfoAsync()
         {
-            IQueryable<Entry> allEntries = _context.entries
+            IQueryable<Entry> allEntries = _context.Entries
                                                    .Include(entry => entry.Likes)
                                                    .ThenInclude(like => like.User)
                                                    .Include(entry => entry.Likes)
@@ -44,7 +44,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public override async Task<Entry> GetByIdAsync(int id)
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            Entry entry = await _context.entries.FirstOrDefaultAsync(entry => entry.EntryId == id);
+            Entry entry = await _context.Entries.FirstOrDefaultAsync(entry => entry.EntryId == id);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return entry;
         }
@@ -52,7 +52,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public override async Task<Entry> GetByIdWithInfoAsync(int id)
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            Entry entry = await _context.entries.Include(entry => entry.Likes)
+            Entry entry = await _context.Entries.Include(entry => entry.Likes)
                                                 .ThenInclude(like => like.User)
                                                 .Include(entry => entry.Likes)
                                                 .ThenInclude(like => like.Bot)
@@ -69,13 +69,13 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public override async Task InsertAsync(Entry t)
         {
 
-                await _context.entries.AddAsync(t);
+                await _context.Entries.AddAsync(t);
                 await _context.SaveChangesAsync();
         }
 
         public override async Task UpdateAsync(Entry t)
         {
-            _context.entries.Attach(t);
+            _context.Update(t);
             await _context.SaveChangesAsync();
         }
 

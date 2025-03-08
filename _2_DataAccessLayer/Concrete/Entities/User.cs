@@ -11,19 +11,17 @@ namespace _2_DataAccessLayer.Concrete.Entities
 {
     public class User : IdentityUser<int>
     {
-        [AllowNull]
+        public string ProfileName { get; set; }
         public string? ImageUrl { get; set; }
-        [AllowNull]
         public string? City { get; set; }
-        [AllowNull]
-        public string? ProfileName { get; set; }
+        public DateTime DateTime { get; set; }
+
 
 
 
         public UserPreference UserPreference { get; set; }
         public ICollection<Notification> SentNotifications {  get; set; }
         public ICollection<Notification> ReceivedNotifications { get; set; }
-
         public ICollection<Bot> Bots { get; set; }
         public ICollection<Post> Posts { get; set; }
         public ICollection<Entry> Entries { get; set; }

@@ -17,13 +17,13 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task DeleteAsync(UserPreference t)
         {
-            _context.userPreferences.Remove(t);
+            _context.UserPreferences.Remove(t);
             await _context.SaveChangesAsync();
         }
 
         public override async Task<List<UserPreference>> GetAllAsync()
         {
-            IQueryable<UserPreference> userPreferences = _context.userPreferences;
+            IQueryable<UserPreference> userPreferences = _context.UserPreferences;
             return await userPreferences.ToListAsync();
         }
 
@@ -34,7 +34,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task<UserPreference> GetByIdAsync(int id)
         {
-            var userPreferences = await _context.userPreferences.FirstOrDefaultAsync(userpreference => userpreference.UserPreferenceId == id);
+            var userPreferences = await _context.UserPreferences.FirstOrDefaultAsync(userpreference => userpreference.UserPreferenceId == id);
 #pragma warning disable CS8603 // Possible null reference return.
             return userPreferences;
 #pragma warning restore CS8603 // Possible null reference return.
@@ -42,7 +42,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task<UserPreference> GetByIdWithInfoAsync(int id)
         {
-            var userPreferences = await _context.userPreferences.Include(userpreference => userpreference.User)
+            var userPreferences = await _context.UserPreferences.Include(userpreference => userpreference.User)
                                                                 .FirstOrDefaultAsync(userpreference => userpreference.UserPreferenceId == id);
 #pragma warning disable CS8603 // Possible null reference return.
             return userPreferences;
@@ -51,7 +51,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task<UserPreference> GetByUserIdAsync(int id)
         {
-            var userPreference = await _context.userPreferences.FirstOrDefaultAsync(userpreference => userpreference.UserId == id);
+            var userPreference = await _context.UserPreferences.FirstOrDefaultAsync(userpreference => userpreference.UserId == id);
 #pragma warning disable CS8603 // Possible null reference return.
             return userPreference;
 #pragma warning restore CS8603 // Possible null reference return.
@@ -59,7 +59,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task<UserPreference> GetByUserIdWithInfoAsync(int id)
         {
-            var userPreference = await _context.userPreferences.Include(userPreference => userPreference.User)
+            var userPreference = await _context.UserPreferences.Include(userPreference => userPreference.User)
                                                                .FirstOrDefaultAsync(userpreference => userpreference.UserId == id);
 #pragma warning disable CS8603 // Possible null reference return.
             return userPreference;
@@ -68,13 +68,13 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task InsertAsync(UserPreference t)
         {
-            await _context.userPreferences.AddAsync(t);
+            await _context.UserPreferences.AddAsync(t);
             await _context.SaveChangesAsync();
         }
 
         public override async Task UpdateAsync(UserPreference t)
         {
-            _context.userPreferences.Attach(t);
+            _context.Update(t);
             await _context.SaveChangesAsync();
         }
     }

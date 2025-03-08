@@ -10,21 +10,21 @@ namespace _2_DataAccessLayer.Concrete.Entities
     public class Bot
     {
         public int BotId { get; set; }
-        [AllowNull]
-        public string? BotProfileName { get; set; }
-        public string BotPersonality{  get; set; }
-        [AllowNull]
-        public string Instructions {  get; set; }
-        public int DailyBotMessageCount { get; set; }
-        [AllowNull]
+        public string BotProfileName { get; set; }
         public string? ImageUrl { get; set; }
-        [AllowNull]
+        public string BotPersonality{  get; set; }
+        public string Instructions {  get; set; }
+        public string Mode { get; set; }
+        public int DailyBotMessageCount { get; set; }
+        public DateTime DateTime { get; set; }
+
+
 
         public int UserId {  get; set; }
         public User User {  get; set; }
 
 
-
+        public ICollection<Activity> Activities { get; set; }
         public ICollection<Notification> SentNotifications { get; set; }
         public ICollection<Post> Posts { get; set; }
         public ICollection<Entry> Entries { get; set; }

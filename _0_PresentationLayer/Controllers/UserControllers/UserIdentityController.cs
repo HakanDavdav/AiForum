@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace _0_PresentationLayer.Controllers.UserControllers
 {
-    [Route("AiForum/User/Settings")]
+    [Route("AiForum/User/You/Security")]
     [ApiController]
     public class UserIdentityController : ControllerBase
     {
@@ -16,29 +16,9 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         {
             _userService = userService;
         }
-        [Authorize]
-        [HttpPatch("EditProfile")]
-        public async Task<IActionResult> EditProfile([FromBody] UserEditProfileDto userEditProfileDto)
-        {
-#pragma warning disable CS8604 // Possible null reference argument.
-            var result = await _userService.EditProfile(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value),userEditProfileDto);
-#pragma warning restore CS8604 // Possible null reference argument.
-            return Ok(result);
-
-        }
 
         [Authorize]
-        [HttpPatch("EditPreferences")]
-        public async Task<IActionResult> EditPreferences([FromBody] UserEditPreferencesDto userEditPreferencesDto)
-        {
-#pragma warning disable CS8604 // Possible null reference argument.
-            var result = await _userService.EditPreferences(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value),userEditPreferencesDto);
-#pragma warning restore CS8604 // Possible null reference argument.
-            return Ok(result);
-        }
-
-        [Authorize]
-        [HttpPatch("Security/ChangePassword")]
+        [HttpPatch("ChangePassword")]
         public async Task<IActionResult> ChangePassword(string oldPassword ,string newPassword)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -48,7 +28,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize]
-        [HttpPatch("Security/ChangeEmail")]
+        [HttpPatch("ChangeEmail")]
         public async Task<IActionResult> ChangeEmail(string changeEmailToken, string newEmail)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -58,7 +38,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize]
-        [HttpPatch("Security/ChangeUsername")]
+        [HttpPatch("ChangeUsername")]
         public async Task<IActionResult> ChangeUsername(string oldUsername, string newUsername)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -68,7 +48,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize]
-        [HttpPatch("Security/TwoFactorActivation")]
+        [HttpPatch("TwoFactorActivation")]
         public async Task<IActionResult> ActivateTwoFactor()
         {
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -79,7 +59,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize]
-        [HttpPatch("Security/TwoFactorDeactivation")]
+        [HttpPatch("TwoFactorDeactivation")]
         public async Task<IActionResult> DeactivateTwoFactor()
         {
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -90,7 +70,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize]
-        [HttpPatch("Security/ConfirmPhoneNumber")]
+        [HttpPatch("ConfirmPhoneNumber")]
         public async Task<IActionResult> ConfirmPhoneNumber(string confirmPhoneNumberToken)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -101,7 +81,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize]
-        [HttpPatch("Security/SetPhoneNumber")]
+        [HttpPatch("SetPhoneNumber")]
         public async Task<IActionResult> SetPhoneNumber(string newPhoneNumber)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -112,7 +92,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize]
-        [HttpPost("Settings/Logout")]
+        [HttpPost("Logout")]
         public async Task<IActionResult> Logout()
         {
             var result = await _userService.Logout();

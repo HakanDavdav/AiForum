@@ -92,7 +92,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task UpdateAsync(User t)
         {
-            _context.Users.Attach(t);
+            _context.Update(t);
             await _context.SaveChangesAsync();
         }
 
@@ -104,7 +104,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         //Identity does not have any roles in it's own user table
         public override async Task<List<string>> GetUserRolesAsync(User user)
         {
-           List<string> roles = (List<string>)await _userManager.GetRolesAsync(user);
+            List<string> roles = (List<string>)await _userManager.GetRolesAsync(user);
             return roles;
         }
     }

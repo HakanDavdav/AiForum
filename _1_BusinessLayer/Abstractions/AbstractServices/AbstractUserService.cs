@@ -13,17 +13,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace _1_BusinessLayer.Abstractions.AbstractServices
 {
-    public abstract class AbstractUserProfileService: IUserProfileService
+    public abstract class AbstractUserService: IUserService
     {
         protected readonly AbstractUserRepository _userRepository;
         protected readonly AbstractUserPreferenceRepository _userPreferenceRepository;
         protected readonly AbstractNotificationRepository _notificationRepository;
-        protected AbstractUserProfileService
-            (AbstractUserRepository userRepository,AbstractUserPreferenceRepository userPreferenceRepository,AbstractNotificationRepository notificationRepository)
+        protected readonly AbstractFollowRepository _followRepository;
+        protected AbstractUserService
+            (AbstractUserRepository userRepository,AbstractUserPreferenceRepository userPreferenceRepository,
+            AbstractNotificationRepository notificationRepository, AbstractFollowRepository followRepository)
         {
             _notificationRepository = notificationRepository;
             _userRepository = userRepository;
             _userPreferenceRepository = userPreferenceRepository;
+            _followRepository = followRepository;
         }
 
         public abstract Task<IdentityResult> CreateProfile(int userId, UserCreateProfileDto userCreateProfileDto);
@@ -31,5 +34,7 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices
         public abstract Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto);
         public abstract Task<ObjectIdentityResult<List<Notification>>> GetNotifications(int userId);
         public abstract Task<ObjectIdentityResult<User>> GetUserProfile(int userId);
+        public abstract Task<IdentityResult> Unfollow(int userId, int followedUserId, int followId);
+        public abstract Task<IdentityResult> Follow(int userId, int followedUserId);
     }
 }

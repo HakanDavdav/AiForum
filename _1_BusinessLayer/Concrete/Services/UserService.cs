@@ -10,16 +10,17 @@ using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _1_BusinessLayer.Concrete.Tools.Mappers;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
+using _2_DataAccessLayer.Concrete.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _1_BusinessLayer.Concrete.Services
 {
-    public class UserProfileService : AbstractUserProfileService
+    public class UserService : AbstractUserService
     {
-        public UserProfileService
-            (AbstractUserRepository userRepository, AbstractUserPreferenceRepository userPreferenceRepository, 
-            AbstractNotificationRepository notificationRepository) : base(userRepository, userPreferenceRepository, notificationRepository)
+        public UserService(AbstractUserRepository userRepository, AbstractUserPreferenceRepository userPreferenceRepository, 
+            AbstractNotificationRepository notificationRepository, AbstractFollowRepository followRepository) 
+            : base(userRepository, userPreferenceRepository, notificationRepository, followRepository)
         {
         }
 
@@ -62,6 +63,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         }
 
+
         public override async Task<ObjectIdentityResult<List<Notification>>> GetNotifications(int userId)
         {
             var notifications = await _notificationRepository.GetAllByUserIdWithInfoAsync(userId);
@@ -77,6 +79,27 @@ namespace _1_BusinessLayer.Concrete.Services
                 return ObjectIdentityResult<User>.Succeded(user);
             }
             return ObjectIdentityResult<User>.Failed(null,new IdentityError[] { new NotFoundError("User not found") });
+        }
+
+        public override async Task<IdentityResult> Follow(int userId, int followedUserId)
+        {
+            await _followRepository.InsertAsync(new Follow
+            {
+                FolloweeId = userId,
+                FollowedId = followedUserId
+            });
+            return IdentityResult.Success;
+        }
+
+        public override async Task<IdentityResult> Unfollow(int userId, int followedUserId, int followId)
+        {
+            var follow = await _followRepository.GetByIdWithInfoAsync(followId);
+            if (follow.FolloweeId == userId && follow.FollowedId == followedUserId)
+            {
+                await _followRepository.DeleteAsync(follow);
+                return IdentityResult.Success;
+            }
+            return IdentityResult.Failed(new UnauthorizedError("Unauthorized deletion"));
         }
     }
 }

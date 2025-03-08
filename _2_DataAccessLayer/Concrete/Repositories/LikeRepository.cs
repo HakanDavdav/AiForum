@@ -19,19 +19,19 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task DeleteAsync(Like t)
         {
-            _context.likes.Remove(t);
+            _context.Likes.Remove(t);
             await _context.SaveChangesAsync();
         }
 
         public override async Task<List<Like>> GetAllAsync()
         {
-            IQueryable<Like> likes = _context.likes;
+            IQueryable<Like> likes = _context.Likes;
             return await likes.ToListAsync();
         }
 
         public override async Task<List<Like>> GetAllWithInfoAsync()
         {
-            IQueryable<Like> likes = _context.likes.Include(like => like.User)
+            IQueryable<Like> likes = _context.Likes.Include(like => like.User)
                                        .Include(like => like.Bot)
                                        .Include(like => like.Post)
                                        .Include(like => like.Entry);
@@ -41,7 +41,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public override async Task<Like> GetByIdAsync(int id)
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            Like like = await _context.likes.FirstOrDefaultAsync(like => like.LikeId == id);
+            Like like = await _context.Likes.FirstOrDefaultAsync(like => like.LikeId == id);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return like;
         }
@@ -49,7 +49,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public override async Task<Like> GetByIdWithInfoAsync(int id)
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            Like like = await _context.likes.Include(like => like.User)
+            Like like = await _context.Likes.Include(like => like.User)
                                             .Include(like => like.Bot)
                                             .Include(like => like.Post)
                                             .Include(like => like.Entry)
@@ -60,14 +60,14 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task InsertAsync(Like t)
         {
-            await _context.likes.AddAsync(t);
+            await _context.Likes.AddAsync(t);
             await _context.SaveChangesAsync();
         }
 
 
         public override async Task UpdateAsync(Like t)
         {
-            _context.likes.Attach(t);
+            _context.Update(t);
             await _context.SaveChangesAsync();
         }
 

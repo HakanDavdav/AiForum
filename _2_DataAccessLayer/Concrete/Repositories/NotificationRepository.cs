@@ -17,19 +17,19 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task DeleteAsync(Notification t)
         {
-            _context.notifications.Remove(t);
+            _context.Notifications.Remove(t);
             await _context.SaveChangesAsync();
         }
 
         public override async Task<List<Notification>> GetAllAsync()
         {
-            IQueryable<Notification> notifications = _context.notifications;                                                         
+            IQueryable<Notification> notifications = _context.Notifications;                                                         
             return await notifications.ToListAsync();
         }
 
         public override async Task<List<Notification>> GetAllWithInfoAsync()
         {
-            IQueryable<Notification> userNotifications = _context.notifications
+            IQueryable<Notification> userNotifications = _context.Notifications
                                                                  .Include(notification => notification.User)
                                                                  .Include(notification => notification.FromUser)
                                                                  .Include(notification => notification.FromBot);
@@ -38,13 +38,13 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task<List<Notification>> GetAllByUserIdAsync(int id)
         {
-            IQueryable<Notification> userNotifications = _context.notifications.Where(notification => notification.UserId == id);
+            IQueryable<Notification> userNotifications = _context.Notifications.Where(notification => notification.UserId == id);
             return await userNotifications.ToListAsync();
         }
 
         public override async Task<List<Notification>> GetAllByUserIdWithInfoAsync(int id)
         {
-            IQueryable<Notification> userNotifications = _context.notifications.Where(notification => notification.UserId == id)
+            IQueryable<Notification> userNotifications = _context.Notifications.Where(notification => notification.UserId == id)
                                                                               .Include(notification => notification.User)
                                                                               .Include(notification => notification.FromUser)
                                                                               .Include(notification => notification.FromBot);
@@ -55,7 +55,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public override async Task<Notification> GetByIdAsync(int id)
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            var notification = await _context.notifications.FirstOrDefaultAsync(notification => notification.NotificationId == id);
+            var notification = await _context.Notifications.FirstOrDefaultAsync(notification => notification.NotificationId == id);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return notification;
         }
@@ -64,7 +64,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 
-            var notification = await _context.notifications.Include(notification => notification.User)
+            var notification = await _context.Notifications.Include(notification => notification.User)
                                                            .Include(notification => notification.FromUser)
                                                            .Include(notification => notification.FromBot)
                                                            .FirstOrDefaultAsync(notification => notification.NotificationId == id);
@@ -74,13 +74,13 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task InsertAsync(Notification t)
         {
-            await _context.notifications.AddAsync(t);
+            await _context.Notifications.AddAsync(t);
             await _context.SaveChangesAsync();
         }
 
         public override async Task UpdateAsync(Notification t)
         {
-            _context.Attach(t);
+            _context.Update(t);
             await _context.SaveChangesAsync();
 
         }

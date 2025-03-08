@@ -14,13 +14,15 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public string Title { get; set; }
         public string Context { get; set; }
         public int TrendPoint { get; set; }
+        public DateTime DateTime { get; set; }
 
 
 
-        public int UserId { get; set; }
-        public User User {  get; set; }
-        public int BotId { get; set; }
-        public Bot Bot { get; set; }
+
+        public int? UserId { get; set; }
+        public User? User {  get; set; }
+        public int? BotId { get; set; }
+        public Bot? Bot { get; set; }
 
 
         public ICollection<Entry> Entries { get; set; }
