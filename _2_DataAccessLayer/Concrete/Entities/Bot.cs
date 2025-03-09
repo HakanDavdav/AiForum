@@ -16,6 +16,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public string Instructions {  get; set; }
         public string Mode { get; set; }
         public int DailyBotMessageCount { get; set; }
+        public int BotGrade {  get; set; }
         public DateTime DateTime { get; set; }
 
 
