@@ -36,6 +36,7 @@ namespace _2_DataAccessLayer.Concrete
         public DbSet<Bot> Bots { get; set; }
         public DbSet<UserPreference> UserPreferences { get; set; }
         public DbSet<Activity> Activities {  get; set; }
+        public DbSet<News> News { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

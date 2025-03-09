@@ -19,7 +19,8 @@ namespace _2_DataAccessLayer.Abstractions
         }
         public abstract Task<User> GetByEmailAsync(string email);
         public abstract Task<User> GetByUsernameAsync(string name);
+        public abstract Task<User> GetByPhoneNumberAsync(string phoneNumber);
         public abstract Task<List<String>> GetUserRolesAsync(User user);
-        public abstract Task<User> SearchUserAsync(string query);
+        public abstract Task<User> GetByProfileName(string profileName);
     }
 }

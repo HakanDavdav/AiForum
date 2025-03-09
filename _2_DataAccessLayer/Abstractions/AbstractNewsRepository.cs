@@ -9,13 +9,10 @@ using _2_DataAccessLayer.Concrete.Entities;
 
 namespace _2_DataAccessLayer.Abstractions
 {
-    public abstract class AbstractPostRepository : AbstractGenericBaseRepository<Post>
+    public abstract class AbstractNewsRepository : AbstractGenericBaseRepository<News>
     {
-        protected AbstractPostRepository(ApplicationDbContext context) : base(context)
+        protected AbstractNewsRepository(ApplicationDbContext context) : base(context)
         {
         }
-        public abstract Task<Post> GetByTitleAsync(string title);
-
-        public abstract Task<List<Post>> GetByParametersAsync();
     }
 }

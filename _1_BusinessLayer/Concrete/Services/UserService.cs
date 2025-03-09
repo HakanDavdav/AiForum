@@ -29,7 +29,7 @@ namespace _1_BusinessLayer.Concrete.Services
             var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
             {
-                user = userCreateProfileDto.Update_UserCreateProfileDtoToUser(user);
+                user = userCreateProfileDto.Update___UserCreateProfileDto_To_User(user);
                 await _userRepository.UpdateAsync(user);
                 return IdentityResult.Success;
             }
@@ -43,7 +43,7 @@ namespace _1_BusinessLayer.Concrete.Services
             if (user != null)
             {
                 var userPreference = await _userPreferenceRepository.GetByUserIdAsync(userId);
-                userPreference = userPreferencesDto.Update_UserEditPreferencesDtoToUserPreferences(userPreference);
+                userPreference = userPreferencesDto.Update___UserEditPreferencesDto_To_UserPreferences(userPreference);
                 await _userPreferenceRepository.UpdateAsync(userPreference);
                 return IdentityResult.Success;
             }
@@ -55,7 +55,7 @@ namespace _1_BusinessLayer.Concrete.Services
             var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
             {
-                var updatedUser = userEditProfileDto.Update_UserEditProfileDtoToUser(user);
+                var updatedUser = userEditProfileDto.Update___UserEditProfileDto_To_User(user);
                 await _userRepository.UpdateAsync(updatedUser);
                 return IdentityResult.Success;
             }

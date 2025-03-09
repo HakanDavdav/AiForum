@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace _1_BusinessLayer.Concrete.Tools.Mappers
 {
-    public static class ResultMapper
+    public static class ResultMappers
     {
         public static IdentityResult ToIdentityResult(this SignInResult signInResult)
         {

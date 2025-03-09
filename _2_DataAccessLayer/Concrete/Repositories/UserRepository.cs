@@ -96,7 +96,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public override Task<User> SearchUserAsync(string query)
+        public override Task<User> GetByProfileName(string query)
         {
             throw new NotImplementedException();
         }

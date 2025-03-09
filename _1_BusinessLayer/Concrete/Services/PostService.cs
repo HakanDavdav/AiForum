@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.AbstractServices;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
+using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -44,6 +45,11 @@ namespace _1_BusinessLayer.Concrete.Services
             return IdentityResult.Failed(new UnauthorizedError("Unauthorized deletion"));
         }
 
+        public override async Task<ObjectIdentityResult<Post>> GetPost(int postId)
+        {
+            var post = await _postRepository.GetByIdWithInfoAsync(postId);
+            return ObjectIdentityResult<Post>.Succeded(post);
+        }
 
         public override async Task<IdentityResult> LikePost(int userId, int postId)
         {

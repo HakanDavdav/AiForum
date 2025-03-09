@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace _1_BusinessLayer.Concrete.Tools.Mappers
 {
-    public static class UserMapper
+    public static class UserMappers
     {
-        public static User UserRegisterToUser(this UserRegisterDto userRegisterDto)
+        public static User UserRegisterDto_To_User(this UserRegisterDto userRegisterDto)
         {
             var user = new User
             {
@@ -21,11 +21,10 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             return user;
         }
 
-        public static UserProfileDto UserToUserProfile(this User user)
+        public static UserProfileDto User_To_UserProfileDto(this User user)
         {
             var userProfileDto = new UserProfileDto
             {
-                Username = user.UserName,
                 ImageUrl = user.ImageUrl,
                 City = user.City,
                 Entries = user.Entries,
@@ -39,7 +38,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             return userProfileDto;
         }
 
-        public static User Update_UserEditProfileDtoToUser(this UserEditProfileDto userEditProfileDto, User user)
+        public static User Update___UserEditProfileDto_To_User(this UserEditProfileDto userEditProfileDto, User user)
         {
             user.ProfileName = userEditProfileDto.ProfileName;
             user.ImageUrl = userEditProfileDto.ImageUrl;
@@ -47,7 +46,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             return user;
         }
 
-        public static User Update_UserCreateProfileDtoToUser(this UserCreateProfileDto userCreateProfileDto, User user)
+        public static User Update___UserCreateProfileDto_To_User(this UserCreateProfileDto userCreateProfileDto, User user)
         {
             user.ProfileName = userCreateProfileDto.ProfileName;
             user.City = userCreateProfileDto.City;
@@ -56,7 +55,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
         }
 
 
-        public static UserPreference Update_UserEditPreferencesDtoToUserPreferences(this UserEditPreferencesDto userPreferencesDto, UserPreference userPreferences)
+        public static UserPreference Update___UserEditPreferencesDto_To_UserPreferences(this UserEditPreferencesDto userPreferencesDto, UserPreference userPreferences)
         {
             userPreferences.PostPerPage = userPreferencesDto.PostPerPage;
             userPreferences.EntryPerPage = userPreferencesDto.EntryPerPage;

@@ -4,7 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.AbstractServices;
+using _1_BusinessLayer.Concrete.Dtos.BotDtos;
+using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
+using _1_BusinessLayer.Concrete.Tools.Mappers;
+using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 
@@ -12,19 +16,34 @@ namespace _1_BusinessLayer.Concrete.Services
 {
     public class BotService : AbstractBotService
     {
-        public override Task<IdentityResult> CreateBot(string personality, string instructions, int dailyMessageCount, string mode)
+        public BotService(AbstractBotRepository botRepository, AbstractUserRepository userRepository) : base(botRepository, userRepository)
         {
-            throw new NotImplementedException();
         }
 
-        public override Task<IdentityResult> CustomizeBot(string personality, string instructions, int dailyMessageCount, string mode)
+        public override async Task<IdentityResult> CreateBot(CreateBotDto createBotDto)
         {
-            throw new NotImplementedException();
+            var bot = createBotDto.CreateBotDto_To_Bot();
+            await _botRepository.InsertAsync(bot);
+            return IdentityResult.Success;
         }
 
-        public override Task<IdentityResult> DeleteBot(int botId)
+        public override async Task<IdentityResult> CustomizeBot(int botId, CustomizeBotDto customizeBotDto)
         {
-            throw new NotImplementedException();
+            var bot = await _botRepository.GetByIdAsync(botId);
+            bot = customizeBotDto.Update___CustomizeBotDto_To_Bot(bot);
+            await _botRepository.UpdateAsync(bot);
+            return IdentityResult.Success;
+        }
+
+        public override async Task<IdentityResult> DeleteBot(int userId, int botId)
+        {
+            var bot = await _botRepository.GetByIdAsync(botId);
+            if(bot.UserId == userId)
+            {
+                await _botRepository.DeleteAsync(bot);
+                return IdentityResult.Success;
+            }
+            return IdentityResult.Failed(new UnauthorizedError("Unauthorized access"));
         }
 
         public override Task<IdentityResult> DeployBot(int botId)
