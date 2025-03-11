@@ -14,5 +14,6 @@ namespace _2_DataAccessLayer.Abstractions
         protected AbstractEntryRepository(ApplicationDbContext context) : base(context)
         {
         }
+
     }
 }

@@ -13,6 +13,9 @@ namespace _2_DataAccessLayer.Abstractions
     {
         public AbstractBotRepository(ApplicationDbContext context) : base(context)
         {
+
         }
+
+  
     }
 }

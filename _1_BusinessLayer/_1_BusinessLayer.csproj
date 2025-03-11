@@ -45,6 +45,7 @@
 
   <ItemGroup>
     <Folder Include="Abstractions\AbstractTools\AbstractBodyBuilders\" />
+    <Folder Include="Concrete\Tools\ErrorHandling\Exceptions\" />
   </ItemGroup>
 
 </Project>

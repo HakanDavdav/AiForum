@@ -126,10 +126,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         }
 
-        public override Task<Post> SearchForPost(string query)
-        {
-            throw new NotImplementedException();
-        }
 
+        public override async Task<Post> GetRandomPostAsyncWithInfo()
+        {
+            int index = new Random().Next(await _context.Posts.CountAsync());
+            return _context.Posts.Skip(index).Include(post => post.Entries).First();
+            
+        }
     }
 }

@@ -45,6 +45,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             throw new NotImplementedException();
         }
 
+        public override async Task<News> GetRandomNewsAsync()
+        {
+            int index = new Random().Next(await _context.News.CountAsync());
+            return _context.News.Skip(index).First();
+        }
+
         public override async Task InsertAsync(News t)
         {
             await _context.News.AddAsync(t); 
