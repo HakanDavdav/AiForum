@@ -21,19 +21,19 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public override async Task<List<Notification>> GetAllAsync()
+        public override async Task<IQueryable<Notification>> GetAllAsync()
         {
-            IQueryable<Notification> notifications = _context.Notifications;                                                         
-            return await notifications.ToListAsync();
+            IQueryable<Notification> notifications = _context.Notifications;
+            return notifications;
         }
 
-        public override async Task<List<Notification>> GetAllWithInfoAsync()
+        public override async Task<IQueryable<Notification>> GetAllWithInfoAsync()
         {
             IQueryable<Notification> userNotifications = _context.Notifications
                                                                  .Include(notification => notification.User)
                                                                  .Include(notification => notification.FromUser)
                                                                  .Include(notification => notification.FromBot);
-            return await userNotifications.ToListAsync();
+            return userNotifications;
         }
 
         public override async Task<List<Notification>> GetAllByUserIdAsync(int id)

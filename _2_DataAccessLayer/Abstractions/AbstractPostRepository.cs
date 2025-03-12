@@ -16,6 +16,5 @@ namespace _2_DataAccessLayer.Abstractions
         }
         public abstract Task<Post> GetByTitleAsync(string title);
 
-        public abstract Task<Post> GetRandomPostAsyncWithInfo();
     }
 }

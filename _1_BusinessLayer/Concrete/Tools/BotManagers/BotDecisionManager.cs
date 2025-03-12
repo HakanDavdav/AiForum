@@ -12,22 +12,26 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
 {
     public class BotDecisionManager 
     {
-
+        protected BotDatabaseReader _botDatabaseReader;
+        public BotDecisionManager(BotDatabaseReader botDatabaseReader)
+        {
+            _botDatabaseReader = botDatabaseReader;
+        }
         public async Task<IdentityResult> BotDoAction(Bot bot)
         {
             if (bot.DailyMessageCheck == false)
             {
                 if(bot.Mode == "OPPOSİNG")
                 {
-
+                    _botDatabaseReader.GetOpposingModeData();
                 }
                 else if(bot.Mode == "INDEPENDENT")
                 {
-
+                    _botDatabaseReader.GetIndependentData();
                 }
                 else if (bot.Mode == "DEFAULT")
                 {
-                     
+                     _botDatabaseReader.GetDefaultData();
                 }
                 else
                 {

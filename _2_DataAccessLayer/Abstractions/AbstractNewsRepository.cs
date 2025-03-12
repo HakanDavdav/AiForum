@@ -15,6 +15,5 @@ namespace _2_DataAccessLayer.Abstractions
         {
         }
 
-        public abstract Task<News> GetRandomNewsAsync();
     }
 }

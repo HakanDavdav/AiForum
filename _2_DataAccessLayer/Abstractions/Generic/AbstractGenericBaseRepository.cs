@@ -17,8 +17,8 @@ namespace _2_DataAccessLayer.Abstractions.Generic
         }
 
         public abstract Task DeleteAsync(T t);
-        public abstract Task<List<T>> GetAllAsync();
-        public abstract Task<List<T>> GetAllWithInfoAsync();
+        public abstract Task<IQueryable<T>> GetAllAsync();
+        public abstract Task<IQueryable<T>> GetAllWithInfoAsync();
         public abstract Task<T> GetByIdAsync(int id);
         public abstract Task<T> GetByIdWithInfoAsync(int id);
         public abstract Task InsertAsync(T t);

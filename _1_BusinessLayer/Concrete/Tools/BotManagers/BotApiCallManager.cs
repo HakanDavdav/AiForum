@@ -12,6 +12,9 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
 {
     public class BotApiCallManager : AbstractBotApiCallManager
     {
+        public BotApiCallManager(BotDatabaseReader botdatabaseReader) : base(botdatabaseReader)
+        {
+        }
 
         public override Task<string> CreateAiEntryResponse(Bot bot, List<string> entryOrPostWithTheirContext)
         {
@@ -29,6 +32,11 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
         }
 
         public override Task<string> CreateAiPostResponse(Bot bot, List<string> newsContext)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<string> CreateOpposingEntryResponse(Bot bot, List<string> entriesOpposed)
         {
             throw new NotImplementedException();
         }

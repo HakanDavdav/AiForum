@@ -21,13 +21,13 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public override async Task<List<UserPreference>> GetAllAsync()
+        public override async Task<IQueryable<UserPreference>> GetAllAsync()
         {
             IQueryable<UserPreference> userPreferences = _context.UserPreferences;
-            return await userPreferences.ToListAsync();
+            return userPreferences;
         }
 
-        public override Task<List<UserPreference>> GetAllWithInfoAsync()
+        public override Task<IQueryable<UserPreference>> GetAllWithInfoAsync()
         {
             throw new NotImplementedException();
         }

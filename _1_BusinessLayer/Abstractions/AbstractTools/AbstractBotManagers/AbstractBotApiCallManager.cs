@@ -16,6 +16,11 @@ namespace _1_BusinessLayer.Abstractions.AbstractTools.AbstractBotHandlers
            = "YOUR_GOOGLE_API_KEY";
         protected readonly string apiUrl
             = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?alt=sse&key={apiKey}";
+        protected readonly BotDatabaseReader _botdatabaseReader;
+        protected AbstractBotApiCallManager(BotDatabaseReader botdatabaseReader)
+        {
+            _botdatabaseReader = botdatabaseReader;
+        }
 
         public abstract Task<string> CreateAiEntryResponse(Bot bot, List<string> entryOrPostWithTheirContext);
         public abstract Task<string> CreateAiFollowResponse(Bot bot, List<string> usersWithTheirContext);

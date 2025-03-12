@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.AbstractTools.AbstractBotHandlers;
 using _2_DataAccessLayer.Abstractions;
+using _2_DataAccessLayer.Concrete.Entities;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace _1_BusinessLayer.Concrete.Tools.BotManagers
 {
@@ -16,8 +19,8 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
         public readonly AbstractUserRepository _userRepository;
         public readonly AbstractBotRepository _botRepository;
         public readonly AbstractBotApiCallManager _botApiCallManager;
-        public BotDatabaseReader(AbstractBotRepository abstractBotRepository,AbstractEntryRepository entryRepository,AbstractNewsRepository newsRepository,
-            AbstractUserRepository userRepository,AbstractPostRepository postRepository,AbstractBotApiCallManager botApiCallManager)
+        public BotDatabaseReader(AbstractBotRepository abstractBotRepository, AbstractEntryRepository entryRepository, AbstractNewsRepository newsRepository,
+            AbstractUserRepository userRepository, AbstractPostRepository postRepository, AbstractBotApiCallManager botApiCallManager)
         {
             _botRepository = abstractBotRepository;
             _entryRepository = entryRepository;
@@ -27,78 +30,81 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
             _botApiCallManager = botApiCallManager;
         }
 
-        public async Task<List<string>> GetOpposingData()
+        public async Task<List<string>> GetOpposingModeData()
         {
             Random random = new Random();
-            double randomValue = random.NextDouble(); // 0 ile 1 arasında rastgele sayı üretir
+            double ActionPossibility = random.NextDouble(); // 0 ile 1 arasında rastgele sayı üretir
 
-            double probabilityCreatingEntry = 0.2; // %30 ihtimal
-            double probabilityCreatingOpposingEntry = 0.75; // %50 ihtimal
-            double probabilityCreatingPost = 0.05; // %20 ihtimal
+            double probabilityCreatingEntry = 0.1; // %10 ihtimal
+            double probabilityCreatingOpposingEntry = 0.60; // %65 ihtimal
+            double probabilityCreatingPost = 0.05; // %5 ihtimal
+            double probabilityUserFollowing = 0.05; //%5 ihtimal
+            double probabilityBotFollowing = 0.05; //%5 ihtimal
+            double probabilityLikePost = 0.075; //%7.5 ihtimal
+            double probabilityLikeEntry = 0.075; //%7.5 ihtimal
 
-            if (randomValue < probabilityCreatingEntry)
+
+            if (ActionPossibility < probabilityCreatingEntry)
             {
-                var post = await _postRepository.GetRandomPostAsyncWithInfo();
-                return new List<string> { "Post Title:"+post.Title+"\nPost Context:"+post.Context };
+                var randomizer = new Random();
+                IQueryable<Post> posts = await _postRepository.GetAllAsync();
+                IQueryable<Post> randomPost = posts.Skip(randomizer.Next(await posts.CountAsync())).Take(1);
+
+                List<Post> randomPostList = await randomPost.ToListAsync();
+                Post post = randomPostList.First();
+
+                return new List<string> {"Post Title:"+post.Title+"\nPost Context:"+post.Context};
+            }
+            else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry)
+            {
+                var randomizer = new Random();
+                IQueryable<Post> posts = await _postRepository.GetAllWithInfoAsync();
+                IQueryable<Post> randomPost = posts.Skip(randomizer.Next(await posts.CountAsync())).Take(1);
+                IQueryable<Entry> entries = randomPost.SelectMany(post => post.Entries);
+                IQueryable<Entry> randomEntry = entries.Skip(randomizer.Next(await entries.CountAsync())).Take(1);
+
+                List<Post> randomPostList = await randomPost.ToListAsync();
+                List<Entry> randomEntryList = await randomEntry.ToListAsync();
+                Post post = randomPostList.First();
+                Entry entry = randomEntryList.First();
+
+                return new List<string> {"Post Title:"+post.Title+"\nPost Context:"+post.Context+"\nEntry Context:"+entry.Context};
+
+            }
+            else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry + probabilityCreatingPost)
+            {
+                var randomizer = new Random();
+                IQueryable<News> news = await _newsRepository.GetAllAsync();
+                IQueryable<News> randomNews = news.Skip(randomizer.Next(await news.CountAsync())).Take(1);
+
+                List<News> randomNewsList = await randomNews.ToListAsync();
+                News newss = randomNewsList.First();
+
+                return new List<string> {"News Title:"+newss.title+"News Context:"+newss.context };
+
+            }
+            else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry + probabilityCreatingPost + probabilityUserFollowing)
+            {
+                var randomizer = new Random();
+                IQueryable<User> users = await _userRepository.GetAllWithInfoAsync();
+                IQueryable<User> randomUsers = users.Skip(randomizer.Next(randomizer.Next(0,await users.CountAsync()-2))).Take(3);
+                IQueryable<Entry> entries = randomUsers.SelectMany(randomUsers => randomUsers.Entries);
+
+                List<User> randomUserList = await randomUser.ToListAsync();
+                User user = randomUserList.First();
+            }
+            else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry + probabilityCreatingPost + probabilityUserFollowing + probabilityBotFollowing)
+            {
                 
             }
-            else if (randomValue < probabilityCreatingEntry + probabilityCreatingOpposingEntry)
+            else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry + probabilityCreatingPost + probabilityUserFollowing + probabilityBotFollowing + probabilityLikePost)
             {
-                var post = await _postRepository.GetRandomPostAsyncWithInfo();
-                post.Entries.Skip();
+               
             }
             else
             {
-                Console.WriteLine("Olasılık C gerçekleşti! (%20)");
+             
             }
         }
-
-        public async Task<List<string>> GetDefaultData()
-        {
-            Random random = new Random();
-            double randomValue = random.NextDouble(); // 0 ile 1 arasında rastgele sayı üretir
-
-            double probabilityCreatingEntry = 0.6; // %30 ihtimal
-            double probabilityCreatingOpposingEntry = 0.2; // %50 ihtimal
-            double probabilityCreatingPost = 0.2; // %20 ihtimal
-
-            if (randomValue < probabilityCreatingEntry)
-            {
-                Console.WriteLine("Olasılık A gerçekleşti! (%30)");
-            }
-            else if (randomValue < probabilityCreatingEntry + probabilityCreatingOpposingEntry)
-            {
-                Console.WriteLine("Olasılık B gerçekleşti! (%50)");
-            }
-            else
-            {
-                Console.WriteLine("Olasılık C gerçekleşti! (%20)");
-            }
-
-        }
-
-        public async Task<List<string>> GetIndependentData()
-        {
-            Random random = new Random();
-            double randomValue = random.NextDouble(); // 0 ile 1 arasında rastgele sayı üretir
-
-            double probabilityCreatingEntry = 0.8; // %30 ihtimal
-            double probabilityCreatingOpposingEntry = 0.1; // %50 ihtimal
-            double probabilityCreatingPost = 0.2; // %20 ihtimal
-
-            if (randomValue < probabilityCreatingEntry)
-            {
-                Console.WriteLine("Olasılık A gerçekleşti! (%30)");
-            }
-            else if (randomValue < probabilityCreatingEntry + probabilityCreatingOpposingEntry)
-            {
-                Console.WriteLine("Olasılık B gerçekleşti! (%50)");
-            }
-            else
-            {
-                Console.WriteLine("Olasılık C gerçekleşti! (%20)");
-            }
-
-        }
-    }
+    }      
 }

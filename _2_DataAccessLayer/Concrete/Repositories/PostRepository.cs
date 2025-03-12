@@ -23,13 +23,13 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public override async Task<List<Post>> GetAllAsync()
+        public override async Task<IQueryable<Post>> GetAllAsync()
         {
             IQueryable<Post> posts = _context.Posts;
-            return await posts.ToListAsync();
+            return posts;
         }
 
-        public override async Task<List<Post>> GetAllWithInfoAsync()
+        public override async Task<IQueryable<Post>> GetAllWithInfoAsync()
         {                                          
                                                    //Post Owner User
             IQueryable<Post> posts = _context.Posts.Include(post => post.User)
@@ -57,7 +57,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                                                    .ThenInclude(like => like.Bot);
 
 
-            return await posts.ToListAsync();
+            return posts;
         }
 
 
@@ -125,13 +125,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             await _context.SaveChangesAsync();
 
         }
-
-
-        public override async Task<Post> GetRandomPostAsyncWithInfo()
-        {
-            int index = new Random().Next(await _context.Posts.CountAsync());
-            return _context.Posts.Skip(index).Include(post => post.Entries).First();
-            
-        }
+        
     }
 }

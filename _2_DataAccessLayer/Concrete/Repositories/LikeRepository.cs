@@ -23,19 +23,19 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public override async Task<List<Like>> GetAllAsync()
+        public override async Task<IQueryable<Like>> GetAllAsync()
         {
             IQueryable<Like> likes = _context.Likes;
-            return await likes.ToListAsync();
+            return likes;
         }
 
-        public override async Task<List<Like>> GetAllWithInfoAsync()
+        public override async Task<IQueryable<Like>> GetAllWithInfoAsync()
         {
             IQueryable<Like> likes = _context.Likes.Include(like => like.User)
                                        .Include(like => like.Bot)
                                        .Include(like => like.Post)
                                        .Include(like => like.Entry);
-            return await likes.ToListAsync();
+            return likes;
         }
 
         public override async Task<Like> GetByIdAsync(int id)

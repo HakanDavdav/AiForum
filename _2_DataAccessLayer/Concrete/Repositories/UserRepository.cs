@@ -24,13 +24,13 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public override async Task<List<User>> GetAllAsync()
+        public override async Task<IQueryable<User>> GetAllAsync()
         {
-            IQueryable<User> users = _context.Users;                                                     
-            return await users.ToListAsync();
+            IQueryable<User> users = _context.Users;
+            return users;
         }
 
-        public override async Task<List<User>> GetAllWithInfoAsync()
+        public override async Task<IQueryable<User>> GetAllWithInfoAsync()
         {
             IQueryable<User> users = _context.Users.Include(user => user.Posts).
                                                     ThenInclude(post => post.Likes).
@@ -39,8 +39,8 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                                                     Include(user => user.Followers).
                                                     Include(user => user.Followings).
                                                     Include(user => user.Bots).
-                                                    Include(user => user.UserPreference);                                                
-            return await users.ToListAsync();
+                                                    Include(user => user.UserPreference);
+            return users;
         }
 
         public override async Task<User> GetByIdAsync(int id)
@@ -106,6 +106,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             List<string> roles = (List<string>)await _userManager.GetRolesAsync(user);
             return roles;
+        }
+
+        public override Task<User> GetByPhoneNumberAsync(string phoneNumber)
+        {
+            throw new NotImplementedException();
         }
     }
 }

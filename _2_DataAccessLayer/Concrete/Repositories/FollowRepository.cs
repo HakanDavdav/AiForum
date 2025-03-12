@@ -22,19 +22,19 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         }
 
 
-        public override async Task<List<Follow>> GetAllAsync()
+        public override async Task<IQueryable<Follow>> GetAllAsync()
         {
             IQueryable<Follow> allFollows = _context.Follows;
-            return await allFollows.ToListAsync();
+            return allFollows;
         }
 
-        public override async Task<List<Follow>> GetAllWithInfoAsync()
+        public override async Task<IQueryable<Follow>> GetAllWithInfoAsync()
         {
             IQueryable<Follow> allFollows = _context.Follows.Include(follow => follow.Followee)
                                                             .Include(follow => follow.Followed)
                                                             .Include(follow => follow.BotFollowee)
                                                             .Include(follow => follow.BotFollowed);
-            return await allFollows.ToListAsync();
+            return allFollows;
         }
 
         public override async Task<Follow> GetByIdAsync(int id)

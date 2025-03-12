@@ -21,13 +21,13 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public override async Task<List<Bot>> GetAllAsync()
+        public override async Task<IQueryable<Bot>> GetAllAsync()
         {
             IQueryable<Bot> bots = _context.Bots;
-            return await bots.ToListAsync();
+            return bots;
         }
 
-        public override async Task<List<Bot>> GetAllWithInfoAsync()
+        public override async Task<IQueryable<Bot>> GetAllWithInfoAsync()
         {
             IQueryable<Bot> bots = _context.Bots.Include(bot => bot.Posts)
                                                 .ThenInclude(post => post.Likes)
@@ -37,7 +37,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                                                 .Include(bot => bot.Followers)
                                                 .Include(bot => bot.Followings)
                                                 .Include(bot => bot.User);
-            return await bots.ToListAsync();
+            return bots;
         }
 
         public override async Task<Bot> GetByIdAsync(int id)
