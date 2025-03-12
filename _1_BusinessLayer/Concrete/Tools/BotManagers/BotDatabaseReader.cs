@@ -59,18 +59,10 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
             {
                 var randomizer = new Random();
                 IQueryable<Post> posts = await _postRepository.GetAllWithInfoAsync();
-                IQueryable<Post> randomPost = posts.Skip(randomizer.Next(await posts.CountAsync())).Take(1);
-                IQueryable<Entry> entries = randomPost.SelectMany(post => post.Entries);
-                IQueryable<Entry> randomEntry = entries.Skip(randomizer.Next(await entries.CountAsync())).Take(1);
-
-                List<Post> randomPostList = await randomPost.ToListAsync();
-                List<Entry> randomEntryList = await randomEntry.ToListAsync();
-                Post post = randomPostList.First();
-                Entry entry = randomEntryList.First();
-
-                return new List<string> {"Post Title:"+post.Title+"\nPost Context:"+post.Context+"\nEntry Context:"+entry.Context};
-
+                IQueryable<Post> randomPosts = posts.Skip(randomizer.Next(0,await posts.CountAsync()-2)).Take(3);
+                
             }
+
             else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry + probabilityCreatingPost)
             {
                 var randomizer = new Random();
@@ -88,10 +80,21 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
                 var randomizer = new Random();
                 IQueryable<User> users = await _userRepository.GetAllWithInfoAsync();
                 IQueryable<User> randomUsers = users.Skip(randomizer.Next(randomizer.Next(0,await users.CountAsync()-2))).Take(3);
-                IQueryable<Entry> entries = randomUsers.SelectMany(randomUsers => randomUsers.Entries);
+                IQueryable<IGrouping<User, Entry>> randomUsersWithEntries = randomUsers.SelectMany(randomUsers => randomUsers.Entries).GroupBy(entry => entry.User);
 
-                List<User> randomUserList = await randomUser.ToListAsync();
-                User user = randomUserList.First();
+                List<IGrouping<User, Entry>> randomUsersWithEntriesList = await randomUsersWithEntries.ToListAsync();
+                var elements = new List<string>();
+                var element = new StringBuilder();
+                foreach (var item in randomUsersWithEntriesList)
+                {
+                    element.Append(item.Key.ProfileName);
+                    foreach (var entry in item)
+                    {
+                        element.AppendLine("Entry:"+entry.Context);
+                    }
+                    elements.Add(element.ToString());
+                }
+                return elements;
             }
             else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry + probabilityCreatingPost + probabilityUserFollowing + probabilityBotFollowing)
             {
