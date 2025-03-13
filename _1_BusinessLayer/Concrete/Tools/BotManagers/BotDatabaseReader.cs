@@ -46,67 +46,125 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
 
             if (ActionPossibility < probabilityCreatingEntry)
             {
-                var randomizer = new Random();
-                IQueryable<Post> posts = await _postRepository.GetAllAsync();
-                IQueryable<Post> randomPost = posts.Skip(randomizer.Next(await posts.CountAsync())).Take(1);
+                 List<string> strings = new List<string>();
+                 StringBuilder stringBuilder = new StringBuilder();
+                 IQueryable<Post> Posts = await _postRepository.GetAllWithInfoAsync();
+                 IQueryable<Post> randomPosts =  Posts.OrderBy(post => Guid.NewGuid()).Take(3);
+                 List<Post> randomPostsList = await randomPosts.ToListAsync();
+                foreach (var post in randomPostsList)
+                {
+                    strings.Add("Post Title:"+post.Title+"\nPost Context:"+post.Context);
+                }
+                return strings;
 
-                List<Post> randomPostList = await randomPost.ToListAsync();
-                Post post = randomPostList.First();
-
-                return new List<string> {"Post Title:"+post.Title+"\nPost Context:"+post.Context};
             }
             else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry)
             {
-                var randomizer = new Random();
-                IQueryable<Post> posts = await _postRepository.GetAllWithInfoAsync();
-                IQueryable<Post> randomPosts = posts.Skip(randomizer.Next(0,await posts.CountAsync()-2)).Take(3);
-                
+                List<string> strings = new List<string>();
+                StringBuilder stringBuilder = new StringBuilder();
+                IQueryable<Post> Posts = await _postRepository.GetAllWithInfoAsync();
+                IQueryable<Post> randomPosts = Posts.OrderBy(post => Guid.NewGuid()).Take(3);
+                IQueryable<IGrouping<Post, Entry>> randomPostsWithRandomEntries =
+                   randomPosts.SelectMany(post => post.Entries.OrderBy(entry => Guid.NewGuid()).Take(3)).GroupBy(entry => entry.Post);
+                List<IGrouping<Post, Entry>> randomPostsWithRandomEntriesList = await randomPostsWithRandomEntries.ToListAsync();
+                foreach (var post in randomPostsWithRandomEntriesList)
+                {
+                    stringBuilder.AppendLine("Post Title:" + post.Key.Title + "\nPost Context:" + post.Key.Context);
+                    foreach (var entry in post)
+                    {
+                        stringBuilder.AppendLine("Entry Context:" + entry.Context);
+                    }
+                    strings.Add(stringBuilder.ToString());
+                    stringBuilder.Clear();
+                }
+                return strings;
+
             }
 
             else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry + probabilityCreatingPost)
             {
-                var randomizer = new Random();
-                IQueryable<News> news = await _newsRepository.GetAllAsync();
-                IQueryable<News> randomNews = news.Skip(randomizer.Next(await news.CountAsync())).Take(1);
-
-                List<News> randomNewsList = await randomNews.ToListAsync();
-                News newss = randomNewsList.First();
-
-                return new List<string> {"News Title:"+newss.title+"News Context:"+newss.context };
+                 List<string> strings = new List<string>();
+                 IQueryable<News> news_s = await _newsRepository.GetAllWithInfoAsync();
+                 IQueryable<News> randomNews_s = news_s.OrderBy(news => Guid.NewGuid()).Take(3);
+                 List<News> randomNews_sList = await randomNews_s.ToListAsync();
+                foreach (var news in randomNews_sList)
+                {
+                    strings.Add("News Title:" + news.title + "\nNews Context:" + news.context);
+                }
+                return strings;
 
             }
             else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry + probabilityCreatingPost + probabilityUserFollowing)
             {
-                var randomizer = new Random();
+                List<string> strings = new List<string>();
+                StringBuilder stringBuilder = new StringBuilder();
                 IQueryable<User> users = await _userRepository.GetAllWithInfoAsync();
-                IQueryable<User> randomUsers = users.Skip(randomizer.Next(randomizer.Next(0,await users.CountAsync()-2))).Take(3);
-                IQueryable<IGrouping<User, Entry>> randomUsersWithEntries = randomUsers.SelectMany(randomUsers => randomUsers.Entries).GroupBy(entry => entry.User);
-
-                List<IGrouping<User, Entry>> randomUsersWithEntriesList = await randomUsersWithEntries.ToListAsync();
-                var elements = new List<string>();
-                var element = new StringBuilder();
-                foreach (var item in randomUsersWithEntriesList)
+                IQueryable<User> randomUsers = users.OrderBy(user => Guid.NewGuid()).Take(3);
+                IQueryable<IGrouping<User, Entry>> randomUsersWithRandomEntries =
+                    randomUsers.SelectMany(user => user.Entries.OrderBy(entry => Guid.NewGuid()).Take(3)).GroupBy(entry => entry.User);
+                List<IGrouping<User, Entry>> randomUsersWithRandomEntriesList = await randomUsersWithRandomEntries.ToListAsync();
+                foreach (var user in randomUsersWithRandomEntriesList)
                 {
-                    element.Append(item.Key.ProfileName);
-                    foreach (var entry in item)
+                    stringBuilder.Append("User Id:"+user.Key.Id);
+                    foreach (var entry in user)
                     {
-                        element.AppendLine("Entry:"+entry.Context);
+                        stringBuilder.AppendLine("Post Title:" + entry.Post.Title + "\nPost context:" + entry.Post.Context);
+                        stringBuilder.AppendLine("Entry Context:"+entry.Context);
                     }
-                    elements.Add(element.ToString());
+                    strings.Add(stringBuilder.ToString());
+                    stringBuilder.Clear();
                 }
-                return elements;
+                return strings;
             }
             else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry + probabilityCreatingPost + probabilityUserFollowing + probabilityBotFollowing)
             {
-                
+                List<string> strings = new List<string>();
+                StringBuilder stringBuilder = new StringBuilder();
+                IQueryable<Bot> bots = await _botRepository.GetAllWithInfoAsync();
+                IQueryable<Bot> randomBots = bots.OrderBy(bot => Guid.NewGuid()).Take(3);
+                IQueryable<IGrouping<Bot, Entry>> randomBotsWithRandomEntries =
+                    randomBots.SelectMany(bot => bot.Entries.OrderBy(entry => Guid.NewGuid()).Take(3)).GroupBy(entry => entry.Bot);
+                List<IGrouping<Bot,Entry>> randomBotWithRandomEntriesList = await randomBotsWithRandomEntries.ToListAsync();
+                foreach (var bot in randomBotWithRandomEntriesList)
+                {
+                    stringBuilder.Append("Bot Id:" + bot.Key.BotId);
+                    foreach (var entry in bot)
+                    {
+                        stringBuilder.AppendLine("Post Title:" + entry.Post.Title + "Post Context" + entry.Post.Context);
+                        stringBuilder.AppendLine("Entry Context"+entry.Context);
+                    }
+                    strings.Add(stringBuilder.ToString());
+                    stringBuilder.Clear();
+                }
+                return strings;
+
             }
             else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry + probabilityCreatingPost + probabilityUserFollowing + probabilityBotFollowing + probabilityLikePost)
             {
-               
+                List<string> strings = new List<string>();
+                IQueryable<Post> posts = await _postRepository.GetAllWithInfoAsync();
+                IQueryable<Post> randomPosts = posts.OrderBy(post => Guid.NewGuid()).Take(3);
+                List<Post> randomPostsList = await randomPosts.ToListAsync();
+                foreach (var post in randomPostsList)
+                {
+                    strings.Add("Post Title:" + post.Title + "Post Context:" + post.Context);
+                }
+                return strings;
             }
             else
             {
-             
+                List<string> strings = new List<string>();
+                StringBuilder stringBuilder = new StringBuilder();
+                IQueryable<Post> posts = await _postRepository.GetAllWithInfoAsync();
+                IQueryable<Post> randomPosts = posts.OrderBy(post => Guid.NewGuid()).Take(3);
+                IQueryable<IGrouping<Post,Entry>> randomPostsWithRandomEntries = 
+                    randomPosts.SelectMany(post => post.Entries.OrderBy(entry => Guid.NewGuid()).Take(3)).GroupBy(entry => entry.Post);
+                List<IGrouping<Post, Entry>> randomPostWithRandomEntriesList = await randomPostsWithRandomEntries.ToListAsync();
+                foreach (var item in randomPostWithRandomEntriesList)
+                {
+                    
+                }
+
             }
         }
     }      
