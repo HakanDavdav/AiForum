@@ -21,36 +21,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public override async Task<IQueryable<Notification>> GetAllAsync()
-        {
-            IQueryable<Notification> notifications = _context.Notifications;
-            return notifications;
-        }
-
-        public override async Task<IQueryable<Notification>> GetAllWithInfoAsync()
-        {
-            IQueryable<Notification> userNotifications = _context.Notifications
-                                                                 .Include(notification => notification.User)
-                                                                 .Include(notification => notification.FromUser)
-                                                                 .Include(notification => notification.FromBot);
-            return userNotifications;
-        }
 
         public override async Task<List<Notification>> GetAllByUserIdAsync(int id)
         {
-            IQueryable<Notification> userNotifications = _context.Notifications.Where(notification => notification.UserId == id);
-            return await userNotifications.ToListAsync();
-        }
-
-        public override async Task<List<Notification>> GetAllByUserIdWithInfoAsync(int id)
-        {
-            IQueryable<Notification> userNotifications = _context.Notifications.Where(notification => notification.UserId == id)
-                                                                              .Include(notification => notification.User)
-                                                                              .Include(notification => notification.FromUser)
-                                                                              .Include(notification => notification.FromBot);
-            return await userNotifications.ToListAsync();
-        }
-      
+            IQueryable<Notification> notifications = _context.Notifications.Where(notification => notification.UserId == id);
+            return await notifications.ToListAsync();
+        }     
 
         public override async Task<Notification> GetByIdAsync(int id)
         {
@@ -60,17 +36,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             return notification;
         }
 
-        public override async Task<Notification> GetByIdWithInfoAsync(int id)
-        {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-
-            var notification = await _context.Notifications.Include(notification => notification.User)
-                                                           .Include(notification => notification.FromUser)
-                                                           .Include(notification => notification.FromBot)
-                                                           .FirstOrDefaultAsync(notification => notification.NotificationId == id);
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-            return notification;
-        }
 
         public override async Task InsertAsync(Notification t)
         {

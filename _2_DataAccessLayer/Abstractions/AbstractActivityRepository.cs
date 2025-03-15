@@ -14,5 +14,8 @@ namespace _2_DataAccessLayer.Abstractions
         protected AbstractActivityRepository(ApplicationDbContext context) : base(context)
         {
         }
+        public abstract Task<List<Activity>> GetAllByUserIdAsync(int id);
+        public abstract Task<List<Activity>> GetAllByBotIdAsync(int id);
+
     }
 }

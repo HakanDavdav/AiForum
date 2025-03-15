@@ -21,21 +21,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             await _context.SaveChangesAsync();
         }
 
-
-        public override async Task<IQueryable<Follow>> GetAllAsync()
+        public override async Task<List<Follow>> GetAllByBotIdAsync(int id)
         {
-            IQueryable<Follow> allFollows = _context.Follows;
-            return allFollows;
+            var follows = _context.Follows.Where(follow => follow.BotFolloweeId == id);
+            return await follows.ToListAsync();
         }
 
-        public override async Task<IQueryable<Follow>> GetAllWithInfoAsync()
+        public override async Task<List<Follow>> GetAllByUserIdAsync(int id)
         {
-            IQueryable<Follow> allFollows = _context.Follows.Include(follow => follow.Followee)
-                                                            .Include(follow => follow.Followed)
-                                                            .Include(follow => follow.BotFollowee)
-                                                            .Include(follow => follow.BotFollowed);
-            return allFollows;
+            var follows = _context.Follows.Where(follow => follow.FolloweeId == id);
+            return await follows.ToListAsync();
         }
+
 
         public override async Task<Follow> GetByIdAsync(int id)
         {
@@ -45,17 +42,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             return follow;
         }
 
-        public override async Task<Follow> GetByIdWithInfoAsync(int id)
-        {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            Follow follow = await _context.Follows.Include(follow => follow.Followee)
-                                                            .Include(follow => follow.Followed)
-                                                            .Include(follow => follow.BotFollowee)
-                                                            .Include(follow => follow.BotFollowed)
-                                                            .FirstOrDefaultAsync(follow => follow.FollowId == id);
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-            return follow;
-        }
 
         public override async Task InsertAsync(Follow t)
         {

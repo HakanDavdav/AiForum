@@ -21,16 +21,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public override async Task<IQueryable<News>> GetAllAsync()
-        {
-            IQueryable<News> news = _context.News;
-            return news;
-        }
-
-        public override async Task<IQueryable<News>> GetAllWithInfoAsync()
-        {
-            throw new NotImplementedException();
-        }
 
         public override async Task<News> GetByIdAsync(int id)
         {
@@ -40,9 +30,10 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             return news;
         }
 
-        public override Task<News> GetByIdWithInfoAsync(int id)
+        public override async Task<List<News>> GetRandomNews(int number)
         {
-            throw new NotImplementedException();
+            IQueryable<News> news = _context.News.OrderBy(news => Guid.NewGuid()).Take(number);
+            return await news.ToListAsync();
         }
 
         public override async Task InsertAsync(News t)

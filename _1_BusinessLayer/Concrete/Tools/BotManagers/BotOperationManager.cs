@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace _1_BusinessLayer.Concrete.Tools.BotManagers
 {
-    public class BotPostManager
+    internal class BotOperationManager
     {
     }
 }

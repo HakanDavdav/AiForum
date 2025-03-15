@@ -16,7 +16,6 @@ namespace _2_DataAccessLayer.Abstractions
         }
 
         public abstract Task<UserPreference> GetByUserIdAsync(int id);
-        public abstract Task<UserPreference> GetByUserIdWithInfoAsync(int id);
 
     }
 }

@@ -23,15 +23,15 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
             {
                 if(bot.Mode == "OPPOSİNG")
                 {
-                    _botDatabaseReader.GetOpposingModeData();
+                    var (data,responseType) = await _botDatabaseReader.GetModelDataAsync();
                 }
                 else if(bot.Mode == "INDEPENDENT")
                 {
-                    _botDatabaseReader.GetIndependentData();
+                    var (data, responseType) = await _botDatabaseReader.GetModelDataAsync();
                 }
                 else if (bot.Mode == "DEFAULT")
                 {
-                     _botDatabaseReader.GetDefaultData();
+                    var (data, responseType) = await _botDatabaseReader.GetModelDataAsync();
                 }
                 else
                 {

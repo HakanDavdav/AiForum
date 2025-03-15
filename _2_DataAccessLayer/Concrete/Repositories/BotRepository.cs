@@ -21,24 +21,14 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public override async Task<IQueryable<Bot>> GetAllAsync()
+
+        public override async Task<List<Bot>> GetAllByUserIdAsync(int id)
         {
-            IQueryable<Bot> bots = _context.Bots;
-            return bots;
+            IQueryable<Bot> bots = _context.Bots.Where(bot => bot.UserId == id);
+            return await bots.ToListAsync();
         }
 
-        public override async Task<IQueryable<Bot>> GetAllWithInfoAsync()
-        {
-            IQueryable<Bot> bots = _context.Bots.Include(bot => bot.Posts)
-                                                .ThenInclude(post => post.Likes)
-                                                .Include(bot => bot.Entries)
-                                                .ThenInclude(entry => entry.Likes)
-                                                .Include(bot => bot.Likes)
-                                                .Include(bot => bot.Followers)
-                                                .Include(bot => bot.Followings)
-                                                .Include(bot => bot.User);
-            return bots;
-        }
+      
 
         public override async Task<Bot> GetByIdAsync(int id)
         {
@@ -48,20 +38,10 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 #pragma warning restore CS8603 // Possible null reference return.
         }
 
-        public override async Task<Bot> GetByIdWithInfoAsync(int id)
+        public override async Task<List<Bot>> GetRandomBots(int number)
         {
-            var bot = await _context.Bots.Include(bot => bot.Posts)
-                                          .ThenInclude(post => post.Likes)
-                                          .Include(bot => bot.Entries)
-                                          .ThenInclude(entry => entry.Likes)
-                                          .Include(bot => bot.Likes)
-                                          .Include(bot => bot.Followers)
-                                          .Include(bot => bot.Followings)
-                                          .Include(bot => bot.User)
-                                          .FirstOrDefaultAsync(bot => bot.BotId == id);
-#pragma warning disable CS8603 // Possible null reference return.
-            return bot;
-#pragma warning restore CS8603 // Possible null reference return.
+            IQueryable<Bot> bot = _context.Bots.OrderBy(bot => Guid.NewGuid()).Take(number);
+            return await bot.ToListAsync();
         }
 
         public override async Task InsertAsync(Bot t)

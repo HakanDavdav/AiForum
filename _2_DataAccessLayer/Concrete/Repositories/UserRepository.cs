@@ -24,45 +24,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public override async Task<IQueryable<User>> GetAllAsync()
-        {
-            IQueryable<User> users = _context.Users;
-            return users;
-        }
 
-        public override async Task<IQueryable<User>> GetAllWithInfoAsync()
-        {
-            IQueryable<User> users = _context.Users.Include(user => user.Posts).
-                                                    ThenInclude(post => post.Likes).
-                                                    Include(user => user.Entries).
-                                                    ThenInclude(entries => entries.Likes).
-                                                    Include(user => user.Followers).
-                                                    Include(user => user.Followings).
-                                                    Include(user => user.Bots).
-                                                    Include(user => user.UserPreference);
-            return users;
-        }
 
         public override async Task<User> GetByIdAsync(int id)
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             User user = await _context.Users.FirstOrDefaultAsync(user => user.Id == id);
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-            return user;
-        }
-
-        public override async Task<User> GetByIdWithInfoAsync(int id)
-        {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            User user = await _context.Users.Include(user => user.Posts).
-                                                    ThenInclude(post => post.Likes).
-                                                    Include(user => user.Entries).
-                                                    ThenInclude(entries => entries.Likes).
-                                                    Include(user => user.Followers).
-                                                    Include(user => user.Followings).
-                                                    Include(user => user.Bots).
-                                                    Include(user => user.UserPreference).
-                                                    FirstOrDefaultAsync(user => user.Id == id);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             return user;
         }
@@ -96,21 +63,22 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public override Task<User> GetByProfileName(string query)
+        public override async Task<User> GetByProfileNameAsync(string profileName)
         {
-            throw new NotImplementedException();
+            var user = await _context.Users.FirstOrDefaultAsync(user =>user.ProfileName == profileName);
+            return user;
         }
 
-        //Identity does not have any roles in it's own user table
-        public override async Task<List<string>> GetUserRolesAsync(User user)
+        public override async Task<User> GetByPhoneNumberAsync(string phoneNumber)
         {
-            List<string> roles = (List<string>)await _userManager.GetRolesAsync(user);
-            return roles;
+            var user = await _context.Users.FirstOrDefaultAsync(user => user.PhoneNumber == phoneNumber);
+            return user;
         }
 
-        public override Task<User> GetByPhoneNumberAsync(string phoneNumber)
+        public override async Task<List<User>> GetRandomUsers(int number)
         {
-            throw new NotImplementedException();
+            IQueryable<User> users = _context.Users.OrderBy(user => Guid.NewGuid()).Take(number);
+            return await users.ToListAsync();
         }
     }
 }

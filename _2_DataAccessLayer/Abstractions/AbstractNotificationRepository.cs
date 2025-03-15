@@ -16,6 +16,6 @@ namespace _2_DataAccessLayer.Abstractions
         }
 
         public abstract Task<List<Notification>> GetAllByUserIdAsync(int id);
-        public abstract Task<List<Notification>> GetAllByUserIdWithInfoAsync(int id);
+
     }
 }

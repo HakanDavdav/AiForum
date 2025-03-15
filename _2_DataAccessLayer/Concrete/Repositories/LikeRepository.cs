@@ -23,20 +23,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public override async Task<IQueryable<Like>> GetAllAsync()
+        public override async Task<List<Like>> GetAllByBotIdAsync(int id)
         {
-            IQueryable<Like> likes = _context.Likes;
-            return likes;
+            IQueryable<Like> likes = _context.Likes.Where(like => like.BotId == id);
+            return await likes.ToListAsync();
         }
 
-        public override async Task<IQueryable<Like>> GetAllWithInfoAsync()
+        public override async Task<List<Like>> GetAllByUserIdAsync(int id)
         {
-            IQueryable<Like> likes = _context.Likes.Include(like => like.User)
-                                       .Include(like => like.Bot)
-                                       .Include(like => like.Post)
-                                       .Include(like => like.Entry);
-            return likes;
+            IQueryable<Like> likes = _context.Likes.Where(like => like.UserId == id);
+            return await likes.ToListAsync();
         }
+
 
         public override async Task<Like> GetByIdAsync(int id)
         {
@@ -46,17 +44,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             return like;
         }
 
-        public override async Task<Like> GetByIdWithInfoAsync(int id)
-        {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            Like like = await _context.Likes.Include(like => like.User)
-                                            .Include(like => like.Bot)
-                                            .Include(like => like.Post)
-                                            .Include(like => like.Entry)
-                                            .FirstOrDefaultAsync(like => like.LikeId == id);
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-            return like;
-        }
 
         public override async Task InsertAsync(Like t)
         {

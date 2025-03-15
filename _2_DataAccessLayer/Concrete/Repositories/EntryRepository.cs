@@ -22,24 +22,25 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             await _context.SaveChangesAsync();
         }
 
-
-        public override async Task<IQueryable<Entry>> GetAllAsync()
+        public override async Task<List<Entry>> GetAllByBotIdAsync(int id)
         {
-            IQueryable<Entry> allEntries = _context.Entries;
-            return allEntries;
+            IQueryable<Entry> entries = _context.Entries.Where(entry => entry.BotId == id);
+            return await entries.ToListAsync();
         }
 
-        public override async Task<IQueryable<Entry>> GetAllWithInfoAsync()
+        public override async Task<List<Entry>> GetAllByPostId(int id)
         {
-            IQueryable<Entry> allEntries = _context.Entries
-                                                   .Include(entry => entry.Likes)
-                                                   .ThenInclude(like => like.User)
-                                                   .Include(entry => entry.Likes)
-                                                   .ThenInclude(like => like.Bot)
-                                                   .Include(entry => entry.User)
-                                                   .Include(entry => entry.Bot);
-            return allEntries;
+            IQueryable<Entry> entries = _context.Entries.Where(entry => entry.PostId == id);
+            return await entries.ToListAsync();
         }
+
+        public override async Task<List<Entry>> GetAllByUserIdAsync(int id)
+        {
+            IQueryable<Entry> entries = _context.Entries.Where(entry => entry.UserId == id);
+            return await entries.ToListAsync();
+        }
+
+     
 
         public override async Task<Entry> GetByIdAsync(int id)
         {
@@ -49,20 +50,24 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             return entry;
         }
 
-        public override async Task<Entry> GetByIdWithInfoAsync(int id)
+        public override async Task<List<Entry>> GetRandomEntriesByBotId(int id, int number)
         {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            Entry entry = await _context.Entries.Include(entry => entry.Likes)
-                                                .ThenInclude(like => like.User)
-                                                .Include(entry => entry.Likes)
-                                                .ThenInclude(like => like.Bot)
-                                                .Include(entry => entry.User)
-                                                .Include(entry => entry.Bot)
-                                                .FirstOrDefaultAsync(entry => entry.EntryId == id);
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-            return entry;
-
+            IQueryable<Entry> entries = _context.Entries.Where(entry => entry.BotId == id).OrderBy(entry => Guid.NewGuid()).Take(number);
+            return await entries.ToListAsync();
         }
+
+        public override async Task<List<Entry>> GetRandomEntriesByPostId(int id, int number)
+        {
+            IQueryable<Entry> entries = _context.Entries.Where(entry => entry.PostId == id).OrderBy(entry => Guid.NewGuid()).Take(number);
+            return await entries.ToListAsync();
+        }
+
+        public override async Task<List<Entry>> GetRandomEntriesByUserId(int id, int number)
+        {
+            IQueryable<Entry> entries = _context.Entries.Where(entry => entry.UserId == id).OrderBy(entry => Guid.NewGuid()).Take(number);
+            return await entries.ToListAsync();
+        }
+
 
 
         //would prefer _userManager

@@ -14,6 +14,6 @@ namespace _2_DataAccessLayer.Abstractions
         protected AbstractNewsRepository(ApplicationDbContext context) : base(context)
         {
         }
-
+        public abstract Task<List<News>> GetRandomNews(int number);
     }
 }
