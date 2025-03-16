@@ -9,10 +9,10 @@ namespace _1_BusinessLayer.Abstractions.AbstractTools.ITools
 {
     public interface IBotApiCallManager
     {
-        Task<String> CreateAiEntryResponse(Bot bot,List<string> entryOrPostWithTheirContext);
-        Task<string> CreateAiPostResponse(Bot bot, List<string> newsContext);
-        Task<string> CreateAiFollowResponse(Bot bot, List<string> usersWithTheirContext);
-        Task<string> CreateAiLikeResponse(Bot bot, List<string> entriesOrPostsWithTheirContext);
-        Task<string> CreateOpposingEntryResponse(Bot bot,List<string> entriesOpposed);
+        Task<(string aiResponse, string aiResponseType)> CreateAiEntryResponse(Bot bot, List<string> entryOrPostWithTheirContext);
+        Task<(string aiResponse, string aiResponseType)> CreateAiFollowResponse(Bot bot, List<string> usersWithTheirContext);
+        Task<(string aiResponse, string aiResponseType)> CreateAiLikeResponse(Bot bot, List<string> entriesOrPostsWithTheirContext);
+        Task<(string aiResponse, string aiResponseType)> CreateAiPostResponse(Bot bot, List<string> newsContext);
+        Task<(string aiResponse, string aiResponseType)> CreateOpposingEntryResponse(Bot bot, List<string> entriesOpposed);
     }
 }

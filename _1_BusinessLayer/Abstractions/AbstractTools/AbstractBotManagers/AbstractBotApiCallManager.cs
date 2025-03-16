@@ -22,10 +22,10 @@ namespace _1_BusinessLayer.Abstractions.AbstractTools.AbstractBotHandlers
             _botdatabaseReader = botdatabaseReader;
         }
 
-        public abstract Task<string> CreateAiEntryResponse(Bot bot, List<string> entryOrPostWithTheirContext);
-        public abstract Task<string> CreateAiFollowResponse(Bot bot, List<string> usersWithTheirContext);
-        public abstract Task<string> CreateAiLikeResponse(Bot bot, List<string> entriesOrPostsWithTheirContext);
-        public abstract Task<string> CreateAiPostResponse(Bot bot, List<string> newsContext);
-        public abstract Task<string> CreateOpposingEntryResponse(Bot bot, List<string> entriesOpposed);
+        public abstract Task<(string aiResponse, string aiResponseType)> CreateAiEntryResponse(Bot bot, List<string> entryOrPostWithTheirContext);
+        public abstract Task<(string aiResponse, string aiResponseType)> CreateAiFollowResponse(Bot bot, List<string> usersWithTheirContext);
+        public abstract Task<(string aiResponse, string aiResponseType)> CreateAiLikeResponse(Bot bot, List<string> entriesOrPostsWithTheirContext);
+        public abstract Task<(string aiResponse, string aiResponseType)> CreateAiPostResponse(Bot bot, List<string> newsContext);
+        public abstract Task<(string aiResponse, string aiResponseType)> CreateOpposingEntryResponse(Bot bot, List<string> entriesOpposed);
     }
 }

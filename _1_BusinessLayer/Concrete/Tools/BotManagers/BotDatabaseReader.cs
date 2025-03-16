@@ -30,18 +30,18 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
             _botApiCallManager = botApiCallManager;
         }
 
-        public async Task<(List<string> Data, string Response)> GetModelDataAsync()
+        public async Task<(List<string> Data, string dataResponseType)> GetModelDataAsync(ProbabilitySet probabilitySet)
         {
             Random random = new Random();
             double ActionPossibility = random.NextDouble(); // 0 ile 1 arasında rastgele sayı üretir
 
-            double probabilityCreatingEntry = 0.1; // %10 ihtimal
-            double probabilityCreatingOpposingEntry = 0.60; // %65 ihtimal
-            double probabilityCreatingPost = 0.05; // %5 ihtimal
-            double probabilityUserFollowing = 0.05; //%5 ihtimal
-            double probabilityBotFollowing = 0.05; //%5 ihtimal
-            double probabilityLikePost = 0.075; //%7.5 ihtimal
-            double probabilityLikeEntry = 0.075; //%7.5 ihtimal
+            double probabilityCreatingEntry = probabilitySet.probabilityCreatingEntry;  
+            double probabilityCreatingOpposingEntry = probabilitySet.probabilityCreatingOpposingEntry;  
+            double probabilityCreatingPost = probabilitySet.probabilityCreatingPost;
+            double probabilityUserFollowing = probabilitySet.probabilityUserFollowing;
+            double probabilityBotFollowing = probabilitySet.probabilityBotFollowing;
+            double probabilityLikePost = probabilitySet.probabilityLikePost;
+            double probabilityLikeEntry = probabilitySet.probabilityLikeEntry;
 
 
             if (ActionPossibility < probabilityCreatingEntry)
@@ -50,7 +50,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
                 List<Post> posts = await _postRepository.GetRandomPosts(1);
                 foreach (var post in posts)
                 {
-                    data.Add("Post Title:"+post.Title+"\nPost Context:"+post.Context);
+                    data.Add("Post Id:"+post.PostId+"\nPost Title:"+post.Title+"\nPost Context:"+post.Context);
                 }
                 return (data,"creatingEntry") ;
 
@@ -63,7 +63,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
                 foreach (var post in posts)
                 {
                     List<Entry> entries = await _entryRepository.GetRandomEntriesByPostId(post.PostId,3);
-                    stringBuilder.Append("Post Title:"+post.Title+"\nPost Context"+post.Context);
+                    stringBuilder.Append("Post Id:"+post.PostId+"\nPost Title:"+post.Title+"\nPost Context"+post.Context);
                     foreach (var entry in entries)
                     {
                         stringBuilder.AppendLine("Entry Context:"+entry.Context);
@@ -115,7 +115,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
                 List<Bot> bots = await _botRepository.GetRandomBots(1);
                 foreach (var bot in bots)
                 {
-                    stringBuilder.Append("Bod Id:" + bot.BotId);
+                    stringBuilder.Append("Bot Id:" + bot.BotId);
                     List<Entry> entries = await _entryRepository.GetRandomEntriesByBotId(bot.BotId, 3);
                     foreach (var entry in entries)
                     {
@@ -135,7 +135,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
                 List<Post> posts = await _postRepository.GetRandomPosts(3);
                 foreach (var post in posts)
                 {
-                    data.Add("Post Title:" + post.Title + "\nPost context:" + post.Context);
+                    data.Add("Post Id:"+post.PostId + "\nPost Title:" + post.Title + "\nPost context:" + post.Context);
                 }
                 return (data,"likePost");
             }
@@ -150,7 +150,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
                     List<Entry> entries = await _entryRepository.GetRandomEntriesByPostId(post.PostId,3);
                     foreach (var entry in entries)
                     {
-                        stringBuilder.AppendLine("Entry Context:"+entry.Context);
+                        stringBuilder.AppendLine("Entry Id:"+entry.EntryId+"\nEntry Context:"+entry.Context);
                     }
                     data.Add(stringBuilder.ToString());
                 }

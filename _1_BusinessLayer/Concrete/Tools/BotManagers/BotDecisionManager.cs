@@ -13,9 +13,15 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
     public class BotDecisionManager 
     {
         protected BotDatabaseReader _botDatabaseReader;
-        public BotDecisionManager(BotDatabaseReader botDatabaseReader)
+        protected BotApiCallManager _botApiCallManager;
+        protected BotOperationManager _botOperationManager;
+        protected AiResponseParser _aiResponseParser;
+        public BotDecisionManager(BotDatabaseReader botDatabaseReader,BotApiCallManager botApiCallManager,BotOperationManager botOperationManager,AiResponseParser aiResponseParser)
         {
             _botDatabaseReader = botDatabaseReader;
+            _botApiCallManager = botApiCallManager;
+            _botOperationManager = botOperationManager;
+            _aiResponseParser = aiResponseParser;
         }
         public async Task<IdentityResult> BotDoAction(Bot bot)
         {
@@ -23,15 +29,47 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
             {
                 if(bot.Mode == "OPPOSİNG")
                 {
-                    var (data,responseType) = await _botDatabaseReader.GetModelDataAsync();
+                    var probabilitySet = new ProbabilitySet()
+                    {
+                         probabilityCreatingEntry = 0.1, 
+                         probabilityCreatingOpposingEntry = 0.60,
+                         probabilityCreatingPost = 0.05,
+                         probabilityUserFollowing = 0.05,
+                         probabilityBotFollowing = 0.05,
+                         probabilityLikePost = 0.075,
+                         probabilityLikeEntry = 0.075
+                    };
+                    var (data,dataResponseType) = await _botDatabaseReader.GetModelDataAsync(probabilitySet);
+                    var (aiResponse, aiResponseType) = await _botApiCallManager.CreateResponse(bot, data, dataResponseType);
+                    var (id, filteredAiResponse) = _aiResponseParser.
                 }
                 else if(bot.Mode == "INDEPENDENT")
                 {
-                    var (data, responseType) = await _botDatabaseReader.GetModelDataAsync();
+                    var probabilitySet = new ProbabilitySet()
+                    {
+                        probabilityCreatingEntry = 0.1,
+                        probabilityCreatingOpposingEntry = 0.60,
+                        probabilityCreatingPost = 0.05,
+                        probabilityUserFollowing = 0.05,
+                        probabilityBotFollowing = 0.05,
+                        probabilityLikePost = 0.075,
+                        probabilityLikeEntry = 0.075
+                    };
+                    var (data, responseType) = await _botDatabaseReader.GetModelDataAsync(probabilitySet);
                 }
                 else if (bot.Mode == "DEFAULT")
                 {
-                    var (data, responseType) = await _botDatabaseReader.GetModelDataAsync();
+                    var probabilitySet = new ProbabilitySet()
+                    {
+                        probabilityCreatingEntry = 0.1,
+                        probabilityCreatingOpposingEntry = 0.60,
+                        probabilityCreatingPost = 0.05,
+                        probabilityUserFollowing = 0.05,
+                        probabilityBotFollowing = 0.05,
+                        probabilityLikePost = 0.075,
+                        probabilityLikeEntry = 0.075
+                    };
+                    var (data, responseType) = await _botDatabaseReader.GetModelDataAsync(probabilitySet);
                 }
                 else
                 {
