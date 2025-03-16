@@ -18,9 +18,9 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
         public readonly AbstractNewsRepository _newsRepository;
         public readonly AbstractUserRepository _userRepository;
         public readonly AbstractBotRepository _botRepository;
-        public readonly AbstractBotApiCallManager _botApiCallManager;
+        public readonly AbstractBotApiCaller _botApiCallManager;
         public BotDatabaseReader(AbstractBotRepository abstractBotRepository, AbstractEntryRepository entryRepository, AbstractNewsRepository newsRepository,
-            AbstractUserRepository userRepository, AbstractPostRepository postRepository, AbstractBotApiCallManager botApiCallManager)
+            AbstractUserRepository userRepository, AbstractPostRepository postRepository, AbstractBotApiCaller botApiCallManager)
         {
             _botRepository = abstractBotRepository;
             _entryRepository = entryRepository;

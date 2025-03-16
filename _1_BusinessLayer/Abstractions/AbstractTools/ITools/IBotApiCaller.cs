@@ -7,7 +7,7 @@ using _2_DataAccessLayer.Concrete.Entities;
 
 namespace _1_BusinessLayer.Abstractions.AbstractTools.ITools
 {
-    public interface IBotApiCallManager
+    public interface IBotApiCaller
     {
         Task<(string aiResponse, string aiResponseType)> CreateAiEntryResponse(Bot bot, List<string> entryOrPostWithTheirContext);
         Task<(string aiResponse, string aiResponseType)> CreateAiFollowResponse(Bot bot, List<string> usersWithTheirContext);

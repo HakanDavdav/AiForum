@@ -19,43 +19,169 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task DeleteAsync(Like t)
         {
-            _context.Likes.Remove(t);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Likes.Remove(t);
+                await _context.SaveChangesAsync();
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                // SQL kaynaklı hatalar (Bağlantı hatası, timeout, syntax hatası vb.)
+                Console.WriteLine($"SQL Hatası: {sqlEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                // Geçersiz işlem hatası (Context kapalı, nesne takibi sorunu vb.)
+                Console.WriteLine($"Geçersiz İşlem Hatası: {invalidOpEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                // Veritabanı güncelleme hatası (FK, Unique Key ihlali vb.)
+                Console.WriteLine($"Veritabanı Güncelleme Hatası: {dbUpdateEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
         }
 
         public override async Task<List<Like>> GetAllByBotIdAsync(int id)
         {
-            IQueryable<Like> likes = _context.Likes.Where(like => like.BotId == id);
-            return await likes.ToListAsync();
+            try
+            {
+                IQueryable<Like> likes = _context.Likes.Where(like => like.BotId == id);
+                return await likes.ToListAsync();
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                // SQL kaynaklı hatalar (Bağlantı hatası, timeout, syntax hatası vb.)
+                Console.WriteLine($"SQL Hatası: {sqlEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                // Geçersiz işlem hatası (Context kapalı, nesne takibi sorunu vb.)
+                Console.WriteLine($"Geçersiz İşlem Hatası: {invalidOpEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                // Veritabanı güncelleme hatası (FK, Unique Key ihlali vb.)
+                Console.WriteLine($"Veritabanı Güncelleme Hatası: {dbUpdateEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
         }
 
         public override async Task<List<Like>> GetAllByUserIdAsync(int id)
         {
-            IQueryable<Like> likes = _context.Likes.Where(like => like.UserId == id);
-            return await likes.ToListAsync();
+            try
+            {
+                IQueryable<Like> likes = _context.Likes.Where(like => like.UserId == id);
+                return await likes.ToListAsync();
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                // SQL kaynaklı hatalar (Bağlantı hatası, timeout, syntax hatası vb.)
+                Console.WriteLine($"SQL Hatası: {sqlEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                // Geçersiz işlem hatası (Context kapalı, nesne takibi sorunu vb.)
+                Console.WriteLine($"Geçersiz İşlem Hatası: {invalidOpEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                // Veritabanı güncelleme hatası (FK, Unique Key ihlali vb.)
+                Console.WriteLine($"Veritabanı Güncelleme Hatası: {dbUpdateEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
         }
 
 
         public override async Task<Like> GetByIdAsync(int id)
         {
+            try
+            {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            Like like = await _context.Likes.FirstOrDefaultAsync(like => like.LikeId == id);
+                Like like = await _context.Likes.FirstOrDefaultAsync(like => like.LikeId == id);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-            return like;
+                return like;
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                // SQL kaynaklı hatalar (Bağlantı hatası, timeout, syntax hatası vb.)
+                Console.WriteLine($"SQL Hatası: {sqlEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                // Geçersiz işlem hatası (Context kapalı, nesne takibi sorunu vb.)
+                Console.WriteLine($"Geçersiz İşlem Hatası: {invalidOpEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                // Veritabanı güncelleme hatası (FK, Unique Key ihlali vb.)
+                Console.WriteLine($"Veritabanı Güncelleme Hatası: {dbUpdateEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
         }
 
 
         public override async Task InsertAsync(Like t)
         {
-            await _context.Likes.AddAsync(t);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.Likes.AddAsync(t);
+                await _context.SaveChangesAsync();
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                // SQL kaynaklı hatalar (Bağlantı hatası, timeout, syntax hatası vb.)
+                Console.WriteLine($"SQL Hatası: {sqlEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                // Geçersiz işlem hatası (Context kapalı, nesne takibi sorunu vb.)
+                Console.WriteLine($"Geçersiz İşlem Hatası: {invalidOpEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                // Veritabanı güncelleme hatası (FK, Unique Key ihlali vb.)
+                Console.WriteLine($"Veritabanı Güncelleme Hatası: {dbUpdateEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
         }
 
 
         public override async Task UpdateAsync(Like t)
         {
-            _context.Update(t);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Update(t);
+                await _context.SaveChangesAsync();
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                // SQL kaynaklı hatalar (Bağlantı hatası, timeout, syntax hatası vb.)
+                Console.WriteLine($"SQL Hatası: {sqlEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                // Geçersiz işlem hatası (Context kapalı, nesne takibi sorunu vb.)
+                Console.WriteLine($"Geçersiz İşlem Hatası: {invalidOpEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                // Veritabanı güncelleme hatası (FK, Unique Key ihlali vb.)
+                Console.WriteLine($"Veritabanı Güncelleme Hatası: {dbUpdateEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
         }
 
     }

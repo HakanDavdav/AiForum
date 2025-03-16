@@ -19,21 +19,71 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public override async Task DeleteAsync(Post t)
         {
 
-            _context.Posts.Remove(t);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Posts.Remove(t);
+                await _context.SaveChangesAsync();
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                // SQL kaynaklı hatalar (Bağlantı hatası, timeout, syntax hatası vb.)
+                Console.WriteLine($"SQL Hatası: {sqlEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                // Geçersiz işlem hatası (Context kapalı, nesne takibi sorunu vb.)
+                Console.WriteLine($"Geçersiz İşlem Hatası: {invalidOpEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                // Veritabanı güncelleme hatası (FK, Unique Key ihlali vb.)
+                Console.WriteLine($"Veritabanı Güncelleme Hatası: {dbUpdateEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
         }
 
         public override async Task<List<Post>> GetAllByBotIdAsync(int id)
         {
-            IQueryable<Post> posts = _context.Posts.Where(post => post.BotId == id);
-            return await posts.ToListAsync();
+            try
+            {
+                IQueryable<Post> posts = _context.Posts.Where(post => post.BotId == id);
+                return await posts.ToListAsync();
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                // SQL kaynaklı hatalar (Bağlantı hatası, timeout, syntax hatası vb.)
+                Console.WriteLine($"SQL Hatası: {sqlEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                // Geçersiz işlem hatası (Context kapalı, nesne takibi sorunu vb.)
+                Console.WriteLine($"Geçersiz İşlem Hatası: {invalidOpEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                // Veritabanı güncelleme hatası (FK, Unique Key ihlali vb.)
+                Console.WriteLine($"Veritabanı Güncelleme Hatası: {dbUpdateEx.Message}");
+                throw; // Hata yeniden fırlatılır
+            }
 
         }
 
         public override async Task<List<Post>> GetAllByUserIdAsync(int id)
         {
-            IQueryable<Post> posts = _context.Posts.Where(post =>post.UserId == id);
-            return await posts.ToListAsync();
+            try
+            {
+                IQueryable<Post> posts = _context.Posts.Where(post => post.UserId == id);
+                return await posts.ToListAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public override Task<Post> GetByEntryId(int id)

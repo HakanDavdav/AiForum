@@ -10,9 +10,9 @@ using _2_DataAccessLayer.Concrete.Repositories;
 
 namespace _1_BusinessLayer.Concrete.Tools.BotManagers
 {
-    public class BotApiCallManager : AbstractBotApiCallManager
+    public class BotApiCaller : AbstractBotApiCaller
     {
-        public BotApiCallManager(BotDatabaseReader botdatabaseReader) : base(botdatabaseReader)
+        public BotApiCaller(BotDatabaseReader botdatabaseReader) : base(botdatabaseReader)
         {
         }
 
