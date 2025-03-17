@@ -209,10 +209,10 @@ namespace _2_DataAccessLayer.Migrations
                     b.Property<int>("BotFolloweeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("FollowedId")
+                    b.Property<int>("UserFollowedId")
                         .HasColumnType("int");
 
-                    b.Property<int>("FolloweeId")
+                    b.Property<int>("UserFolloweeId")
                         .HasColumnType("int");
 
                     b.HasKey("FollowId");
@@ -221,9 +221,9 @@ namespace _2_DataAccessLayer.Migrations
 
                     b.HasIndex("BotFolloweeId");
 
-                    b.HasIndex("FollowedId");
+                    b.HasIndex("UserFollowedId");
 
-                    b.HasIndex("FolloweeId");
+                    b.HasIndex("UserFolloweeId");
 
                     b.ToTable("follows");
                 });
@@ -583,15 +583,15 @@ namespace _2_DataAccessLayer.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.User", "Followed")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.User", "UserFollowed")
                         .WithMany("Followers")
-                        .HasForeignKey("FollowedId")
+                        .HasForeignKey("UserFollowedId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.User", "Followee")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.User", "UserFollowee")
                         .WithMany("Followings")
-                        .HasForeignKey("FolloweeId")
+                        .HasForeignKey("UserFolloweeId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -599,9 +599,9 @@ namespace _2_DataAccessLayer.Migrations
 
                     b.Navigation("BotFollowee");
 
-                    b.Navigation("Followed");
+                    b.Navigation("UserFollowed");
 
-                    b.Navigation("Followee");
+                    b.Navigation("UserFollowee");
                 });
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.Like", b =>

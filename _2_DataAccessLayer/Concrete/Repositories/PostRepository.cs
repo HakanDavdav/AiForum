@@ -14,11 +14,31 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public PostRepository(ApplicationDbContext context) : base(context)
         {
         }
+        public override async Task<bool> CheckEntity(int id)
+        {
+            try
+            {
+                return await _context.Posts.AnyAsync(post => post.PostId == id);
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in CheckEntity: {sqlEx.Message}");
+                throw;
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                Console.WriteLine($"Invalid Operation Error in CheckEntity: {invalidOpEx.Message}");
+                throw;
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                Console.WriteLine($"Database Update Error in CheckEntity: {dbUpdateEx.Message}");
+                throw;
+            }
 
-
+        }
         public override async Task DeleteAsync(Post t)
         {
-
             try
             {
                 _context.Posts.Remove(t);
@@ -26,21 +46,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL kaynaklı hatalar (Bağlantı hatası, timeout, syntax hatası vb.)
-                Console.WriteLine($"SQL Hatası: {sqlEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"SQL Error in DeleteAsync: {sqlEx.Message}");
+                throw; // Rethrow the caught exception
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Geçersiz işlem hatası (Context kapalı, nesne takibi sorunu vb.)
-                Console.WriteLine($"Geçersiz İşlem Hatası: {invalidOpEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Invalid Operation Error in DeleteAsync: {invalidOpEx.Message}");
+                throw; // Rethrow the caught exception
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Veritabanı güncelleme hatası (FK, Unique Key ihlali vb.)
-                Console.WriteLine($"Veritabanı Güncelleme Hatası: {dbUpdateEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Database Update Error in DeleteAsync: {dbUpdateEx.Message}");
+                throw; // Rethrow the caught exception
             }
         }
 
@@ -53,23 +70,19 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL kaynaklı hatalar (Bağlantı hatası, timeout, syntax hatası vb.)
-                Console.WriteLine($"SQL Hatası: {sqlEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"SQL Error in GetAllByBotIdAsync: {sqlEx.Message}");
+                throw; // Rethrow the caught exception
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Geçersiz işlem hatası (Context kapalı, nesne takibi sorunu vb.)
-                Console.WriteLine($"Geçersiz İşlem Hatası: {invalidOpEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Invalid Operation Error in GetAllByBotIdAsync: {invalidOpEx.Message}");
+                throw; // Rethrow the caught exception
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Veritabanı güncelleme hatası (FK, Unique Key ihlali vb.)
-                Console.WriteLine($"Veritabanı Güncelleme Hatası: {dbUpdateEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Database Update Error in GetAllByBotIdAsync: {dbUpdateEx.Message}");
+                throw; // Rethrow the caught exception
             }
-
         }
 
         public override async Task<List<Post>> GetAllByUserIdAsync(int id)
@@ -79,69 +92,212 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 IQueryable<Post> posts = _context.Posts.Where(post => post.UserId == id);
                 return await posts.ToListAsync();
             }
-            catch (Exception)
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-
-                throw;
+                Console.WriteLine($"SQL Error in GetAllByUserIdAsync: {sqlEx.Message}");
+                throw; // Rethrow the caught exception
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                Console.WriteLine($"Invalid Operation Error in GetAllByUserIdAsync: {invalidOpEx.Message}");
+                throw; // Rethrow the caught exception
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                Console.WriteLine($"Database Update Error in GetAllByUserIdAsync: {dbUpdateEx.Message}");
+                throw; // Rethrow the caught exception
             }
         }
 
-        public override Task<Post> GetByEntryId(int id)
+        public override async Task<Post> GetByEntryId(int id)
         {
-            var post = _context.Posts
+            try
+            {
+                var post = await _context.Posts
                         .FirstOrDefaultAsync(post => post.Entries.Any(entry => entry.EntryId == id));
-            return post;
+                return post;
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in GetByEntryId: {sqlEx.Message}");
+                throw; // Rethrow the caught exception
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                Console.WriteLine($"Invalid Operation Error in GetByEntryId: {invalidOpEx.Message}");
+                throw; // Rethrow the caught exception
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                Console.WriteLine($"Database Update Error in GetByEntryId: {dbUpdateEx.Message}");
+                throw; // Rethrow the caught exception
+            }
         }
 
         public override async Task<Post> GetByIdAsync(int id)
         {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            Post post = await _context.Posts.FirstOrDefaultAsync(post => post.PostId == id);
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-            return post;
+            try
+            {
+                return await _context.Posts.FirstOrDefaultAsync(post => post.PostId == id);
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in GetByIdAsync: {sqlEx.Message}");
+                throw; // Rethrow the caught exception
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                Console.WriteLine($"Invalid Operation Error in GetByIdAsync: {invalidOpEx.Message}");
+                throw; // Rethrow the caught exception
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                Console.WriteLine($"Database Update Error in GetByIdAsync: {dbUpdateEx.Message}");
+                throw; // Rethrow the caught exception
+            }
         }
-
-
 
         public override async Task<Post> GetByTitleAsync(string title)
         {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            Post post = await _context.Posts.FirstOrDefaultAsync(post => post.Title == title);
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-            return post;
+            try
+            {
+                return await _context.Posts.FirstOrDefaultAsync(post => post.Title == title);
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in GetByTitleAsync: {sqlEx.Message}");
+                throw; // Rethrow the caught exception
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                Console.WriteLine($"Invalid Operation Error in GetByTitleAsync: {invalidOpEx.Message}");
+                throw; // Rethrow the caught exception
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                Console.WriteLine($"Database Update Error in GetByTitleAsync: {dbUpdateEx.Message}");
+                throw; // Rethrow the caught exception
+            }
         }
 
         public override async Task<List<Post>> GetRandomPosts(int number)
         {
-            IQueryable<Post> posts = _context.Posts.OrderBy(post => Guid.NewGuid()).Take(number);
-            return await posts.ToListAsync();
+            try
+            {
+                IQueryable<Post> posts = _context.Posts.OrderBy(post => Guid.NewGuid()).Take(number);
+                return await posts.ToListAsync();
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in GetRandomPosts: {sqlEx.Message}");
+                throw; // Rethrow the caught exception
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                Console.WriteLine($"Invalid Operation Error in GetRandomPosts: {invalidOpEx.Message}");
+                throw; // Rethrow the caught exception
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                Console.WriteLine($"Database Update Error in GetRandomPosts: {dbUpdateEx.Message}");
+                throw; // Rethrow the caught exception
+            }
         }
 
         public override async Task<List<Post>> GetRandomPostsByBotId(int id, int number)
         {
-            IQueryable<Post> posts = _context.Posts.Where(post =>post.BotId == id).OrderBy(post => Guid.NewGuid()).Take(number);
-            return await posts.ToListAsync();
+            try
+            {
+                IQueryable<Post> posts = _context.Posts.Where(post => post.BotId == id).OrderBy(post => Guid.NewGuid()).Take(number);
+                return await posts.ToListAsync();
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in GetRandomPostsByBotId: {sqlEx.Message}");
+                throw; // Rethrow the caught exception
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                Console.WriteLine($"Invalid Operation Error in GetRandomPostsByBotId: {invalidOpEx.Message}");
+                throw; // Rethrow the caught exception
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                Console.WriteLine($"Database Update Error in GetRandomPostsByBotId: {dbUpdateEx.Message}");
+                throw; // Rethrow the caught exception
+            }
         }
 
         public override async Task<List<Post>> GetRandomPostsByUserId(int id, int number)
         {
-            IQueryable<Post> posts = _context.Posts.Where(post => post.UserId == id).OrderBy(post => Guid.NewGuid()).Take(number);
-            return await posts.ToListAsync();
+            try
+            {
+                IQueryable<Post> posts = _context.Posts.Where(post => post.UserId == id).OrderBy(post => Guid.NewGuid()).Take(number);
+                return await posts.ToListAsync();
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in GetRandomPostsByUserId: {sqlEx.Message}");
+                throw; // Rethrow the caught exception
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                Console.WriteLine($"Invalid Operation Error in GetRandomPostsByUserId: {invalidOpEx.Message}");
+                throw; // Rethrow the caught exception
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                Console.WriteLine($"Database Update Error in GetRandomPostsByUserId: {dbUpdateEx.Message}");
+                throw; // Rethrow the caught exception
+            }
         }
 
         public override async Task InsertAsync(Post t)
         {
-            await _context.Posts.AddAsync(t);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.Posts.AddAsync(t);
+                await _context.SaveChangesAsync();
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in InsertAsync: {sqlEx.Message}");
+                throw; // Rethrow the caught exception
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                Console.WriteLine($"Invalid Operation Error in InsertAsync: {invalidOpEx.Message}");
+                throw; // Rethrow the caught exception
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                Console.WriteLine($"Database Update Error in InsertAsync: {dbUpdateEx.Message}");
+                throw; // Rethrow the caught exception
+            }
         }
-
 
         public override async Task UpdateAsync(Post t)
         {
-            _context.Update(t);
-            await _context.SaveChangesAsync();
-
+            try
+            {
+                _context.Update(t);
+                await _context.SaveChangesAsync();
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in UpdateAsync: {sqlEx.Message}");
+                throw; // Rethrow the caught exception
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                Console.WriteLine($"Invalid Operation Error in UpdateAsync: {invalidOpEx.Message}");
+                throw; // Rethrow the caught exception
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                Console.WriteLine($"Database Update Error in UpdateAsync: {dbUpdateEx.Message}");
+                throw; // Rethrow the caught exception
+            }
         }
-        
     }
 }

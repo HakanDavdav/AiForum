@@ -14,123 +14,128 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public NewsRepository(ApplicationDbContext context) : base(context)
         {
         }
+        public override async Task<bool> CheckEntity(int id)
+        {
+            try
+            {
+                return await _context.News.AnyAsync(news => news.NewsId == id);
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in CheckEntity: {sqlEx.Message}");
+                throw;
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                Console.WriteLine($"Invalid Operation Error in CheckEntity: {invalidOpEx.Message}");
+                throw;
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                Console.WriteLine($"Database Update Error in CheckEntity: {dbUpdateEx.Message}");
+                throw;
+            }
 
-        // Method to delete a news item asynchronously
+        }
         public override async Task DeleteAsync(News t)
         {
             try
             {
-                _context.Remove(t); // Remove the news item from context
-                await _context.SaveChangesAsync(); // Save changes to the database
+                _context.Remove(t);
+                await _context.SaveChangesAsync(); 
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL-related errors (Connection error, timeout, syntax error, etc.)
-                Console.WriteLine($"SQL Error: {sqlEx.Message}");
+                Console.WriteLine($"SQL Error in DeleteAsync: {sqlEx.Message}");
                 throw; // Rethrow the exception
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Invalid operation error (Context closed, object tracking issue, etc.)
-                Console.WriteLine($"Invalid Operation Error: {invalidOpEx.Message}");
+                Console.WriteLine($"Invalid Operation Error in DeleteAsync: {invalidOpEx.Message}");
                 throw; // Rethrow the exception
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Database update error (Foreign Key violation, Unique Key violation, etc.)
-                Console.WriteLine($"Database Update Error: {dbUpdateEx.Message}");
+                Console.WriteLine($"Database Update Error in DeleteAsync: {dbUpdateEx.Message}");
                 throw; // Rethrow the exception
             }
         }
 
-        // Method to get a news item by its ID asynchronously
         public override async Task<News> GetByIdAsync(int id)
         {
             try
             {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-                News news = await _context.News.FirstOrDefaultAsync(news => news.NewsId == id); // Fetch the news item
+                News news = await _context.News.FirstOrDefaultAsync(news => news.NewsId == id);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-                return news; // Return the found news item
+                return news; 
+
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL-related errors
-                Console.WriteLine($"SQL Error: {sqlEx.Message}");
+                Console.WriteLine($"SQL Error in GetByIdAsync: {sqlEx.Message}");
                 throw; // Rethrow the exception
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Invalid operation error
-                Console.WriteLine($"Invalid Operation Error: {invalidOpEx.Message}");
+                Console.WriteLine($"Invalid Operation Error in GetByIdAsync: {invalidOpEx.Message}");
                 throw; // Rethrow the exception
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Database update error
-                Console.WriteLine($"Database Update Error: {dbUpdateEx.Message}");
+                Console.WriteLine($"Database Update Error in GetByIdAsync: {dbUpdateEx.Message}");
                 throw; // Rethrow the exception
             }
         }
 
-        // Method to get a random set of news items
         public override async Task<List<News>> GetRandomNews(int number)
         {
             try
             {
-                // Randomize the order and select a specified number of news items
-                IQueryable<News> news = _context.News.OrderBy(news => Guid.NewGuid()).Take(number);
-                return await news.ToListAsync(); // Return the list of random news items
+                IQueryable<News> news = _context.News.OrderBy(news => Guid.NewGuid()).Take(number); 
+                return await news.ToListAsync(); 
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL-related errors
-                Console.WriteLine($"SQL Error: {sqlEx.Message}");
+                Console.WriteLine($"SQL Error in GetRandomNews: {sqlEx.Message}");
                 throw; // Rethrow the exception
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Invalid operation error
-                Console.WriteLine($"Invalid Operation Error: {invalidOpEx.Message}");
+                Console.WriteLine($"Invalid Operation Error in GetRandomNews: {invalidOpEx.Message}");
                 throw; // Rethrow the exception
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Database update error
-                Console.WriteLine($"Database Update Error: {dbUpdateEx.Message}");
+                Console.WriteLine($"Database Update Error in GetRandomNews: {dbUpdateEx.Message}");
                 throw; // Rethrow the exception
             }
         }
 
-        // Method to insert a new news item asynchronously
         public override async Task InsertAsync(News t)
         {
             try
             {
-                await _context.News.AddAsync(t); // Add the news item to the context
-                await _context.SaveChangesAsync(); // Save changes to the database
+                await _context.News.AddAsync(t); 
+                await _context.SaveChangesAsync(); 
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL-related errors
-                Console.WriteLine($"SQL Error: {sqlEx.Message}");
+                Console.WriteLine($"SQL Error in InsertAsync: {sqlEx.Message}");
                 throw; // Rethrow the exception
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Invalid operation error
-                Console.WriteLine($"Invalid Operation Error: {invalidOpEx.Message}");
+                Console.WriteLine($"Invalid Operation Error in InsertAsync: {invalidOpEx.Message}");
                 throw; // Rethrow the exception
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Database update error
-                Console.WriteLine($"Database Update Error: {dbUpdateEx.Message}");
+                Console.WriteLine($"Database Update Error in InsertAsync: {dbUpdateEx.Message}");
                 throw; // Rethrow the exception
             }
         }
 
-        // UpdateAsync method is not implemented yet
         public override Task UpdateAsync(News t)
         {
             throw new NotImplementedException(); // Not implemented exception

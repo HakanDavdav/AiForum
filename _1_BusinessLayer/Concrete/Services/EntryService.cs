@@ -35,13 +35,17 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> DeleteEntry(int userId, int entryId)
         {
-            var entry = await _entryRepository.GetByIdWithInfoAsync(entryId);
-            if (entry.UserId == userId)
+            var entry = await _entryRepository.GetByIdAsync(entryId);
+            if (entry != null)
             {
-                await _entryRepository.DeleteAsync(entry);
-                return IdentityResult.Success;
+                if (entry.UserId == userId)
+                {
+                    await _entryRepository.DeleteAsync(entry);
+                    return IdentityResult.Success;
+                }
+                return IdentityResult.Failed(new UnauthorizedError("Unauthorized deletion"));
             }
-            return IdentityResult.Failed(new UnauthorizedError("Unauthorized deletion"));
+            return IdentityResult.Failed(new NotFoundError("Entry not found"));
         }
 
         public override async Task<IdentityResult> LikeEntry(int userId, int entryId)
@@ -56,25 +60,33 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> UnlikeEntry(int userId, int likeId)
         {
-            var like = await _likeRepository.GetByIdWithInfoAsync(likeId);
-            if (like.UserId == userId)
+            var like = await _likeRepository.GetByIdAsync(likeId);
+            if (like != null)
             {
-                await _likeRepository.DeleteAsync(like);
-                return IdentityResult.Success;
+                if (like.UserId == userId)
+                {
+                    await _likeRepository.DeleteAsync(like);
+                    return IdentityResult.Success;
+                }
+                return IdentityResult.Failed(new UnauthorizedError("Unauthorized deletion"));
             }
-            return IdentityResult.Failed(new UnauthorizedError("Unauthorized deletion"));
+            return IdentityResult.Failed(new NotFoundError("Like not found"));
         }
 
         public override async Task<IdentityResult> UpdateEntry(int userId, int entryId, string context)
         {
-            var entry = await _entryRepository.GetByIdWithInfoAsync(entryId);
-            if (entry.UserId == userId)
-            {
-                entry.Context = context;
-                await _entryRepository.UpdateAsync(entry);
-                return IdentityResult.Success;
+            var entry = await _entryRepository.GetByIdAsync(entryId);
+            if(entry != null) 
+            { 
+                if (entry.UserId == userId)
+                {
+                    entry.Context = context;
+                    await _entryRepository.UpdateAsync(entry);
+                    return IdentityResult.Success;
+                }
+                return IdentityResult.Failed(new UnauthorizedError("Unauthorized deletion"));
             }
-            return IdentityResult.Failed(new UnauthorizedError("Unauthorized deletion"));
+            return IdentityResult.Failed(new NotFoundError("Entry not found"));
         }
 
     }

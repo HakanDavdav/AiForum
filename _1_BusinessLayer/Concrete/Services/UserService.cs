@@ -85,8 +85,8 @@ namespace _1_BusinessLayer.Concrete.Services
         {
             await _followRepository.InsertAsync(new Follow
             {
-                FolloweeId = userId,
-                FollowedId = followedUserId
+                UserFolloweeId = userId,
+                UserFollowedId = followedUserId
             });
             return IdentityResult.Success;
         }

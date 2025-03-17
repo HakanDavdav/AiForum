@@ -14,6 +14,14 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Bot> builder)
         {
+            builder.HasKey(bot => bot.BotId);
+            builder.HasIndex(bot => bot.BotProfileName).IsUnique();        
+            
+            builder.Property(bot => bot.Mode).HasDefaultValue("Default");
+            builder.Property(bot => bot.BotGrade).HasDefaultValue(0);
+            builder.Property(bot => bot.DailyBotActionCount).HasDefaultValue(5);
+
+
             builder.HasMany(bot => bot.Posts)
                 .WithOne(post => post.Bot)
                 .HasForeignKey(post => post.BotId)
@@ -48,6 +56,7 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .WithOne(activity => activity.Bot)
                 .HasForeignKey(activity => activity.BotId)
                 .OnDelete(DeleteBehavior.NoAction);
+          
         }
     }
 }

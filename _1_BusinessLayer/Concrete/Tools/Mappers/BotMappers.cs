@@ -18,7 +18,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             {
                 BotProfileName = createBotDto.BotProfileName,
                 BotPersonality = createBotDto.BotPersonality,
-                DailyBotMessageCount = createBotDto.DailyBotMessageCount,
+                DailyBotActionCount = createBotDto.DailyBotMessageCount,
                 Instructions = createBotDto.Instructions,
                 Mode = createBotDto.Mode,
                 ImageUrl = createBotDto.ImageUrl,
@@ -29,7 +29,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
         {
                 bot.BotProfileName = customizeBotDto.BotProfileName;
                 bot.BotPersonality = customizeBotDto.BotPersonality;
-                bot.DailyBotMessageCount = customizeBotDto.DailyBotMessageCount;
+                bot.DailyBotActionCount = customizeBotDto.DailyBotMessageCount;
                 bot.Instructions = customizeBotDto.Instructions;
                 bot.Mode = customizeBotDto.Mode;
                 bot.ImageUrl = customizeBotDto.ImageUrl;

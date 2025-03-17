@@ -15,10 +15,31 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
         }
 
+        public override async Task<bool> CheckEntity(int id)
+        {
+            try
+            {
+                return await _context.Entries.AnyAsync(entry => entry.EntryId == id);
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in CheckEntity: {sqlEx.Message}");
+                throw;
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                Console.WriteLine($"Invalid Operation Error in CheckEntity: {invalidOpEx.Message}");
+                throw;
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                Console.WriteLine($"Database Update Error in CheckEntity: {dbUpdateEx.Message}");
+                throw;
+            }
 
+        }
         public override async Task DeleteAsync(Entry t)
         {
-
             try
             {
                 _context.Entries.Remove(t);
@@ -26,21 +47,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL kaynaklı hatalar (Bağlantı hatası, timeout, syntax hatası vb.)
-                Console.WriteLine($"SQL Hatası: {sqlEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"SQL Error in DeleteAsync: {sqlEx.Message}");
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Geçersiz işlem hatası (Context kapalı, nesne takibi sorunu vb.)
-                Console.WriteLine($"Geçersiz İşlem Hatası: {invalidOpEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Invalid Operation Error in DeleteAsync: {invalidOpEx.Message}");
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Veritabanı güncelleme hatası (FK, Unique Key ihlali vb.)
-                Console.WriteLine($"Veritabanı Güncelleme Hatası: {dbUpdateEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Database Update Error in DeleteAsync: {dbUpdateEx.Message}");
+                throw;
             }
         }
 
@@ -53,21 +71,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL kaynaklı hatalar (Bağlantı hatası, timeout, syntax hatası vb.)
-                Console.WriteLine($"SQL Hatası: {sqlEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"SQL Error in GetAllByBotIdAsync: {sqlEx.Message}");
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Geçersiz işlem hatası (Context kapalı, nesne takibi sorunu vb.)
-                Console.WriteLine($"Geçersiz İşlem Hatası: {invalidOpEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Invalid Operation Error in GetAllByBotIdAsync: {invalidOpEx.Message}");
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Veritabanı güncelleme hatası (FK, Unique Key ihlali vb.)
-                Console.WriteLine($"Veritabanı Güncelleme Hatası: {dbUpdateEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Database Update Error in GetAllByBotIdAsync: {dbUpdateEx.Message}");
+                throw;
             }
         }
 
@@ -80,21 +95,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL kaynaklı hatalar (Bağlantı hatası, timeout, syntax hatası vb.)
-                Console.WriteLine($"SQL Hatası: {sqlEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"SQL Error in GetAllByPostId: {sqlEx.Message}");
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Geçersiz işlem hatası (Context kapalı, nesne takibi sorunu vb.)
-                Console.WriteLine($"Geçersiz İşlem Hatası: {invalidOpEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Invalid Operation Error in GetAllByPostId: {invalidOpEx.Message}");
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Veritabanı güncelleme hatası (FK, Unique Key ihlali vb.)
-                Console.WriteLine($"Veritabanı Güncelleme Hatası: {dbUpdateEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Database Update Error in GetAllByPostId: {dbUpdateEx.Message}");
+                throw;
             }
         }
 
@@ -102,58 +114,47 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-
                 IQueryable<Entry> entries = _context.Entries.Where(entry => entry.UserId == id);
                 return await entries.ToListAsync();
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL kaynaklı hatalar (Bağlantı hatası, timeout, syntax hatası vb.)
-                Console.WriteLine($"SQL Hatası: {sqlEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"SQL Error in GetAllByUserIdAsync: {sqlEx.Message}");
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Geçersiz işlem hatası (Context kapalı, nesne takibi sorunu vb.)
-                Console.WriteLine($"Geçersiz İşlem Hatası: {invalidOpEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Invalid Operation Error in GetAllByUserIdAsync: {invalidOpEx.Message}");
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Veritabanı güncelleme hatası (FK, Unique Key ihlali vb.)
-                Console.WriteLine($"Veritabanı Güncelleme Hatası: {dbUpdateEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Database Update Error in GetAllByUserIdAsync: {dbUpdateEx.Message}");
+                throw;
             }
         }
-
-     
 
         public override async Task<Entry> GetByIdAsync(int id)
         {
             try
             {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                 Entry entry = await _context.Entries.FirstOrDefaultAsync(entry => entry.EntryId == id);
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
                 return entry;
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL kaynaklı hatalar (Bağlantı hatası, timeout, syntax hatası vb.)
-                Console.WriteLine($"SQL Hatası: {sqlEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"SQL Error in GetByIdAsync: {sqlEx.Message}");
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Geçersiz işlem hatası (Context kapalı, nesne takibi sorunu vb.)
-                Console.WriteLine($"Geçersiz İşlem Hatası: {invalidOpEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Invalid Operation Error in GetByIdAsync: {invalidOpEx.Message}");
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Veritabanı güncelleme hatası (FK, Unique Key ihlali vb.)
-                Console.WriteLine($"Veritabanı Güncelleme Hatası: {dbUpdateEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Database Update Error in GetByIdAsync: {dbUpdateEx.Message}");
+                throw;
             }
         }
 
@@ -166,21 +167,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL kaynaklı hatalar (Bağlantı hatası, timeout, syntax hatası vb.)
-                Console.WriteLine($"SQL Hatası: {sqlEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"SQL Error in GetRandomEntriesByBotId: {sqlEx.Message}");
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Geçersiz işlem hatası (Context kapalı, nesne takibi sorunu vb.)
-                Console.WriteLine($"Geçersiz İşlem Hatası: {invalidOpEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Invalid Operation Error in GetRandomEntriesByBotId: {invalidOpEx.Message}");
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Veritabanı güncelleme hatası (FK, Unique Key ihlali vb.)
-                Console.WriteLine($"Veritabanı Güncelleme Hatası: {dbUpdateEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Database Update Error in GetRandomEntriesByBotId: {dbUpdateEx.Message}");
+                throw;
             }
         }
 
@@ -193,21 +191,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL kaynaklı hatalar (Bağlantı hatası, timeout, syntax hatası vb.)
-                Console.WriteLine($"SQL Hatası: {sqlEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"SQL Error in GetRandomEntriesByPostId: {sqlEx.Message}");
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Geçersiz işlem hatası (Context kapalı, nesne takibi sorunu vb.)
-                Console.WriteLine($"Geçersiz İşlem Hatası: {invalidOpEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Invalid Operation Error in GetRandomEntriesByPostId: {invalidOpEx.Message}");
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Veritabanı güncelleme hatası (FK, Unique Key ihlali vb.)
-                Console.WriteLine($"Veritabanı Güncelleme Hatası: {dbUpdateEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Database Update Error in GetRandomEntriesByPostId: {dbUpdateEx.Message}");
+                throw;
             }
         }
 
@@ -220,30 +215,23 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL kaynaklı hatalar (Bağlantı hatası, timeout, syntax hatası vb.)
-                Console.WriteLine($"SQL Hatası: {sqlEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"SQL Error in GetRandomEntriesByUserId: {sqlEx.Message}");
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Geçersiz işlem hatası (Context kapalı, nesne takibi sorunu vb.)
-                Console.WriteLine($"Geçersiz İşlem Hatası: {invalidOpEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Invalid Operation Error in GetRandomEntriesByUserId: {invalidOpEx.Message}");
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Veritabanı güncelleme hatası (FK, Unique Key ihlali vb.)
-                Console.WriteLine($"Veritabanı Güncelleme Hatası: {dbUpdateEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Database Update Error in GetRandomEntriesByUserId: {dbUpdateEx.Message}");
+                throw;
             }
         }
 
-
-
-        //would prefer _userManager
         public override async Task InsertAsync(Entry t)
         {
-
             try
             {
                 await _context.Entries.AddAsync(t);
@@ -251,21 +239,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL kaynaklı hatalar (Bağlantı hatası, timeout, syntax hatası vb.)
-                Console.WriteLine($"SQL Hatası: {sqlEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"SQL Error in InsertAsync: {sqlEx.Message}");
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Geçersiz işlem hatası (Context kapalı, nesne takibi sorunu vb.)
-                Console.WriteLine($"Geçersiz İşlem Hatası: {invalidOpEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Invalid Operation Error in InsertAsync: {invalidOpEx.Message}");
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Veritabanı güncelleme hatası (FK, Unique Key ihlali vb.)
-                Console.WriteLine($"Veritabanı Güncelleme Hatası: {dbUpdateEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Database Update Error in InsertAsync: {dbUpdateEx.Message}");
+                throw;
             }
         }
 
@@ -278,24 +263,19 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL kaynaklı hatalar (Bağlantı hatası, timeout, syntax hatası vb.)
-                Console.WriteLine($"SQL Hatası: {sqlEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"SQL Error in UpdateAsync: {sqlEx.Message}");
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Geçersiz işlem hatası (Context kapalı, nesne takibi sorunu vb.)
-                Console.WriteLine($"Geçersiz İşlem Hatası: {invalidOpEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Invalid Operation Error in UpdateAsync: {invalidOpEx.Message}");
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Veritabanı güncelleme hatası (FK, Unique Key ihlali vb.)
-                Console.WriteLine($"Veritabanı Güncelleme Hatası: {dbUpdateEx.Message}");
-                throw; // Hata yeniden fırlatılır
+                Console.WriteLine($"Database Update Error in UpdateAsync: {dbUpdateEx.Message}");
+                throw;
             }
         }
-
-
     }
 }

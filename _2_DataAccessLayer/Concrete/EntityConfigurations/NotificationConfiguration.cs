@@ -13,6 +13,10 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Notification> builder)
         {
+            builder.HasKey(notification => notification.NotificationId);
+
+            builder.Property(notification => notification.IsRead).HasDefaultValue(false);
+
             builder.HasOne(notification => notification.User)
                 .WithMany(user => user.ReceivedNotifications)
                 .HasForeignKey(notification => notification.UserId)

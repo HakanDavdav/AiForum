@@ -11,7 +11,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public int NotificationId {  get; set; }
         public string Title { get; set; }
         public string Context {  get; set; }
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
         public bool IsRead { get; set; }
         public DateTime DateTime { get; set; }
 

@@ -14,146 +14,146 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public NotificationRepository(ApplicationDbContext context) : base(context)
         {
         }
+        public override async Task<bool> CheckEntity(int id)
+        {
+            try
+            {
+                return await _context.Notifications.AnyAsync(notification => notification.NotificationId == id);
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in CheckEntity: {sqlEx.Message}");
+                throw;
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                Console.WriteLine($"Invalid Operation Error in CheckEntity: {invalidOpEx.Message}");
+                throw;
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                Console.WriteLine($"Database Update Error in CheckEntity: {dbUpdateEx.Message}");
+                throw;
+            }
 
-        // Method to delete a notification asynchronously
+        }
         public override async Task DeleteAsync(Notification t)
         {
             try
             {
-                _context.Notifications.Remove(t); // Remove the notification from context
-                await _context.SaveChangesAsync(); // Save changes to database
+                _context.Notifications.Remove(t);
+                await _context.SaveChangesAsync();
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL-related errors (Connection error, timeout, syntax error, etc.)
-                Console.WriteLine($"SQL Error: {sqlEx.Message}");
-                throw; // Rethrow the exception
+                Console.WriteLine($"SQL Error in DeleteAsync: {sqlEx.Message}");
+                throw; // Rethrow the caught exception
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Invalid operation error (Context closed, object tracking issue, etc.)
-                Console.WriteLine($"Invalid Operation Error: {invalidOpEx.Message}");
-                throw; // Rethrow the exception
+                Console.WriteLine($"Invalid Operation Error in DeleteAsync: {invalidOpEx.Message}");
+                throw; // Rethrow the caught exception
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Database update error (Foreign Key violation, Unique Key violation, etc.)
-                Console.WriteLine($"Database Update Error: {dbUpdateEx.Message}");
-                throw; // Rethrow the exception
+                Console.WriteLine($"Database Update Error in DeleteAsync: {dbUpdateEx.Message}");
+                throw; // Rethrow the caught exception
             }
         }
 
-        // Method to get all notifications by User ID asynchronously
         public override async Task<List<Notification>> GetAllByUserIdAsync(int id)
         {
             try
             {
                 IQueryable<Notification> notifications = _context.Notifications.Where(notification => notification.UserId == id);
-                return await notifications.ToListAsync(); // Get notifications as a list
+                return await notifications.ToListAsync();
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL-related errors
-                Console.WriteLine($"SQL Error: {sqlEx.Message}");
-                throw; // Rethrow the exception
+                Console.WriteLine($"SQL Error in GetAllByUserIdAsync: {sqlEx.Message}");
+                throw; // Rethrow the caught exception
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Invalid operation error
-                Console.WriteLine($"Invalid Operation Error: {invalidOpEx.Message}");
-                throw; // Rethrow the exception
+                Console.WriteLine($"Invalid Operation Error in GetAllByUserIdAsync: {invalidOpEx.Message}");
+                throw; // Rethrow the caught exception
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Database update error
-                Console.WriteLine($"Database Update Error: {dbUpdateEx.Message}");
-                throw; // Rethrow the exception
+                Console.WriteLine($"Database Update Error in GetAllByUserIdAsync: {dbUpdateEx.Message}");
+                throw; // Rethrow the caught exception
             }
         }
 
-        // Method to get notification by its ID asynchronously
         public override async Task<Notification> GetByIdAsync(int id)
         {
             try
             {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                 var notification = await _context.Notifications.FirstOrDefaultAsync(notification => notification.NotificationId == id);
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-                return notification; // Return the found notification
+                return notification;
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL-related errors
-                Console.WriteLine($"SQL Error: {sqlEx.Message}");
-                throw; // Rethrow the exception
+                Console.WriteLine($"SQL Error in GetByIdAsync: {sqlEx.Message}");
+                throw; // Rethrow the caught exception
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Invalid operation error
-                Console.WriteLine($"Invalid Operation Error: {invalidOpEx.Message}");
-                throw; // Rethrow the exception
+                Console.WriteLine($"Invalid Operation Error in GetByIdAsync: {invalidOpEx.Message}");
+                throw; // Rethrow the caught exception
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Database update error
-                Console.WriteLine($"Database Update Error: {dbUpdateEx.Message}");
-                throw; // Rethrow the exception
+                Console.WriteLine($"Database Update Error in GetByIdAsync: {dbUpdateEx.Message}");
+                throw; // Rethrow the caught exception
             }
         }
 
-        // Method to insert a new notification asynchronously
         public override async Task InsertAsync(Notification t)
         {
             try
             {
-                await _context.Notifications.AddAsync(t); // Add the new notification to the context
-                await _context.SaveChangesAsync(); // Save changes to the database
+                await _context.Notifications.AddAsync(t);
+                await _context.SaveChangesAsync();
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL-related errors
-                Console.WriteLine($"SQL Error: {sqlEx.Message}");
-                throw; // Rethrow the exception
+                Console.WriteLine($"SQL Error in InsertAsync: {sqlEx.Message}");
+                throw; // Rethrow the caught exception
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Invalid operation error
-                Console.WriteLine($"Invalid Operation Error: {invalidOpEx.Message}");
-                throw; // Rethrow the exception
+                Console.WriteLine($"Invalid Operation Error in InsertAsync: {invalidOpEx.Message}");
+                throw; // Rethrow the caught exception
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Database update error
-                Console.WriteLine($"Database Update Error: {dbUpdateEx.Message}");
-                throw; // Rethrow the exception
+                Console.WriteLine($"Database Update Error in InsertAsync: {dbUpdateEx.Message}");
+                throw; // Rethrow the caught exception
             }
         }
 
-        // Method to update an existing notification asynchronously
         public override async Task UpdateAsync(Notification t)
         {
             try
             {
-                _context.Update(t); // Update the notification in the context
-                await _context.SaveChangesAsync(); // Save changes to the database
+                _context.Update(t);
+                await _context.SaveChangesAsync();
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                // SQL-related errors
-                Console.WriteLine($"SQL Error: {sqlEx.Message}");
-                throw; // Rethrow the exception
+                Console.WriteLine($"SQL Error in UpdateAsync: {sqlEx.Message}");
+                throw; // Rethrow the caught exception
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                // Invalid operation error
-                Console.WriteLine($"Invalid Operation Error: {invalidOpEx.Message}");
-                throw; // Rethrow the exception
+                Console.WriteLine($"Invalid Operation Error in UpdateAsync: {invalidOpEx.Message}");
+                throw; // Rethrow the caught exception
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                // Database update error
-                Console.WriteLine($"Database Update Error: {dbUpdateEx.Message}");
-                throw; // Rethrow the exception
+                Console.WriteLine($"Database Update Error in UpdateAsync: {dbUpdateEx.Message}");
+                throw; // Rethrow the caught exception
             }
         }
     }

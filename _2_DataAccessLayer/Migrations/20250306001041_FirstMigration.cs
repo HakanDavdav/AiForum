@@ -443,12 +443,12 @@ namespace _2_DataAccessLayer.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_follows_FollowedId",
                 table: "follows",
-                column: "FollowedId");
+                column: "UserFollowedId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_follows_FolloweeId",
                 table: "follows",
-                column: "FolloweeId");
+                column: "UserFolloweeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_likes_BotId",

@@ -13,5 +13,6 @@ namespace _2_DataAccessLayer.Abstractions.Generic
         public Task DeleteAsync(T t);
         public Task UpdateAsync(T t);
         public Task<T> GetByIdAsync(int id);
+        public Task<bool> CheckEntity(int id);
     }
 }

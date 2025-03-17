@@ -9,13 +9,13 @@ using _2_DataAccessLayer.Concrete.Entities;
 
 namespace _2_DataAccessLayer.Abstractions
 {
-    public abstract class AbstractActivityRepository : AbstractGenericBaseRepository<Activity>
+    public abstract class AbstractActivityRepository : AbstractGenericBaseRepository<BotActivity>
     {
         protected AbstractActivityRepository(ApplicationDbContext context) : base(context)
         {
         }
-        public abstract Task<List<Activity>> GetAllByUserIdAsync(int id);
-        public abstract Task<List<Activity>> GetAllByBotIdAsync(int id);
+        public abstract Task<List<BotActivity>> GetAllByUserIdAsync(int id);
+        public abstract Task<List<BotActivity>> GetAllByBotIdAsync(int id);
 
     }
 }

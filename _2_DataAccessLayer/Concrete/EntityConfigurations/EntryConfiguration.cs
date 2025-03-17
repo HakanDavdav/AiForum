@@ -35,7 +35,6 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .HasForeignKey(entry => entry.BotId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-
         }
     }
 }

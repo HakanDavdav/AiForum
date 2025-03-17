@@ -49,13 +49,13 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(user => user.Followings)
-                .WithOne(follow => follow.Followee)
-                .HasForeignKey(follow => follow.FolloweeId)
+                .WithOne(follow => follow.UserFollowee)
+                .HasForeignKey(follow => follow.UserFolloweeId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(user => user.Followers)
-                .WithOne(follow => follow.Followed)
-                .HasForeignKey(follow => follow.FollowedId)
+                .WithOne(follow => follow.UserFollowed)
+                .HasForeignKey(follow => follow.UserFollowedId)
                 .OnDelete(DeleteBehavior.NoAction);
 
         }

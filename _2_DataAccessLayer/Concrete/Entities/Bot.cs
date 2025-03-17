@@ -13,10 +13,10 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public string BotProfileName { get; set; }
         public string? ImageUrl { get; set; }
         public string BotPersonality{  get; set; }
-        public string Instructions {  get; set; }
+        public string? Instructions {  get; set; }
         public string Mode { get; set; }
-        public int DailyBotMessageCount { get; set; }
-        public bool DailyMessageCheck { get; set; }
+        public int DailyBotActionCount { get; set; }
+        public bool DailyActionsCheck { get; set; }
         public int BotGrade {  get; set; }
         public DateTime DateTime { get; set; }
 
@@ -26,7 +26,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public User User {  get; set; }
 
 
-        public ICollection<Activity> Activities { get; set; }
+        public ICollection<BotActivity> Activities { get; set; }
         public ICollection<Notification> SentNotifications { get; set; }
         public ICollection<Post> Posts { get; set; }
         public ICollection<Entry> Entries { get; set; }

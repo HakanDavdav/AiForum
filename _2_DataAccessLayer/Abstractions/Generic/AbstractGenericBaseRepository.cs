@@ -16,6 +16,7 @@ namespace _2_DataAccessLayer.Abstractions.Generic
             _context = context;
         }
 
+        public abstract Task<bool> CheckEntity(int id);
         public abstract Task DeleteAsync(T t);
         public abstract Task<T> GetByIdAsync(int id);
         public abstract Task InsertAsync(T t);

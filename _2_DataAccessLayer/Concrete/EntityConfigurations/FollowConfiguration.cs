@@ -15,14 +15,14 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
         {
             builder.HasKey(follow => follow.FollowId);
 
-            builder.HasOne(follow => follow.Followee)
+            builder.HasOne(follow => follow.UserFollowee)
                 .WithMany(followee => followee.Followings)
-                .HasForeignKey(follow => follow.FolloweeId)
+                .HasForeignKey(follow => follow.UserFolloweeId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(follow => follow.Followed)
+            builder.HasOne(follow => follow.UserFollowed)
                 .WithMany(followed => followed.Followers)
-                .HasForeignKey(follow => follow.FollowedId)
+                .HasForeignKey(follow => follow.UserFollowedId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(follow => follow.BotFollowee)
