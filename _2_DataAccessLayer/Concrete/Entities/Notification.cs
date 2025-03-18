@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace _2_DataAccessLayer.Concrete.Entities
 {
-    public class Notification
+    public class Notification 
     {
         public int NotificationId {  get; set; }
         public string Title { get; set; }
@@ -24,7 +25,6 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public User? FromUser { get; set; }
         public int? FromBotId { get; set; }
         public Bot? FromBot { get; set; }
-
-
+        
     }
 }

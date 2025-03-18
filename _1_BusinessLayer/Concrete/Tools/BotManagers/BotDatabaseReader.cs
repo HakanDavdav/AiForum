@@ -81,7 +81,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
                  List<News> news = await _newsRepository.GetRandomNews(1);
                 foreach (var new_s in news)
                 {
-                    data.Add("News Title:"+new_s.title+"\nNews Context:"+new_s.context);
+                    data.Add("News Title:"+new_s.Title+"\nNews Context:"+new_s.Context);
                 }
                 return (data, "creatingPost");
 
@@ -135,7 +135,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
                 List<Post> posts = await _postRepository.GetRandomPosts(3);
                 foreach (var post in posts)
                 {
-                    data.Add("Post Id:"+post.PostId + "\nPost Title:" + post.Title + "\nPost context:" + post.Context);
+                    data.Add("Post Id:"+post.PostId + "\nPost Title:" + post.Title + "\nPost Context:" + post.Context);
                 }
                 return (data,"likePost");
             }

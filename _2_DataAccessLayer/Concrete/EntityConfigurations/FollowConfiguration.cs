@@ -13,7 +13,12 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Follow> builder)
         {
+            // Configuring the primary key
             builder.HasKey(follow => follow.FollowId);
+
+            // Configuring other properties if needed
+            builder.Property(follow =>follow.DateTime)
+                .HasDefaultValueSql("GETDATE()");  // Default value for DateTime if needed
 
             builder.HasOne(follow => follow.UserFollowee)
                 .WithMany(followee => followee.Followings)

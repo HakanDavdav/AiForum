@@ -9,7 +9,11 @@ namespace _2_DataAccessLayer.Concrete.Entities
     public class News
     {
         public int NewsId;
-        public string title;
-        public string context;
+
+        public string Title;
+
+        public string Context;
+        public DateTime DateTime { get; set; }
+
     }
 }

@@ -13,7 +13,12 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Like> builder)
         {
+            // Configuring the primary key
             builder.HasKey(like => like.LikeId);
+
+            // Configuring other properties if needed
+            builder.Property(like => like.DateTime)
+                .HasDefaultValueSql("GETDATE()");  // Default value for DateTime if needed
 
             builder.HasOne(like => like.Post)
                 .WithMany(post => post.Likes)

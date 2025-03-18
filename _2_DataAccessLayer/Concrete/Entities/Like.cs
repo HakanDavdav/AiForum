@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace _2_DataAccessLayer.Concrete.Entities
 {
-    public class Like
+    public class Like 
     {
         public int LikeId {  get; set; }
         public DateTime DateTime { get; set; }
@@ -27,5 +27,6 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public User? User { get; set; }
         public int? BotId { get; set; }
         public Bot? Bot { get; set; }
-    }
-}
+    } 
+        
+ }

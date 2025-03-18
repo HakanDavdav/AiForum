@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.AbstractTools.AbstractFactories;
 using _1_BusinessLayer.Abstractions.AbstractTools.ITools;
-using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
+using _1_BusinessLayer.Concrete.Tools.AuthenticationManagers.BodyBuilders;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;

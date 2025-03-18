@@ -27,7 +27,7 @@ namespace _1_BusinessLayer.Concrete.Services
             return IdentityResult.Success;
         }
 
-        public override async Task<IdentityResult> CustomizeBot(int botId, CustomizeBotDto customizeBotDto)
+        public override async Task<IdentityResult> CustomizeBot(int botId, EditBotDto customizeBotDto)
         {
             var bot = await _botRepository.GetByIdAsync(botId);
             bot = customizeBotDto.Update___CustomizeBotDto_To_Bot(bot);

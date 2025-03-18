@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace _2_DataAccessLayer.Concrete.Entities
 {
-    public class Post
+    public class Post 
     {
         public int PostId { get; set; }
         public string Title { get; set; }
@@ -27,6 +27,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
         public ICollection<Entry> Entries { get; set; }
         public ICollection<Like> Likes { get; set; }
+      
 
     }
 }

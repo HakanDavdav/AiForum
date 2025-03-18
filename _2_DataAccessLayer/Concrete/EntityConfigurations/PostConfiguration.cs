@@ -13,7 +13,20 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Post> builder)
         {
+            // Configuring the primary key
             builder.HasKey(post => post.PostId);
+
+            // Title: Maximum length of 50 characters
+            builder.Property(post => post.Title)
+                .HasMaxLength(50);  // Max length of 50 characters
+
+            // Context: Maximum length of 1000 characters
+            builder.Property(post => post.Context)
+                .HasMaxLength(1000);  // Max length of 1000 characters
+
+            // DateTime: Assuming this field should be required and defaults to the current time
+            builder.Property(post => post.DateTime)
+                .HasDefaultValueSql("GETDATE()");  // Default SQL Server current date
 
             builder.HasMany(post => post.Entries)
                 .WithOne(entry => entry.Post)

@@ -8,11 +8,10 @@ using System.Threading.Tasks;
 
 namespace _2_DataAccessLayer.Concrete.Entities
 {
-    public class Follow
+    public class Follow 
     {
         public int FollowId {  get; set; }
         public DateTime DateTime { get; set; }
-
 
 
 
@@ -25,9 +24,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public int? BotFolloweeId { get; set; }
         public Bot? BotFollowee { get; set; }
         public int? BotFollowedId { get; set; }
-        public Bot? BotFollowed { get; set; }
-
-
+        public Bot? BotFollowed { get; set; }               
 
     }
 }

@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
-namespace _1_BusinessLayer.Concrete.Tools.Factories
+namespace _1_BusinessLayer.Concrete.Tools.AuthenticationManagers.Factories
 {
     public class TokenFactory : AbstractTokenFactory
     {
@@ -46,9 +46,9 @@ namespace _1_BusinessLayer.Concrete.Tools.Factories
         }
 
 
-        public override async Task<string> CreateTwoFactorTokenAsync(User user,string provider)
+        public override async Task<string> CreateTwoFactorTokenAsync(User user, string provider)
         {
-           return await _userManager.GenerateTwoFactorTokenAsync(user, provider);
+            return await _userManager.GenerateTwoFactorTokenAsync(user, provider);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices
         }
 
         public abstract Task<IdentityResult> CreateBot(CreateBotDto createBotDto);
-        public abstract Task<IdentityResult> CustomizeBot(int botId, CustomizeBotDto customizeBotDto);
+        public abstract Task<IdentityResult> CustomizeBot(int botId, EditBotDto customizeBotDto);
         public abstract Task<IdentityResult> DeleteBot(int userId, int botId);
         public abstract Task<IdentityResult> DeployBot(int botId);
         public abstract Task<IdentityResult> GetBotActivity(int botId);

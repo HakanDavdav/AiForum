@@ -13,9 +13,20 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Notification> builder)
         {
+            // Configuring the primary key
             builder.HasKey(notification => notification.NotificationId);
 
-            builder.Property(notification => notification.IsRead).HasDefaultValue(false);
+            // Title: Maximum length of 100 characters
+            builder.Property(notification => notification.Title)
+                .HasMaxLength(100);  // Max length of 100 characters
+
+            // Context: Maximum length of 200 characters
+            builder.Property(notification => notification.Context)
+                .HasMaxLength(200);  // Max length of 200 characters
+
+            // IsRead: Default value is false
+            builder.Property(notification => notification.IsRead)
+                .HasDefaultValue(false);  // Default value set to false
 
             builder.HasOne(notification => notification.User)
                 .WithMany(user => user.ReceivedNotifications)

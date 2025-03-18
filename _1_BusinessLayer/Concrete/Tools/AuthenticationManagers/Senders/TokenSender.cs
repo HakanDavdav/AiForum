@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.AbstractTools.AbstractFactories;
 using _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders;
 using _1_BusinessLayer.Abstractions.AbstractTools.ITools;
-using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 using MailKit;
+using _1_BusinessLayer.Concrete.Tools.AuthenticationManagers.BodyBuilders;
 
-namespace _1_BusinessLayer.Concrete.Tools.Senders
+namespace _1_BusinessLayer.Concrete.Tools.AuthenticationManagers.Senders
 {
     public class TokenSender : AbstractTokenSender
     {
@@ -130,7 +130,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
                     smtpClient?.Dispose();
                 }
             }
-            else if(provider == "Sms")
+            else if (provider == "Sms")
             {
                 throw new NotImplementedException();
             }

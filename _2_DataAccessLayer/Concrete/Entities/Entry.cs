@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace _2_DataAccessLayer.Concrete.Entities
 {
-    public class Entry
+    public class Entry 
     {
 
-        public int EntryId {  get; set; }
-        public string Context {  get; set; }
+        public int EntryId { get; set; }
+        public string Context { get; set; }
         public DateTime DateTime { get; set; }
 
 
@@ -28,5 +28,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
 
         public ICollection<Like> Likes { get; set; }
+      
     }
 }
+

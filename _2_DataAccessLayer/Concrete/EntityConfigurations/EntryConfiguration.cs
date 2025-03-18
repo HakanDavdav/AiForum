@@ -13,7 +13,17 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Entry> builder)
         {
+            // Configuring the primary key
             builder.HasKey(entry => entry.EntryId);
+
+            // Configuring the "Context" property with a maximum length of 1000 characters
+            builder.Property(entry => entry.Context)
+                .HasMaxLength(1000)  // Setting the max length to 1000 characters
+                .IsRequired();        // Optionally, you can make this field required by adding this line
+
+            // Configuring other properties if needed
+            builder.Property(entry => entry.DateTime)
+                .HasDefaultValueSql("GETDATE()");  // Default value for DateTime if needed
 
             builder.HasMany(entry => entry.Likes)
                 .WithOne(like => like.Entry)

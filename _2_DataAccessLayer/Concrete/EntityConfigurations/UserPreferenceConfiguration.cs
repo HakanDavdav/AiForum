@@ -13,12 +13,20 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<UserPreference> builder)
         {
+            // Setting the primary key for UserPreference entity
             builder.HasKey(userPreference => userPreference.UserPreferenceId);
 
-            builder.Property(userPreference => userPreference.Theme).HasDefaultValue("White");
-            builder.Property(userPreference => userPreference.EntryPerPage).HasDefaultValue("20");
-            builder.Property(userPreference => userPreference.PostPerPage).HasDefaultValue("40");
-            builder.Property(userPreference => userPreference.Notifications).HasDefaultValue(true);
+            builder.Property(userPreference => userPreference.Theme)
+                .HasDefaultValue("White");
+
+            builder.Property(userPreference => userPreference.EntryPerPage)
+                .HasDefaultValue("20");
+
+            builder.Property(userPreference => userPreference.PostPerPage)
+                .HasDefaultValue("40");
+
+            builder.Property(userPreference => userPreference.Notifications)
+                .HasDefaultValue(true);
 
             builder.HasOne(UserPreference => UserPreference.User)
                .WithOne(User => User.UserPreference)

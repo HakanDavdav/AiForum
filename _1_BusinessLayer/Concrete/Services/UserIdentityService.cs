@@ -123,8 +123,8 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> LoginTwoFactor(UserLoginDto userLoginDto, string twoFactorToken, string provider)
         {
-            var user = await _userRepository.GetByEmailAsync(userLoginDto.usernameOrEmailOrPhoneNumber) ??
-                       await _userRepository.GetByUsernameAsync(userLoginDto.usernameOrEmailOrPhoneNumber);
+            var user = await _userRepository.GetByEmailAsync(userLoginDto.UsernameOrEmailOrPhoneNumber) ??
+                       await _userRepository.GetByUsernameAsync(userLoginDto.UsernameOrEmailOrPhoneNumber);
             if (user != null)
             {
                 var twoFactorSignInResult = await _signInManager.TwoFactorSignInAsync(provider, twoFactorToken, false, true);
@@ -135,8 +135,8 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> LoginDefault(UserLoginDto userLoginDto)
         {
-            var user = await _userRepository.GetByEmailAsync(userLoginDto.usernameOrEmailOrPhoneNumber) ??
-                       await _userRepository.GetByUsernameAsync(userLoginDto.usernameOrEmailOrPhoneNumber);
+            var user = await _userRepository.GetByEmailAsync(userLoginDto.UsernameOrEmailOrPhoneNumber) ??
+                       await _userRepository.GetByUsernameAsync(userLoginDto.UsernameOrEmailOrPhoneNumber);
             if(user != null)
             {
                 if (await _signInManager.CanSignInAsync(user))

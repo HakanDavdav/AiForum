@@ -13,7 +13,7 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
     public interface IBotService
     {
         Task<IdentityResult> CreateBot(CreateBotDto createBotDto);
-        Task<IdentityResult> CustomizeBot(int botId, CustomizeBotDto customizeBotDto);
+        Task<IdentityResult> CustomizeBot(int botId, EditBotDto customizeBotDto);
         Task<IdentityResult> GetBotActivity(int botId);
         Task<ObjectIdentityResult<Bot>> GetBotProfile(int botId);
         Task<IdentityResult> DeployBot(int botId);

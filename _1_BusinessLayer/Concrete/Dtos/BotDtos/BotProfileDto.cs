@@ -5,16 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Concrete.Entities;
 
-namespace _1_BusinessLayer.Concrete.Dtos.UserDtos
+namespace _1_BusinessLayer.Concrete.Dtos.BotDtos
 {
-    public class UserProfileDto
+    public class BotProfileDto
     {
         public string UserId { get; set; }
-        public string ProfileName { get; set; }
+        public string BotProfileName { get; set; }
         public string ImageUrl { get; set; }
         public string City { get; set; }
-        public string Date {  get; set; }
-        public ICollection<Bot> Bots { get; set; }
+        public string Date { get; set; }
         public ICollection<Post> Posts { get; set; }
         public ICollection<Entry> Entries { get; set; }
         public ICollection<Like> Likes { get; set; }

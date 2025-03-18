@@ -13,6 +13,17 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
+            // Configuring the primary key for IdentityUser
+            builder.HasKey(user => user.Id);
+
+            // Configure ProfileName to be unique
+            builder.HasIndex(user => user.ProfileName)
+                .IsUnique();  // Ensures ProfileName is unique
+
+            // Other properties configuration (e.g., DateTime)
+            builder.Property(user => user.DateTime)
+                .HasDefaultValueSql("GETDATE()");  // Default value for DateTime
+
 
             builder.HasMany(user => user.Bots)
                 .WithOne(bot => bot.User)

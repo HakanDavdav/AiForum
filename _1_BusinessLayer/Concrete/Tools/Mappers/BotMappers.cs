@@ -18,18 +18,18 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             {
                 BotProfileName = createBotDto.BotProfileName,
                 BotPersonality = createBotDto.BotPersonality,
-                DailyBotActionCount = createBotDto.DailyBotMessageCount,
+                DailyBotActionCount = createBotDto.DailyBotOperationCount,
                 Instructions = createBotDto.Instructions,
                 Mode = createBotDto.Mode,
                 ImageUrl = createBotDto.ImageUrl,
             };
         }
 
-        public static Bot Update___CustomizeBotDto_To_Bot(this CustomizeBotDto customizeBotDto,Bot bot)
+        public static Bot Update___CustomizeBotDto_To_Bot(this EditBotDto customizeBotDto,Bot bot)
         {
                 bot.BotProfileName = customizeBotDto.BotProfileName;
                 bot.BotPersonality = customizeBotDto.BotPersonality;
-                bot.DailyBotActionCount = customizeBotDto.DailyBotMessageCount;
+                bot.DailyBotActionCount = customizeBotDto.DailyBotOperationCount;
                 bot.Instructions = customizeBotDto.Instructions;
                 bot.Mode = customizeBotDto.Mode;
                 bot.ImageUrl = customizeBotDto.ImageUrl;
