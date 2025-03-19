@@ -20,12 +20,6 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices
             _postRepository = postRepository;
             _likeRepository = likeRepository;
         }
-        public abstract Task<IdentityResult> CreateComplaint(int userId, int postId);
-        public abstract Task<IdentityResult> CreatePost(int userId, string title, string context);
-        public abstract Task<IdentityResult> DeletePost(int userId, int postId);
-        public abstract Task<ObjectIdentityResult<Post>> GetPost(int postId);
-        public abstract Task<IdentityResult> LikePost(int userId, int postId);
-        public abstract Task<IdentityResult> UnlikePost(int userId, int postId);
-        public abstract Task<IdentityResult> UpdatePost(int userId, int postId, string title, string context);
+
     }
 }

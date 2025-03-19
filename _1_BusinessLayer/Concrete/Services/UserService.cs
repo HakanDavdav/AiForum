@@ -83,23 +83,12 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> Follow(int userId, int followedUserId)
         {
-            await _followRepository.InsertAsync(new Follow
-            {
-                UserFolloweeId = userId,
-                UserFollowedId = followedUserId
-            });
-            return IdentityResult.Success;
+           
         }
 
         public override async Task<IdentityResult> Unfollow(int userId, int followedUserId, int followId)
         {
-            var follow = await _followRepository.GetByIdWithInfoAsync(followId);
-            if (follow.FolloweeId == userId && follow.FollowedId == followedUserId)
-            {
-                await _followRepository.DeleteAsync(follow);
-                return IdentityResult.Success;
-            }
-            return IdentityResult.Failed(new UnauthorizedError("Unauthorized deletion"));
+          
         }
     }
 }

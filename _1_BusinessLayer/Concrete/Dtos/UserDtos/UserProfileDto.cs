@@ -9,7 +9,7 @@ namespace _1_BusinessLayer.Concrete.Dtos.UserDtos
 {
     public class UserProfileDto
     {
-        public string UserId { get; set; }
+        public int UserId { get; set; }
         public string ProfileName { get; set; }
         public string ImageUrl { get; set; }
         public string City { get; set; }

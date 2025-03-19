@@ -17,8 +17,6 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
         Task<IdentityResult> EditProfile (int userId,UserEditProfileDto userEditProfileDto);
         Task<IdentityResult> CreateProfile (int userId,UserCreateProfileDto userCreateProfileDto);
         Task<ObjectIdentityResult<User>> GetUserProfile(int userId);
-        Task<ObjectIdentityResult<List<Notification>>> GetNotifications(int userId);
-        Task<IdentityResult> Follow(int userId, int followedUserId);
-        Task<IdentityResult> Unfollow(int userId, int followedUserId, int followId);
+
     }
 }

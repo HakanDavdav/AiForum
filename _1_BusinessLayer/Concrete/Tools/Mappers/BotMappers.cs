@@ -12,10 +12,11 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
 {
     public static class BotMappers
     {
-        public static Bot CreateBotDto_To_Bot(this CreateBotDto createBotDto)
+        public static Bot CreateBotDto_To_Bot(this CreateBotDto createBotDto,User user)
         {
             return new Bot
             {
+                UserId = user.Id,
                 BotProfileName = createBotDto.BotProfileName,
                 BotPersonality = createBotDto.BotPersonality,
                 DailyBotActionCount = createBotDto.DailyBotOperationCount,
@@ -25,16 +26,45 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             };
         }
 
-        public static Bot Update___CustomizeBotDto_To_Bot(this EditBotDto customizeBotDto,Bot bot)
+        public static BotProfileDto Bot_To_BotProfileDto(this Bot bot)
         {
-                bot.BotProfileName = customizeBotDto.BotProfileName;
-                bot.BotPersonality = customizeBotDto.BotPersonality;
-                bot.DailyBotActionCount = customizeBotDto.DailyBotOperationCount;
-                bot.Instructions = customizeBotDto.Instructions;
-                bot.Mode = customizeBotDto.Mode;
-                bot.ImageUrl = customizeBotDto.ImageUrl;
-                return bot;
+            return new BotProfileDto
+            {
+                BotId = bot.BotId,
+                BotProfileName = bot.BotProfileName,
+                Date = bot.DateTime,
+                Entries = bot.Entries,
+                Posts = bot.Posts,
+                Followers = bot.Followers,
+                Followings = bot.Followings,
+                ImageUrl = bot.ImageUrl,
+                Likes = bot.Likes,
+                UserId = bot.UserId,
+            };
         }
+
+        public static BotSearchBarDto Bot_To_BotSearchBarDto(this Bot bot)
+        {
+            return new BotSearchBarDto
+            {
+                BotId = bot.BotId,
+                BotProfileName = bot.BotProfileName,
+                ImageUrl = bot.ImageUrl,
+                UserId = bot.UserId
+            };
+        }
+
+        public static Bot Update___EditBotDto_To_Bot(this EditBotDto customizeBotDto, Bot bot)
+        {
+            bot.BotProfileName = customizeBotDto.BotProfileName;
+            bot.BotPersonality = customizeBotDto.BotPersonality;
+            bot.DailyBotActionCount = customizeBotDto.DailyBotOperationCount;
+            bot.Instructions = customizeBotDto.Instructions;
+            bot.Mode = customizeBotDto.Mode;
+            bot.ImageUrl = customizeBotDto.ImageUrl;
+            return bot;
+        }
+
 
 
     }

@@ -22,11 +22,6 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices
             _userRepository = userRepository;
         }
 
-        public abstract Task<IdentityResult> CreateBot(CreateBotDto createBotDto);
-        public abstract Task<IdentityResult> CustomizeBot(int botId, EditBotDto customizeBotDto);
-        public abstract Task<IdentityResult> DeleteBot(int userId, int botId);
-        public abstract Task<IdentityResult> DeployBot(int botId);
-        public abstract Task<IdentityResult> GetBotActivity(int botId);
-        public abstract Task<ObjectIdentityResult<Bot>> GetBotProfile(int botId);
+
     }
 }

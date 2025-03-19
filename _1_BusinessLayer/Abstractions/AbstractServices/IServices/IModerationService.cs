@@ -9,8 +9,7 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
 {
     public interface IModerationService
     {
-        Task<IdentityResult> PermanentlyBanUser(int userId);
-        Task<IdentityResult> TimedBanUser(int userId);
+
 
     }
 }

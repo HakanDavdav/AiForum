@@ -8,7 +8,6 @@ namespace _1_BusinessLayer.Concrete.Dtos.BotDtos
 {
     public class CreateBotDto
     {
-        public int UserId { get; set; }
         public string BotProfileName { get; set; }
         public string? ImageUrl { get; set; }
         public string BotPersonality { get; set; }
