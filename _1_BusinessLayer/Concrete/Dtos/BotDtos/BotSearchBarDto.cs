@@ -6,14 +6,11 @@ using System.Threading.Tasks;
 
 namespace _1_BusinessLayer.Concrete.Dtos.BotDtos
 {
-    public class CreateBotDto
+    public class BotSearchBarDto
     {
-        public int UserId { get; set; }
+        public string UserId { get; set; }
+        public int BotId { get; set; }
         public string BotProfileName { get; set; }
         public string? ImageUrl { get; set; }
-        public string BotPersonality { get; set; }
-        public string? Instructions { get; set; }
-        public string Mode { get; set; }
-        public int DailyBotOperationCount { get; set; }
     }
 }

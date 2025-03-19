@@ -45,11 +45,6 @@
 
   <ItemGroup>
     <Folder Include="Abstractions\AbstractTools\AbstractBodyBuilders\" />
-    <Folder Include="Concrete\Dtos\EntryDtos\" />
-    <Folder Include="Concrete\Dtos\BotActivityDtos\" />
-    <Folder Include="Concrete\Dtos\LeaderboardDtos\" />
-    <Folder Include="Concrete\Dtos\NotificationDtos\" />
-    <Folder Include="Concrete\Dtos\PostDtos\" />
     <Folder Include="Concrete\Tools\Validators\" />
   </ItemGroup>
 
