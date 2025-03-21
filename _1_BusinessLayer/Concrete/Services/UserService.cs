@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using _1_BusinessLayer.Abstractions.AbstractServices;
+using _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices;
+using _1_BusinessLayer.Concrete.Dtos.BotActivityDtos;
+using _1_BusinessLayer.Concrete.Dtos.NotificationDtos;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
@@ -13,14 +15,15 @@ using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace _1_BusinessLayer.Concrete.Services
 {
     public class UserService : AbstractUserService
     {
         public UserService(AbstractUserRepository userRepository, AbstractUserPreferenceRepository userPreferenceRepository, 
-            AbstractNotificationRepository notificationRepository, AbstractFollowRepository followRepository) 
-            : base(userRepository, userPreferenceRepository, notificationRepository, followRepository)
+            AbstractNotificationRepository notificationRepository, AbstractActivityRepository activityRepository, AbstractBotRepository botRepository) 
+            : base(userRepository, userPreferenceRepository, notificationRepository, activityRepository, botRepository)
         {
         }
 
@@ -36,18 +39,27 @@ namespace _1_BusinessLayer.Concrete.Services
             return IdentityResult.Failed(new NotFoundError("User not found"));
         }
 
-
-        public override async Task<IdentityResult> EditPreferences(int userId, UserEditPreferencesDto userPreferencesDto)
+        public override async Task<IdentityResult> DeleteUser(int userId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
             {
-                var userPreference = await _userPreferenceRepository.GetByUserIdAsync(userId);
-                userPreference = userPreferencesDto.Update___UserEditPreferencesDto_To_UserPreferences(userPreference);
-                await _userPreferenceRepository.UpdateAsync(userPreference);
+                await _userRepository.DeleteAsync(user);
                 return IdentityResult.Success;
             }
             return IdentityResult.Failed(new NotFoundError("User not found"));
+        }
+
+        public override async Task<IdentityResult> EditPreferences(int userId, UserEditPreferencesDto userEditPreferencesDto)
+        {
+            var preference = await _userPreferenceRepository.GetByUserIdAsync(userId);
+            if (preference != null)
+            {
+                preference = userEditPreferencesDto.Update___UserEditPreferencesDto_To_UserPreferences(preference);
+                await _userPreferenceRepository.UpdateAsync(preference);
+                return IdentityResult.Success;
+            }
+            return IdentityResult.Failed(new NotFoundError("User's preference not found"));
         }
 
         public override async Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto)
@@ -55,40 +67,60 @@ namespace _1_BusinessLayer.Concrete.Services
             var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
             {
-                var updatedUser = userEditProfileDto.Update___UserEditProfileDto_To_User(user);
-                await _userRepository.UpdateAsync(updatedUser);
+                user = userEditProfileDto.Update___UserEditProfileDto_To_User(user);
                 return IdentityResult.Success;
             }
             return IdentityResult.Failed(new NotFoundError("User not found"));
-
         }
 
-
-        public override async Task<ObjectIdentityResult<List<Notification>>> GetNotifications(int userId)
+        public override async Task<ObjectIdentityResult<List<BotActivityDto>>> GetBotActivitiesFromUser(int userId)
         {
-            var notifications = await _notificationRepository.GetAllByUserIdWithInfoAsync(userId);
-            return ObjectIdentityResult<List<Notification>>.Succeded(notifications);
-            
-        }
-
-        public override async Task<ObjectIdentityResult<User>> GetUserProfile(int userId)
-        {
-            var user = await _userRepository.GetByIdWithInfoAsync(userId);
-            if(user != null)
+            var user = await _userRepository.GetByIdAsync(userId);
+            List<BotActivityDto> botActivityDtos = new List<BotActivityDto>();
+            if (user != null)
             {
-                return ObjectIdentityResult<User>.Succeded(user);
+                List<Bot> bots = await _botRepository.GetAllByUserIdAsync(userId);
+                foreach (var bot in bots)
+                {
+                    List<BotActivity> botActivities = await _activityRepository.GetAllByBotIdAsync(bot.BotId);
+                    foreach (var botActivity in botActivities)
+                    {
+                        botActivityDtos.Add(botActivity.BotActivity_To_BotActivityDto());
+                    }
+
+                }
+                return ObjectIdentityResult<List<BotActivityDto>>.Succeded(botActivityDtos);      
             }
-            return ObjectIdentityResult<User>.Failed(null,new IdentityError[] { new NotFoundError("User not found") });
+            return ObjectIdentityResult<List<BotActivityDto>>.Failed(null,new IdentityError[] {new NotFoundError("User not found") });
         }
 
-        public override async Task<IdentityResult> Follow(int userId, int followedUserId)
+        public override async Task<ObjectIdentityResult<List<NotificationDto>>> GetNotificationsFromUser(int userId)
         {
-           
+            var user = await _userRepository.GetByIdAsync(userId);
+            List<NotificationDto> notificationsDtos = new List<NotificationDto>();
+            if (user != null)
+            {
+                List<Notification> notifications = await _notificationRepository.GetAllByUserIdAsync(userId);
+                foreach (var notification in notifications)
+                {
+                    notificationsDtos.Add(notification.Notification_To_NotificationDto());
+                }
+                return ObjectIdentityResult<List<NotificationDto>>.Succeded(notificationsDtos);
+            }
+            return ObjectIdentityResult<List<NotificationDto>>.Failed(null, new IdentityError[] { new NotFoundError("User not found") });
+
         }
 
-        public override async Task<IdentityResult> Unfollow(int userId, int followedUserId, int followId)
+        public override async Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId)
         {
-          
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user != null)
+            {
+                var userProfileDtO = user.User_To_UserProfileDto();
+                return ObjectIdentityResult<UserProfileDto>.Succeded(userProfileDtO);
+            }
+            return ObjectIdentityResult<UserProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("User not found") });
+
         }
     }
 }

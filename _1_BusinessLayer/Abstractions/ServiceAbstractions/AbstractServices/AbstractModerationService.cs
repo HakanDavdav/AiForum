@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
+namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
 {
-    internal interface IFollowService
+    public abstract class AbstractModerationService
     {
     }
 }

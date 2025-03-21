@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using _1_BusinessLayer.Abstractions.AbstractServices;
+using _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices;
 using _1_BusinessLayer.Concrete.Dtos.BotDtos;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace _1_BusinessLayer.Concrete.Services
 {
-    public class BotService : AbstractBotService
+    public class BotService : AbstractPostService
     {
         public BotService(AbstractBotRepository botRepository, AbstractUserRepository userRepository) : base(botRepository, userRepository)
         {

@@ -16,6 +16,6 @@ namespace _2_DataAccessLayer.Concrete.Entities
         
         public Bot Bot { get; set; }
         public int BotId { get; set; }
-        
+
     }
 }

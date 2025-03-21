@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _1_BusinessLayer.Abstractions.AbstractServices
+namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
 {
-    internal class AbstractBotActivityService
+    internal interface ISearchService
     {
     }
 }

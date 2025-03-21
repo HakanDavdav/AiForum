@@ -1,4 +1,4 @@
-﻿using _1_BusinessLayer.Abstractions.AbstractServices;
+﻿using _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices;
 using Microsoft.AspNetCore.Components;
 
 namespace _0_PresentationLayer.Controllers.UserControllers
@@ -6,8 +6,8 @@ namespace _0_PresentationLayer.Controllers.UserControllers
     [Route("AiForum/")]
     public class BotController
     {
-        private readonly AbstractBotService _botService;
-        public BotController(AbstractBotService botService)
+        private readonly AbstractPostService _botService;
+        public BotController(AbstractPostService botService)
         {
             _botService = botService;
         }

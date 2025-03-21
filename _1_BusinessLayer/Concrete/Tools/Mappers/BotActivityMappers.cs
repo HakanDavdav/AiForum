@@ -18,7 +18,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
                 ActivityContext = botActivity.ActivityContext,
                 ActivityId = botActivity.ActivityId,
                 ActivityType = botActivity.ActivityType,
-                Bot = botActivity.Bot,
+                BotId = botActivity.BotId,
                 DateTime = botActivity.DateTime,
             };
         }

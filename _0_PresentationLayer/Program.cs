@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Identity;
 using _2_DataAccessLayer.Concrete.Entities;
 using _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders;
 using _1_BusinessLayer.Abstractions.AbstractTools.AbstractFactories;
-using _1_BusinessLayer.Abstractions.AbstractServices;
 using _1_BusinessLayer.Concrete.Tools.AuthenticationManagers.Senders;
 using _1_BusinessLayer.Concrete.Tools.AuthenticationManagers.BodyBuilders;
 using _1_BusinessLayer.Concrete.Tools.AuthenticationManagers.Factories;
+using _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices;
 
 var builder = WebApplication.CreateBuilder(args);
 

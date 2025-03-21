@@ -163,7 +163,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                _context.Update(t);
+                _context.Follows.Update(t);
                 await _context.SaveChangesAsync();
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)

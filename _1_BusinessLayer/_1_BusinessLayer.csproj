@@ -44,7 +44,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\AbstractTools\AbstractBodyBuilders\" />
+    <Folder Include="Abstractions\ToolAbstractions\AbstractBodyBuilders\" />
+    <Folder Include="Concrete\Tools\AdditionalFilters\" />
     <Folder Include="Concrete\Tools\Validators\" />
   </ItemGroup>
 

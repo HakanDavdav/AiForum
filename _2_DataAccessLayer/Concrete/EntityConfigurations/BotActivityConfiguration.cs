@@ -28,6 +28,7 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .WithMany(bot => bot.Activities)
                 .HasForeignKey(botActivity => botActivity.BotId)
                 .OnDelete(DeleteBehavior.NoAction);
+
         }
     }
 }

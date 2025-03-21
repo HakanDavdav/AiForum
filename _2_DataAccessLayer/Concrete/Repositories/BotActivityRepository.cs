@@ -9,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _2_DataAccessLayer.Concrete.Repositories
 {
-    public class UserPreferenceRepository : AbstractUserPreferenceRepository
+    public class BotActivityRepository : AbstractActivityRepository
     {
-        public UserPreferenceRepository(ApplicationDbContext context) : base(context)
+        public BotActivityRepository(ApplicationDbContext context) : base(context)
         {
         }
 
@@ -19,7 +19,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                return await _context.UserPreferences.AnyAsync(userPreference => userPreference.UserPreferenceId == id);
+                return await _context.Activities.AnyAsync(activity => activity.ActivityId == id);
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
@@ -36,125 +36,151 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 Console.WriteLine($"Database Update Error in CheckEntity: {dbUpdateEx.Message}");
                 throw;
             }
-
         }
-        public override async Task DeleteAsync(UserPreference t)
+
+        public override async Task DeleteAsync(BotActivity t)
         {
             try
             {
-                _context.UserPreferences.Remove(t);
+                _context.Activities.Remove(t);
                 await _context.SaveChangesAsync();
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
                 Console.WriteLine($"SQL Error in DeleteAsync: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
                 Console.WriteLine($"Invalid Operation Error in DeleteAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
                 Console.WriteLine($"Database Update Error in DeleteAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                throw;
             }
         }
 
-        public override async Task<UserPreference> GetByIdAsync(int id)
+        public override async Task<List<BotActivity>> GetAllByBotIdAsync(int id)
         {
             try
             {
-                var userPreference = await _context.UserPreferences.FirstOrDefaultAsync(userpreference => userpreference.UserPreferenceId == id);
-                return userPreference;
+                IQueryable<BotActivity> botActivities = _context.Activities.Where(activity => activity.BotId == id);
+                return await botActivities.ToListAsync();
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in GetAllByUserIdAsync: {sqlEx.Message}");
+                throw;
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                Console.WriteLine($"Invalid Operation Error in GetAllByUserIdAsync: {invalidOpEx.Message}");
+                throw;
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                Console.WriteLine($"Database Update Error in GetAllByUserIdAsync: {dbUpdateEx.Message}");
+                throw;
+            }
+        }
+
+        public override async Task<List<BotActivity>> GetAllByUserIdAsync(int id)
+        {
+            try
+            {
+                IQueryable<BotActivity> botActivities = _context.Activities.Where(activity => activity.ActivityId == id);
+                return await botActivities.ToListAsync();
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in GetAllByUserIdAsync: {sqlEx.Message}");
+                throw;
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                Console.WriteLine($"Invalid Operation Error in GetAllByUserIdAsync: {invalidOpEx.Message}");
+                throw;
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                Console.WriteLine($"Database Update Error in GetAllByUserIdAsync: {dbUpdateEx.Message}");
+                throw;
+            }
+        }
+
+        public override async Task<BotActivity> GetByIdAsync(int id)
+        {
+            try
+            {
+                var activity = await _context.Activities.FirstOrDefaultAsync(activity =>activity.ActivityId == id);
+#pragma warning disable CS8603 // Possible null reference return.
+                return activity;
+#pragma warning restore CS8603 // Possible null reference return.
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
                 Console.WriteLine($"SQL Error in GetByIdAsync: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
                 Console.WriteLine($"Invalid Operation Error in GetByIdAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
                 Console.WriteLine($"Database Update Error in GetByIdAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                throw;
             }
         }
 
-        public override async Task<UserPreference> GetByUserIdAsync(int id)
+        public override async Task InsertAsync(BotActivity t)
         {
             try
             {
-                var userPreference = await _context.UserPreferences.FirstOrDefaultAsync(userpreference => userpreference.UserId == id);
-                return userPreference;
-            }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
-            {
-                Console.WriteLine($"SQL Error in GetByUserIdAsync: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                Console.WriteLine($"Invalid Operation Error in GetByUserIdAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                Console.WriteLine($"Database Update Error in GetByUserIdAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
-            }
-        }
-
-        public override async Task InsertAsync(UserPreference t)
-        {
-            try
-            {
-                await _context.UserPreferences.AddAsync(t);
+                _context.Activities.Add(t);
                 await _context.SaveChangesAsync();
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
                 Console.WriteLine($"SQL Error in InsertAsync: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
                 Console.WriteLine($"Invalid Operation Error in InsertAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
                 Console.WriteLine($"Database Update Error in InsertAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                throw;
             }
         }
 
-        public override async Task UpdateAsync(UserPreference t)
+        public override async Task UpdateAsync(BotActivity t)
         {
             try
             {
-                _context.UserPreferences.Update(t);
+                _context.Activities.Update(t);
                 await _context.SaveChangesAsync();
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
                 Console.WriteLine($"SQL Error in UpdateAsync: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
                 Console.WriteLine($"Invalid Operation Error in UpdateAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
                 Console.WriteLine($"Database Update Error in UpdateAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                throw;
             }
         }
     }

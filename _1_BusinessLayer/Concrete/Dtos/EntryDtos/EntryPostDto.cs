@@ -7,7 +7,7 @@ using _2_DataAccessLayer.Concrete.Entities;
 
 namespace _1_BusinessLayer.Concrete.Dtos.EntryDtos
 {
-    public class EntryDto
+    public class EntryPostDto
     {
         public int EntryId { get; set; }
         public string Context { get; set; }

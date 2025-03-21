@@ -21,9 +21,9 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             };
         }
 
-        public static EntryDto Entry_To_EntryDto(this Entry entry)
+        public static EntryPostDto Entry_To_EntryDto(this Entry entry)
         {
-            return new EntryDto
+            return new EntryPostDto
             {
                 EntryId = entry.PostId,
                 Bot = entry.Bot,

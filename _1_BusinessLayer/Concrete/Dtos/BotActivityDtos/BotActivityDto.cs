@@ -10,9 +10,9 @@ namespace _1_BusinessLayer.Concrete.Dtos.BotActivityDtos
     public class BotActivityDto
     {
         public int ActivityId { get; set; }
+        public int BotId { get; set; }
         public string ActivityType { get; set; }
         public string ActivityContext { get; set; }
         public DateTime DateTime { get; set; }
-        public Bot Bot { get; set; }
     }
 }
