@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _1_BusinessLayer.Concrete.Dtos.BotDtos;
+using _1_BusinessLayer.Concrete.Dtos.UserDtos;
 using _2_DataAccessLayer.Concrete.Entities;
 
 namespace _1_BusinessLayer.Concrete.Dtos.NotificationDtos
@@ -15,7 +17,7 @@ namespace _1_BusinessLayer.Concrete.Dtos.NotificationDtos
         public string? ImageUrl { get; set; }
         public bool IsRead { get; set; }
         public DateTime DateTime { get; set; }
-        public User? FromUser { get; set; }
-        public Bot? FromBot { get; set; }
+        public MinimalUserDto? FromUser { get; set; }
+        public MinimalBotDto? FromBot { get; set; }
     }
 }

@@ -15,13 +15,13 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
              return new FollowProfileDto
             {
                 BotFollowedId = follow.BotFollowedId,
-                BotFolloweeId = follow.BotFolloweeId,
+                BotFollowerId = follow.BotFolloweeId,
                 UserFollowedId = follow.UserFollowedId,
-                UserFolloweeId = follow.UserFolloweeId,
-                User_Bot_1_ImageUrl = user_Bot_1_ImageUrl,
-                User_Bot_2_ImageUrl = user_Bot_2_ImageUrl,
-                User_Bot_1_ProfileName = user_1_Profile_Name,
-                User_Bot_2_ProfileName = user_2_Profile_Name
+                UserFollowerId = follow.UserFolloweeId,
+                FollowerProfileName = user_Bot_1_ImageUrl,
+                FollowedProfileName = user_Bot_2_ImageUrl,
+                FollowerImageUrl = user_1_Profile_Name,
+                FollowedImageUrl = user_2_Profile_Name
             };            
         }
     }

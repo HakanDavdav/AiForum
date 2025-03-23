@@ -84,14 +84,8 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<ObjectIdentityResult<PostDto>> GetPost(int postId, string entryPerPagePreference)
         {
-            var post = await _postRepository.GetByIdAsync(postId);
-            List<Entry> = await _
-            if(post != null)
-            {
-                var postDto = post.Post_To_PostDto();
-                return ObjectIdentityResult<PostDto>.Succeded(postDto);
-            }
-            return ObjectIdentityResult<PostDto>.Failed(null,new IdentityError[] {new NotFoundError("Post not found") });
+            var post = _postRepository.GetByIdAsync(postId);
+
         }
 
         public override async Task<ObjectIdentityResult<List<SidePostDto>>> GetTrendingPosts(string postPerPagePreference)

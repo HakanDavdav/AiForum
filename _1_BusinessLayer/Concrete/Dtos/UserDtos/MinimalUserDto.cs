@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace _1_BusinessLayer.Concrete.Dtos.UserDtos
 {
-    public class UserSearchBarDto
+    public class MinimalUserDto
     {
         public int UserId { get; set; }
         public string ProfileName { get; set; }
