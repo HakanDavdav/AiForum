@@ -19,21 +19,31 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
     public abstract class AbstractUserService : IUserService
     {
         protected readonly AbstractUserRepository _userRepository;
-        protected readonly AbstractUserPreferenceRepository _userPreferenceRepository;
+        protected readonly AbstractPostRepository _postRepository;
+        protected readonly AbstractEntryRepository _entryRepository;
+        protected readonly AbstractLikeRepository _likeRepository;
         protected readonly AbstractNotificationRepository _notificationRepository;
         protected readonly AbstractActivityRepository _activityRepository;
         protected readonly AbstractBotRepository _botRepository;
+        protected readonly AbstractUserPreferenceRepository _preferenceRepository;
+        protected readonly AbstractFollowRepository _followRepository;
 
 
         protected AbstractUserService
-            (AbstractUserRepository userRepository, AbstractUserPreferenceRepository userPreferenceRepository,
-            AbstractNotificationRepository notificationRepository, AbstractActivityRepository activityRepository, AbstractBotRepository botRepository)
+            (AbstractUserRepository userRepository, AbstractNotificationRepository notificationRepository, 
+            AbstractActivityRepository activityRepository, AbstractBotRepository botRepository, AbstractUserPreferenceRepository preferenceRepository,
+            AbstractEntryRepository entryRepository, AbstractPostRepository postRepository,AbstractLikeRepository likeRepository,
+            AbstractFollowRepository followRepository)
         {
             _notificationRepository = notificationRepository;
             _userRepository = userRepository;
-            _userPreferenceRepository = userPreferenceRepository;
             _activityRepository = activityRepository;
             _botRepository = botRepository;
+            _preferenceRepository = preferenceRepository;
+            _entryRepository = entryRepository;
+            _postRepository = postRepository;
+            _likeRepository = likeRepository;
+            _followRepository = followRepository;
         }
 
         public abstract Task<IdentityResult> CreateProfile(int userId, UserCreateProfileDto userCreateProfileDto);

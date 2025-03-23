@@ -22,8 +22,6 @@ namespace _2_DataAccessLayer.Abstractions
         public abstract Task<User> GetByPhoneNumberAsync(string phoneNumber);
         public abstract Task<User> GetByProfileNameAsync(string profileName);
         public abstract Task<List<User>> GetRandomUsers(int number);
-        public abstract Task<List<Post>> GetAllWithCustomSearch(Func<IQueryable<Post>, IQueryable<Post>> queryModifier);
-
 
     }
 }

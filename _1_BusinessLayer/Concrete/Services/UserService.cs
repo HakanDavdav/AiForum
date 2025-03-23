@@ -5,7 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices;
 using _1_BusinessLayer.Concrete.Dtos.BotActivityDtos;
+using _1_BusinessLayer.Concrete.Dtos.BotDtos;
+using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
+using _1_BusinessLayer.Concrete.Dtos.FollowDto;
 using _1_BusinessLayer.Concrete.Dtos.NotificationDtos;
+using _1_BusinessLayer.Concrete.Dtos.PostDtos;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
@@ -21,9 +25,11 @@ namespace _1_BusinessLayer.Concrete.Services
 {
     public class UserService : AbstractUserService
     {
-        public UserService(AbstractUserRepository userRepository, AbstractUserPreferenceRepository userPreferenceRepository, 
-            AbstractNotificationRepository notificationRepository, AbstractActivityRepository activityRepository, AbstractBotRepository botRepository) 
-            : base(userRepository, userPreferenceRepository, notificationRepository, activityRepository, botRepository)
+        public UserService(AbstractUserRepository userRepository, AbstractNotificationRepository notificationRepository,
+            AbstractActivityRepository activityRepository, AbstractBotRepository botRepository, 
+            AbstractUserPreferenceRepository preferenceRepository, AbstractEntryRepository entryRepository, 
+            AbstractPostRepository postRepository, AbstractLikeRepository likeRepository, AbstractFollowRepository followRepository) 
+            : base(userRepository, notificationRepository, activityRepository, botRepository, preferenceRepository, entryRepository, postRepository, likeRepository, followRepository)
         {
         }
 
@@ -52,11 +58,11 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> EditPreferences(int userId, UserEditPreferencesDto userEditPreferencesDto)
         {
-            var preference = await _userPreferenceRepository.GetByUserIdAsync(userId);
+            var preference = await _preferenceRepository.GetByUserIdAsync(userId);
             if (preference != null)
             {
                 preference = userEditPreferencesDto.Update___UserEditPreferencesDto_To_UserPreferences(preference);
-                await _userPreferenceRepository.UpdateAsync(preference);
+                await _preferenceRepository.UpdateAsync(preference);
                 return IdentityResult.Success;
             }
             return IdentityResult.Failed(new NotFoundError("User's preference not found"));
@@ -114,10 +120,40 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
+            List<PostProfileDto> profilePosts = new List<PostProfileDto>();
+            List<EntryProfileDto> profileEntries = new List<EntryProfileDto>();
+            List<BotProfileDto> profileBots = new List<BotProfileDto>();
+            List<FollowProfileDto> profileFollowed = new List<FollowProfileDto>();
+            List<FollowProfileDto> profileFollowers = new List<FollowProfileDto>();
+
             if (user != null)
             {
-                var userProfileDtO = user.User_To_UserProfileDto();
-                return ObjectIdentityResult<UserProfileDto>.Succeded(userProfileDtO);
+                List<Post> posts = await _postRepository.GetAllByUserIdAsync(userId);
+                List<Entry> entries = await _entryRepository.GetAllByUserIdAsync(userId);
+                List<Bot> bots = await _botRepository.GetAllByUserIdAsync(userId);
+                List<Follow> followed = await _followRepository.GetAllByUserOrBotIdAsFollowerAsync(userId);
+                List<Follow> followers = await _followRepository.GetAllByUserOrBotIdAsFollowedAsync(userId);
+                foreach (var post in posts)
+                {
+                    profilePosts.Add(post.Post_To_PostProfileDto());
+                }
+                foreach (var entry in entries)
+                {
+                    profileEntries.Add(entry.Entry_To_EntryProfileDto());
+                }
+                foreach (var bot in bots)
+                {
+                    profileBots.Add(bot.Bot_To_BotProfileDto());
+                }
+                foreach (var follower in followers)
+                {
+                    var user1 = await _userRepository.GetByIdAsync(follower.UserFolloweeId)??_userRepository.GetByIdAsync((int)follower.BotFolloweeId);
+                    profileFollowers.Add(follower.Follow_To_FollowDto());
+                }
+                foreach (var followe_d in followed)
+                {
+                    var user2 = await _userRepository.GetByIdAsync
+                }
             }
             return ObjectIdentityResult<UserProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("User not found") });
 

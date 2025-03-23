@@ -18,6 +18,7 @@ namespace _2_DataAccessLayer.Abstractions.Generic
 
         public abstract Task<bool> CheckEntity(int id);
         public abstract Task DeleteAsync(T t);
+        public abstract Task<List<T>> GetAllWithCustomSearch(Func<IQueryable<T>, IQueryable<T>> queryModifier);
         public abstract Task<T> GetByIdAsync(int id);
         public abstract Task InsertAsync(T t);
         public abstract Task UpdateAsync(T t);

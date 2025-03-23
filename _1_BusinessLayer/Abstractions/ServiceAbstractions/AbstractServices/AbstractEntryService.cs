@@ -19,6 +19,7 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
         {
             _entryRepository = entryRepository;
             _userRepository = userRepository;
+
         }
 
         public abstract Task<ObjectIdentityResult<IdentityResult>> CreateEntry(int userId, int postId);

@@ -260,5 +260,10 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 throw; // Rethrow the caught exception
             }
         }
+
+        public override Task<List<User>> GetAllWithCustomSearch(Func<IQueryable<User>, IQueryable<User>> queryModifier)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

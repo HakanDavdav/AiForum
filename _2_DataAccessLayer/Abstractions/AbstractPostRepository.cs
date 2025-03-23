@@ -17,7 +17,6 @@ namespace _2_DataAccessLayer.Abstractions
         public abstract Task<Post> GetByTitleAsync(string title);
         public abstract Task<List<Post>> GetAllByUserIdAsync(int id);
         public abstract Task<List<Post>> GetAllByBotIdAsync(int id);
-        public abstract Task<List<Post>> GetAllWithCustomSearch(Func<IQueryable<Post>, IQueryable<Post>> queryModifier);
         public abstract Task<List<Post>> GetRandomPosts(int number);
         public abstract Task<List<Post>> GetRandomPostsByUserId(int id, int number);
         public abstract Task<List<Post>> GetRandomPostsByBotId(int id, int number);

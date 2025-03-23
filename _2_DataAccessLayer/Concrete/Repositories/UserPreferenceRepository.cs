@@ -62,6 +62,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
+        public override Task<List<UserPreference>> GetAllWithCustomSearch(Func<IQueryable<UserPreference>, IQueryable<UserPreference>> queryModifier)
+        {
+            throw new NotImplementedException();
+        }
+
         public override async Task<UserPreference> GetByIdAsync(int id)
         {
             try

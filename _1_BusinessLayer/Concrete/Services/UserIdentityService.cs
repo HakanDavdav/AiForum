@@ -127,7 +127,21 @@ namespace _1_BusinessLayer.Concrete.Services
                        await _userRepository.GetByUsernameAsync(userLoginDto.UsernameOrEmailOrPhoneNumber);
             if (user != null)
             {
-                var twoFactorSignInResult = await _signInManager.TwoFactorSignInAsync(provider, twoFactorToken, false, true);
+                var twoFactorSignInResult = await _signInManager.TwoFactorSignInAsync(provider, twoFactorToken, false, false);
+                if (twoFactorSignInResult.Succeeded)
+                {
+                    var preference = await _userPreferenceRepository.GetByUserIdAsync(user.Id);
+                    var claims = new List<Claim>
+                    {
+                        new Claim("THEME",preference.Theme),
+                        new Claim("POST PER PAGE", preference.PostPerPage.ToString()),
+                        new Claim("ENTRY PER PAGE", preference.EntryPerPage.ToString())
+                    };
+                    var identity = new ClaimsIdentity(claims, "login");
+                    var principal = new ClaimsPrincipal(identity);
+                    await _signInManager.SignInAsync(user, isPersistent: false); 
+                    return twoFactorSignInResult.ToIdentityResult();
+                }
                 return twoFactorSignInResult.ToIdentityResult();
             }
             return IdentityResult.Failed(new NotFoundError("User not found"));
@@ -244,10 +258,6 @@ namespace _1_BusinessLayer.Concrete.Services
                     //Default preference
                     await _userPreferenceRepository.InsertAsync(new UserPreference
                     {
-                        EntryPerPage = 15,
-                        Notifications = true,
-                        Theme = "White",
-                        PostPerPage = 40,
                         UserId = user.Id
                     });
                     await _userManager.AddToRoleAsync(user, "StandardUser");

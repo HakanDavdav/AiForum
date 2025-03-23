@@ -61,6 +61,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
+        public override Task<List<News>> GetAllWithCustomSearch(Func<IQueryable<News>, IQueryable<News>> queryModifier)
+        {
+            throw new NotImplementedException();
+        }
+
         public override async Task<News> GetByIdAsync(int id)
         {
             try

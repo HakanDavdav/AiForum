@@ -94,19 +94,24 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetAllByUserIdAsync: {sqlEx.Message}");
+                Console.WriteLine($"SQL Error in GetAllByUserOrBotIdAsFollowerAsync: {sqlEx.Message}");
                 throw; // Rethrow the exception
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetAllByUserIdAsync: {invalidOpEx.Message}");
+                Console.WriteLine($"Invalid Operation Error in GetAllByUserOrBotIdAsFollowerAsync: {invalidOpEx.Message}");
                 throw; // Rethrow the exception
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetAllByUserIdAsync: {dbUpdateEx.Message}");
+                Console.WriteLine($"Database Update Error in GetAllByUserOrBotIdAsFollowerAsync: {dbUpdateEx.Message}");
                 throw; // Rethrow the exception
             }
+        }
+
+        public override Task<List<Like>> GetAllWithCustomSearch(Func<IQueryable<Like>, IQueryable<Like>> queryModifier)
+        {
+            throw new NotImplementedException();
         }
 
         public override async Task<Like> GetByIdAsync(int id)

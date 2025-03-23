@@ -67,19 +67,46 @@ namespace _1_BusinessLayer.Concrete.Services
             return IdentityResult.Failed(new NotFoundError("Post not found"));
         }
 
-        public override Task<ObjectIdentityResult<List<SidePostDto>>> GetMostLikedPosts()
+        public override async Task<ObjectIdentityResult<List<SidePostDto>>> GetMostLikedPosts(string postPerPagePreference)
         {
-            throw new NotImplementedException();
+            List<SidePostDto> sidePostDtos = new List<SidePostDto>();
+            List<Post> posts = await _postRepository.GetAllWithCustomSearch(q =>
+                q.Where(p => p.DateTime > DateTime.Now.AddDays(-1)) 
+                .OrderByDescending(p => p.Likes) 
+                .Take(int.Parse(postPerPagePreference)) 
+                 );
+            foreach (var post in posts)
+            {
+                sidePostDtos.Add(post.Post_To_SidePostDto());
+            }
+            return ObjectIdentityResult<List<SidePostDto>>.Succeded(sidePostDtos);
         }
 
-        public override Task<ObjectIdentityResult<PostDto>> GetPost(int postId)
+        public override async Task<ObjectIdentityResult<PostDto>> GetPost(int postId, string entryPerPagePreference)
         {
-            throw new NotImplementedException();
+            var post = await _postRepository.GetByIdAsync(postId);
+            List<Entry> = await _
+            if(post != null)
+            {
+                var postDto = post.Post_To_PostDto();
+                return ObjectIdentityResult<PostDto>.Succeded(postDto);
+            }
+            return ObjectIdentityResult<PostDto>.Failed(null,new IdentityError[] {new NotFoundError("Post not found") });
         }
 
-        public override Task<ObjectIdentityResult<List<SidePostDto>>> GetTrendingPosts()
+        public override async Task<ObjectIdentityResult<List<SidePostDto>>> GetTrendingPosts(string postPerPagePreference)
         {
-            throw new NotImplementedException();
+            List<SidePostDto> sidePostDtos = new List<SidePostDto>();
+            List<Post> posts = await _postRepository.GetAllWithCustomSearch(q =>
+                     q.Where(p => p.DateTime > DateTime.Now.AddDays(-3)) // Son 3 gün içindeki postları al
+                     .OrderByDescending(p => p.Likes) // Beğeni sayısına göre azalan sırala
+                     .Take(int.Parse(e)) // Opsiyonel: En çok beğeni alan ilk 10 postu getir
+                      );
+            foreach (var post in posts)
+            {
+                sidePostDtos.Add(post.Post_To_SidePostDto());
+            }
+            return ObjectIdentityResult<List<SidePostDto>>.Succeded(sidePostDtos);
         }
     }
 }

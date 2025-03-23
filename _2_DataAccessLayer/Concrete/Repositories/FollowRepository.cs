@@ -85,28 +85,57 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<List<Follow>> GetAllByUserIdAsync(int id)
+        public override async Task<List<Follow>> GetAllByUserOrBotIdAsFollowedAsync(int id)
         {
             try
             {
-                var follows = _context.Follows.Where(follow => follow.UserFolloweeId == id);
+                var follows = _context.Follows.Where(follow => follow.UserFollowedId == id || follow.BotFollowedId == id);
                 return await follows.ToListAsync();
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetAllByUserIdAsync: {sqlEx.Message}");
+                Console.WriteLine($"SQL Error in GetAllByUserOrBotIdAsFollowerAsync: {sqlEx.Message}");
                 throw; // Rethrow the exception
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetAllByUserIdAsync: {invalidOpEx.Message}");
+                Console.WriteLine($"Invalid Operation Error in GetAllByUserOrBotIdAsFollowerAsync: {invalidOpEx.Message}");
                 throw; // Rethrow the exception
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetAllByUserIdAsync: {dbUpdateEx.Message}");
+                Console.WriteLine($"Database Update Error in GetAllByUserOrBotIdAsFollowerAsync: {dbUpdateEx.Message}");
                 throw; // Rethrow the exception
             }
+        }
+
+        public override async Task<List<Follow>> GetAllByUserOrBotIdAsFollowerAsync(int id)
+        {
+            try
+            {
+                var follows = _context.Follows.Where(follow => follow.UserFolloweeId== id || follow.BotFolloweeId == id);
+                return await follows.ToListAsync();
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in GetAllByUserOrBotIdAsFollowerAsync: {sqlEx.Message}");
+                throw; // Rethrow the exception
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                Console.WriteLine($"Invalid Operation Error in GetAllByUserOrBotIdAsFollowerAsync: {invalidOpEx.Message}");
+                throw; // Rethrow the exception
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                Console.WriteLine($"Database Update Error in GetAllByUserOrBotIdAsFollowerAsync: {dbUpdateEx.Message}");
+                throw; // Rethrow the exception
+            }
+        }
+
+        public override Task<List<Follow>> GetAllWithCustomSearch(Func<IQueryable<Follow>, IQueryable<Follow>> queryModifier)
+        {
+            throw new NotImplementedException();
         }
 
         public override async Task<Follow> GetByIdAsync(int id)

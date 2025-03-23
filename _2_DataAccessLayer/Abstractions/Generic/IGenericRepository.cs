@@ -9,6 +9,7 @@ namespace _2_DataAccessLayer.Abstractions.Generic
 {
     public interface IGenericRepository<T> 
     {
+        public Task<List<T>> GetAllWithCustomSearch(Func<IQueryable<T>, IQueryable<T>> queryModifier);
         public Task InsertAsync(T t);
         public Task DeleteAsync(T t);
         public Task UpdateAsync(T t);
