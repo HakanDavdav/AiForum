@@ -12,20 +12,20 @@ using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 
 namespace _1_BusinessLayer.Concrete.Tools.BotManagers
 {
-    public class BotManager 
+    public class BotDeployManager 
     {
         protected BotDatabaseReader _botDatabaseReader;
         protected BotApiCaller _botApiCaller;
         protected BotDatabaseWriter _botDatabaseWriter;
         protected BotResponseParser _botResponseParser;
-        public BotManager(BotDatabaseReader botDatabaseReader,BotApiCaller botApiCaller,BotDatabaseWriter botDatabaseWriter,BotResponseParser botResponseParser)
+        public BotDeployManager(BotDatabaseReader botDatabaseReader,BotApiCaller botApiCaller,BotDatabaseWriter botDatabaseWriter,BotResponseParser botResponseParser)
         {
             _botDatabaseReader = botDatabaseReader;
             _botApiCaller = botApiCaller;
             _botDatabaseWriter = botDatabaseWriter;
             _botResponseParser = botResponseParser;
         }
-        public async Task<ObjectIdentityResult<Notification>> BotDoAction(Bot bot)
+        public async Task<ObjectIdentityResult<Notification>> BotDoActionAsync(Bot bot)
         {
             if (bot.DailyOperationCheck == false)
             {

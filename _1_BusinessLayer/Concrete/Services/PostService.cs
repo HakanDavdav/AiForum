@@ -21,7 +21,8 @@ namespace _1_BusinessLayer.Concrete.Services
 {
     public class PostService : AbstractPostService
     {
-        public PostService(AbstractPostRepository postRepository, AbstractUserRepository userRepository) : base(postRepository, userRepository)
+        public PostService(AbstractPostRepository postRepository, AbstractUserRepository userRepository, 
+            AbstractEntryRepository entryRepository, AbstractLikeRepository likeRepository) : base(postRepository, userRepository, entryRepository, likeRepository)
         {
         }
 

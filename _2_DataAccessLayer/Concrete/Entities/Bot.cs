@@ -31,7 +31,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public ICollection<Post> Posts { get; set; }
         public ICollection<Entry> Entries { get; set; }
         public ICollection<Like> Likes { get; set; }
-        public ICollection<Follow> Followings { get; set; }
+        public ICollection<Follow> Followed { get; set; }
         public ICollection<Follow> Followers { get; set; }
     }
 }

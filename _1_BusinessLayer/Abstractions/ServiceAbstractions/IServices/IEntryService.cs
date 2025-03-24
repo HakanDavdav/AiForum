@@ -13,9 +13,9 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
     public interface IEntryService
     {
         //Self-Authorization requirement
-        Task<ObjectIdentityResult<IdentityResult>> CreateEntry(int userId,int postId);
+        Task<IdentityResult> CreateEntry(int userId,int postId,CreateEntryDto createEntryDto);
         //Self-Authorization requirement
-        Task<IdentityResult> EditEntry(int userId, int entryId);
+        Task<IdentityResult> EditEntry(int userId, int entryId,EditEntryDto editEntryDto);
         //Self-Authorization requirement
         Task<IdentityResult> DeleteEntry(int userId, int entryId);
 

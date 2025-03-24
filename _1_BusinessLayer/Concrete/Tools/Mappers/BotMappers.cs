@@ -50,7 +50,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             {
                 followerDtos.Add(follower.Follow_To_FollowProfileDto());
             }
-            foreach (var followed in bot.Followings)
+            foreach (var followed in bot.Followed)
             {
                 followedDtos.Add(followed.Follow_To_FollowProfileDto());
             }

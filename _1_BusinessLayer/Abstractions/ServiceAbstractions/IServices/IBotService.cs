@@ -22,7 +22,6 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
         //Self-Authorization requirement
         Task<IdentityResult> DeployBot(int userId, int botId);
         Task<ObjectIdentityResult<BotProfileDto>> GetBotProfile(int botId);
-        Task<ObjectIdentityResult<BotProfileDto>> GetBotProfileFromBotActivity(int botActivityId);
 
     }
 }

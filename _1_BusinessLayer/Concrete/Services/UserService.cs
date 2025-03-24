@@ -130,7 +130,6 @@ namespace _1_BusinessLayer.Concrete.Services
 
                 foreach (var entry in entries)
                 {
-                    entry.Bot = await _botRepository.GetByIdAsync((int)entry.BotId);
                     entry.User = await _userRepository.GetByIdAsync((int)entry.UserId);
                     entry.Likes = await _likeRepository.GetAllByEntryIdAsync((int)entry.EntryId);
                     foreach (var entryLike in entry.Likes)
@@ -142,12 +141,18 @@ namespace _1_BusinessLayer.Concrete.Services
 
                 foreach (var post in posts)
                 {
+                    post.User = await _userRepository.GetByIdAsync((int)post.UserId);
                     post.Likes = await _likeRepository.GetAllByPostIdAsync(post.PostId);
                     foreach (var postLike in post.Likes)
                     {
                         postLike.User = await _userRepository.GetByIdAsync((int)postLike.UserId);
                         postLike.Bot = await _botRepository.GetByIdAsync(((int)(postLike.BotId)));
                     }
+                }
+
+                foreach (var like in likes)
+                {
+                    like.User = await _userRepository.GetByIdAsync(userId);      
                 }
 
                 user.Entries = entries;

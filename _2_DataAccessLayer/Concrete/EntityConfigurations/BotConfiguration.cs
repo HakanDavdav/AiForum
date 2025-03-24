@@ -89,7 +89,7 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .HasForeignKey(following => following.BotFollowedId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasMany(bot => bot.Followings)
+            builder.HasMany(bot => bot.Followed)
                 .WithOne(following => following.BotFollower)
                 .HasForeignKey (following => following.BotFollowerId)
                 .OnDelete(DeleteBehavior.NoAction);

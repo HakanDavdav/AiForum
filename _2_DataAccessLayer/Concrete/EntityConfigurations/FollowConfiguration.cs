@@ -31,7 +31,7 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(follow => follow.BotFollower)
-                .WithMany(botFollowee => botFollowee.Followings)
+                .WithMany(botFollowee => botFollowee.Followed)
                 .HasForeignKey(follow => follow.BotFollowedId)
                 .OnDelete(DeleteBehavior.NoAction);
 

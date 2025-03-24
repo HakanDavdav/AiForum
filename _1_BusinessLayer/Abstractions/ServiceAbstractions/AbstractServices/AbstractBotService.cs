@@ -18,13 +18,26 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
     {
         protected readonly AbstractBotRepository _botRepository;
         protected readonly AbstractUserRepository _userRepository;
-        protected readonly BotManager _botManager;
+        protected readonly AbstractPostRepository _postRepository;
+        protected readonly AbstractEntryRepository _entryRepository;
+        protected readonly AbstractLikeRepository _likeRepository;
+        protected readonly AbstractActivityRepository _activityRepository;
+        protected readonly AbstractFollowRepository _followRepository;
+        protected readonly BotDeployManager _botDeployManager;
 
-        protected AbstractBotService(AbstractBotRepository botRepository, BotManager botManager, AbstractUserRepository userRepository)
+        protected AbstractBotService(AbstractBotRepository botRepository, BotDeployManager botManager, AbstractUserRepository userRepository,
+            AbstractPostRepository postRepository,AbstractEntryRepository entryRepository,AbstractLikeRepository likeRepository,AbstractActivityRepository activityRepository,
+            AbstractFollowRepository followRepository)
         {
             _botRepository = botRepository;
-            _botManager = botManager;
+            _botDeployManager = botManager;
             _userRepository = userRepository;
+            _postRepository = postRepository;
+            _entryRepository = entryRepository;
+            _likeRepository = likeRepository;
+            _activityRepository = activityRepository;
+            _followRepository = followRepository;
+            _activityRepository = activityRepository;
         }
 
         public abstract Task<IdentityResult> CreateBot(int userId, CreateBotDto createBotDto);
@@ -32,6 +45,5 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
         public abstract Task<IdentityResult> DeployBot(int userId, int botId);
         public abstract Task<IdentityResult> EditBot(int userId, EditBotDto editBotDto);
         public abstract Task<ObjectIdentityResult<BotProfileDto>> GetBotProfile(int botId);
-        public abstract Task<ObjectIdentityResult<BotProfileDto>> GetBotProfileFromBotActivity(int botActivityId);
     }
 }

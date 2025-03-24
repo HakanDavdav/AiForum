@@ -30,6 +30,6 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public ICollection<Follow> Followed { get; set; }
         public ICollection<Follow> Followers { get; set; }
 
-
+        
     }
 }
