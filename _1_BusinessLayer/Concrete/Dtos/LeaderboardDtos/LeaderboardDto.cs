@@ -9,6 +9,6 @@ namespace _1_BusinessLayer.Concrete.Dtos.LeaderboardDtos
 {
     public class LeaderboardDto
     {
-        public ICollection<BotSearchBarDto> Rank;
+        public ICollection<MinimalBotDto> RankedBots;
     }
 }

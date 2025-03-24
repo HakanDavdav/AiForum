@@ -7,6 +7,7 @@ using _1_BusinessLayer.Abstractions.AbstractServices;
 using _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices;
 using _1_BusinessLayer.Abstractions.AbstractServices.IServices;
 using _1_BusinessLayer.Concrete.Dtos.BotDtos;
+using _1_BusinessLayer.Concrete.Dtos.NotificationDtos;
 using _1_BusinessLayer.Concrete.Dtos.PostDtos;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
@@ -29,7 +30,7 @@ namespace _1_BusinessLayer.Concrete.Services
             var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
             {
-                var post = createPostDto.CreatePostDto_To_Post(user);
+                var post = createPostDto.CreatePostDto_To_Post(userId);
                 await _postRepository.InsertAsync(post);
                 return IdentityResult.Success;
             }
@@ -67,9 +68,9 @@ namespace _1_BusinessLayer.Concrete.Services
             return IdentityResult.Failed(new NotFoundError("Post not found"));
         }
 
-        public override async Task<ObjectIdentityResult<List<SidePostDto>>> GetMostLikedPosts(string postPerPagePreference)
+        public override async Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(string postPerPagePreference)
         {
-            List<SidePostDto> sidePostDtos = new List<SidePostDto>();
+            List<MinimalPostDto> minimalPostDtos = new List<MinimalPostDto>();
             List<Post> posts = await _postRepository.GetAllWithCustomSearch(q =>
                 q.Where(p => p.DateTime > DateTime.Now.AddDays(-1)) 
                 .OrderByDescending(p => p.Likes) 
@@ -77,30 +78,61 @@ namespace _1_BusinessLayer.Concrete.Services
                  );
             foreach (var post in posts)
             {
-                sidePostDtos.Add(post.Post_To_SidePostDto());
+                minimalPostDtos.Add(post.Post_To_MinimalPostDto());
             }
-            return ObjectIdentityResult<List<SidePostDto>>.Succeded(sidePostDtos);
+            return ObjectIdentityResult<List<MinimalPostDto>>.Succeded(minimalPostDtos);
         }
 
         public override async Task<ObjectIdentityResult<PostDto>> GetPost(int postId, string entryPerPagePreference)
         {
-            var post = _postRepository.GetByIdAsync(postId);
+            var post = await _postRepository.GetByIdAsync(postId);
+            if (post != null)
+            {
+                var user = await _userRepository.GetByIdAsync((int)post.UserId);
+                var bot = await _botRepository.GetByIdAsync((int)post.BotId);
+                var entries = await _entryRepository.GetAllByPostId(postId);
+                var likes = await _likeRepository.GetAllByPostIdAsync(postId);
+                foreach (var postLike in likes)
+                {
+                    postLike.User = await _userRepository.GetByIdAsync((int)post.UserId);
+                    postLike.Bot = await _botRepository.GetByIdAsync((int)(post.BotId));
+                }
+                foreach (var entry in entries)
+                {
+                    entry.Likes = await _likeRepository.GetAllByEntryIdAsync(entry.EntryId);
+                    entry.User = await _userRepository.GetByIdAsync((int)entry.UserId);
+                    entry.Bot = await _botRepository.GetByIdAsync(((int)entry.BotId));
+
+                    foreach (var entryLike in entry.Likes)
+                    {
+                        entryLike.User = await _userRepository.GetByIdAsync((int)entryLike.UserId);
+                        entryLike.Bot = await _botRepository.GetByIdAsync(((int)entryLike.BotId));
+                    }
+                }
+                post.Bot = bot;
+                post.User = user;
+                post.Likes = likes;
+                post.Entries = entries;
+                var postDto = post.Post_To_PostDto();
+                return ObjectIdentityResult<PostDto>.Succeded(postDto);
+            }
+            return ObjectIdentityResult<PostDto>.Failed(null, new IdentityError[] { new NotFoundError("Post not found") });
 
         }
 
-        public override async Task<ObjectIdentityResult<List<SidePostDto>>> GetTrendingPosts(string postPerPagePreference)
+        public override async Task<ObjectIdentityResult<List<MinimalPostDto>>> GetTrendingPosts(string postPerPagePreference)
         {
-            List<SidePostDto> sidePostDtos = new List<SidePostDto>();
+            List<MinimalPostDto> minimalPostDtos = new List<MinimalPostDto>();
             List<Post> posts = await _postRepository.GetAllWithCustomSearch(q =>
                      q.Where(p => p.DateTime > DateTime.Now.AddDays(-3)) // Son 3 gün içindeki postları al
                      .OrderByDescending(p => p.Likes) // Beğeni sayısına göre azalan sırala
-                     .Take(int.Parse(e)) // Opsiyonel: En çok beğeni alan ilk 10 postu getir
+                     .Take(int.Parse(postPerPagePreference)) // Opsiyonel: En çok beğeni alan ilk 10 postu getir
                       );
             foreach (var post in posts)
             {
-                sidePostDtos.Add(post.Post_To_SidePostDto());
+                minimalPostDtos.Add(post.Post_To_MinimalPostDto());
             }
-            return ObjectIdentityResult<List<SidePostDto>>.Succeded(sidePostDtos);
+            return ObjectIdentityResult<List<MinimalPostDto>>.Succeded(minimalPostDtos);
         }
     }
 }

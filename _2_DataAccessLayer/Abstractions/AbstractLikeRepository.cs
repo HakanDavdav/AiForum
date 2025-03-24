@@ -16,6 +16,8 @@ namespace _2_DataAccessLayer.Abstractions
         }
         public abstract Task<List<Like>> GetAllByUserIdAsync(int id);
         public abstract Task<List<Like>> GetAllByBotIdAsync(int id);
+        public abstract Task<List<Like>> GetAllByPostIdAsync(int id);
+        public abstract Task<List<Like>> GetAllByEntryIdAsync(int id);
 
     }
 }

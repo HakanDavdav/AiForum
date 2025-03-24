@@ -15,8 +15,8 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public string BotPersonality{  get; set; }
         public string? Instructions {  get; set; }
         public string Mode { get; set; }
-        public int DailyBotActionCount { get; set; }
-        public bool DailyActionsCheck { get; set; }
+        public int DailyBotOperationCount { get; set; }
+        public bool DailyOperationCheck { get; set; }
         public int BotGrade {  get; set; }
         public DateTime DateTime { get; set; }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
+using _1_BusinessLayer.Concrete.Dtos.LikeDto;
 using _1_BusinessLayer.Concrete.Dtos.PostDtos;
 using _2_DataAccessLayer.Concrete.Entities;
 
@@ -11,77 +12,95 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
 {
     public static class PostMappers
     {
-        public static Post CreatePostDto_To_Post(this CreatePostDto createPostDto,User user)
-        {
-            return new Post
-            {
-                Context = createPostDto.Context,
-                Title = createPostDto.Title,
-                DateTime = createPostDto.DateTime,    
-                UserId = user.Id,
-            };
-        }
 
-
-        public static PostDto Post_To_PostDto(this Post post)
+        public static MinimalPostDto Post_To_MinimalPostDto(this Post post)
         {
-            return new PostDto
+            List<MinimalLikeDto> minimalLikeDtos = new List<MinimalLikeDto>();
+            foreach (var like in post.Likes)
             {
-                Bot = post.Bot,
-                Context = post.Context,
-                DateTime = post.DateTime,
-                Entries = post.Entries,
-                Likes = post.Likes,
-                PostId = post.PostId,
+                minimalLikeDtos.Add(like.Like_To_MinimalLikeDto());
+            }
+            return new MinimalPostDto
+            {
                 Title = post.Title,
                 TrendPoint = post.TrendPoint,
-                User = post.User,
+                PostId = post.PostId,
+                Likes = minimalLikeDtos,
+                LikeCount = minimalLikeDtos.Count()
             };
         }
 
         public static PostProfileDto Post_To_PostProfileDto(this Post post)
         {
+            var minimalUser = post.User.User_To_MinimalUserDto();
+            var minimalBot = post.Bot.Bot_To_MinimalBotDto();
+            List<MinimalLikeDto> minimalLikeDtos = new List<MinimalLikeDto>();
+            foreach (var like in post.Likes)
+            {
+                minimalLikeDtos.Add(like.Like_To_MinimalLikeDto());
+            }
             return new PostProfileDto
             {
-                Bot = post.Bot,
-                Context = post.Context,
-                DateTime = post.DateTime,
-                Likes = post.Likes,
-                PostId = post.PostId,
                 Title = post.Title,
                 TrendPoint = post.TrendPoint,
-                User = post.User,
+                PostId = post.PostId,
+                Context = post.Context,
+                DateTime = post.DateTime,
+                Likes = minimalLikeDtos,
+                LikeCount = minimalLikeDtos.Count(),
+                Bot = minimalBot,
+                User = minimalUser,
             };
         }
 
-        public static PostSearchBarDto Post_To_PostSearchBarDto(this Post post)
+        public static PostDto Post_To_PostDto(this Post post)
         {
-            return new PostSearchBarDto
+            var minimalUser = post.User.User_To_MinimalUserDto();
+            var minimalBot = post.Bot.Bot_To_MinimalBotDto();
+            List<MinimalLikeDto> minimalLikeDtos = new List<MinimalLikeDto>();
+            List<EntryPostDto> entryPostDtos = new List<EntryPostDto>();
+            foreach (var entry in post.Entries)
             {
-                Likes = post.Likes,
-                PostId = post.PostId,
-                Title = post.Title,               
-            };
-        }
-
-        public static SidePostDto Post_To_SidePostDto(this Post post)
-        {
-            return new SidePostDto
+                entryPostDtos.Add(entry.Entry_To_EntryPostDto());
+            }
+            foreach (var like in post.Likes)
             {
-                PostId = post.PostId,
+                minimalLikeDtos.Add(like.Like_To_MinimalLikeDto());
+            }
+            return new PostDto
+            {
                 Title = post.Title,
-                TrendPoint = post.TrendPoint    
+                TrendPoint = post.TrendPoint,
+                PostId = post.PostId,
+                Context = post.Context,
+                DateTime = post.DateTime,
+                Bot = minimalBot,
+                User = minimalUser,
+                Entries = entryPostDtos,
+                LikeCount = minimalLikeDtos.Count(),
+                Likes = minimalLikeDtos
+            };
+
+        }
+
+        public static Post CreatePostDto_To_Post(this CreatePostDto createPostDto, int userId)
+        {
+            return new Post
+            {
+                UserId = userId,
+                Context = createPostDto.Context,
+                DateTime = createPostDto.DateTime,
+                Title = createPostDto.Title,
             };
         }
 
-        public static Post Update___EditPostDto_To_Post(this EditPostDto editPostDto, Post post)
+
+        public static Post Update___EditPostDto_To_Post(this EditPostDto editPostDto,Post post)
         {
-             post.Context = editPostDto.Context;
-             post.DateTime = editPostDto.DateTime;
-             post.Title = editPostDto.Title;
-             return post;
+            post.Context = editPostDto.Context;
+            post.DateTime = editPostDto.DateTime;
+            post.Title = editPostDto.Title;
+            return post;
         }
-
-
     }
 }

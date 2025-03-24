@@ -59,9 +59,9 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .HasForeignKey(like => like.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasMany(user => user.Followings)
-                .WithOne(follow => follow.UserFollowee)
-                .HasForeignKey(follow => follow.UserFolloweeId)
+            builder.HasMany(user => user.Followed)
+                .WithOne(follow => follow.UserFollower)
+                .HasForeignKey(follow => follow.UserFollowerId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(user => user.Followers)

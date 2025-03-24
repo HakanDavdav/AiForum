@@ -15,14 +15,14 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
 
 
-        public int? UserFolloweeId { get; set; }
-        public User? UserFollowee { get; set; }
+        public int? UserFollowerId { get; set; }
+        public User? UserFollower { get; set; }
         public int? UserFollowedId { get; set; }
         public User? UserFollowed { get; set; }
 
 
-        public int? BotFolloweeId { get; set; }
-        public Bot? BotFollowee { get; set; }
+        public int? BotFollowerId { get; set; }
+        public Bot? BotFollower { get; set; }
         public int? BotFollowedId { get; set; }
         public Bot? BotFollowed { get; set; }               
 

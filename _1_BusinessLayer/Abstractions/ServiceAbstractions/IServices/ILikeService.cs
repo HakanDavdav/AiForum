@@ -9,10 +9,10 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
 {
     public interface ILikeService
     {
-        Task<IdentityResult> LikePost(int postId);
-        Task<IdentityResult> UnlikePost(int postId);
-        Task<IdentityResult> LikeEntry(int entryId);
-        Task<IdentityResult> UnlikeEntry(int entryId);
+
+        Task<IdentityResult> LikeEntry(int entryId, int userId);
+        Task<IdentityResult> LikePost(int postId, int userId);
+        Task<IdentityResult> Unlike(int userId, int likeId);
 
     }
 }

@@ -17,6 +17,7 @@ namespace _1_BusinessLayer.Concrete.Dtos.NotificationDtos
         public string? ImageUrl { get; set; }
         public bool IsRead { get; set; }
         public DateTime DateTime { get; set; }
+        public MinimalUserDto OwnerUser { get; set; }
         public MinimalUserDto? FromUser { get; set; }
         public MinimalBotDto? FromBot { get; set; }
     }

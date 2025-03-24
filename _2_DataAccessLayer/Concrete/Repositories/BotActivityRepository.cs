@@ -71,17 +71,17 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetAllByUserOrBotIdAsFollowerAsync: {sqlEx.Message}");
+                Console.WriteLine($"SQL Error in GetAllByBotIdAsFollowerWithInfoAsync: {sqlEx.Message}");
                 throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetAllByUserOrBotIdAsFollowerAsync: {invalidOpEx.Message}");
+                Console.WriteLine($"Invalid Operation Error in GetAllByBotIdAsFollowerWithInfoAsync: {invalidOpEx.Message}");
                 throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetAllByUserOrBotIdAsFollowerAsync: {dbUpdateEx.Message}");
+                Console.WriteLine($"Database Update Error in GetAllByBotIdAsFollowerWithInfoAsync: {dbUpdateEx.Message}");
                 throw;
             }
         }
@@ -95,17 +95,17 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetAllByUserOrBotIdAsFollowerAsync: {sqlEx.Message}");
+                Console.WriteLine($"SQL Error in GetAllByBotIdAsFollowerWithInfoAsync: {sqlEx.Message}");
                 throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetAllByUserOrBotIdAsFollowerAsync: {invalidOpEx.Message}");
+                Console.WriteLine($"Invalid Operation Error in GetAllByBotIdAsFollowerWithInfoAsync: {invalidOpEx.Message}");
                 throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetAllByUserOrBotIdAsFollowerAsync: {dbUpdateEx.Message}");
+                Console.WriteLine($"Database Update Error in GetAllByBotIdAsFollowerWithInfoAsync: {dbUpdateEx.Message}");
                 throw;
             }
         }

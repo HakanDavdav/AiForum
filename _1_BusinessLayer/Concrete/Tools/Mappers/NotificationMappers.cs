@@ -12,16 +12,20 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
     {
         public static NotificationDto Notification_To_NotificationDto(this Notification notification)
         {
+            var minimalOwnerUser = notification.User.User_To_MinimalUserDto();
+            var minimalFromUser = notification.FromUser.User_To_MinimalUserDto();
+            var minimalFromBot = notification.FromBot.Bot_To_MinimalBotDto();
             return new NotificationDto()
             {
-                NotificationId = notification.NotificationId,
                 Context = notification.Context,
                 DateTime = notification.DateTime,
-                FromBot = notification.FromBot,
-                FromUser = notification.FromUser,
                 ImageUrl = notification.ImageUrl,
                 IsRead = notification.IsRead,
                 Title = notification.Title,
+                NotificationId = notification.NotificationId,
+                OwnerUser = minimalOwnerUser,
+                FromUser = minimalFromUser,
+                FromBot = minimalFromBot,
             };
         }
     }

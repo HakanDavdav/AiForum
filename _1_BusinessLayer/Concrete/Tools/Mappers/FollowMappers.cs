@@ -10,19 +10,21 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
 {
     public static class FollowMappers
     {
-        public static FollowProfileDto Follow_To_FollowDto(this Follow follow, string user_Bot_1_ImageUrl,string user_1_Profile_Name ,string user_Bot_2_ImageUrl, string user_2_Profile_Name)
+       public static FollowProfileDto Follow_To_FollowProfileDto(this Follow follow)
         {
-             return new FollowProfileDto
+            var minimalFollowedUser = follow.UserFollowed.User_To_MinimalUserDto();
+            var minimalFollowedBot = follow.BotFollowed.Bot_To_MinimalBotDto();
+
+            var minimalFollowerUser = follow.UserFollower.User_To_MinimalUserDto();
+            var minimalFollowerBot = follow.BotFollower.Bot_To_MinimalBotDto();
+
+            return new FollowProfileDto
             {
-                BotFollowedId = follow.BotFollowedId,
-                BotFollowerId = follow.BotFolloweeId,
-                UserFollowedId = follow.UserFollowedId,
-                UserFollowerId = follow.UserFolloweeId,
-                FollowerProfileName = user_Bot_1_ImageUrl,
-                FollowedProfileName = user_Bot_2_ImageUrl,
-                FollowerImageUrl = user_1_Profile_Name,
-                FollowedImageUrl = user_2_Profile_Name
-            };            
+                BotFollowed = minimalFollowedBot,
+                UserFollowed = minimalFollowedUser,
+                BotFollower = minimalFollowerBot,
+                UserFollower = minimalFollowerUser,
+            };
         }
     }
 }

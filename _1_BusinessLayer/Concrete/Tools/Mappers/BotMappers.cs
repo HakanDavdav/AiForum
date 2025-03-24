@@ -4,6 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Concrete.Dtos.BotDtos;
+using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
+using _1_BusinessLayer.Concrete.Dtos.FollowDto;
+using _1_BusinessLayer.Concrete.Dtos.LikeDto;
+using _1_BusinessLayer.Concrete.Dtos.PostDtos;
+using _1_BusinessLayer.Concrete.Dtos.UserDtos;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
@@ -12,59 +17,80 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
 {
     public static class BotMappers
     {
-        public static Bot CreateBotDto_To_Bot(this CreateBotDto createBotDto,User user)
+        public static MinimalBotDto Bot_To_MinimalBotDto(this Bot bot)
         {
-            return new Bot
+            return new MinimalBotDto
             {
-                UserId = user.Id,
-                BotProfileName = createBotDto.BotProfileName,
-                BotPersonality = createBotDto.BotPersonality,
-                DailyBotActionCount = createBotDto.DailyBotOperationCount,
-                Instructions = createBotDto.Instructions,
-                Mode = createBotDto.Mode,
-                ImageUrl = createBotDto.ImageUrl,
+                BotId = bot.BotId,
+                ImageUrl = bot.ImageUrl,
+                ProfileName = bot.BotProfileName,
             };
         }
 
         public static BotProfileDto Bot_To_BotProfileDto(this Bot bot)
         {
+            List<PostProfileDto> postProfileDtos = new List<PostProfileDto>();
+            List<EntryProfileDto> entryProfileDtos = new List<EntryProfileDto>();
+            List<MinimalLikeDto> minimalLikeDtos = new List<MinimalLikeDto>();
+            List<FollowProfileDto> followerDtos = new List<FollowProfileDto>();
+            List<FollowProfileDto> followedDtos = new List<FollowProfileDto>();
+            foreach (var post in bot.Posts)
+            {
+                postProfileDtos.Add(post.Post_To_PostProfileDto());
+            }
+            foreach (var entry in bot.Entries)
+            {
+                entryProfileDtos.Add(entry.Entry_To_EntryProfileDto());
+            }
+            foreach (var like in bot.Likes)
+            {
+                minimalLikeDtos.Add(like.Like_To_MinimalLikeDto());
+            }
+            foreach (var follower in bot.Followers)
+            {
+                followerDtos.Add(follower.Follow_To_FollowProfileDto());
+            }
+            foreach (var followed in bot.Followings)
+            {
+                followedDtos.Add(followed.Follow_To_FollowProfileDto());
+            }
             return new BotProfileDto
             {
-                BotId = bot.BotId,
-                BotProfileName = bot.BotProfileName,
                 Date = bot.DateTime,
-                Entries = bot.Entries,
-                Posts = bot.Posts,
-                Followers = bot.Followers,
-                Followings = bot.Followings,
+                ProfileName = bot.BotProfileName,
                 ImageUrl = bot.ImageUrl,
-                Likes = bot.Likes,
-                UserId = bot.UserId,
-            };
-        }
-
-        public static BotSearchBarDto Bot_To_BotSearchBarDto(this Bot bot)
-        {
-            return new BotSearchBarDto
-            {
                 BotId = bot.BotId,
-                BotProfileName = bot.BotProfileName,
-                ImageUrl = bot.ImageUrl,
-                UserId = bot.UserId
+                Entries = entryProfileDtos,
+                Posts = postProfileDtos,
+                Likes = minimalLikeDtos,
+                Followers = followedDtos,
+                Followed = followedDtos,
             };
         }
 
-        public static Bot Update___EditBotDto_To_Bot(this EditBotDto customizeBotDto, Bot bot)
+        public static Bot CreateBotDto_To_Bot(this CreateBotDto createBotDto, int userId)
         {
-            bot.BotProfileName = customizeBotDto.BotProfileName;
-            bot.BotPersonality = customizeBotDto.BotPersonality;
-            bot.DailyBotActionCount = customizeBotDto.DailyBotOperationCount;
-            bot.Instructions = customizeBotDto.Instructions;
-            bot.Mode = customizeBotDto.Mode;
-            bot.ImageUrl = customizeBotDto.ImageUrl;
+            return new Bot
+            {
+                UserId = userId,
+                BotPersonality = createBotDto.BotPersonality,
+                DailyBotOperationCount = createBotDto.DailyBotOperationCount,
+                ImageUrl = createBotDto.ImageUrl,
+                Instructions = createBotDto.Instructions,
+                Mode = createBotDto.Mode,
+                BotProfileName = createBotDto.BotProfileName,
+            };
+        }
+
+        public static Bot Update___EditBotDto_To_Bot(this EditBotDto editBotDto,Bot bot)
+        {
+            bot.BotPersonality = editBotDto.BotPersonality;
+            bot.BotProfileName = editBotDto.BotProfileName;
+            bot.ImageUrl = editBotDto.ImageUrl;
+            bot.Instructions = editBotDto.Instructions;
+            bot.Mode = editBotDto.Mode;
             return bot;
         }
-
 
 
     }

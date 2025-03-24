@@ -27,7 +27,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
         }
         public async Task<ObjectIdentityResult<Notification>> BotDoAction(Bot bot)
         {
-            if (bot.DailyActionsCheck == false)
+            if (bot.DailyOperationCheck == false)
             {
                 if(bot.Mode == "OPPOSİNG")
                 {

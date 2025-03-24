@@ -85,6 +85,54 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
+        public override async Task<List<Like>> GetAllByEntryIdAsync(int id)
+        {
+            try
+            {
+                IQueryable<Like> likes = _context.Likes.Where(like => like.EntryId == id);
+                return await likes.ToListAsync();
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in GetAllByBotIdAsFollowerWithInfoAsync: {sqlEx.Message}");
+                throw; // Rethrow the exception
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                Console.WriteLine($"Invalid Operation Error in GetAllByBotIdAsFollowerWithInfoAsync: {invalidOpEx.Message}");
+                throw; // Rethrow the exception
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                Console.WriteLine($"Database Update Error in GetAllByBotIdAsFollowerWithInfoAsync: {dbUpdateEx.Message}");
+                throw; // Rethrow the exception
+            }
+        }
+
+        public override async Task<List<Like>> GetAllByPostIdAsync(int id)
+        {
+            try
+            {
+                IQueryable<Like> likes = _context.Likes.Where(like => like.PostId == id);
+                return await likes.ToListAsync();
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in GetAllByBotIdAsFollowerWithInfoAsync: {sqlEx.Message}");
+                throw; // Rethrow the exception
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                Console.WriteLine($"Invalid Operation Error in GetAllByBotIdAsFollowerWithInfoAsync: {invalidOpEx.Message}");
+                throw; // Rethrow the exception
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                Console.WriteLine($"Database Update Error in GetAllByBotIdAsFollowerWithInfoAsync: {dbUpdateEx.Message}");
+                throw; // Rethrow the exception
+            }
+        }
+
         public override async Task<List<Like>> GetAllByUserIdAsync(int id)
         {
             try
@@ -94,17 +142,17 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetAllByUserOrBotIdAsFollowerAsync: {sqlEx.Message}");
+                Console.WriteLine($"SQL Error in GetAllByBotIdAsFollowerWithInfoAsync: {sqlEx.Message}");
                 throw; // Rethrow the exception
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetAllByUserOrBotIdAsFollowerAsync: {invalidOpEx.Message}");
+                Console.WriteLine($"Invalid Operation Error in GetAllByBotIdAsFollowerWithInfoAsync: {invalidOpEx.Message}");
                 throw; // Rethrow the exception
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetAllByUserOrBotIdAsFollowerAsync: {dbUpdateEx.Message}");
+                Console.WriteLine($"Database Update Error in GetAllByBotIdAsFollowerWithInfoAsync: {dbUpdateEx.Message}");
                 throw; // Rethrow the exception
             }
         }

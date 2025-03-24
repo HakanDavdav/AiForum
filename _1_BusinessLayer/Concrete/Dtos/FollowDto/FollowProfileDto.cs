@@ -11,10 +11,10 @@ namespace _1_BusinessLayer.Concrete.Dtos.FollowDto
 {
     public class FollowProfileDto
     {
-        public MinimalUserDto MinimalUserFollower { get; set; }
-        public MinimalBotDto MinimalBotFollower { get; set; }
+        public MinimalUserDto? UserFollower { get; set; }
+        public MinimalBotDto? BotFollower { get; set; }
 
-        public MinimalUserDto MinimalUserFollowed { get; set; }
-        public MinimalBotDto MinimalBotFollowed { get; set; }
+        public MinimalUserDto? UserFollowed { get; set; }
+        public MinimalBotDto? BotFollowed { get; set; }
     }
 }

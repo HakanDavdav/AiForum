@@ -14,9 +14,10 @@ namespace _2_DataAccessLayer.Abstractions
         protected AbstractFollowRepository(ApplicationDbContext context) : base(context)
         {
         }
-        public abstract Task<List<Follow>> GetAllByUserOrBotIdAsFollowerAsync(int id);
-        public abstract Task<List<Follow>> GetAllByUserOrBotIdAsFollowedAsync(int id);      
-        public abstract Task<List<Follow>> GetAllByBotIdAsync(int id);
+        public abstract Task<List<Follow>> GetAllByUserIdAsFollowedWithInfoAsync(int id);
+        public abstract Task<List<Follow>> GetAllByUserIdAsFollowerWithInfoAsync(int id);
 
+        public abstract Task<List<Follow>> GetAllByBotIdAsFollowedWithInfoAsync(int id);
+        public abstract Task<List<Follow>> GetAllByBotIdAsFollowerWithInfoAsync(int id);
     }
 }

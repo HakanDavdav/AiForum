@@ -17,6 +17,7 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
         protected readonly AbstractEntryRepository _entryRepository;
         protected readonly AbstractLikeRepository _likeRepository;
         protected readonly AbstractUserRepository _userRepository;
+        protected readonly AbstractBotRepository _botRepository;
 
         protected AbstractPostService(AbstractPostRepository postRepository, AbstractUserRepository userRepository, 
             AbstractEntryRepository entryRepository, AbstractLikeRepository likeRepository)
@@ -29,8 +30,8 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
         public abstract Task<IdentityResult> CreatePost(int userId, CreatePostDto createPostDto);
         public abstract Task<IdentityResult> DeletePost(int userId, int postId);
         public abstract Task<IdentityResult> EditPost(int userId, EditPostDto editPostDto);
-        public abstract Task<ObjectIdentityResult<List<SidePostDto>>> GetMostLikedPosts(string postPerPagePreference);
+        public abstract Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(string postPerPagePreference);
         public abstract Task<ObjectIdentityResult<PostDto>> GetPost(int postId, string entryPerPagePreference);
-        public abstract Task<ObjectIdentityResult<List<SidePostDto>>> GetTrendingPosts(string entryPerPagePreference);
+        public abstract Task<ObjectIdentityResult<List<MinimalPostDto>>> GetTrendingPosts(string entryPerPagePreference);
     }
 }

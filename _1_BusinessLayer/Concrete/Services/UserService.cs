@@ -122,19 +122,40 @@ namespace _1_BusinessLayer.Concrete.Services
             var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
             {
-                List<Post> posts = await _postRepository.GetAllByUserIdAsync(userId);
                 List<Entry> entries = await _entryRepository.GetAllByUserIdAsync(userId);
-                List<Bot> bots = await _botRepository.GetAllByUserIdAsync(userId);
-                List<Follow> followed = await _followRepository.GetAllByUserOrBotIdAsFollowerAsync(userId);
-                List<Follow> followers = await _followRepository.GetAllByUserOrBotIdAsFollowedAsync(userId);
+                List<Post> posts = await _postRepository.GetAllByUserIdAsync(userId);
                 List<Like> likes = await _likeRepository.GetAllByUserIdAsync(userId);
+                List<Follow> followers = await _followRepository.GetAllByUserIdAsFollowedWithInfoAsync(userId);
+                List<Follow> followed = await _followRepository.GetAllByUserIdAsFollowerWithInfoAsync(userId);
+
+                foreach (var entry in entries)
+                {
+                    entry.Bot = await _botRepository.GetByIdAsync((int)entry.BotId);
+                    entry.User = await _userRepository.GetByIdAsync((int)entry.UserId);
+                    entry.Likes = await _likeRepository.GetAllByEntryIdAsync((int)entry.EntryId);
+                    foreach (var entryLike in entry.Likes)
+                    {
+                        entryLike.User = await _userRepository.GetByIdAsync((int)entryLike.UserId);
+                        entryLike.Bot = await _botRepository.GetByIdAsync(((int)entryLike.BotId));
+                    }
+                }
+
+                foreach (var post in posts)
+                {
+                    post.Likes = await _likeRepository.GetAllByPostIdAsync(post.PostId);
+                    foreach (var postLike in post.Likes)
+                    {
+                        postLike.User = await _userRepository.GetByIdAsync((int)postLike.UserId);
+                        postLike.Bot = await _botRepository.GetByIdAsync(((int)(postLike.BotId)));
+                    }
+                }
+
                 user.Entries = entries;
-                user.Bots = bots;
-                user.Followers = followers;
                 user.Posts = posts;
-                user.Followings = followed;
                 user.Likes = likes;
-                var userProfileDto = await user.User_To_UserProfileDto(_userRepository);
+                user.Followers = followers;
+                user.Followed = followed;
+                var userProfileDto = user.User_To_UserProfileDto();
                 return ObjectIdentityResult<UserProfileDto>.Succeded(userProfileDto);
             }
             return ObjectIdentityResult<UserProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("User not found") });

@@ -60,8 +60,8 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
             builder.Property(bot => bot.BotGrade)
                 .HasDefaultValue(0);  // Set the default value of BotGrade to 0 if not provided
 
-            builder.Property(bot => bot.DailyBotActionCount)
-                .HasDefaultValue(5);  // Set the default value of DailyBotActionCount to 5 if not provided
+            builder.Property(bot => bot.DailyBotOperationCount)
+                .HasDefaultValue(5);  // Set the default value of DailyBotOperationCount to 5 if not provided
 
 
             builder.HasMany(bot => bot.Posts)
@@ -90,8 +90,8 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(bot => bot.Followings)
-                .WithOne(following => following.BotFollowee)
-                .HasForeignKey (following => following.BotFolloweeId)
+                .WithOne(following => following.BotFollower)
+                .HasForeignKey (following => following.BotFollowerId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(bot => bot.Activities)

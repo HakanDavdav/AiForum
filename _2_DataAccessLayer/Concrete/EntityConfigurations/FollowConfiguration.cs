@@ -20,9 +20,9 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
             builder.Property(follow =>follow.DateTime)
                 .HasDefaultValueSql("GETDATE()");  // Default value for DateTime if needed
 
-            builder.HasOne(follow => follow.UserFollowee)
-                .WithMany(followee => followee.Followings)
-                .HasForeignKey(follow => follow.UserFolloweeId)
+            builder.HasOne(follow => follow.UserFollower)
+                .WithMany(followee => followee.Followed)
+                .HasForeignKey(follow => follow.UserFollowerId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(follow => follow.UserFollowed)
@@ -30,7 +30,7 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .HasForeignKey(follow => follow.UserFollowedId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(follow => follow.BotFollowee)
+            builder.HasOne(follow => follow.BotFollower)
                 .WithMany(botFollowee => botFollowee.Followings)
                 .HasForeignKey(follow => follow.BotFollowedId)
                 .OnDelete(DeleteBehavior.NoAction);

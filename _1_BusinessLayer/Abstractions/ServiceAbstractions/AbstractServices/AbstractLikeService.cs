@@ -12,17 +12,22 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
     public abstract class AbstractLikeService : ILikeService
     {
         protected readonly AbstractLikeRepository _likeRepository;
+        protected readonly AbstractEntryRepository _entryRepository;
+        protected readonly AbstractPostRepository _postRepository;
         protected readonly AbstractUserRepository _userRepository;
 
-        protected AbstractLikeService(AbstractLikeRepository likeRepository,AbstractUserRepository userRepository) 
+        protected AbstractLikeService(AbstractLikeRepository likeRepository,AbstractUserRepository userRepository,
+            AbstractPostRepository postRepository,AbstractEntryRepository entryRepository) 
         {
            _likeRepository = likeRepository;
             _userRepository = userRepository;
+            _postRepository = postRepository;
+            _entryRepository = entryRepository;
         }
 
-        public abstract Task<IdentityResult> LikeEntry(int entryId);
-        public abstract Task<IdentityResult> LikePost(int postId);
-        public abstract Task<IdentityResult> UnlikeEntry(int entryId);
-        public abstract Task<IdentityResult> UnlikePost(int postId);
+        public abstract Task<IdentityResult> LikeEntry(int entryId,int userId);
+        public abstract Task<IdentityResult> LikePost(int postId,int userId);
+        public abstract Task<IdentityResult> Unlike(int userId, int likeId);
+
     }
 }
