@@ -54,11 +54,8 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
             builder.Property(bot => bot.DateTime)
                 .HasDefaultValueSql("GETDATE()");  // Set the default value of DateTime to the current SQL Server date
 
-            builder.Property(bot => bot.Mode)
-                .HasDefaultValue("Default");  // Set the default value of Mode to "Default" if not provided
-
             builder.Property(bot => bot.BotGrade)
-                .HasDefaultValue(0);  // Set the default value of BotGrade to 0 if not provided
+                .HasDefaultValue(1);  // Set the default value of BotGrade to 0 if not provided
 
             builder.Property(bot => bot.DailyBotOperationCount)
                 .HasDefaultValue(5);  // Set the default value of DailyBotOperationCount to 5 if not provided

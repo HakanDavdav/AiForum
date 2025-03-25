@@ -24,6 +24,10 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
             builder.Property(user => user.DateTime)
                 .HasDefaultValueSql("GETDATE()");  // Default value for DateTime
 
+            // Other properties configuration (e.g., DateTime)
+            builder.Property(user => user.DailyOperationCount)
+                .HasDefaultValue(10);  // Default value for DateTime
+
 
             builder.HasMany(user => user.Bots)
                 .WithOne(bot => bot.User)

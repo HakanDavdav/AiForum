@@ -104,6 +104,15 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             return userPreferences;
         }
 
+        public static User UserRegisterDto_To_User(this UserRegisterDto userRegisterDto)
+        {
+            return new User
+            {
+                UserName = userRegisterDto.Username,
+                Email = userRegisterDto.Email              
+            };
+        }
+
 
     }
 }

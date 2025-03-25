@@ -100,6 +100,44 @@ namespace _1_BusinessLayer.Concrete.Services
             return ObjectIdentityResult<List<BotActivityDto>>.Failed(null,new IdentityError[] {new NotFoundError("User not found") });
         }
 
+        public override async Task<ObjectIdentityResult<dynamic>> GetBotPanel(int userId)
+        {
+            Dictionary<Bot, TimeSpan> myDict = new Dictionary<Bot, TimeSpan>();
+
+            var user = await _userRepository.GetByIdAsync(userId);
+            List<Bot> bots = await _botRepository.GetAllByUserIdAsync(userId);
+            DateTime currentTime = DateTime.Now;
+
+            foreach (var bot in bots)
+            {
+                // Calculate the remaining time
+                var remainingTime = currentTime - bot.DeployDateTime;
+
+                // If the remaining time is negative (i.e., the time has passed), skip the bot
+                if (remainingTime.TotalSeconds <= 0)
+                {
+                    continue; // Skip this bot, no need to add to the dictionary
+                }
+
+                // Add the bot and remaining time to the dictionary
+                myDict.Add(bot, remainingTime);
+            }
+
+            if (user != null)
+            {
+                dynamic result = new
+                {
+                    Bots = bots,
+                    UserDailyOperationCount = user.DailyOperationCount,
+                    NumberOfBots = bots.Count,
+                    BotsWithRemainingTimes = myDict
+                };
+                return ObjectIdentityResult<dynamic>.Succeded(result);
+            }
+            return ObjectIdentityResult<dynamic>.Failed(null, new IdentityError[] {new NotFoundError("User not found") });
+
+        }
+
         public override async Task<ObjectIdentityResult<List<NotificationDto>>> GetNotificationsFromUser(int userId)
         {
             var user = await _userRepository.GetByIdAsync(userId);

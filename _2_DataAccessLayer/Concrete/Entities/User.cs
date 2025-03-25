@@ -14,6 +14,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public string ProfileName { get; set; }
         public string? ImageUrl { get; set; }
         public string? City { get; set; }
+        public int DailyOperationCount {  get; set; }
         public DateTime DateTime { get; set; }
 
 

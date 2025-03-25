@@ -101,7 +101,7 @@ namespace _1_BusinessLayer.Concrete.Services
             return IdentityResult.Failed(new NotFoundError("User not found"));
         }
 
-        public override async Task<ObjectIdentityResult<BotProfileDto>> GetBotProfile(int botId)
+        public override async Task<ObjectIdentityResult<BotProfileDto>> GetBotProfileAsync(int botId)
         {
             var bot = await _botRepository.GetByIdAsync(botId);
             var user = await _userRepository.GetByIdAsync(bot.UserId);

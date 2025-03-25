@@ -38,6 +38,23 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize]
+        [HttpGet("You/BotPanel")]
+        public async Task<IActionResult> GetBotPanel()
+        {
+            try
+            {
+#pragma warning disable CS8604 // Possible null reference argument.
+                var result = await _profileService.GetBotPanel(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
+#pragma warning restore CS8604 // Possible null reference argument.
+                return result.ResultWrapErrorCode();
+            }
+            catch (Exception e)
+            {
+                return e.ExceptionWrapErrorCode();
+            }
+        }
+
+        [Authorize]
         [HttpGet("You")]
         public async Task<IActionResult> GetYourUserProfile([FromBody] UserEditPreferencesDto userEditPreferencesDto)
         {

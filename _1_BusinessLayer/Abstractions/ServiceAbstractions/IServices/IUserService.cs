@@ -25,6 +25,7 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
         Task<ObjectIdentityResult<List<BotActivityDto>>> GetBotActivitiesFromUser(int userId);
         //Self-Authorization requirement
         Task<ObjectIdentityResult<List<NotificationDto>>> GetNotificationsFromUser(int userId);
+        Task<ObjectIdentityResult<dynamic>> GetBotPanel(int userId);
         Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId);
         Task<IdentityResult> DeleteUser(int userId);
 

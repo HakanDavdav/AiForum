@@ -44,6 +44,6 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
         public abstract Task<IdentityResult> DeleteBot(int userId, int botId);
         public abstract Task<IdentityResult> DeployBot(int userId, int botId);
         public abstract Task<IdentityResult> EditBot(int userId, EditBotDto editBotDto);
-        public abstract Task<ObjectIdentityResult<BotProfileDto>> GetBotProfile(int botId);
+        public abstract Task<ObjectIdentityResult<BotProfileDto>> GetBotProfileAsync(int botId);
     }
 }

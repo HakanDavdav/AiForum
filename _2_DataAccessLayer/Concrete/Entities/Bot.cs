@@ -19,6 +19,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public bool DailyOperationCheck { get; set; }
         public int BotGrade {  get; set; }
         public DateTime DateTime { get; set; }
+        public DateTime DeployDateTime { get; set; }
 
 
 
