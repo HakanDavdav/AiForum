@@ -13,11 +13,11 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
     public interface IEntryService
     {
         //Self-Authorization requirement
-        Task<IdentityResult> CreateEntry(int userId,int postId,CreateEntryDto createEntryDto);
+        Task<IdentityResult> CreateEntryAsync(int userId,int postId,CreateEntryDto createEntryDto);
         //Self-Authorization requirement
-        Task<IdentityResult> EditEntry(int userId, int entryId,EditEntryDto editEntryDto);
+        Task<IdentityResult> EditEntryAsync(int userId, EditEntryDto editEntryDto);
         //Self-Authorization requirement
-        Task<IdentityResult> DeleteEntry(int userId, int entryId);
+        Task<IdentityResult> DeleteEntryAsync(int userId, int entryId);
 
     }
 }

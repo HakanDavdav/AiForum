@@ -15,7 +15,7 @@ namespace _1_BusinessLayer.Abstractions.AbstractTools.AbstractBotHandlers
         protected readonly string apiKey
            = "YOUR_GOOGLE_API_KEY";
         protected readonly string apiUrl
-            = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?alt=sse&key={apiKey}";
+            = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?alt=sse&key={"apiKey"}";
         protected readonly BotDatabaseReader _botdatabaseReader;
         protected AbstractBotApiCaller(BotDatabaseReader botdatabaseReader)
         {

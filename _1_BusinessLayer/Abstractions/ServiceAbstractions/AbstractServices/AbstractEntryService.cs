@@ -23,8 +23,8 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
 
         }
 
-        public abstract Task<IdentityResult> CreateEntry(int userId, int postId, CreateEntryDto createEntryDto);
-        public abstract Task<IdentityResult> DeleteEntry(int userId, int entryId);
-        public abstract Task<IdentityResult> EditEntry(int userId, int entryId, EditEntryDto editEntryDto);
+        public abstract Task<IdentityResult> CreateEntryAsync(int userId, int postId, CreateEntryDto createEntryDto);
+        public abstract Task<IdentityResult> DeleteEntryAsync(int userId, int entryId);
+        public abstract Task<IdentityResult> EditEntryAsync(int userId, EditEntryDto editEntryDto);
     }
 }

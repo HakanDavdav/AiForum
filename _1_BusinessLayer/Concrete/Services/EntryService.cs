@@ -20,14 +20,14 @@ namespace _1_BusinessLayer.Concrete.Services
         {
         }
 
-        public override async Task<IdentityResult> CreateEntry(int userId, int postId, CreateEntryDto createEntryDto)
+        public override async Task<IdentityResult> CreateEntryAsync(int userId, int postId, CreateEntryDto createEntryDto)
         {
             var entry = createEntryDto.CreateEntryDto_To_Entry(userId);
             await _entryRepository.InsertAsync(entry);
             return IdentityResult.Success;
         }
 
-        public override async Task<IdentityResult> DeleteEntry(int userId, int entryId)
+        public override async Task<IdentityResult> DeleteEntryAsync(int userId, int entryId)
         {
             var entry = await _entryRepository.GetByIdAsync(entryId);
             if(entry.UserId == userId)
@@ -38,14 +38,18 @@ namespace _1_BusinessLayer.Concrete.Services
             return IdentityResult.Failed(new UnauthorizedError("You cannot delete another user's entry"));
         }
 
-        public override async Task<IdentityResult> EditEntry(int userId, int entryId, EditEntryDto editEntryDto)
+        public override async Task<IdentityResult> EditEntryAsync(int userId, EditEntryDto editEntryDto)
         {
-             var entry = await _entryRepository.GetByIdAsync(entryId);
-            if (entry.UserId == userId)
+            var entry = await _entryRepository.GetByIdAsync(editEntryDto.EntryId);
+            if (entry != null)
             {
-                entry = editEntryDto.Update___EditEntryDto_To_Entry(entry);
-                await _entryRepository.UpdateAsync(entry);
-                return IdentityResult.Success;
+                if (entry.UserId == userId)
+                {
+                    entry = editEntryDto.Update___EditEntryDto_To_Entry(entry);
+                    await _entryRepository.UpdateAsync(entry);
+                    return IdentityResult.Success;
+                }
+                return IdentityResult.Failed(new UnauthorizedError("You cannot edit another user's entry"));
             }
             return IdentityResult.Failed(new UnauthorizedError("You cannot edit another user's entry"));
         }

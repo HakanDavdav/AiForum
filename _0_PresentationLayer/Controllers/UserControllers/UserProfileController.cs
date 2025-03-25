@@ -20,6 +20,11 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         [HttpPatch("You/EditProfile")]
         public async Task<IActionResult> EditProfile([FromBody] UserEditProfileDto userEditProfileDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
 #pragma warning disable CS8604 // Possible null reference argument.
             var result = await _profileService.EditProfile(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), userEditProfileDto);
 #pragma warning restore CS8604 // Possible null reference argument.
@@ -31,6 +36,11 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         [HttpPatch("You/EditPreferences")]
         public async Task<IActionResult> EditPreferences([FromBody] UserEditPreferencesDto userEditPreferencesDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
 #pragma warning disable CS8604 // Possible null reference argument.
             var result = await _profileService.EditPreferences(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), userEditPreferencesDto);
 #pragma warning restore CS8604 // Possible null reference argument.

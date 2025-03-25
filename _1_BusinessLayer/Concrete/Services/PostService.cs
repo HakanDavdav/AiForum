@@ -84,8 +84,9 @@ namespace _1_BusinessLayer.Concrete.Services
             return ObjectIdentityResult<List<MinimalPostDto>>.Succeded(minimalPostDtos);
         }
 
-        public override async Task<ObjectIdentityResult<PostDto>> GetPost(int postId, string entryPerPagePreference)
+        public override async Task<ObjectIdentityResult<PostDto>> GetPostAsync(int postId, string? entryPerPagePreference = "10")
         {
+            
             var post = await _postRepository.GetByIdAsync(postId);
             if (post != null)
             {

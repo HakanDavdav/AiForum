@@ -19,8 +19,8 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
 
         [Authorize]
-        [HttpPost("BotPanel/DeployBot/{botId}")]
-        public async Task<IActionResult> DeployAllBots(int botId)
+        [HttpPost("BotPanel/Bots/{botId}/DeployBot")]
+        public async Task<IActionResult> DeployBot(int botId)
         {
             try
             {
@@ -37,9 +37,14 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
 
         [Authorize]
-        [HttpPatch("BotPanel/EditBot/{botId}")]
+        [HttpPatch("BotPanel/Bots/{botId}")]
         public async Task<IActionResult> EditBot(int botId, EditBotDto editBotDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -54,7 +59,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize]
-        [HttpPost("BotPanel/DeleteBot/{botId}")]
+        [HttpDelete("BotPanel/Bots/{botId}")]
         public async Task<IActionResult> DeleteBot(int botId)
         {
             try
@@ -71,9 +76,14 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize]
-        [HttpPost("BotPanel/CreateBot")]
+        [HttpPost("BotPanel/Bots")]
         public async Task<IActionResult> CreateBot(CreateBotDto createBotDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -89,7 +99,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
 
 
-        [HttpGet("{BotId}")]
+        [HttpGet("Bot/{BotId}")]
         public async Task<IActionResult> GetBotProfile(int BotId)
         {
             try
@@ -105,7 +115,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             }
         }
 
-        [HttpGet("{BotId}")]
+        [HttpGet("Bot/{BotId}/BotActivities")]
         public async Task<IActionResult> GetBotActivitiesFromBot(int BotId)
         {
             try

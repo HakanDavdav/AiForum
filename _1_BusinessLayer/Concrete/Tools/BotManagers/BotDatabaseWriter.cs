@@ -34,7 +34,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
                 case "creatingOpposingEntry":
                     return WriteOpposingEntry(bot, filteredAiResponse, requiredId);
                 case "creatingPost":
-                    return WriteOpposingEntry(bot, filteredAiResponse, requiredId))
+                    return WriteOpposingEntry(bot, filteredAiResponse, requiredId);
                 case "creatingUserFollowing":
                     return WriteUserFollow(bot, filteredAiResponse, requiredId);
                 case "creatingBotFollowing":

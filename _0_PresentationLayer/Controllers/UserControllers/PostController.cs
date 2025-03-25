@@ -1,68 +1,129 @@
 ﻿using System.Security.Claims;
 using _1_BusinessLayer.Abstractions.AbstractServices;
+using _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices;
+using _1_BusinessLayer.Concrete.Dtos.PostDtos;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _0_PresentationLayer.Controllers.UserControllers
 {
-    [Route("AiForum/Post")]
+    [Route("AiForum/Posts")]
     [ApiController]
     public class PostController : ControllerBase
     {
         private readonly AbstractPostService _postService;
-        public PostController(AbstractPostService postService)
+        private readonly AbstractLikeService _likeService;
+        public PostController(AbstractPostService postService, AbstractLikeService likeService)
         {
             _postService = postService;
+            _likeService = likeService;
         }
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> CreatePost(string context,string title, int postId)
+        public async Task<IActionResult> CreatePost(CreatePostDto createPostDto)
         {
-            
-            var result = await _postService.CreatePost(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value),title,context);
-            return Ok(result);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var IdentityResult = await _postService.CreatePost(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), createPostDto);
+                return IdentityResult.ResultWrapErrorCode();
+            }
+            catch (Exception e)
+            {
+
+                return e.ExceptionWrapErrorCode();
+            }
         }
 
         [Authorize]
         [HttpDelete("{postId}")]
         public async Task<IActionResult> DeletePost(int postId)
         {
-            var result = await _postService.DeletePost(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value),postId);
-            return Ok(result);        
+            try
+            {
+                var result = await _postService.DeletePost(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), postId);
+                return result.ResultWrapErrorCode();
+            }
+            catch (Exception e)
+            {
+
+                return e.ExceptionWrapErrorCode();
+            }   
         }
 
         [Authorize]
         [HttpPatch("{postId}")]
-        public async Task<IActionResult> UpdatePost(string context, string title, int postId)
+        public async Task<IActionResult> EditPost(EditPostDto editPostDto)
         {
-            var result = await _postService.UpdatePost(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value),postId,title,context);
-            return Ok(result); 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var result = await _postService.EditPost(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), editPostDto);
+                return result.ResultWrapErrorCode();
+            }
+            catch (Exception e)
+            {
+
+                return e.ExceptionWrapErrorCode();
+            }
         }
 
         [Authorize]
-        [HttpPost("{postId}/like")]
+        [HttpPost("{postId}/likes")]
         public async Task<IActionResult> LikePost(int postId)
         {
-            var result = await _postService.LikePost(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), postId);
-            return Ok(result);
+            try
+            {
+                var result = await _likeService.LikePost(postId, int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
+                return result.ResultWrapErrorCode();
+            }
+            catch (Exception e)
+            {
+
+                return e.ExceptionWrapErrorCode();
+            }
         }
 
         [Authorize]
-        [HttpPost("{postId}/Unlike")]
-        public async Task<IActionResult> UnlikePost(int postId)
+        [HttpDelete("{postId}/likes/{likeId}")]
+        public async Task<IActionResult> UnlikePost(int likeId)
         {
-            var result = await _postService.UnlikePost(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), postId);
-            return Ok(result);
+            try
+            {
+                var result = await _likeService.Unlike(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), likeId);
+                return result.ResultWrapErrorCode();
+            }
+            catch (Exception e)
+            {
+
+                return e.ExceptionWrapErrorCode();
+            }
         }
         
-        [Authorize]
+         
         [HttpGet("{postId}")]
         public async Task<IActionResult> GetPost(int postId)
         {
-            var result = await _postService
-            return Ok(result);
+            try
+            {
+                var objectResult = await _postService.GetPostAsync(postId, HttpContext.User.FindFirst("ENTRY PER PAGE")?.Value);
+                return objectResult.ResultWrapErrorCode();
+            }
+            catch (Exception e)
+            {
+
+                return e.ExceptionWrapErrorCode();
+            }
         }
 
 

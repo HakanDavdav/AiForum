@@ -249,6 +249,7 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<IdentityResult> Register(UserRegisterDto userRegisterDto)
         {
             var user = userRegisterDto.UserRegisterDto_To_User();
+            await _userManager.CreateAsync(user,userRegisterDto.Password);          
             if (user != null)
             {
                 var createUserResult = await _userManager.CreateAsync(user, userRegisterDto.Password);
