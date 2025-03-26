@@ -22,7 +22,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> CreatePost(CreatePostDto createPostDto)
+        public async Task<IActionResult> CreatePost([FromBody]CreatePostDto createPostDto)
         {
             if (!ModelState.IsValid)
             {
@@ -59,7 +59,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
         [Authorize]
         [HttpPatch("{postId}")]
-        public async Task<IActionResult> EditPost(EditPostDto editPostDto)
+        public async Task<IActionResult> EditPost([FromBody] EditPostDto editPostDto)
         {
             if (!ModelState.IsValid)
             {

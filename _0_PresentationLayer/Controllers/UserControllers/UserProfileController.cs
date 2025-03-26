@@ -16,6 +16,21 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         {
             _profileService = profileService;
         }
+
+        [Authorize]
+        [HttpPatch("You")]
+        public async Task<IActionResult> CreateUserProfile([FromBody]UserCreateProfileDto userCreateProfileDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+#pragma warning disable CS8604 // Possible null reference argument.
+            var result = await _profileService.CreateProfileAsync(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), userCreateProfileDto);
+#pragma warning restore CS8604 // Possible null reference argument.
+            return Ok(result);
+        }
+
         [Authorize]
         [HttpPatch("You/EditProfile")]
         public async Task<IActionResult> EditProfile([FromBody] UserEditProfileDto userEditProfileDto)
@@ -24,6 +39,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             {
                 return BadRequest(ModelState);
             }
+            
 
 #pragma warning disable CS8604 // Possible null reference argument.
             var result = await _profileService.EditProfile(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), userEditProfileDto);
@@ -66,12 +82,19 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
         [Authorize]
         [HttpGet("You")]
-        public async Task<IActionResult> GetYourUserProfile([FromBody] UserEditPreferencesDto userEditPreferencesDto)
+        public async Task<IActionResult> GetYourUserProfile()
         {
+            try
+            {
 #pragma warning disable CS8604 // Possible null reference argument.
-            var result = await _profileService.GetUserProfile(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
+                var result = await _profileService.GetUserProfile(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
 #pragma warning restore CS8604 // Possible null reference argument.
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return e.ExceptionWrapErrorCode();
+            }
         }
 
         [Authorize]

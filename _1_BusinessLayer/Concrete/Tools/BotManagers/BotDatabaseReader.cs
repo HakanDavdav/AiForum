@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using _1_BusinessLayer.Abstractions.AbstractTools.AbstractBotHandlers;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -18,16 +17,14 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
         public readonly AbstractNewsRepository _newsRepository;
         public readonly AbstractUserRepository _userRepository;
         public readonly AbstractBotRepository _botRepository;
-        public readonly AbstractBotApiCaller _botApiCallManager;
         public BotDatabaseReader(AbstractBotRepository abstractBotRepository, AbstractEntryRepository entryRepository, AbstractNewsRepository newsRepository,
-            AbstractUserRepository userRepository, AbstractPostRepository postRepository, AbstractBotApiCaller botApiCallManager)
+            AbstractUserRepository userRepository, AbstractPostRepository postRepository)
         {
             _botRepository = abstractBotRepository;
             _entryRepository = entryRepository;
             _newsRepository = newsRepository;
             _userRepository = userRepository;
             _postRepository = postRepository;
-            _botApiCallManager = botApiCallManager;
         }
 
         public async Task<(List<string> Data, string dataResponseType)> GetModelDataAsync(ProbabilitySet probabilitySet)

@@ -9,14 +9,15 @@ namespace _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult
 {
     public class ObjectIdentityResult<T> : IdentityResult
     {
-        IdentityResult? IdentityResult;
         T? Data;
+        public new IEnumerable<IdentityError> Errors => ObjectIdentityErrors.AsEnumerable();
+        private IdentityError[] ObjectIdentityErrors;
 
         public static ObjectIdentityResult<T> Succeded(T data)
         {
             return new ObjectIdentityResult<T>()
             {
-                IdentityResult = Success,
+                Succeeded = true,
                 Data = data
             };
 
@@ -25,7 +26,8 @@ namespace _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult
         {
             return new ObjectIdentityResult<T>()
             {
-                IdentityResult = Failed(errors),
+                Succeeded = false,
+                ObjectIdentityErrors = errors
             };
         }
     }

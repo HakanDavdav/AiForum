@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Abstractions\ToolAbstractions\AbstractBodyBuilders\**" />
     <Compile Remove="Concrete\Extensions\**" />
+    <EmbeddedResource Remove="Abstractions\ToolAbstractions\AbstractBodyBuilders\**" />
     <EmbeddedResource Remove="Concrete\Extensions\**" />
+    <None Remove="Abstractions\ToolAbstractions\AbstractBodyBuilders\**" />
     <None Remove="Concrete\Extensions\**" />
   </ItemGroup>
 
@@ -44,7 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\ToolAbstractions\AbstractBodyBuilders\" />
+    <Folder Include="Abstractions\ToolAbstractions\AbstractBotManagers\" />
     <Folder Include="Concrete\Tools\AdditionalFilters\" />
     <Folder Include="Concrete\Tools\Validators\" />
   </ItemGroup>

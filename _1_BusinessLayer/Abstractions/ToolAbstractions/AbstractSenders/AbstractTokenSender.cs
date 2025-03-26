@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using _1_BusinessLayer.Abstractions.AbstractTools.AbstractFactories;
 using _1_BusinessLayer.Abstractions.AbstractTools.ITools;
 using _1_BusinessLayer.Concrete.Tools.AuthenticationManagers.BodyBuilders;
+using _1_BusinessLayer.Concrete.Tools.AuthenticationManagers.Factories;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -16,12 +16,12 @@ namespace _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders
     public abstract class AbstractTokenSender : ITokenSender
     {
         protected readonly AbstractUserRepository _userRepository;
-        protected readonly AbstractTokenFactory _tokenFactory;
+        protected readonly TokenFactory _tokenFactory;
         protected readonly EmailBodyBuilder _emailBodyBuilder;
         protected readonly SmsBodyBuilder _smsBodyBuilder;
 
         protected AbstractTokenSender(AbstractUserRepository userRepository,
-            AbstractTokenFactory tokenFactory,
+            TokenFactory tokenFactory,
             EmailBodyBuilder emailBodyBuilder,
             SmsBodyBuilder smsBodyBuilder)
         {

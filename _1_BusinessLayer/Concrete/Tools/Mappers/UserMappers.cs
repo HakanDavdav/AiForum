@@ -37,27 +37,27 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             List<MinimalLikeDto> minimalLikeDtos = new List<MinimalLikeDto>();
             List<FollowProfileDto> followerDtos = new List<FollowProfileDto>();
             List<FollowProfileDto> followedDtos = new List<FollowProfileDto>();
-            foreach (var bot in user.Bots)
+            foreach (var bot in user.Bots ?? new List<Bot>())
             {
                 minimalBotDtos.Add(bot.Bot_To_MinimalBotDto());
             }
-            foreach (var post in user.Posts)
+            foreach (var post in user.Posts ?? new List<Post>())
             {
                 postProfileDtos.Add(post.Post_To_PostProfileDto());
             }
-            foreach (var entry in user.Entries)
+            foreach (var entry in user.Entries ?? new List<Entry>())
             {
                 entryProfileDtos.Add(entry.Entry_To_EntryProfileDto());
             }
-            foreach (var like in user.Likes)
+            foreach (var like in user.Likes ?? new List<Like>())
             {
                 minimalLikeDtos.Add(like.Like_To_MinimalLikeDto());
             }
-            foreach (var follower in user.Followers)
+            foreach (var follower in user.Followers ?? new List<Follow>())
             {
                 followerDtos.Add(follower.Follow_To_FollowProfileDto());
             }
-            foreach (var followed in user.Followed)
+            foreach (var followed in user.Followed ?? new List<Follow>())
             {
                 followedDtos.Add(followed.Follow_To_FollowProfileDto());
             }

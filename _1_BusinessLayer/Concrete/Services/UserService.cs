@@ -33,7 +33,7 @@ namespace _1_BusinessLayer.Concrete.Services
         {
         }
 
-        public override async Task<IdentityResult> CreateProfile(int userId, UserCreateProfileDto userCreateProfileDto)
+        public override async Task<IdentityResult> CreateProfileAsync(int userId, UserCreateProfileDto userCreateProfileDto)
         {
             var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)

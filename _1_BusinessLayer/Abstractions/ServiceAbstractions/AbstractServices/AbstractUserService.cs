@@ -46,7 +46,7 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
             _followRepository = followRepository;
         }
 
-        public abstract Task<IdentityResult> CreateProfile(int userId, UserCreateProfileDto userCreateProfileDto);
+        public abstract Task<IdentityResult> CreateProfileAsync(int userId, UserCreateProfileDto userCreateProfileDto);
         public abstract Task<IdentityResult> DeleteUser(int userId);
         public abstract Task<IdentityResult> EditPreferences(int userId, UserEditPreferencesDto userEditPreferencesDto);
         public abstract Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto);

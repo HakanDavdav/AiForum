@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
-using _1_BusinessLayer.Abstractions.AbstractTools.AbstractFactories;
 using _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders;
 using _1_BusinessLayer.Abstractions.AbstractTools.ITools;
 using _2_DataAccessLayer.Abstractions;
@@ -13,16 +12,14 @@ using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 using MailKit;
 using _1_BusinessLayer.Concrete.Tools.AuthenticationManagers.BodyBuilders;
+using _1_BusinessLayer.Concrete.Tools.AuthenticationManagers.Factories;
 
 namespace _1_BusinessLayer.Concrete.Tools.AuthenticationManagers.Senders
 {
     public class TokenSender : AbstractTokenSender
     {
-
-
-        public TokenSender(AbstractUserRepository userRepository, AbstractTokenFactory tokenFactory,
-            EmailBodyBuilder emailBodyBuilder, SmsBodyBuilder smsBodyBuilder) :
-            base(userRepository, tokenFactory, emailBodyBuilder, smsBodyBuilder)
+        public TokenSender(AbstractUserRepository userRepository, TokenFactory tokenFactory, EmailBodyBuilder emailBodyBuilder, 
+            SmsBodyBuilder smsBodyBuilder) : base(userRepository, tokenFactory, emailBodyBuilder, smsBodyBuilder)
         {
         }
 

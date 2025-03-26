@@ -6,11 +6,12 @@ using _2_DataAccessLayer.Concrete.Repositories;
 using Microsoft.AspNetCore.Identity;
 using _2_DataAccessLayer.Concrete.Entities;
 using _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders;
-using _1_BusinessLayer.Abstractions.AbstractTools.AbstractFactories;
 using _1_BusinessLayer.Concrete.Tools.AuthenticationManagers.Senders;
 using _1_BusinessLayer.Concrete.Tools.AuthenticationManagers.BodyBuilders;
 using _1_BusinessLayer.Concrete.Tools.AuthenticationManagers.Factories;
 using _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices;
+using _1_BusinessLayer.Concrete.Tools.BotManagers;
+using _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,17 +28,37 @@ builder.Services.AddScoped<AbstractUserRepository, UserRepository>();
 builder.Services.AddScoped<AbstractBotRepository, BotRepository>();
 builder.Services.AddScoped<AbstractNotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<AbstractUserPreferenceRepository, UserPreferenceRepository>();
+builder.Services.AddScoped<AbstractActivityRepository, BotActivityRepository>();
+builder.Services.AddScoped<AbstractNewsRepository, NewsRepository>();
 
-//autowiring tools
-builder.Services.AddScoped<AbstractTokenFactory, TokenFactory>();
-builder.Services.AddScoped<AbstractTokenSender, TokenSender>();
-builder.Services.AddScoped<SmsBodyBuilder>();
-builder.Services.AddScoped<EmailBodyBuilder>();
 //autowiring of IdentityTools
 builder.Services.AddScoped<SignInManager<User>>();
 builder.Services.AddScoped<UserManager<User>>();
+//autowiring authIntegration Tools
+builder.Services.AddScoped<AbstractTokenSender, TokenSender>();
+builder.Services.AddScoped<TokenFactory>();
+builder.Services.AddScoped<SmsBodyBuilder>();
+builder.Services.AddScoped<EmailBodyBuilder>();
+//autowiring bot Tools
+builder.Services.AddScoped<BotApiCaller>();
+builder.Services.AddScoped<BotDatabaseReader>();
+builder.Services.AddScoped<BotDatabaseWriter>();
+builder.Services.AddScoped<BotDeployManager>();
+builder.Services.AddScoped<BotResponseParser>();
+builder.Services.AddScoped<ProbabilitySet>();
+
+
 //autowiring services
+builder.Services.AddScoped<AbstractBotService, BotService>();
+builder.Services.AddScoped<AbstractEntryService, EntryService>();
+builder.Services.AddScoped<AbstractFollowService, FollowService>();
+builder.Services.AddScoped<AbstractLikeService, LikeService>();
+builder.Services.AddScoped<AbstractPostService, PostService>();
+builder.Services.AddScoped<AbstractUserService, UserService>();
 builder.Services.AddScoped<AbstractUserIdentityService, UserIdentityService>();
+
+
+
 
 
 

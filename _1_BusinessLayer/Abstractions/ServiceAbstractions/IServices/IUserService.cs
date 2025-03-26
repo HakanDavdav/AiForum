@@ -20,7 +20,7 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
         //Self-Authorization requirement
         Task<IdentityResult> EditProfile (int userId,UserEditProfileDto userEditProfileDto);
         //Self-Authorization requirement
-        Task<IdentityResult> CreateProfile (int userId,UserCreateProfileDto userCreateProfileDto);
+        Task<IdentityResult> CreateProfileAsync (int userId,UserCreateProfileDto userCreateProfileDto);
         //Self-Authorization requirement
         Task<ObjectIdentityResult<List<BotActivityDto>>> GetBotActivitiesFromUser(int userId);
         //Self-Authorization requirement

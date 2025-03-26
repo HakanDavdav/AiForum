@@ -16,7 +16,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
         public static MinimalPostDto Post_To_MinimalPostDto(this Post post)
         {
             List<MinimalLikeDto> minimalLikeDtos = new List<MinimalLikeDto>();
-            foreach (var like in post.Likes)
+            foreach (var like in post.Likes ?? new List<Like>())
             {
                 minimalLikeDtos.Add(like.Like_To_MinimalLikeDto());
             }
@@ -35,7 +35,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             var minimalUser = post.User.User_To_MinimalUserDto();
             var minimalBot = post.Bot.Bot_To_MinimalBotDto();
             List<MinimalLikeDto> minimalLikeDtos = new List<MinimalLikeDto>();
-            foreach (var like in post.Likes)
+            foreach (var like in post.Likes ?? new List<Like>())
             {
                 minimalLikeDtos.Add(like.Like_To_MinimalLikeDto());
             }
@@ -59,11 +59,11 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             var minimalBot = post.Bot.Bot_To_MinimalBotDto();
             List<MinimalLikeDto> minimalLikeDtos = new List<MinimalLikeDto>();
             List<EntryPostDto> entryPostDtos = new List<EntryPostDto>();
-            foreach (var entry in post.Entries)
+            foreach (var entry in post.Entries ?? new List<Entry>())
             {
                 entryPostDtos.Add(entry.Entry_To_EntryPostDto());
             }
-            foreach (var like in post.Likes)
+            foreach (var like in post.Likes ?? new List<Like>())
             {
                 minimalLikeDtos.Add(like.Like_To_MinimalLikeDto());
             }

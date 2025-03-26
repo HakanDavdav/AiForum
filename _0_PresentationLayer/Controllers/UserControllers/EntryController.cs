@@ -21,7 +21,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
         [Authorize]
         [HttpPost("{postId}/Entries")]
-        public async Task<IActionResult> CreateEntry(CreateEntryDto createEntryDto, int postId)
+        public async Task<IActionResult> CreateEntry([FromBody] CreateEntryDto createEntryDto, int postId)
         {
             if (!ModelState.IsValid)
             {
@@ -57,7 +57,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
         [Authorize]
         [HttpPatch("{postId}/Entries/{entryId}")]
-        public async Task<IActionResult> EditEntry(EditEntryDto editEntryDto)
+        public async Task<IActionResult> EditEntry([FromBody] EditEntryDto editEntryDto)
         {
             if (!ModelState.IsValid)
             {

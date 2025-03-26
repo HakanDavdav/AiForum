@@ -14,9 +14,9 @@ namespace _1_BusinessLayer.Concrete.Dtos.UserDtos
         public string ProfileName { get; set; }
 
         [Url(ErrorMessage = "The 'ImageUrl' must be a valid URL.")]
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; } 
 
         [MaxLength(100, ErrorMessage = "The 'City' cannot exceed 100 characters.")]
-        public string City { get; set; }
+        public string? City { get; set; } 
     }
 }

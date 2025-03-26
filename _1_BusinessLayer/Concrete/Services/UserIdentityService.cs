@@ -127,7 +127,7 @@ namespace _1_BusinessLayer.Concrete.Services
                        await _userRepository.GetByUsernameAsync(userLoginDto.UsernameOrEmailOrPhoneNumber);
             if (user != null)
             {
-                var twoFactorSignInResult = await _signInManager.TwoFactorSignInAsync(provider, twoFactorToken, false, false);
+                var twoFactorSignInResult = await _signInManager.TwoFactorSignInAsync(provider, twoFactorToken, false, true);
                 if (twoFactorSignInResult.Succeeded)
                 {
                     var preference = await _userPreferenceRepository.GetByUserIdAsync(user.Id);
@@ -249,25 +249,21 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<IdentityResult> Register(UserRegisterDto userRegisterDto)
         {
             var user = userRegisterDto.UserRegisterDto_To_User();
-            await _userManager.CreateAsync(user,userRegisterDto.Password);          
-            if (user != null)
+            var createUserResult = await _userManager.CreateAsync(user, userRegisterDto.Password);         
+            if (createUserResult.Succeeded)
             {
-                var createUserResult = await _userManager.CreateAsync(user, userRegisterDto.Password);
                 await _tokenSender.SendEmail_EmailConfirmationTokenAsync(user);
-                if (createUserResult.Succeeded)
+                //Default preference
+                await _userPreferenceRepository.InsertAsync(new UserPreference
                 {
-                    //Default preference
-                    await _userPreferenceRepository.InsertAsync(new UserPreference
-                    {
-                        UserId = user.Id
-                    });
-                    await _userManager.AddToRoleAsync(user, "StandardUser");
-                    return createUserResult;
-                }
+                    UserId = user.Id
+                });
+                await _userManager.AddToRoleAsync(user, "StandardUser");
                 return createUserResult;
             }
-            return IdentityResult.Failed(new NotFoundError("User not found"));
+            return createUserResult;
         }
+
 
         public override async Task<IdentityResult> ChangeUsername(int userId, string oldUsername, string newUsername)
         {

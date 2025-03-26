@@ -38,7 +38,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
         [Authorize]
         [HttpPatch("BotPanel/Bots/{botId}")]
-        public async Task<IActionResult> EditBot(int botId, EditBotDto editBotDto)
+        public async Task<IActionResult> EditBot(int botId, [FromBody] EditBotDto editBotDto)
         {
             if (!ModelState.IsValid)
             {
@@ -77,7 +77,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
         [Authorize]
         [HttpPost("BotPanel/Bots")]
-        public async Task<IActionResult> CreateBot(CreateBotDto createBotDto)
+        public async Task<IActionResult> CreateBot([FromBody] CreateBotDto createBotDto)
         {
             if (!ModelState.IsValid)
             {

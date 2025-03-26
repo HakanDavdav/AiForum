@@ -17,7 +17,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             var minimalBotDto = entry.Bot.Bot_To_MinimalBotDto();
             var minimalUserDto = entry.User.User_To_MinimalUserDto();
             List<MinimalLikeDto> minimalLikeDtos = new List<MinimalLikeDto>();
-            foreach (var like in entry.Likes)
+            foreach (var like in entry.Likes ?? new List<Like>())
             {
                 minimalLikeDtos.Add(like.Like_To_MinimalLikeDto());
             }
@@ -39,7 +39,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             var minimalUserDto = entry.User.User_To_MinimalUserDto();
             var minimalPostDto = entry.Post.Post_To_MinimalPostDto();
             List<MinimalLikeDto> minimalLikeDtos = new List<MinimalLikeDto>();
-            foreach (var like in entry.Likes)
+            foreach (var like in entry.Likes ?? new List<Like>())
             {
                 minimalLikeDtos.Add(like.Like_To_MinimalLikeDto());
             }

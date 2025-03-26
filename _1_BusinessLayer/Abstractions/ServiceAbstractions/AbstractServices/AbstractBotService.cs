@@ -25,12 +25,12 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
         protected readonly AbstractFollowRepository _followRepository;
         protected readonly BotDeployManager _botDeployManager;
 
-        protected AbstractBotService(AbstractBotRepository botRepository, BotDeployManager botManager, AbstractUserRepository userRepository,
+        protected AbstractBotService(AbstractBotRepository botRepository, BotDeployManager botDeployManager, AbstractUserRepository userRepository,
             AbstractPostRepository postRepository,AbstractEntryRepository entryRepository,AbstractLikeRepository likeRepository,AbstractActivityRepository activityRepository,
             AbstractFollowRepository followRepository)
         {
             _botRepository = botRepository;
-            _botDeployManager = botManager;
+            _botDeployManager = botDeployManager;
             _userRepository = userRepository;
             _postRepository = postRepository;
             _entryRepository = entryRepository;

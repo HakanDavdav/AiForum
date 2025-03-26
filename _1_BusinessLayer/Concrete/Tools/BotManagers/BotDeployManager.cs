@@ -18,7 +18,8 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
         protected BotApiCaller _botApiCaller;
         protected BotDatabaseWriter _botDatabaseWriter;
         protected BotResponseParser _botResponseParser;
-        public BotDeployManager(BotDatabaseReader botDatabaseReader,BotApiCaller botApiCaller,BotDatabaseWriter botDatabaseWriter,BotResponseParser botResponseParser)
+        public BotDeployManager(BotDatabaseReader botDatabaseReader,BotApiCaller botApiCaller,
+            BotDatabaseWriter botDatabaseWriter,BotResponseParser botResponseParser)
         {
             _botDatabaseReader = botDatabaseReader;
             _botApiCaller = botApiCaller;

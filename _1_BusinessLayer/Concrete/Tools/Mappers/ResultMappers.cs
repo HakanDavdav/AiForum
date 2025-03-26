@@ -32,7 +32,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
 
             if (errors.Count == 0)
             {
-                errors.Add(new UnexpectedError("Incorrect user information"));
+                errors.Add(new UnexpectedError("Incorrect user information, provider or token"));
             }
 
             return IdentityResult.Failed(errors.ToArray());
