@@ -8,12 +8,13 @@ using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Concrete.Repositories
 {
     public class UserRepository : AbstractUserRepository
     {
-        public UserRepository(ApplicationDbContext context, UserManager<User> userManager) : base(context, userManager)
+        public UserRepository(ApplicationDbContext context, ILogger<User> logger) : base(context, logger)
         {
         }
 

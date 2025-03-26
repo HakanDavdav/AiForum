@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Concrete.Repositories
 {
     public class BotRepository : AbstractBotRepository
     {
-        public BotRepository(ApplicationDbContext context) : base(context)
+        public BotRepository(ApplicationDbContext context, ILogger<Bot> logger) : base(context, logger)
         {
         }
 

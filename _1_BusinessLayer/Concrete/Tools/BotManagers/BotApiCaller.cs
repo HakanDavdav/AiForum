@@ -18,6 +18,8 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
 
         public Task<(string aiResponse, string aiResponseType)> CreateResponse(Bot bot,List<string> data,string dataResponseType)
         {
+            if (bot == null) throw new ArgumentNullException(nameof(bot));
+            if (data == null || data.Count == 0) throw new ArgumentException("Data list cannot be null or empty", nameof(data));
             switch (dataResponseType)
             {
                 case "creatingEntry":
@@ -40,29 +42,93 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
             }
         }
 
-        public Task<(string aiResponse, string aiResponseType)> CreateAiEntryResponse(Bot bot, List<string> entryOrPostWithTheirContext)
+        public async Task<(string aiResponse, string aiResponseType)> CreateAiEntryResponse(Bot bot, List<string> entryOrPostWithTheirContext)
         {
-            throw new NotImplementedException();
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    HttpResponseMessage response = await client.GetAsync("apiUrl");
+                    response.EnsureSuccessStatusCode(); // HTTP 200-299 değilse hata fırlatır
+                    throw new NotImplementedException();
+                }
+                catch (HttpRequestException ex)
+                {
+                    throw new Exception("API request failed", ex);
+                }
+            }
         }
 
-        public Task<(string aiResponse, string aiResponseType)> CreateAiFollowResponse(Bot bot, List<string> usersWithTheirContext)
+        public async Task<(string aiResponse, string aiResponseType)> CreateAiFollowResponse(Bot bot, List<string> usersWithTheirContext)
         {
-            throw new NotImplementedException();
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    HttpResponseMessage response = await client.GetAsync("apiUrl");
+                    response.EnsureSuccessStatusCode(); // HTTP 200-299 değilse hata fırlatır
+                    throw new NotImplementedException();
+
+                }
+                catch (HttpRequestException ex)
+                {
+                    throw new Exception("API request failed", ex);
+                }
+            }
         }
 
-        public Task<(string aiResponse, string aiResponseType)> CreateAiLikeResponse(Bot bot, List<string> entriesOrPostsWithTheirContext)
+        public async Task<(string aiResponse, string aiResponseType)> CreateAiLikeResponse(Bot bot, List<string> entriesOrPostsWithTheirContext)
         {
-            throw new NotImplementedException();
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    HttpResponseMessage response = await client.GetAsync("apiUrl");
+                    response.EnsureSuccessStatusCode(); // HTTP 200-299 değilse hata fırlatır
+                    throw new NotImplementedException();
+
+                }
+                catch (HttpRequestException ex)
+                {
+                    throw new Exception("API request failed", ex);
+                }
+            }
         }
 
-        public Task<(string aiResponse, string aiResponseType)> CreateAiPostResponse(Bot bot, List<string> newsContext)
+        public async Task<(string aiResponse, string aiResponseType)> CreateAiPostResponse(Bot bot, List<string> newsContext)
         {
-            throw new NotImplementedException();
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    HttpResponseMessage response = await client.GetAsync("apiUrl");
+                    response.EnsureSuccessStatusCode(); // HTTP 200-299 değilse hata fırlatır
+                    throw new NotImplementedException();
+
+                }
+                catch (HttpRequestException ex)
+                {
+                    throw new Exception("API request failed", ex);
+                }
+            }
         }
 
-        public Task<(string aiResponse, string aiResponseType)> CreateOpposingEntryResponse(Bot bot, List<string> entriesOpposed)
+        public async Task<(string aiResponse, string aiResponseType)> CreateOpposingEntryResponse(Bot bot, List<string> entriesOpposed)
         {
-            throw new NotImplementedException();
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    HttpResponseMessage response = await client.GetAsync("apiUrl");
+                    response.EnsureSuccessStatusCode(); // HTTP 200-299 değilse hata fırlatır
+                    throw new NotImplementedException();
+
+                }
+                catch (HttpRequestException ex)
+                {
+                    throw;
+                }
+            }
         }
     }
 }

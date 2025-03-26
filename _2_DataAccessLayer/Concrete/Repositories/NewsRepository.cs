@@ -6,14 +6,16 @@ using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Concrete.Repositories
 {
     public class NewsRepository : AbstractNewsRepository
     {
-        public NewsRepository(ApplicationDbContext context) : base(context)
+        public NewsRepository(ApplicationDbContext context, ILogger<News> logger) : base(context, logger)
         {
         }
+
         public override async Task<bool> CheckEntity(int id)
         {
             try

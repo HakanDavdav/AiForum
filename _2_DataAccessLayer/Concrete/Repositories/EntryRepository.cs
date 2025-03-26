@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Concrete.Repositories
 {
     public class EntryRepository : AbstractEntryRepository
     {
-        public EntryRepository(ApplicationDbContext context) : base(context)
+        public EntryRepository(ApplicationDbContext context, ILogger<Entry> logger) : base(context, logger)
         {
         }
 

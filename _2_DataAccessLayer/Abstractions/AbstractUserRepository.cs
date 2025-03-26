@@ -7,16 +7,16 @@ using _2_DataAccessLayer.Abstractions.Generic;
 using _2_DataAccessLayer.Concrete;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Abstractions
 {
     public abstract class AbstractUserRepository : AbstractGenericBaseRepository<User>
     {
-        protected readonly UserManager<User> _userManager;
-        protected AbstractUserRepository(ApplicationDbContext context, UserManager<User> userManager) : base(context)
+        protected AbstractUserRepository(ApplicationDbContext context, ILogger<User> logger) : base(context, logger)
         {
-            _userManager = userManager;
         }
+
         public abstract Task<User> GetByEmailAsync(string email);
         public abstract Task<User> GetByUsernameAsync(string name);
         public abstract Task<User> GetByPhoneNumberAsync(string phoneNumber);

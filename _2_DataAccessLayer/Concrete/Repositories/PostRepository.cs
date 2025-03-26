@@ -6,14 +6,16 @@ using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Concrete.Repositories
 {
     public class PostRepository : AbstractPostRepository
     {
-        public PostRepository(ApplicationDbContext context) : base(context)
+        public PostRepository(ApplicationDbContext context, ILogger<Post> logger) : base(context, logger)
         {
         }
+
         public override async Task<bool> CheckEntity(int id)
         {
             try

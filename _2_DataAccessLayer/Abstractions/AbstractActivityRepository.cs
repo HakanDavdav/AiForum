@@ -6,14 +6,16 @@ using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions.Generic;
 using _2_DataAccessLayer.Concrete;
 using _2_DataAccessLayer.Concrete.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Abstractions
 {
     public abstract class AbstractActivityRepository : AbstractGenericBaseRepository<BotActivity>
     {
-        protected AbstractActivityRepository(ApplicationDbContext context) : base(context)
+        protected AbstractActivityRepository(ApplicationDbContext context, ILogger<BotActivity> logger) : base(context, logger)
         {
         }
+
         public abstract Task<List<BotActivity>> GetAllByUserIdAsync(int id);
         public abstract Task<List<BotActivity>> GetAllByBotIdAsync(int id);
 

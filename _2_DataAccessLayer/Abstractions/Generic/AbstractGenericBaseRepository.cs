@@ -5,15 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Concrete;
 using _2_DataAccessLayer.Concrete.Entities;
+using _2_DataAccessLayer.Concrete.Repositories;
+using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Abstractions.Generic
 {
     public abstract class AbstractGenericBaseRepository<T> : IGenericRepository<T> where T : class
     {
         protected readonly ApplicationDbContext _context;
-        protected AbstractGenericBaseRepository(ApplicationDbContext context)
+        protected readonly ILogger<T> _logger;
+        protected AbstractGenericBaseRepository(ApplicationDbContext context, ILogger<T> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public abstract Task<bool> CheckEntity(int id);

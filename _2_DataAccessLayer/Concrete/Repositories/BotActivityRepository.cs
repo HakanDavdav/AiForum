@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace _2_DataAccessLayer.Concrete.Repositories
 {
     public class BotActivityRepository : AbstractActivityRepository
     {
-        public BotActivityRepository(ApplicationDbContext context) : base(context)
+        public BotActivityRepository(ApplicationDbContext context, ILogger<BotActivity> logger) : base(context, logger)
         {
         }
 
@@ -23,17 +24,17 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in CheckEntity: {sqlEx.Message}");
+                _logger.Error(sqlEx, "SQL Error in CheckEntity with ActivityId {ActivityId}", id);
                 throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in CheckEntity: {invalidOpEx.Message}");
+                _logger.Error(invalidOpEx, "Invalid Operation Error in CheckEntity with ActivityId {ActivityId}", id);
                 throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in CheckEntity: {dbUpdateEx.Message}");
+                _logger.Error(dbUpdateEx, "Database Update Error in CheckEntity with ActivityId {ActivityId}", id);
                 throw;
             }
         }
@@ -47,17 +48,17 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in DeleteAsync: {sqlEx.Message}");
+                _logger.Error(sqlEx, "SQL Error in DeleteAsync for ActivityId {ActivityId}", t.ActivityId);
                 throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in DeleteAsync: {invalidOpEx.Message}");
+                _logger.Error(invalidOpEx, "Invalid Operation Error in DeleteAsync for ActivityId {ActivityId}", t.ActivityId);
                 throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in DeleteAsync: {dbUpdateEx.Message}");
+                _logger.Error(dbUpdateEx, "Database Update Error in DeleteAsync for ActivityId {ActivityId}", t.ActivityId);
                 throw;
             }
         }
@@ -71,17 +72,17 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetAllByBotIdAsFollowerWithInfoAsync: {sqlEx.Message}");
+                _logger.Error(sqlEx, "SQL Error in GetAllByBotIdAsync with BotId {BotId}", id);
                 throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetAllByBotIdAsFollowerWithInfoAsync: {invalidOpEx.Message}");
+                _logger.Error(invalidOpEx, "Invalid Operation Error in GetAllByBotIdAsync with BotId {BotId}", id);
                 throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetAllByBotIdAsFollowerWithInfoAsync: {dbUpdateEx.Message}");
+                _logger.Error(dbUpdateEx, "Database Update Error in GetAllByBotIdAsync with BotId {BotId}", id);
                 throw;
             }
         }
@@ -95,48 +96,41 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetAllByBotIdAsFollowerWithInfoAsync: {sqlEx.Message}");
+                _logger.Error(sqlEx, "SQL Error in GetAllByUserIdAsync with UserId {UserId}", id);
                 throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetAllByBotIdAsFollowerWithInfoAsync: {invalidOpEx.Message}");
+                _logger.Error(invalidOpEx, "Invalid Operation Error in GetAllByUserIdAsync with UserId {UserId}", id);
                 throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetAllByBotIdAsFollowerWithInfoAsync: {dbUpdateEx.Message}");
+                _logger.Error(dbUpdateEx, "Database Update Error in GetAllByUserIdAsync with UserId {UserId}", id);
                 throw;
             }
-        }
-
-        public override Task<List<BotActivity>> GetAllWithCustomSearch(Func<IQueryable<BotActivity>, IQueryable<BotActivity>> queryModifier)
-        {
-            throw new NotImplementedException();
         }
 
         public override async Task<BotActivity> GetByIdAsync(int id)
         {
             try
             {
-                var activity = await _context.Activities.FirstOrDefaultAsync(activity =>activity.ActivityId == id);
-#pragma warning disable CS8603 // Possible null reference return.
+                var activity = await _context.Activities.FirstOrDefaultAsync(activity => activity.ActivityId == id);
                 return activity;
-#pragma warning restore CS8603 // Possible null reference return.
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetByIdAsync: {sqlEx.Message}");
+                _logger.Error(sqlEx, "SQL Error in GetByIdAsync with ActivityId {ActivityId}", id);
                 throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetByIdAsync: {invalidOpEx.Message}");
+                _logger.Error(invalidOpEx, "Invalid Operation Error in GetByIdAsync with ActivityId {ActivityId}", id);
                 throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetByIdAsync: {dbUpdateEx.Message}");
+                _logger.Error(dbUpdateEx, "Database Update Error in GetByIdAsync with ActivityId {ActivityId}", id);
                 throw;
             }
         }
@@ -150,17 +144,17 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in InsertAsync: {sqlEx.Message}");
+                _logger.Error(sqlEx, "SQL Error in InsertAsync for ActivityId {ActivityId}", t.ActivityId);
                 throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in InsertAsync: {invalidOpEx.Message}");
+                _logger.Error(invalidOpEx, "Invalid Operation Error in InsertAsync for ActivityId {ActivityId}", t.ActivityId);
                 throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in InsertAsync: {dbUpdateEx.Message}");
+                _logger.Error(dbUpdateEx, "Database Update Error in InsertAsync for ActivityId {ActivityId}", t.ActivityId);
                 throw;
             }
         }
@@ -174,17 +168,17 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in UpdateAsync: {sqlEx.Message}");
+                _logger.Error(sqlEx, "SQL Error in UpdateAsync for ActivityId {ActivityId}", t.ActivityId);
                 throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in UpdateAsync: {invalidOpEx.Message}");
+                _logger.Error(invalidOpEx, "Invalid Operation Error in UpdateAsync for ActivityId {ActivityId}", t.ActivityId);
                 throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in UpdateAsync: {dbUpdateEx.Message}");
+                _logger.Error(dbUpdateEx, "Database Update Error in UpdateAsync for ActivityId {ActivityId}", t.ActivityId);
                 throw;
             }
         }
