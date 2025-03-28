@@ -23,21 +23,21 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in CheckEntity: {sqlEx.Message}");
+                _logger.LogError(sqlEx, "SQL Error in CheckEntity with FollowId {FollowId}", id);
                 throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in CheckEntity: {invalidOpEx.Message}");
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in CheckEntity with FollowId {FollowId}", id);
                 throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in CheckEntity: {dbUpdateEx.Message}");
+                _logger.LogError(dbUpdateEx, "Database Update Error in CheckEntity with FollowId {FollowId}", id);
                 throw;
             }
-
         }
+
         public override async Task DeleteAsync(Follow t)
         {
             try
@@ -47,46 +47,46 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in DeleteAsync: {sqlEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(sqlEx, "SQL Error in DeleteAsync for FollowId {FollowId}", t.FollowId);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in DeleteAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in DeleteAsync for FollowId {FollowId}", t.FollowId);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in DeleteAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in DeleteAsync for FollowId {FollowId}", t.FollowId);
+                throw;
             }
         }
-
 
         public override async Task<List<Follow>> GetAllByUserIdAsFollowerWithInfoAsync(int id)
         {
             try
             {
-                var follows = _context.Follows.Where(follow => follow.UserFollowerId == id).Include(follow =>follow.UserFollower)
-                                                                                           .Include(follow =>follow.BotFollower)
-                                                                                           .Include(follow =>follow.UserFollowed)
-                                                                                           .Include(follow =>follow.BotFollowed);
+                var follows = _context.Follows.Where(follow => follow.UserFollowerId == id)
+                                              .Include(follow => follow.UserFollower)
+                                              .Include(follow => follow.BotFollower)
+                                              .Include(follow => follow.UserFollowed)
+                                              .Include(follow => follow.BotFollowed);
                 return await follows.ToListAsync();
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetAllByBotIdAsFollowerWithInfoAsync: {sqlEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(sqlEx, "SQL Error in GetAllByUserIdAsFollowerWithInfoAsync with UserId {UserId}", id);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetAllByBotIdAsFollowerWithInfoAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetAllByUserIdAsFollowerWithInfoAsync with UserId {UserId}", id);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetAllByBotIdAsFollowerWithInfoAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetAllByUserIdAsFollowerWithInfoAsync with UserId {UserId}", id);
+                throw;
             }
         }
 
@@ -94,26 +94,27 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                var follows = _context.Follows.Where(follow => follow.UserFollowedId == id).Include(follow => follow.UserFollower)
-                                                                                           .Include(follow => follow.BotFollower)
-                                                                                           .Include(follow => follow.UserFollowed)
-                                                                                           .Include(follow => follow.BotFollowed);
+                var follows = _context.Follows.Where(follow => follow.UserFollowedId == id)
+                                              .Include(follow => follow.UserFollower)
+                                              .Include(follow => follow.BotFollower)
+                                              .Include(follow => follow.UserFollowed)
+                                              .Include(follow => follow.BotFollowed);
                 return await follows.ToListAsync();
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetAllByBotIdAsFollowerWithInfoAsync: {sqlEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(sqlEx, "SQL Error in GetAllByUserIdAsFollowedWithInfoAsync with UserId {UserId}", id);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetAllByBotIdAsFollowerWithInfoAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetAllByUserIdAsFollowedWithInfoAsync with UserId {UserId}", id);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetAllByBotIdAsFollowerWithInfoAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetAllByUserIdAsFollowedWithInfoAsync with UserId {UserId}", id);
+                throw;
             }
         }
 
@@ -121,26 +122,27 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                var follows = _context.Follows.Where(follow => follow.BotFollowerId == id).Include(follow => follow.UserFollower)
-                                                                                           .Include(follow => follow.BotFollower)
-                                                                                           .Include(follow => follow.UserFollowed)
-                                                                                           .Include(follow => follow.BotFollowed);
+                var follows = _context.Follows.Where(follow => follow.BotFollowerId == id)
+                                              .Include(follow => follow.UserFollower)
+                                              .Include(follow => follow.BotFollower)
+                                              .Include(follow => follow.UserFollowed)
+                                              .Include(follow => follow.BotFollowed);
                 return await follows.ToListAsync();
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetAllByBotIdAsFollowerWithInfoAsync: {sqlEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(sqlEx, "SQL Error in GetAllByBotIdAsFollowerWithInfoAsync with BotId {BotId}", id);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetAllByBotIdAsFollowerWithInfoAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetAllByBotIdAsFollowerWithInfoAsync with BotId {BotId}", id);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetAllByBotIdAsFollowerWithInfoAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetAllByBotIdAsFollowerWithInfoAsync with BotId {BotId}", id);
+                throw;
             }
         }
 
@@ -148,26 +150,27 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                var follows = _context.Follows.Where( follow => follow.BotFollowedId == id).Include(follow => follow.UserFollower)
-                                                                                           .Include(follow => follow.BotFollower)
-                                                                                           .Include(follow => follow.UserFollowed)
-                                                                                           .Include(follow => follow.BotFollowed);
+                var follows = _context.Follows.Where(follow => follow.BotFollowedId == id)
+                                              .Include(follow => follow.UserFollower)
+                                              .Include(follow => follow.BotFollower)
+                                              .Include(follow => follow.UserFollowed)
+                                              .Include(follow => follow.BotFollowed);
                 return await follows.ToListAsync();
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetAllByBotIdAsFollowerWithInfoAsync: {sqlEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(sqlEx, "SQL Error in GetAllByBotIdAsFollowedWithInfoAsync with BotId {BotId}", id);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetAllByBotIdAsFollowerWithInfoAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetAllByBotIdAsFollowedWithInfoAsync with BotId {BotId}", id);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetAllByBotIdAsFollowerWithInfoAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetAllByBotIdAsFollowedWithInfoAsync with BotId {BotId}", id);
+                throw;
             }
         }
 
@@ -180,25 +183,23 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                 Follow follow = await _context.Follows.FirstOrDefaultAsync(follow => follow.FollowId == id);
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
                 return follow;
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetByIdAsync: {sqlEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(sqlEx, "SQL Error in GetByIdAsync with FollowId {FollowId}", id);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetByIdAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByIdAsync with FollowId {FollowId}", id);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetByIdAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetByIdAsync with FollowId {FollowId}", id);
+                throw;
             }
         }
 
@@ -211,18 +212,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in InsertAsync: {sqlEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(sqlEx, "SQL Error in InsertAsync for FollowId {FollowId}", t.FollowId);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in InsertAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in InsertAsync for FollowId {FollowId}", t.FollowId);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in InsertAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in InsertAsync for FollowId {FollowId}", t.FollowId);
+                throw;
             }
         }
 
@@ -235,18 +236,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in UpdateAsync: {sqlEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(sqlEx, "SQL Error in UpdateAsync for FollowId {FollowId}", t.FollowId);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in UpdateAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in UpdateAsync for FollowId {FollowId}", t.FollowId);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in UpdateAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in UpdateAsync for FollowId {FollowId}", t.FollowId);
+                throw;
             }
         }
     }

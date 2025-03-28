@@ -24,42 +24,42 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in CheckEntity: {sqlEx.Message}");
+                _logger.LogError(sqlEx, "SQL Error in CheckEntity with NewsId {NewsId}", id);
                 throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in CheckEntity: {invalidOpEx.Message}");
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in CheckEntity with NewsId {NewsId}", id);
                 throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in CheckEntity: {dbUpdateEx.Message}");
+                _logger.LogError(dbUpdateEx, "Database Update Error in CheckEntity with NewsId {NewsId}", id);
                 throw;
             }
-
         }
+
         public override async Task DeleteAsync(News t)
         {
             try
             {
                 _context.Remove(t);
-                await _context.SaveChangesAsync(); 
+                await _context.SaveChangesAsync();
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in DeleteAsync: {sqlEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(sqlEx, "SQL Error in DeleteAsync for NewsId {NewsId}", t.NewsId);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in DeleteAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in DeleteAsync for NewsId {NewsId}", t.NewsId);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in DeleteAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in DeleteAsync for NewsId {NewsId}", t.NewsId);
+                throw;
             }
         }
 
@@ -72,26 +72,23 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                 News news = await _context.News.FirstOrDefaultAsync(news => news.NewsId == id);
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-                return news; 
-
+                return news;
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetByIdAsync: {sqlEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(sqlEx, "SQL Error in GetByIdAsync with NewsId {NewsId}", id);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetByIdAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByIdAsync with NewsId {NewsId}", id);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetByIdAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetByIdAsync with NewsId {NewsId}", id);
+                throw;
             }
         }
 
@@ -99,23 +96,23 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                IQueryable<News> news = _context.News.OrderBy(news => Guid.NewGuid()).Take(number); 
-                return await news.ToListAsync(); 
+                IQueryable<News> news = _context.News.OrderBy(news => Guid.NewGuid()).Take(number);
+                return await news.ToListAsync();
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetRandomNews: {sqlEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(sqlEx, "SQL Error in GetRandomNews");
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetRandomNews: {invalidOpEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetRandomNews");
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetRandomNews: {dbUpdateEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetRandomNews");
+                throw;
             }
         }
 
@@ -123,29 +120,29 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                await _context.News.AddAsync(t); 
-                await _context.SaveChangesAsync(); 
+                await _context.News.AddAsync(t);
+                await _context.SaveChangesAsync();
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in InsertAsync: {sqlEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(sqlEx, "SQL Error in InsertAsync for NewsId {NewsId}", t.NewsId);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in InsertAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in InsertAsync for NewsId {NewsId}", t.NewsId);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in InsertAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in InsertAsync for NewsId {NewsId}", t.NewsId);
+                throw;
             }
         }
 
         public override Task UpdateAsync(News t)
         {
-            throw new NotImplementedException(); // Not implemented exception
+            throw new NotImplementedException();
         }
     }
 }

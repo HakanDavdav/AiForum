@@ -24,21 +24,21 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in CheckEntity: {sqlEx.Message}");
+                _logger.LogError(sqlEx, "SQL Error in CheckEntity with UserPreferenceId {UserPreferenceId}", id);
                 throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in CheckEntity: {invalidOpEx.Message}");
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in CheckEntity with UserPreferenceId {UserPreferenceId}", id);
                 throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in CheckEntity: {dbUpdateEx.Message}");
+                _logger.LogError(dbUpdateEx, "Database Update Error in CheckEntity with UserPreferenceId {UserPreferenceId}", id);
                 throw;
             }
-
         }
+
         public override async Task DeleteAsync(UserPreference t)
         {
             try
@@ -48,18 +48,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in DeleteAsync: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in DeleteAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in DeleteAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in DeleteAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in DeleteAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in DeleteAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
+                throw;
             }
         }
 
@@ -77,18 +77,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetByIdAsync: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in GetByIdAsync with UserPreferenceId {UserPreferenceId}", id);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetByIdAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByIdAsync with UserPreferenceId {UserPreferenceId}", id);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetByIdAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetByIdAsync with UserPreferenceId {UserPreferenceId}", id);
+                throw;
             }
         }
 
@@ -101,18 +101,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetByUserIdAsync: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in GetByUserIdAsync with UserId {UserId}", id);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetByUserIdAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByUserIdAsync with UserId {UserId}", id);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetByUserIdAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetByUserIdAsync with UserId {UserId}", id);
+                throw;
             }
         }
 
@@ -125,18 +125,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in InsertAsync: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in InsertAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in InsertAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in InsertAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in InsertAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in InsertAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
+                throw;
             }
         }
 
@@ -149,18 +149,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in UpdateAsync: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in UpdateAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in UpdateAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in UpdateAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in UpdateAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in UpdateAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
+                throw;
             }
         }
     }

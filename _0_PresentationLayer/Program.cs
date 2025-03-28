@@ -12,6 +12,8 @@ using _1_BusinessLayer.Concrete.Tools.AuthenticationManagers.Factories;
 using _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices;
 using _1_BusinessLayer.Concrete.Tools.BotManagers;
 using _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices;
+using Serilog.Extensions.Logging;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,8 +62,13 @@ builder.Services.AddScoped<AbstractUserIdentityService, UserIdentityService>();
 
 
 
+var logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .CreateLogger();
 
-
+builder.Logging.ClearProviders();
+builder.Logging.AddProvider(new SerilogLoggerProvider(logger));
 
 
 

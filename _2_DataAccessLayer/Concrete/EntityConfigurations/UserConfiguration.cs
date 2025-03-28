@@ -28,9 +28,9 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
             builder.Property(user => user.DailyOperationCount)
                 .HasDefaultValue(10);  // Default value for DateTime
 
-            // Other properties configuration (e.g., DateTime)
             builder.Property(user => user.ProfileName)
-                .HasDefaultValue("DEFAULTNAME");  // Default value for DateTime
+                .HasDefaultValue("qwe")  // Default to null if no value is provided
+                .IsRequired();  // Make sure ProfileName is not nullable at the database level
 
 
             builder.HasMany(user => user.Bots)

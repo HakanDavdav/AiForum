@@ -46,5 +46,35 @@ namespace _0_PresentationLayer.Controllers
                 _ => new ObjectResult(new { Error = firstError.Description }) { StatusCode = 500 }
             };
         }
+
+        public static ObjectResult ExceptionWrapErrorCode(this Exception ex)
+        {
+            // Eğer bir özel exception türü varsa ona göre işlem yapalım
+            switch (ex)
+            {
+                case ArgumentException argEx:
+                    // ArgumentException örneği
+                    return new BadRequestObjectResult(new { Error = argEx.Message }) { StatusCode = 400 };
+
+                case UnauthorizedAccessException unAuthEx:
+                    // UnauthorizedAccessException örneği
+                    return new UnauthorizedObjectResult(new { Error = unAuthEx.Message }) { StatusCode = 401 };
+
+                case NotImplementedException notImplEx:
+                    // NotImplementedException örneği
+                    return new ObjectResult(new { Error = notImplEx.Message }) { StatusCode = 501 };
+
+                case InvalidOperationException invalidOpEx:
+                    // InvalidOperationException örneği
+                    return new ConflictObjectResult(new { Error = invalidOpEx.Message }) { StatusCode = 409 };
+
+                // Diğer özel exception'lar burada eklenebilir.
+
+                default:
+                    // Genel hata durumu
+                    return new ObjectResult(new { Error = ex.Message }) { StatusCode = 500 };
+            }
+        }
+
     }
 }

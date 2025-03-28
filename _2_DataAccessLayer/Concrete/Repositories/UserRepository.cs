@@ -26,17 +26,17 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in CheckEntity: {sqlEx.Message}");
+                _logger.LogError(sqlEx, "SQL Error in CheckEntity with UserId {UserId}", id);
                 throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in CheckEntity: {invalidOpEx.Message}");
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in CheckEntity with UserId {UserId}", id);
                 throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in CheckEntity: {dbUpdateEx.Message}");
+                _logger.LogError(dbUpdateEx, "Database Update Error in CheckEntity with UserId {UserId}", id);
                 throw;
             }
         }
@@ -48,20 +48,20 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _context.Users.Remove(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException ex)
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in DeleteAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in DeleteAsync for UserId {UserId}", t.Id);
+                throw;
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in DeleteAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in DeleteAsync for UserId {UserId}", t.Id);
+                throw;
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in DeleteAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in DeleteAsync for UserId {UserId}", t.Id);
+                throw;
             }
         }
 
@@ -69,24 +69,22 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-#pragma warning disable CS8603 // Possible null reference return.
                 return await _context.Users.FirstOrDefaultAsync(user => user.Id == id);
-#pragma warning restore CS8603 // Possible null reference return.
             }
-            catch (Microsoft.Data.SqlClient.SqlException ex)
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetByIdAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in GetByIdAsync with UserId {UserId}", id);
+                throw;
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetByIdAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByIdAsync with UserId {UserId}", id);
+                throw;
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetByIdAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetByIdAsync with UserId {UserId}", id);
+                throw;
             }
         }
 
@@ -94,24 +92,22 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-#pragma warning disable CS8603 // Possible null reference return.
                 return await _context.Users.FirstOrDefaultAsync(user => user.UserName == name);
-#pragma warning restore CS8603 // Possible null reference return.
             }
-            catch (Microsoft.Data.SqlClient.SqlException ex)
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetByUsernameAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in GetByUsernameAsync with Username {Username}", name);
+                throw;
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetByUsernameAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByUsernameAsync with Username {Username}", name);
+                throw;
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetByUsernameAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetByUsernameAsync with Username {Username}", name);
+                throw;
             }
         }
 
@@ -119,24 +115,22 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-#pragma warning disable CS8603 // Possible null reference return.
                 return await _context.Users.FirstOrDefaultAsync(user => user.Email == email);
-#pragma warning restore CS8603 // Possible null reference return.
             }
-            catch (Microsoft.Data.SqlClient.SqlException ex)
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetByEmailAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in GetByEmailAsync with Email {Email}", email);
+                throw;
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetByEmailAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByEmailAsync with Email {Email}", email);
+                throw;
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetByEmailAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetByEmailAsync with Email {Email}", email);
+                throw;
             }
         }
 
@@ -147,20 +141,20 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 await _context.Users.AddAsync(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException ex)
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in InsertAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in InsertAsync for UserId {UserId}", t.Id);
+                throw;
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in InsertAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in InsertAsync for UserId {UserId}", t.Id);
+                throw;
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in InsertAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in InsertAsync for UserId {UserId}", t.Id);
+                throw;
             }
         }
 
@@ -171,20 +165,20 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _context.Update(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException ex)
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in UpdateAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in UpdateAsync for UserId {UserId}", t.Id);
+                throw;
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in UpdateAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in UpdateAsync for UserId {UserId}", t.Id);
+                throw;
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in UpdateAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in UpdateAsync for UserId {UserId}", t.Id);
+                throw;
             }
         }
 
@@ -192,24 +186,22 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-#pragma warning disable CS8603 // Possible null reference return.
                 return await _context.Users.FirstOrDefaultAsync(user => user.ProfileName == profileName);
-#pragma warning restore CS8603 // Possible null reference return.
             }
-            catch (Microsoft.Data.SqlClient.SqlException ex)
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetByProfileNameAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in GetByProfileNameAsync with ProfileName {ProfileName}", profileName);
+                throw;
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetByProfileNameAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByProfileNameAsync with ProfileName {ProfileName}", profileName);
+                throw;
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetByProfileNameAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetByProfileNameAsync with ProfileName {ProfileName}", profileName);
+                throw;
             }
         }
 
@@ -217,24 +209,22 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-#pragma warning disable CS8603 // Possible null reference return.
                 return await _context.Users.FirstOrDefaultAsync(user => user.PhoneNumber == phoneNumber);
-#pragma warning restore CS8603 // Possible null reference return.
             }
-            catch (Microsoft.Data.SqlClient.SqlException ex)
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetByPhoneNumberAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in GetByPhoneNumberAsync with PhoneNumber {PhoneNumber}", phoneNumber);
+                throw;
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetByPhoneNumberAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByPhoneNumberAsync with PhoneNumber {PhoneNumber}", phoneNumber);
+                throw;
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetByPhoneNumberAsync: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetByPhoneNumberAsync with PhoneNumber {PhoneNumber}", phoneNumber);
+                throw;
             }
         }
 
@@ -245,20 +235,20 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 IQueryable<User> users = _context.Users.OrderBy(user => Guid.NewGuid()).Take(number);
                 return await users.ToListAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException ex)
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetRandomUsers: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in GetRandomUsers");
+                throw;
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetRandomUsers: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetRandomUsers");
+                throw;
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetRandomUsers: {ex.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetRandomUsers");
+                throw;
             }
         }
 

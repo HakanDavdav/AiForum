@@ -24,21 +24,21 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in CheckEntity: {sqlEx.Message}");
+                _logger.LogError(sqlEx, "SQL Error in CheckEntity with PostId {PostId}", id);
                 throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in CheckEntity: {invalidOpEx.Message}");
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in CheckEntity with PostId {PostId}", id);
                 throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in CheckEntity: {dbUpdateEx.Message}");
+                _logger.LogError(dbUpdateEx, "Database Update Error in CheckEntity with PostId {PostId}", id);
                 throw;
             }
-
         }
+
         public override async Task DeleteAsync(Post t)
         {
             try
@@ -48,18 +48,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in DeleteAsync: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in DeleteAsync for PostId {PostId}", t.PostId);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in DeleteAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in DeleteAsync for PostId {PostId}", t.PostId);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in DeleteAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in DeleteAsync for PostId {PostId}", t.PostId);
+                throw;
             }
         }
 
@@ -72,18 +72,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetAllByBotIdAsync: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in GetAllByBotIdAsync with BotId {BotId}", id);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetAllByBotIdAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetAllByBotIdAsync with BotId {BotId}", id);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetAllByBotIdAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetAllByBotIdAsync with BotId {BotId}", id);
+                throw;
             }
         }
 
@@ -96,18 +96,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetAllByBotIdAsFollowerWithInfoAsync: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in GetAllByUserIdAsync with UserId {UserId}", id);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetAllByBotIdAsFollowerWithInfoAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetAllByUserIdAsync with UserId {UserId}", id);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetAllByBotIdAsFollowerWithInfoAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetAllByUserIdAsync with UserId {UserId}", id);
+                throw;
             }
         }
 
@@ -121,18 +121,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetByEntryId: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in GetAllWithCustomSearch");
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetByEntryId: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetAllWithCustomSearch");
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetByEntryId: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetAllWithCustomSearch");
+                throw;
             }
         }
 
@@ -146,18 +146,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetByEntryId: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in GetByEntryId with EntryId {EntryId}", id);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetByEntryId: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByEntryId with EntryId {EntryId}", id);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetByEntryId: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetByEntryId with EntryId {EntryId}", id);
+                throw;
             }
         }
 
@@ -169,18 +169,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetByIdAsync: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in GetByIdAsync with PostId {PostId}", id);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetByIdAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByIdAsync with PostId {PostId}", id);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetByIdAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetByIdAsync with PostId {PostId}", id);
+                throw;
             }
         }
 
@@ -192,18 +192,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetByTitleAsync: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in GetByTitleAsync with Title {Title}", title);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetByTitleAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByTitleAsync with Title {Title}", title);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetByTitleAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetByTitleAsync with Title {Title}", title);
+                throw;
             }
         }
 
@@ -216,18 +216,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetRandomPosts: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in GetRandomPosts");
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetRandomPosts: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetRandomPosts");
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetRandomPosts: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetRandomPosts");
+                throw;
             }
         }
 
@@ -240,18 +240,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetRandomPostsByBotId: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in GetRandomPostsByBotId with BotId {BotId}", id);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetRandomPostsByBotId: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetRandomPostsByBotId with BotId {BotId}", id);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetRandomPostsByBotId: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetRandomPostsByBotId with BotId {BotId}", id);
+                throw;
             }
         }
 
@@ -264,18 +264,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in GetRandomPostsByUserId: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in GetRandomPostsByUserId with UserId {UserId}", id);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in GetRandomPostsByUserId: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetRandomPostsByUserId with UserId {UserId}", id);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in GetRandomPostsByUserId: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetRandomPostsByUserId with UserId {UserId}", id);
+                throw;
             }
         }
 
@@ -288,18 +288,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in InsertAsync: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in InsertAsync for PostId {PostId}", t.PostId);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in InsertAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in InsertAsync for PostId {PostId}", t.PostId);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in InsertAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in InsertAsync for PostId {PostId}", t.PostId);
+                throw;
             }
         }
 
@@ -312,18 +312,18 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
-                Console.WriteLine($"SQL Error in UpdateAsync: {sqlEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(sqlEx, "SQL Error in UpdateAsync for PostId {PostId}", t.PostId);
+                throw;
             }
             catch (InvalidOperationException invalidOpEx)
             {
-                Console.WriteLine($"Invalid Operation Error in UpdateAsync: {invalidOpEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in UpdateAsync for PostId {PostId}", t.PostId);
+                throw;
             }
             catch (DbUpdateException dbUpdateEx)
             {
-                Console.WriteLine($"Database Update Error in UpdateAsync: {dbUpdateEx.Message}");
-                throw; // Rethrow the caught exception
+                _logger.LogError(dbUpdateEx, "Database Update Error in UpdateAsync for PostId {PostId}", t.PostId);
+                throw;
             }
         }
     }
