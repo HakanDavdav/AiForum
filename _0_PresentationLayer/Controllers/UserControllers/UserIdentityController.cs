@@ -17,7 +17,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             _userService = userService;
         }
 
-        [Authorize]
+        [Authorize(Policy = "UserPolicy")]
         [HttpPatch("ChangePassword")]
         public async Task<IActionResult> ChangePassword(string oldPassword ,string newPassword)
         {
@@ -27,7 +27,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             return Ok(result);
         }
 
-        [Authorize]
+        [Authorize(Policy = "UserPolicy")]
         [HttpPatch("ChangeEmail")]
         public async Task<IActionResult> ChangeEmail(string changeEmailToken, string newEmail)
         {
@@ -37,7 +37,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             return Ok(result);
         }
 
-        [Authorize]
+        [Authorize(Policy = "UserPolicy")]
         [HttpPatch("ChangeUsername")]
         public async Task<IActionResult> ChangeUsername(string oldUsername, string newUsername)
         {
@@ -47,7 +47,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             return Ok(result);
         }
 
-        [Authorize]
+        [Authorize(Policy = "UserPolicy")]
         [HttpPatch("TwoFactorActivation")]
         public async Task<IActionResult> ActivateTwoFactor()
         {
@@ -58,7 +58,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
         }
 
-        [Authorize]
+        [Authorize(Policy = "UserPolicy")]
         [HttpPatch("TwoFactorDeactivation")]
         public async Task<IActionResult> DeactivateTwoFactor()
         {
@@ -69,7 +69,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
         }
 
-        [Authorize]
+        [Authorize(Policy = "UserPolicy")]
         [HttpPatch("ConfirmPhoneNumber")]
         public async Task<IActionResult> ConfirmPhoneNumber(string confirmPhoneNumberToken)
         {
@@ -80,7 +80,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
         }
 
-        [Authorize]
+        [Authorize(Policy = "UserPolicy")]
         [HttpPatch("SetPhoneNumber")]
         public async Task<IActionResult> SetPhoneNumber(string newPhoneNumber)
         {
@@ -91,7 +91,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
         }
 
-        [Authorize]
+        [Authorize(Policy = "TempUserPolicy")]
         [HttpPost("Logout")]
         public async Task<IActionResult> Logout()
         {
@@ -99,7 +99,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             return Ok(result);
         }
 
-        [Authorize]
+        [Authorize(Policy = "UserPolicy")]
         [HttpPost("UserChooseProviderAndSendToken")]
         public async Task<IActionResult> ChooseProviderAndSendToken(string provider, string operation, string? newEmail = null, string? newPhoneNumber = null)
         {

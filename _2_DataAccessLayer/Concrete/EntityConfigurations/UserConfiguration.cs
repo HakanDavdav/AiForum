@@ -18,20 +18,18 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
 
             // Configure ProfileName to be unique
             builder.HasIndex(user => user.ProfileName)
-                .IsUnique();  // Ensures ProfileName is unique
+                 .IsUnique();
 
             // Other properties configuration (e.g., DateTime)
             builder.Property(user => user.DateTime)
                 .HasDefaultValueSql("GETDATE()");  // Default value for DateTime
 
+            builder.Property(user => user.IsProfileCreated)
+                .HasDefaultValue(false);  // Default value for ProfileCreated
+
             // Other properties configuration (e.g., DateTime)
             builder.Property(user => user.DailyOperationCount)
                 .HasDefaultValue(10);  // Default value for DateTime
-
-            builder.Property(user => user.ProfileName)
-                .HasDefaultValue("qwe")  // Default to null if no value is provided
-                .IsRequired();  // Make sure ProfileName is not nullable at the database level
-
 
             builder.HasMany(user => user.Bots)
                 .WithOne(bot => bot.User)

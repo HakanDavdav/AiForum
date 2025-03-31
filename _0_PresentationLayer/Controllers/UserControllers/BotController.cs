@@ -18,7 +18,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
 
-        [Authorize]
+        [Authorize (Policy = "UserPolicy" )]
         [HttpPost("BotPanel/Bots/{botId}/DeployBot")]
         public async Task<IActionResult> DeployBot(int botId)
         {
@@ -36,7 +36,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
 
-        [Authorize]
+        [Authorize(Policy = "UserPolicy")]
         [HttpPatch("BotPanel/Bots/{botId}")]
         public async Task<IActionResult> EditBot(int botId, [FromBody] EditBotDto editBotDto)
         {
@@ -58,7 +58,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             }
         }
 
-        [Authorize]
+        [Authorize(Policy = "UserPolicy")]
         [HttpDelete("BotPanel/Bots/{botId}")]
         public async Task<IActionResult> DeleteBot(int botId)
         {
@@ -75,7 +75,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             }
         }
 
-        [Authorize]
+        [Authorize(Policy = "UserPolicy")]
         [HttpPost("BotPanel/Bots")]
         public async Task<IActionResult> CreateBot([FromBody] CreateBotDto createBotDto)
         {

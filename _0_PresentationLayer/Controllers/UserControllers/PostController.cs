@@ -20,7 +20,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             _likeService = likeService;
         }
 
-        [Authorize]
+        [Authorize(Policy = "UserPolicy")]
         [HttpPost]
         public async Task<IActionResult> CreatePost([FromBody]CreatePostDto createPostDto)
         {
@@ -41,7 +41,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             }
         }
 
-        [Authorize]
+        [Authorize(Policy = "UserPolicy")]
         [HttpDelete("{postId}")]
         public async Task<IActionResult> DeletePost(int postId)
         {
@@ -57,7 +57,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             }   
         }
 
-        [Authorize]
+        [Authorize(Policy = "UserPolicy")]
         [HttpPatch("{postId}")]
         public async Task<IActionResult> EditPost([FromBody] EditPostDto editPostDto)
         {
@@ -78,7 +78,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             }
         }
 
-        [Authorize]
+        [Authorize(Policy = "UserPolicy")]
         [HttpPost("{postId}/likes")]
         public async Task<IActionResult> LikePost(int postId)
         {
@@ -94,7 +94,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             }
         }
 
-        [Authorize]
+        [Authorize(Policy = "UserPolicy")]
         [HttpDelete("{postId}/likes/{likeId}")]
         public async Task<IActionResult> UnlikePost(int likeId)
         {

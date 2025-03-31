@@ -25,22 +25,41 @@ namespace _1_BusinessLayer.Concrete.Services
 {
     public class UserService : AbstractUserService
     {
-        public UserService(AbstractUserRepository userRepository, AbstractNotificationRepository notificationRepository,
-            AbstractActivityRepository activityRepository, AbstractBotRepository botRepository, 
+        public UserService(AbstractUserRepository userRepository, AbstractNotificationRepository notificationRepository, 
+            AbstractActivityRepository activityRepository, AbstractBotRepository botRepository,
             AbstractUserPreferenceRepository preferenceRepository, AbstractEntryRepository entryRepository, 
-            AbstractPostRepository postRepository, AbstractLikeRepository likeRepository, AbstractFollowRepository followRepository) 
-            : base(userRepository, notificationRepository, activityRepository, botRepository, preferenceRepository, entryRepository, postRepository, likeRepository, followRepository)
+            AbstractPostRepository postRepository, AbstractLikeRepository likeRepository, 
+            AbstractFollowRepository followRepository, UserManager<User> userManager, 
+            SignInManager<User> signInManager) 
+            :base(userRepository, notificationRepository, activityRepository, botRepository, preferenceRepository, entryRepository, postRepository, likeRepository, followRepository, userManager, signInManager)
         {
         }
 
         public override async Task<IdentityResult> CreateProfileAsync(int userId, UserCreateProfileDto userCreateProfileDto)
-        {
+        {           
             var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
             {
-                user = userCreateProfileDto.Update___UserCreateProfileDto_To_User(user);
-                await _userRepository.UpdateAsync(user);
-                return IdentityResult.Success;
+                if (user.IsProfileCreated == false)
+                {
+                    user = userCreateProfileDto.Update___UserCreateProfileDto_To_User(user);
+                    user.IsProfileCreated = true;
+                    var removeResult = await _userManager.RemoveFromRoleAsync(user, "TempUser");
+                    if (!removeResult.Succeeded)
+                        return IdentityResult.Failed(removeResult.Errors.ToArray());
+
+                    var addResult = await _userManager.AddToRoleAsync(user, "StandardUser");
+                    if (!addResult.Succeeded)
+                        return IdentityResult.Failed(addResult.Errors.ToArray());
+
+                    var stampResult = await _userManager.UpdateSecurityStampAsync(user);
+                    if (!stampResult.Succeeded)
+                        return IdentityResult.Failed(stampResult.Errors.ToArray());
+                    await _signInManager.RefreshSignInAsync(user);
+                    await _userRepository.UpdateAsync(user);
+                    return IdentityResult.Success;
+                }
+                return IdentityResult.Failed(new UnauthorizedError("Profile already created initally"));
             }
             return IdentityResult.Failed(new NotFoundError("User not found"));
         }

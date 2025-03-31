@@ -12,9 +12,11 @@ namespace _0_PresentationLayer.Controllers.GuestControllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly AbstractUserIdentityService _userService;
-        public AuthController(AbstractUserIdentityService userService, UserManager<User> userManager)
+        private readonly AbstractUserIdentityService _userIdentityService;
+        private readonly AbstractUserService _userService;
+        public AuthController(AbstractUserIdentityService userIdentityService, AbstractUserService userService)
         {
+            _userIdentityService = userIdentityService;
             _userService = userService;
         }
 
@@ -23,7 +25,7 @@ namespace _0_PresentationLayer.Controllers.GuestControllers
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterDto userRegisterDto)
         {
-            var result = await _userService.Register(userRegisterDto);
+            var result = await _userIdentityService.Register(userRegisterDto);
             return Ok(result);
         }
 
@@ -31,7 +33,14 @@ namespace _0_PresentationLayer.Controllers.GuestControllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto)
         {
-            var result = await _userService.LoginDefault(userLoginDto);          
+            var result = await _userIdentityService.LoginDefault(userLoginDto);
+            return Ok(result);
+        }
+
+        [HttpPost("CreateProfile")]
+        public async Task<IActionResult> CreateProfile([FromBody] UserCreateProfileDto userCreateProfileDto)
+        {
+            var result = await _userService.CreateProfileAsync((int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value)),userCreateProfileDto);
             return Ok(result);
         }
 
@@ -39,7 +48,7 @@ namespace _0_PresentationLayer.Controllers.GuestControllers
         [HttpPost("TwoFactorLogin")]
         public async Task<IActionResult> LoginTwoFactor([FromBody] UserLoginDto userLoginDto, string twoFactorToken, string provider)
         {
-            var result = await _userService.LoginTwoFactor(userLoginDto,twoFactorToken,provider);
+            var result = await _userIdentityService.LoginTwoFactor(userLoginDto,twoFactorToken,provider);
             return Ok(result);
         }
 
@@ -47,14 +56,14 @@ namespace _0_PresentationLayer.Controllers.GuestControllers
         [HttpPost("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string usernameEmailOrPhoneNumber, string confirmMailToken)
         {
-            var result = await _userService.ConfirmEmail(confirmMailToken, usernameEmailOrPhoneNumber);
+            var result = await _userIdentityService.ConfirmEmail(confirmMailToken, usernameEmailOrPhoneNumber);
             return Ok(result);
         }
 
         [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPassword(string usernameEmailOrPhoneNumber, string resetPasswordToken, string newPassword)
         {
-            var result = await _userService.PasswordReset(usernameEmailOrPhoneNumber, resetPasswordToken, newPassword);
+            var result = await _userIdentityService.PasswordReset(usernameEmailOrPhoneNumber, resetPasswordToken, newPassword);
             return Ok(result);
         }
 
@@ -63,7 +72,7 @@ namespace _0_PresentationLayer.Controllers.GuestControllers
         public async Task<IActionResult> ChooseProviderAndSendToken(string usernameEmailOrPhoneNumber, string provider, string operation)
         {
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            var result = await _userService.ChooseProviderAndSendToken(provider, operation, usernameEmailOrPhoneNumber);
+            var result = await _userIdentityService.ChooseProviderAndSendToken(provider, operation, usernameEmailOrPhoneNumber);
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             return Ok(result);
         }

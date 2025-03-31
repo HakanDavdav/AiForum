@@ -27,14 +27,17 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
         protected readonly AbstractBotRepository _botRepository;
         protected readonly AbstractUserPreferenceRepository _preferenceRepository;
         protected readonly AbstractFollowRepository _followRepository;
+        protected readonly UserManager<User> _userManager;
+        protected readonly SignInManager<User> _signInManager;
 
 
         protected AbstractUserService
             (AbstractUserRepository userRepository, AbstractNotificationRepository notificationRepository, 
             AbstractActivityRepository activityRepository, AbstractBotRepository botRepository, AbstractUserPreferenceRepository preferenceRepository,
             AbstractEntryRepository entryRepository, AbstractPostRepository postRepository,AbstractLikeRepository likeRepository,
-            AbstractFollowRepository followRepository)
+            AbstractFollowRepository followRepository,UserManager<User> userManager,SignInManager<User> signInManager)
         {
+            _signInManager = signInManager;
             _notificationRepository = notificationRepository;
             _userRepository = userRepository;
             _activityRepository = activityRepository;
@@ -44,6 +47,7 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
             _postRepository = postRepository;
             _likeRepository = likeRepository;
             _followRepository = followRepository;
+            _userManager = userManager;
         }
 
         public abstract Task<IdentityResult> CreateProfileAsync(int userId, UserCreateProfileDto userCreateProfileDto);

@@ -11,13 +11,13 @@ namespace _0_PresentationLayer.Controllers.UserControllers
     [ApiController]
     public class UserProfileController : ControllerBase
     {
-        private readonly AbstractUserService _profileService;
+        private readonly AbstractUserService userService;
         public UserProfileController(AbstractUserService profileService)
         {
-            _profileService = profileService;
+            userService = profileService;
         }
 
-        [Authorize]
+        [Authorize(Policy = "TempUserPolicy")]
         [HttpPatch("You")]
         public async Task<IActionResult> CreateUserProfile([FromBody]UserCreateProfileDto userCreateProfileDto)
         {
@@ -26,12 +26,12 @@ namespace _0_PresentationLayer.Controllers.UserControllers
                 return BadRequest(ModelState);
             }
 #pragma warning disable CS8604 // Possible null reference argument.
-            var result = await _profileService.CreateProfileAsync(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), userCreateProfileDto);
+            var result = await userService.CreateProfileAsync(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), userCreateProfileDto);
 #pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
         }
 
-        [Authorize]
+        [Authorize(Policy = "UserPolicy")]
         [HttpPatch("You/EditProfile")]
         public async Task<IActionResult> EditProfile([FromBody] UserEditProfileDto userEditProfileDto)
         {
@@ -42,13 +42,13 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             
 
 #pragma warning disable CS8604 // Possible null reference argument.
-            var result = await _profileService.EditProfile(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), userEditProfileDto);
+            var result = await userService.EditProfile(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), userEditProfileDto);
 #pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
 
         }
 
-        [Authorize]
+        [Authorize(Policy = "UserPolicy")]
         [HttpPatch("You/EditPreferences")]
         public async Task<IActionResult> EditPreferences([FromBody] UserEditPreferencesDto userEditPreferencesDto)
         {
@@ -58,19 +58,19 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             }
 
 #pragma warning disable CS8604 // Possible null reference argument.
-            var result = await _profileService.EditPreferences(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), userEditPreferencesDto);
+            var result = await userService.EditPreferences(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), userEditPreferencesDto);
 #pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
         }
 
-        [Authorize]
+        [Authorize(Policy = "UserPolicy")]
         [HttpGet("You/BotPanel")]
         public async Task<IActionResult> GetBotPanel()
         {
             try
             {
 #pragma warning disable CS8604 // Possible null reference argument.
-                var result = await _profileService.GetBotPanel(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
+                var result = await userService.GetBotPanel(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
 #pragma warning restore CS8604 // Possible null reference argument.
                 return result.ResultWrapErrorCode();
             }
@@ -80,14 +80,14 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             }
         }
 
-        [Authorize]
+        [Authorize(Policy = "UserPolicy")]
         [HttpGet("You")]
         public async Task<IActionResult> GetYourUserProfile()
         {
             try
             {
 #pragma warning disable CS8604 // Possible null reference argument.
-                var result = await _profileService.GetUserProfile(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
+                var result = await userService.GetUserProfile(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
 #pragma warning restore CS8604 // Possible null reference argument.
                 return Ok(result);
             }
@@ -102,7 +102,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         public async Task<IActionResult> GetUserProfile(int userId)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
-            var result = await _profileService.GetUserProfile(userId);
+            var result = await userService.GetUserProfile(userId);
 #pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
         }

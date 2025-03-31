@@ -103,7 +103,7 @@ builder.Services.AddAuthorization(options =>
     
     options.AddPolicy("UserPolicy", policy => policy.RequireRole("StandardUser","Admin"));
     
-    options.AddPolicy("GuestPolicy", policy => policy.RequireRole("Guest","StandardUser","Admin"));
+    options.AddPolicy("TempUserPolicy", policy => policy.RequireRole("TempUser","StandardUser","Admin"));
 
 });
 
@@ -121,7 +121,7 @@ using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<UserRole>>();
 
-    string[] roles = new[] { "Admin", "StandardUser", "Guest" };
+    string[] roles = new[] { "Admin", "StandardUser", "TempUser" };
 
     foreach (var role in roles)
     {

@@ -258,7 +258,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 {
                     UserId = user.Id
                 });
-                await _userManager.AddToRoleAsync(user, "StandardUser");
+                await _userManager.AddToRoleAsync(user, "TempUser");
                 return createUserResult;
             }
             return createUserResult;

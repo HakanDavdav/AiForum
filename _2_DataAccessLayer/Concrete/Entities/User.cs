@@ -11,10 +11,11 @@ namespace _2_DataAccessLayer.Concrete.Entities
 {
     public class User : IdentityUser<int>
     {
-        public string ProfileName { get; set; }
+        public string? ProfileName { get; set; }
         public string? ImageUrl { get; set; }
         public string? City { get; set; }
         public int DailyOperationCount {  get; set; }
+        public bool IsProfileCreated { get; set; }
         public DateTime DateTime { get; set; }
 
 

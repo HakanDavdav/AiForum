@@ -486,6 +486,11 @@ namespace _2_DataAccessLayer.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsProfileCreated")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -510,10 +515,7 @@ namespace _2_DataAccessLayer.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("ProfileName")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)")
-                        .HasDefaultValue("DEFAULTNAME");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -536,7 +538,8 @@ namespace _2_DataAccessLayer.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.HasIndex("ProfileName")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[ProfileName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });

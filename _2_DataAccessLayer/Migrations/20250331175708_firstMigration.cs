@@ -32,10 +32,11 @@ namespace _2_DataAccessLayer.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProfileName = table.Column<string>(type: "nvarchar(450)", nullable: false, defaultValue: "DEFAULTNAME"),
+                    ProfileName = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DailyOperationCount = table.Column<int>(type: "int", nullable: false, defaultValue: 10),
+                    IsProfileCreated = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     DateTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -469,7 +470,8 @@ namespace _2_DataAccessLayer.Migrations
                 name: "IX_AspNetUsers_ProfileName",
                 table: "AspNetUsers",
                 column: "ProfileName",
-                unique: true);
+                unique: true,
+                filter: "[ProfileName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
