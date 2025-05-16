@@ -77,7 +77,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize(Policy = "UserPolicy")]
-        [HttpPost("{postId}/Entries/{entryId}/Likes")]
+        [HttpPost("{postId}/Entries/{entryId}/Like")]
         public async Task<IActionResult> LikeEntry(int entryId)
         {
             try

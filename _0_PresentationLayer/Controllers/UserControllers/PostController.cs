@@ -79,7 +79,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize(Policy = "UserPolicy")]
-        [HttpPost("{postId}/likes")]
+        [HttpPost("{postId}/Like")]
         public async Task<IActionResult> LikePost(int postId)
         {
             try
@@ -95,7 +95,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize(Policy = "UserPolicy")]
-        [HttpDelete("{postId}/likes/{likeId}")]
+        [HttpDelete("{postId}/like/{likeId}")]
         public async Task<IActionResult> UnlikePost(int likeId)
         {
             try
