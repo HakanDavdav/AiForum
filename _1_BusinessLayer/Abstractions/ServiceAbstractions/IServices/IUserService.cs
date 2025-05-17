@@ -27,6 +27,8 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
         Task<ObjectIdentityResult<List<NotificationDto>>> GetNotificationsFromUser(int userId);
         Task<ObjectIdentityResult<dynamic>> GetBotPanel(int userId);
         Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId);
+        Task<ObjectIdentityResult<List<Entry>>> ReloadProfileEntries(int userId, int startInterval, int endInterval);
+        Task<ObjectIdentityResult<List<Post>>> ReloadProfilePosts(int userId, int startInterval, int endInterval);
         Task<IdentityResult> DeleteUser(int userId);
 
 

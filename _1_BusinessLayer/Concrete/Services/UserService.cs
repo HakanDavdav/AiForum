@@ -179,8 +179,8 @@ namespace _1_BusinessLayer.Concrete.Services
             var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
             {
-                List<Entry> entries = await _entryRepository.GetAllByUserIdAsync(userId);
-                List<Post> posts = await _postRepository.GetAllByUserIdAsync(userId);
+                List<Entry> entries = await _entryRepository.GetAllByUserIdAsync(userId,0,10);
+                List<Post> posts = await _postRepository.GetAllByUserIdAsync(userId,0,10);
                 List<Like> likes = await _likeRepository.GetAllByUserIdAsync(userId);
                 List<Follow> followers = await _followRepository.GetAllByUserIdAsFollowedWithInfoAsync(userId);
                 List<Follow> followed = await _followRepository.GetAllByUserIdAsFollowerWithInfoAsync(userId);
@@ -222,6 +222,28 @@ namespace _1_BusinessLayer.Concrete.Services
             }
             return ObjectIdentityResult<UserProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("User not found") });
 
+        }
+
+        public override async Task<ObjectIdentityResult<List<Entry>>> ReloadProfileEntries(int userId, int startInterval, int endInterval)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if(user != null)
+            {
+                List<Entry> entries = await _entryRepository.GetAllByUserIdAsync(userId, startInterval, endInterval);
+                return ObjectIdentityResult<List<Entry>>.Succeded(entries);
+            }
+            return ObjectIdentityResult<List<Entry>>.Failed(null, new IdentityError[] { new NotFoundError("User not found") });
+        }
+
+        public override async Task<ObjectIdentityResult<List<Post>>> ReloadProfilePosts(int userId, int startInterval, int endInterval)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user != null)
+            {
+                List<Post> posts = await _postRepository.GetAllByUserIdAsync(userId, startInterval, endInterval);
+                return ObjectIdentityResult<List<Post>>.Succeded(posts);
+            }
+            return ObjectIdentityResult<List<Post>>.Failed(null, new IdentityError[] { new NotFoundError("User not found") });
         }
     }
 }

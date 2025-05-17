@@ -96,13 +96,30 @@ namespace _0_PresentationLayer.Controllers.UserControllers
                 return e.ExceptionWrapErrorCode();
             }
         }
-
-        [Authorize]
+       
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserProfile(int userId)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
             var result = await userService.GetUserProfile(userId);
+#pragma warning restore CS8604 // Possible null reference argument.
+            return Ok(result);
+        }
+
+        [HttpGet("{userId}/ReloadEntries")]
+        public async Task<IActionResult> ReloadProfileEntries(int userId,int startInterval, int endInterval)
+        {
+#pragma warning disable CS8604 // Possible null reference argument.
+            var result = await userService.ReloadProfileEntries(userId, startInterval, endInterval);
+#pragma warning restore CS8604 // Possible null reference argument.
+            return Ok(result);
+        }
+
+        [HttpGet("{userId}/ReloadPosts")]
+        public async Task<IActionResult> ReloadProfilePosts(int userId, int startInterval, int endInterval )
+        {
+#pragma warning disable CS8604 // Possible null reference argument.
+            var result = await userService.ReloadProfilePosts(userId, startInterval, endInterval);
 #pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
         }

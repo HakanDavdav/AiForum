@@ -17,7 +17,7 @@ namespace _2_DataAccessLayer.Abstractions
         }
 
         public abstract Task<Post> GetByTitleAsync(string title);
-        public abstract Task<List<Post>> GetAllByUserIdAsync(int id);
+        public abstract Task<List<Post>> GetAllByUserIdAsync(int id,int startInterval, int endInterval);
         public abstract Task<List<Post>> GetAllByBotIdAsync(int id);
         public abstract Task<List<Post>> GetRandomPosts(int number);
         public abstract Task<List<Post>> GetRandomPostsByUserId(int id, int number);

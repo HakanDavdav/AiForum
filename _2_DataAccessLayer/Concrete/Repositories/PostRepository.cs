@@ -87,11 +87,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<List<Post>> GetAllByUserIdAsync(int id)
+        public override async Task<List<Post>> GetAllByUserIdAsync(int id,int startInterval, int endInterval)
         {
             try
             {
-                IQueryable<Post> posts = _context.Posts.Where(post => post.UserId == id);
+                IQueryable<Post> posts = _context.Posts.Where(post => post.UserId == id).OrderByDescending(post => post.DateTime).Skip(startInterval).Take(endInterval);
                 return await posts.ToListAsync();
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)

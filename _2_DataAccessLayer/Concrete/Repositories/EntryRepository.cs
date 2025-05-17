@@ -87,12 +87,14 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<List<Entry>> GetAllByPostId(int id)
+
+        public override async Task<List<Entry>> GetAllByPostId(int id, int intervalStart, int intervalEnd)
         {
             try
             {
-                IQueryable<Entry> entries = _context.Entries.Where(entry => entry.PostId == id);
-                return await entries.ToListAsync();
+                IQueryable<Entry> postEntries = _context.Entries.
+                    Where(entry => entry.PostId == id).OrderByDescending(entry => entry.DateTime).Skip(intervalStart).Take(intervalEnd);
+                return await postEntries.ToListAsync();   
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
@@ -111,12 +113,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<List<Entry>> GetAllByUserIdAsync(int id)
+        public override Task<List<Entry>> GetAllByUserIdAsync(int id, int startInterval, int endInterval)
         {
             try
             {
-                IQueryable<Entry> entries = _context.Entries.Where(entry => entry.UserId == id);
-                return await entries.ToListAsync();
+                IQueryable<Entry> entries = _context.Entries.Where(entry => entry.UserId == id).OrderByDescending(entry => entry.DateTime).Skip(startInterval).Take(endInterval);
+                return entries.ToListAsync();
             }
             catch (Microsoft.Data.SqlClient.SqlException sqlEx)
             {
@@ -162,6 +164,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _logger.LogError(dbUpdateEx, "Database Update Error in GetByIdAsync with EntryId {EntryId}", id);
                 throw;
             }
+        }
+
+        public override int GetCountByPostId(int id)
+        {
+            int entryCount = _context.Entries.Count(entry => entry.PostId == id);  
+            return entryCount;
         }
 
         public override async Task<List<Entry>> GetRandomEntriesByBotId(int id, int number)

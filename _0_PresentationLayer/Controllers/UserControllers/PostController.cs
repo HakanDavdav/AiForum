@@ -112,11 +112,43 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         
          
         [HttpGet("{postId}")]
-        public async Task<IActionResult> GetPost(int postId)
+        public async Task<IActionResult> GetPost(int postId,int page)
         {
             try
             {
-                var objectResult = await _postService.GetPostAsync(postId, HttpContext.User.FindFirst("ENTRY PER PAGE")?.Value);
+                var objectResult = await _postService.GetPostAsync(postId, page, HttpContext.User.FindFirst("ENTRY PER PAGE")?.Value);
+                return objectResult.ResultWrapErrorCode();
+            }
+            catch (Exception e)
+            {
+
+                return e.ExceptionWrapErrorCode();
+            }
+        }
+
+        [HttpGet("TrendPosts")]
+        public async Task<IActionResult> GetTrendPosts(DateTime date)
+        {
+            try
+            {
+                var objectResult = await _postService.GetTrendingPosts(HttpContext.User.FindFirst("POST PER PAGE")?.Value, date);
+                return objectResult.ResultWrapErrorCode();
+            }
+            catch (Exception e)
+            {
+
+                return e.ExceptionWrapErrorCode();
+            }
+        }
+
+
+
+        [HttpGet("MostLikedPosts")]
+        public async Task<IActionResult> GetMostLikedPosts(DateTime date)
+        {
+            try
+            {
+                var objectResult = await _postService.GetMostLikedPosts(HttpContext.User.FindFirst("POST PER PAGE")?.Value,date);
                 return objectResult.ResultWrapErrorCode();
             }
             catch (Exception e)

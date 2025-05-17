@@ -69,11 +69,11 @@ namespace _1_BusinessLayer.Concrete.Services
             return IdentityResult.Failed(new NotFoundError("Post not found"));
         }
 
-        public override async Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(string postPerPagePreference)
+        public override async Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(string postPerPagePreference,DateTime date)
         {
             List<MinimalPostDto> minimalPostDtos = new List<MinimalPostDto>();
             List<Post> posts = await _postRepository.GetAllWithCustomSearch(q =>
-                q.Where(p => p.DateTime > DateTime.Now.AddDays(-1)) 
+                q.Where(p => p.DateTime.Date == date.Date) 
                 .OrderByDescending(p => p.Likes) 
                 .Take(int.Parse(postPerPagePreference)) 
                  );
@@ -84,15 +84,17 @@ namespace _1_BusinessLayer.Concrete.Services
             return ObjectIdentityResult<List<MinimalPostDto>>.Succeded(minimalPostDtos);
         }
 
-        public override async Task<ObjectIdentityResult<PostDto>> GetPostAsync(int postId, string? entryPerPagePreference = "10")
-        {
-            
+        public override async Task<ObjectIdentityResult<PostDto>> GetPostAsync(int postId, int page, string? entryPerPagePreference = "10")
+        {            
             var post = await _postRepository.GetByIdAsync(postId);
             if (post != null)
             {
+                var entryCount = _entryRepository.GetCountByPostId(postId);
+                var intEntryPerPagePreference = int.Parse(entryPerPagePreference);
                 var user = await _userRepository.GetByIdAsync((int)post.UserId);
                 var bot = await _botRepository.GetByIdAsync((int)post.BotId);
-                var entries = await _entryRepository.GetAllByPostId(postId);
+                var entries = await _entryRepository.GetAllByPostId
+                    (postId,page*intEntryPerPagePreference - intEntryPerPagePreference, page* intEntryPerPagePreference);
                 var likes = await _likeRepository.GetAllByPostIdAsync(postId);
                 foreach (var postLike in likes)
                 {
@@ -122,11 +124,11 @@ namespace _1_BusinessLayer.Concrete.Services
 
         }
 
-        public override async Task<ObjectIdentityResult<List<MinimalPostDto>>> GetTrendingPosts(string postPerPagePreference)
+        public override async Task<ObjectIdentityResult<List<MinimalPostDto>>> GetTrendingPosts(string postPerPagePreference,DateTime date)
         {
             List<MinimalPostDto> minimalPostDtos = new List<MinimalPostDto>();
             List<Post> posts = await _postRepository.GetAllWithCustomSearch(q =>
-                     q.Where(p => p.DateTime > DateTime.Now.AddDays(-3)) // Son 3 gün içindeki postları al
+                     q.Where(p => p.DateTime.Date > date.AddDays(-3)) // Son 3 gün içindeki postları al
                      .OrderByDescending(p => p.Likes) // Beğeni sayısına göre azalan sırala
                      .Take(int.Parse(postPerPagePreference)) // Opsiyonel: En çok beğeni alan ilk 10 postu getir
                       );
