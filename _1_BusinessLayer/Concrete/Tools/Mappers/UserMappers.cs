@@ -73,7 +73,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
                 Posts = postProfileDtos,
                 Likes = minimalLikeDtos,
                 Followers = followedDtos,
-                Followings = followedDtos,
+                Followed = followedDtos,
             };
         }
 

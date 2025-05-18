@@ -118,6 +118,54 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
+        public override async Task<int> GetEntryCount(int id)
+        {
+            try
+            {
+                var entryCount = await _context.Entries.CountAsync(entry => entry.BotId == id);
+                return entryCount;
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                _logger.LogError(sqlEx, "SQL Error in GetByIdAsync with BotId {BotId}", id);
+                throw;
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByIdAsync with BotId {BotId}", id);
+                throw;
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetByIdAsync with BotId {BotId}", id);
+                throw;
+            }
+        }
+
+        public override async Task<int> GetPostCount(int id)
+        {
+            try
+            {
+                var postCount = await _context.Posts.CountAsync(post => post.BotId == id);
+                return postCount;
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                _logger.LogError(sqlEx, "SQL Error in GetByIdAsync with BotId {BotId}", id);
+                throw;
+            }
+            catch (InvalidOperationException invalidOpEx)
+            {
+                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByIdAsync with BotId {BotId}", id);
+                throw;
+            }
+            catch (DbUpdateException dbUpdateEx)
+            {
+                _logger.LogError(dbUpdateEx, "Database Update Error in GetByIdAsync with BotId {BotId}", id);
+                throw;
+            }
+        }
+
         public override async Task<List<Bot>> GetRandomBots(int number)
         {
             try

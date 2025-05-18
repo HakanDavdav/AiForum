@@ -23,7 +23,7 @@ namespace _1_BusinessLayer.Concrete.Dtos.UserDtos
         public ICollection<PostProfileDto> Posts { get; set; }
         public ICollection<EntryProfileDto> Entries { get; set; }
         public ICollection<MinimalLikeDto> Likes { get; set; }
-        public ICollection<FollowProfileDto> Followings { get; set; }
+        public ICollection<FollowProfileDto> Followed { get; set; }
         public ICollection<FollowProfileDto> Followers { get; set; }
     }
 }

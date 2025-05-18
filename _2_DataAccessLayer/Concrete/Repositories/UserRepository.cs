@@ -256,5 +256,17 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public override async Task<int> GetEntryCount(int id)
+        {
+            var entryCount = await _context.Entries.CountAsync(e => e.UserId == id);
+            return entryCount;
+        }
+
+        public override async Task<int> GetPostCount(int id)
+        {
+            var postCount = await _context.Posts.CountAsync(p => p.UserId == id);
+            return postCount;
+        }
     }
 }

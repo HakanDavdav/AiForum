@@ -207,6 +207,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
+        public override async Task<int> GetEntryCount(int id)
+        {
+             var entryCount = await _context.Entries.CountAsync(entry => entry.PostId == id);
+            return entryCount;
+        }
+
         public override async Task<List<Post>> GetRandomPosts(int number)
         {
             try
