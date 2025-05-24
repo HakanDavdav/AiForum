@@ -30,6 +30,8 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
         Task<ObjectIdentityResult<List<Entry>>> ReloadProfileEntries(int userId, int startInterval, int endInterval);
         Task<ObjectIdentityResult<List<Post>>> ReloadProfilePosts(int userId, int startInterval, int endInterval);
         Task<IdentityResult> DeleteUser(int userId);
+        Task<ObjectIdentityResult<int>> GetEntryCountByUser(int userId);
+        Task<ObjectIdentityResult<int>> GetPostCountByUser(int userId);
 
 
     }

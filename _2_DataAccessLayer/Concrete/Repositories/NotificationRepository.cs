@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
@@ -20,21 +19,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                return await _context.Notifications.AnyAsync(notification => notification.NotificationId == id);
+                return await _context.Notifications.AnyAsync(n => n.NotificationId == id);
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in CheckEntity with NotificationId {NotificationId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in CheckEntity with NotificationId {NotificationId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in CheckEntity with NotificationId {NotificationId}", id);
+                _logger.LogError(ex, "Error in CheckEntity with NotificationId {NotificationId}", id);
                 throw;
             }
         }
@@ -46,19 +35,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _context.Notifications.Remove(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in DeleteAsync for NotificationId {NotificationId}", t.NotificationId);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in DeleteAsync for NotificationId {NotificationId}", t.NotificationId);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in DeleteAsync for NotificationId {NotificationId}", t.NotificationId);
+                _logger.LogError(ex, "Error in DeleteAsync for NotificationId {NotificationId}", t.NotificationId);
                 throw;
             }
         }
@@ -67,22 +46,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                IQueryable<Notification> notifications = _context.Notifications.Where(notification => notification.UserId == id);
-                return await notifications.ToListAsync();
+                var query = _context.Notifications.Where(n => n.UserId == id);
+                return await query.ToListAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetAllByUserIdAsync with UserId {UserId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetAllByUserIdAsync with UserId {UserId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetAllByUserIdAsync with UserId {UserId}", id);
+                _logger.LogError(ex, "Error in GetAllByUserIdWithIntervalsAsync with UserId {UserId}", id);
                 throw;
             }
         }
@@ -96,22 +65,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                var notification = await _context.Notifications.FirstOrDefaultAsync(notification => notification.NotificationId == id);
-                return notification;
+                return await _context.Notifications.FirstOrDefaultAsync(n => n.NotificationId == id);
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetByIdAsync with NotificationId {NotificationId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByIdAsync with NotificationId {NotificationId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetByIdAsync with NotificationId {NotificationId}", id);
+                _logger.LogError(ex, "Error in GetByIdAsync with NotificationId {NotificationId}", id);
                 throw;
             }
         }
@@ -123,19 +81,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 await _context.Notifications.AddAsync(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in InsertAsync for NotificationId {NotificationId}", t.NotificationId);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in InsertAsync for NotificationId {NotificationId}", t.NotificationId);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in InsertAsync for NotificationId {NotificationId}", t.NotificationId);
+                _logger.LogError(ex, "Error in InsertAsync for NotificationId {NotificationId}", t.NotificationId);
                 throw;
             }
         }
@@ -147,19 +95,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _context.Notifications.Update(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in UpdateAsync for NotificationId {NotificationId}", t.NotificationId);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in UpdateAsync for NotificationId {NotificationId}", t.NotificationId);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in UpdateAsync for NotificationId {NotificationId}", t.NotificationId);
+                _logger.LogError(ex, "Error in UpdateAsync for NotificationId {NotificationId}", t.NotificationId);
                 throw;
             }
         }

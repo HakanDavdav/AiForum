@@ -25,6 +25,7 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
         //Self-Preference check
         Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(string postPerPagePreference, DateTime date);
         Task<ObjectIdentityResult<PostDto>> GetPostAsync(int postId, int page, string? entryPerPagePreference);
+        Task<ObjectIdentityResult<int>> GetEntryCountByPost(int postId);
 
 
 

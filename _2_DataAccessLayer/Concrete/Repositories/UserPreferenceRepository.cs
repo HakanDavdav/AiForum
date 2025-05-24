@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
@@ -20,21 +19,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                return await _context.UserPreferences.AnyAsync(userPreference => userPreference.UserPreferenceId == id);
+                return await _context.UserPreferences.AnyAsync(up => up.UserPreferenceId == id);
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in CheckEntity with UserPreferenceId {UserPreferenceId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in CheckEntity with UserPreferenceId {UserPreferenceId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in CheckEntity with UserPreferenceId {UserPreferenceId}", id);
+                _logger.LogError(ex, "Error in CheckEntity with UserPreferenceId {UserPreferenceId}", id);
                 throw;
             }
         }
@@ -46,19 +35,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _context.UserPreferences.Remove(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in DeleteAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in DeleteAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in DeleteAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
+                _logger.LogError(ex, "Error in DeleteAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
                 throw;
             }
         }
@@ -72,22 +51,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                var userPreference = await _context.UserPreferences.FirstOrDefaultAsync(userpreference => userpreference.UserPreferenceId == id);
-                return userPreference;
+                return await _context.UserPreferences.FirstOrDefaultAsync(up => up.UserPreferenceId == id);
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetByIdAsync with UserPreferenceId {UserPreferenceId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByIdAsync with UserPreferenceId {UserPreferenceId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetByIdAsync with UserPreferenceId {UserPreferenceId}", id);
+                _logger.LogError(ex, "Error in GetByIdAsync with UserPreferenceId {UserPreferenceId}", id);
                 throw;
             }
         }
@@ -96,22 +64,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                var userPreference = await _context.UserPreferences.FirstOrDefaultAsync(userpreference => userpreference.UserId == id);
-                return userPreference;
+                return await _context.UserPreferences.FirstOrDefaultAsync(up => up.UserId == id);
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetByUserIdAsync with UserId {UserId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByUserIdAsync with UserId {UserId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetByUserIdAsync with UserId {UserId}", id);
+                _logger.LogError(ex, "Error in GetByUserIdAsync with UserId {UserId}", id);
                 throw;
             }
         }
@@ -123,19 +80,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 await _context.UserPreferences.AddAsync(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in InsertAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in InsertAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in InsertAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
+                _logger.LogError(ex, "Error in InsertAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
                 throw;
             }
         }
@@ -147,19 +94,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _context.UserPreferences.Update(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in UpdateAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in UpdateAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in UpdateAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
+                _logger.LogError(ex, "Error in UpdateAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
                 throw;
             }
         }

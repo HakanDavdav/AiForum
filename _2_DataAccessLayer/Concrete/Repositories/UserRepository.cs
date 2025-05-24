@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Concrete.Repositories
@@ -24,19 +22,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             {
                 return await _context.Users.AnyAsync(user => user.Id == id);
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in CheckEntity with UserId {UserId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in CheckEntity with UserId {UserId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in CheckEntity with UserId {UserId}", id);
+                _logger.LogError(ex, "Error in CheckEntity with UserId {UserId}", id);
                 throw;
             }
         }
@@ -48,19 +36,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _context.Users.Remove(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in DeleteAsync for UserId {UserId}", t.Id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in DeleteAsync for UserId {UserId}", t.Id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in DeleteAsync for UserId {UserId}", t.Id);
+                _logger.LogError(ex, "Error in DeleteAsync for UserId {UserId}", t.Id);
                 throw;
             }
         }
@@ -71,19 +49,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             {
                 return await _context.Users.FirstOrDefaultAsync(user => user.Id == id);
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetByIdAsync with UserId {UserId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByIdAsync with UserId {UserId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetByIdAsync with UserId {UserId}", id);
+                _logger.LogError(ex, "Error in GetByIdAsync with UserId {UserId}", id);
                 throw;
             }
         }
@@ -94,19 +62,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             {
                 return await _context.Users.FirstOrDefaultAsync(user => user.UserName == name);
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetByUsernameAsync with Username {Username}", name);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByUsernameAsync with Username {Username}", name);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetByUsernameAsync with Username {Username}", name);
+                _logger.LogError(ex, "Error in GetByUsernameAsync with Username {Username}", name);
                 throw;
             }
         }
@@ -117,19 +75,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             {
                 return await _context.Users.FirstOrDefaultAsync(user => user.Email == email);
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetByEmailAsync with Email {Email}", email);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByEmailAsync with Email {Email}", email);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetByEmailAsync with Email {Email}", email);
+                _logger.LogError(ex, "Error in GetByEmailAsync with Email {Email}", email);
                 throw;
             }
         }
@@ -141,19 +89,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 await _context.Users.AddAsync(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in InsertAsync for UserId {UserId}", t.Id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in InsertAsync for UserId {UserId}", t.Id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in InsertAsync for UserId {UserId}", t.Id);
+                _logger.LogError(ex, "Error in InsertAsync for UserId {UserId}", t.Id);
                 throw;
             }
         }
@@ -165,19 +103,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _context.Update(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in UpdateAsync for UserId {UserId}", t.Id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in UpdateAsync for UserId {UserId}", t.Id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in UpdateAsync for UserId {UserId}", t.Id);
+                _logger.LogError(ex, "Error in UpdateAsync for UserId {UserId}", t.Id);
                 throw;
             }
         }
@@ -188,19 +116,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             {
                 return await _context.Users.FirstOrDefaultAsync(user => user.ProfileName == profileName);
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetByProfileNameAsync with ProfileName {ProfileName}", profileName);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByProfileNameAsync with ProfileName {ProfileName}", profileName);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetByProfileNameAsync with ProfileName {ProfileName}", profileName);
+                _logger.LogError(ex, "Error in GetByProfileNameAsync with ProfileName {ProfileName}", profileName);
                 throw;
             }
         }
@@ -211,19 +129,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             {
                 return await _context.Users.FirstOrDefaultAsync(user => user.PhoneNumber == phoneNumber);
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetByPhoneNumberAsync with PhoneNumber {PhoneNumber}", phoneNumber);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByPhoneNumberAsync with PhoneNumber {PhoneNumber}", phoneNumber);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetByPhoneNumberAsync with PhoneNumber {PhoneNumber}", phoneNumber);
+                _logger.LogError(ex, "Error in GetByPhoneNumberAsync with PhoneNumber {PhoneNumber}", phoneNumber);
                 throw;
             }
         }
@@ -232,22 +140,14 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                IQueryable<User> users = _context.Users.OrderBy(user => Guid.NewGuid()).Take(number);
-                return await users.ToListAsync();
+                return await _context.Users
+                    .OrderBy(u => Guid.NewGuid())
+                    .Take(number)
+                    .ToListAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetRandomUsers");
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetRandomUsers");
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetRandomUsers");
+                _logger.LogError(ex, "Error in GetRandomUsers");
                 throw;
             }
         }
@@ -257,16 +157,14 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             throw new NotImplementedException();
         }
 
-        public override async Task<int> GetEntryCount(int id)
+        public override async Task<int> GetEntryCountByUserAsync(int id)
         {
-            var entryCount = await _context.Entries.CountAsync(e => e.UserId == id);
-            return entryCount;
+            return await _context.Entries.CountAsync(e => e.UserId == id);
         }
 
-        public override async Task<int> GetPostCount(int id)
+        public override async Task<int> GetPostCountByUserAsync(int id)
         {
-            var postCount = await _context.Posts.CountAsync(p => p.UserId == id);
-            return postCount;
+            return await _context.Posts.CountAsync(p => p.UserId == id);
         }
     }
 }

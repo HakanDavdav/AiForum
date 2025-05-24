@@ -157,6 +157,17 @@ namespace _1_BusinessLayer.Concrete.Services
 
         }
 
+        public override async Task<ObjectIdentityResult<int>> GetEntryCountByUser(int userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user != null)
+            {
+                var count = await _userRepository.GetEntryCountByUserAsync(userId);
+                return ObjectIdentityResult<int>.Succeded(count);
+            }
+            return ObjectIdentityResult<int>.Failed(0, new IdentityError[] { new NotFoundError("User not found") });
+        }
+
         public override async Task<ObjectIdentityResult<List<NotificationDto>>> GetNotificationsFromUser(int userId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
@@ -174,12 +185,25 @@ namespace _1_BusinessLayer.Concrete.Services
 
         }
 
+        public override async Task<ObjectIdentityResult<int>> GetPostCountByUser(int userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if(user != null)
+            {
+                var count = await _userRepository.GetPostCountByUserAsync(userId);
+                return ObjectIdentityResult<int>.Succeded(count);
+            }
+            return ObjectIdentityResult<int>.Failed(0, new IdentityError[] { new NotFoundError("User not found") });
+        }
+
         public override async Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
             {
-                List<Entry> entries = await _entryRepository.GetAllByUserIdAsync(userId,0,10);
+                var entryCount = await _entryRepository.GetEntryCountByUserIdAsync(userId);
+                var postCount = await _postRepository.GetPostCountByUserIdAsync(userId);
+                List<Entry> entries = await _entryRepository.GetAllByUserIdWithIntervalsAsync(userId,0,10);
                 List<Post> posts = await _postRepository.GetAllByUserIdAsync(userId,0,10);
                 List<Like> likes = await _likeRepository.GetAllByUserIdAsync(userId);
                 List<Follow> followers = await _followRepository.GetAllByUserIdAsFollowedWithInfoAsync(userId);
@@ -218,6 +242,8 @@ namespace _1_BusinessLayer.Concrete.Services
                 user.Followers = followers;
                 user.Followed = followed;
                 var userProfileDto = user.User_To_UserProfileDto();
+                userProfileDto.EntryCount = entryCount;
+                userProfileDto.PostCount = postCount;
                 return ObjectIdentityResult<UserProfileDto>.Succeded(userProfileDto);
             }
             return ObjectIdentityResult<UserProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("User not found") });
@@ -229,7 +255,7 @@ namespace _1_BusinessLayer.Concrete.Services
             var user = await _userRepository.GetByIdAsync(userId);
             if(user != null)
             {
-                List<Entry> entries = await _entryRepository.GetAllByUserIdAsync(userId, startInterval, endInterval);
+                List<Entry> entries = await _entryRepository.GetAllByUserIdWithIntervalsAsync(userId, startInterval, endInterval);
                 return ObjectIdentityResult<List<Entry>>.Succeded(entries);
             }
             return ObjectIdentityResult<List<Entry>>.Failed(null, new IdentityError[] { new NotFoundError("User not found") });

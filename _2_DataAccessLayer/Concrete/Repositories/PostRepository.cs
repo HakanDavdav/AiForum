@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
@@ -22,19 +21,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             {
                 return await _context.Posts.AnyAsync(post => post.PostId == id);
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in CheckEntity with PostId {PostId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in CheckEntity with PostId {PostId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in CheckEntity with PostId {PostId}", id);
+                _logger.LogError(ex, "Error in CheckEntity with PostId {PostId}", id);
                 throw;
             }
         }
@@ -46,67 +35,45 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _context.Posts.Remove(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in DeleteAsync for PostId {PostId}", t.PostId);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in DeleteAsync for PostId {PostId}", t.PostId);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in DeleteAsync for PostId {PostId}", t.PostId);
+                _logger.LogError(ex, "Error in DeleteAsync for PostId {PostId}", t.PostId);
                 throw;
             }
         }
 
-        public override async Task<List<Post>> GetAllByBotIdAsync(int id)
+        public override async Task<List<Post>> GetAllByBotIdAsync(int id, int startInterval, int endInterval)
         {
             try
             {
-                IQueryable<Post> posts = _context.Posts.Where(post => post.BotId == id);
-                return await posts.ToListAsync();
+                return await _context.Posts
+                    .Where(post => post.BotId == id)
+                    .OrderByDescending(post => post.DateTime)
+                    .Skip(startInterval)
+                    .Take(endInterval)
+                    .ToListAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetAllByBotIdAsync with BotId {BotId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetAllByBotIdAsync with BotId {BotId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetAllByBotIdAsync with BotId {BotId}", id);
+                _logger.LogError(ex, "Error in GetAllByBotIdWithIntervalsAsync with BotId {BotId}", id);
                 throw;
             }
         }
 
-        public override async Task<List<Post>> GetAllByUserIdAsync(int id,int startInterval, int endInterval)
+        public override async Task<List<Post>> GetAllByUserIdAsync(int id, int startInterval, int endInterval)
         {
             try
             {
-                IQueryable<Post> posts = _context.Posts.Where(post => post.UserId == id).OrderByDescending(post => post.DateTime).Skip(startInterval).Take(endInterval);
-                return await posts.ToListAsync();
+                return await _context.Posts
+                    .Where(post => post.UserId == id)
+                    .OrderByDescending(post => post.DateTime)
+                    .Skip(startInterval)
+                    .Take(endInterval)
+                    .ToListAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetAllByUserIdAsync with UserId {UserId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetAllByUserIdAsync with UserId {UserId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetAllByUserIdAsync with UserId {UserId}", id);
+                _logger.LogError(ex, "Error in GetAllByUserIdWithIntervalsAsync with UserId {UserId}", id);
                 throw;
             }
         }
@@ -115,23 +82,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                IQueryable<Post> query = _context.Posts;
-                query = queryModifier(query);
+                var query = queryModifier(_context.Posts);
                 return await query.ToListAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetAllWithCustomSearch");
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetAllWithCustomSearch");
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetAllWithCustomSearch");
+                _logger.LogError(ex, "Error in GetAllWithCustomSearch");
                 throw;
             }
         }
@@ -140,23 +96,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                var post = await _context.Posts
-                        .FirstOrDefaultAsync(post => post.Entries.Any(entry => entry.EntryId == id));
-                return post;
+                return await _context.Posts
+                    .FirstOrDefaultAsync(post => post.Entries.Any(entry => entry.EntryId == id));
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetByEntryId with EntryId {EntryId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByEntryId with EntryId {EntryId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetByEntryId with EntryId {EntryId}", id);
+                _logger.LogError(ex, "Error in GetByEntryId with EntryId {EntryId}", id);
                 throw;
             }
         }
@@ -167,19 +112,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             {
                 return await _context.Posts.FirstOrDefaultAsync(post => post.PostId == id);
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetByIdAsync with PostId {PostId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByIdAsync with PostId {PostId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetByIdAsync with PostId {PostId}", id);
+                _logger.LogError(ex, "Error in GetByIdAsync with PostId {PostId}", id);
                 throw;
             }
         }
@@ -190,49 +125,48 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             {
                 return await _context.Posts.FirstOrDefaultAsync(post => post.Title == title);
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetByTitleAsync with Title {Title}", title);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByTitleAsync with Title {Title}", title);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetByTitleAsync with Title {Title}", title);
+                _logger.LogError(ex, "Error in GetByTitleAsync with Title {Title}", title);
                 throw;
             }
         }
 
-        public override async Task<int> GetEntryCount(int id)
+        public override async Task<int> GetPostCountByBotIdAsync(int id)
         {
-             var entryCount = await _context.Entries.CountAsync(entry => entry.PostId == id);
-            return entryCount;
+            try
+            {
+                return await _context.Posts.CountAsync(post => post.BotId == id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetPostCountByBotIdAsync with UserId {BotId}", id);
+                throw;
+            }
+        }
+
+        public override async Task<int> GetPostCountByUserIdAsync(int id)
+        {
+            try
+            {
+                return await _context.Posts.CountAsync(post => post.UserId == id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetPostCountByUserIdAsync with UserId {UserId}", id);
+                throw;
+            }
         }
 
         public override async Task<List<Post>> GetRandomPosts(int number)
         {
             try
             {
-                IQueryable<Post> posts = _context.Posts.OrderBy(post => Guid.NewGuid()).Take(number);
-                return await posts.ToListAsync();
+                return await _context.Posts.OrderBy(post => Guid.NewGuid()).Take(number).ToListAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetRandomPosts");
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetRandomPosts");
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetRandomPosts");
+                _logger.LogError(ex, "Error in GetRandomPosts");
                 throw;
             }
         }
@@ -241,22 +175,15 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                IQueryable<Post> posts = _context.Posts.Where(post => post.BotId == id).OrderBy(post => Guid.NewGuid()).Take(number);
-                return await posts.ToListAsync();
+                return await _context.Posts
+                    .Where(post => post.BotId == id)
+                    .OrderBy(post => Guid.NewGuid())
+                    .Take(number)
+                    .ToListAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetRandomPostsByBotId with BotId {BotId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetRandomPostsByBotId with BotId {BotId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetRandomPostsByBotId with BotId {BotId}", id);
+                _logger.LogError(ex, "Error in GetRandomPostsByBotId with BotId {BotId}", id);
                 throw;
             }
         }
@@ -265,22 +192,15 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                IQueryable<Post> posts = _context.Posts.Where(post => post.UserId == id).OrderBy(post => Guid.NewGuid()).Take(number);
-                return await posts.ToListAsync();
+                return await _context.Posts
+                    .Where(post => post.UserId == id)
+                    .OrderBy(post => Guid.NewGuid())
+                    .Take(number)
+                    .ToListAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetRandomPostsByUserId with UserId {UserId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetRandomPostsByUserId with UserId {UserId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetRandomPostsByUserId with UserId {UserId}", id);
+                _logger.LogError(ex, "Error in GetRandomPostsByUserId with UserId {UserId}", id);
                 throw;
             }
         }
@@ -292,19 +212,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 await _context.Posts.AddAsync(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in InsertAsync for PostId {PostId}", t.PostId);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in InsertAsync for PostId {PostId}", t.PostId);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in InsertAsync for PostId {PostId}", t.PostId);
+                _logger.LogError(ex, "Error in InsertAsync for Post with Title {Title}", t.Title);
                 throw;
             }
         }
@@ -316,19 +226,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _context.Posts.Update(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in UpdateAsync for PostId {PostId}", t.PostId);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in UpdateAsync for PostId {PostId}", t.PostId);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in UpdateAsync for PostId {PostId}", t.PostId);
+                _logger.LogError(ex, "Error in UpdateAsync for PostId {PostId}", t.PostId);
                 throw;
             }
         }

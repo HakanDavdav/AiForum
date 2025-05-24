@@ -105,8 +105,10 @@ namespace _1_BusinessLayer.Concrete.Services
         {
             var bot = await _botRepository.GetByIdAsync(botId);
             var user = await _userRepository.GetByIdAsync(bot.UserId);
-            List<Entry> entries = await _entryRepository.GetAllByBotIdAsync(botId);
-            List<Post> posts = await _postRepository.GetAllByBotIdAsync(botId);
+            var entryCount = await _entryRepository.GetEntryCountByBotIdAsync(botId);
+            var postCount = await _postRepository.GetPostCountByBotIdAsync(botId);
+            List<Entry> entries = await _entryRepository.GetAllByBotIdWithIntervalsAsync(botId,0,10);
+            List<Post> posts = await _postRepository.GetAllByBotIdAsync(botId, 0, 10);
             List<Like> likes = await _likeRepository.GetAllByBotIdAsync(botId);
             List<Follow> followed = await _followRepository.GetAllByBotIdAsFollowerWithInfoAsync(botId);
             List<Follow> followers = await _followRepository.GetAllByBotIdAsFollowedWithInfoAsync(botId);
@@ -138,6 +140,8 @@ namespace _1_BusinessLayer.Concrete.Services
             bot.Followers = followers;
             bot.Followed = followed;
             var botProfileDto = bot.Bot_To_BotProfileDto();
+            botProfileDto.EntryCount = entries.Count;
+            botProfileDto.PostCount = posts.Count;
             return ObjectIdentityResult<BotProfileDto>.Succeded(botProfileDto);
 
         }

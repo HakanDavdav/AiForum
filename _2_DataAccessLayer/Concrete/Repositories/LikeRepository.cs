@@ -21,19 +21,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             {
                 return await _context.Likes.AnyAsync(like => like.LikeId == id);
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in CheckEntity with LikeId {LikeId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in CheckEntity with LikeId {LikeId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in CheckEntity with LikeId {LikeId}", id);
+                _logger.LogError(ex, "Error in CheckEntity with LikeId {LikeId}", id);
                 throw;
             }
         }
@@ -45,19 +35,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _context.Likes.Remove(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in DeleteAsync for LikeId {LikeId}", t.LikeId);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in DeleteAsync for LikeId {LikeId}", t.LikeId);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in DeleteAsync for LikeId {LikeId}", t.LikeId);
+                _logger.LogError(ex, "Error in DeleteAsync for LikeId {LikeId}", t.LikeId);
                 throw;
             }
         }
@@ -66,22 +46,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                IQueryable<Like> likes = _context.Likes.Where(like => like.BotId == id);
-                return await likes.ToListAsync();
+                var query = _context.Likes.Where(like => like.BotId == id);
+                return await query.ToListAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetAllByBotIdAsync with BotId {BotId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetAllByBotIdAsync with BotId {BotId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetAllByBotIdAsync with BotId {BotId}", id);
+                _logger.LogError(ex, "Error in GetAllByBotIdWithIntervalsAsync with BotId {BotId}", id);
                 throw;
             }
         }
@@ -90,22 +60,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                IQueryable<Like> likes = _context.Likes.Where(like => like.EntryId == id);
-                return await likes.ToListAsync();
+                var query = _context.Likes.Where(like => like.EntryId == id);
+                return await query.ToListAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetAllByEntryIdAsync with EntryId {EntryId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetAllByEntryIdAsync with EntryId {EntryId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetAllByEntryIdAsync with EntryId {EntryId}", id);
+                _logger.LogError(ex, "Error in GetAllByEntryIdAsync with EntryId {EntryId}", id);
                 throw;
             }
         }
@@ -114,22 +74,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                IQueryable<Like> likes = _context.Likes.Where(like => like.PostId == id);
-                return await likes.ToListAsync();
+                var query = _context.Likes.Where(like => like.PostId == id);
+                return await query.ToListAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetAllByPostIdAsync with PostId {PostId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetAllByPostIdAsync with PostId {PostId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetAllByPostIdAsync with PostId {PostId}", id);
+                _logger.LogError(ex, "Error in GetAllByPostIdAsync with PostId {PostId}", id);
                 throw;
             }
         }
@@ -138,22 +88,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                IQueryable<Like> likes = _context.Likes.Where(like => like.UserId == id);
-                return await likes.ToListAsync();
+                var query = _context.Likes.Where(like => like.UserId == id);
+                return await query.ToListAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetAllByUserIdAsync with UserId {UserId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetAllByUserIdAsync with UserId {UserId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetAllByUserIdAsync with UserId {UserId}", id);
+                _logger.LogError(ex, "Error in GetAllByUserIdWithIntervalsAsync with UserId {UserId}", id);
                 throw;
             }
         }
@@ -167,22 +107,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                Like like = await _context.Likes.FirstOrDefaultAsync(like => like.LikeId == id);
-                return like;
+                return await _context.Likes.FirstOrDefaultAsync(like => like.LikeId == id);
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetByIdAsync with LikeId {LikeId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByIdAsync with LikeId {LikeId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetByIdAsync with LikeId {LikeId}", id);
+                _logger.LogError(ex, "Error in GetByIdAsync with LikeId {LikeId}", id);
                 throw;
             }
         }
@@ -194,19 +123,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 await _context.Likes.AddAsync(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in InsertAsync for LikeId {LikeId}", t.LikeId);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in InsertAsync for LikeId {LikeId}", t.LikeId);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in InsertAsync for LikeId {LikeId}", t.LikeId);
+                _logger.LogError(ex, "Error in InsertAsync for LikeId {LikeId}", t.LikeId);
                 throw;
             }
         }
@@ -218,19 +137,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _context.Likes.Update(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in UpdateAsync for LikeId {LikeId}", t.LikeId);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in UpdateAsync for LikeId {LikeId}", t.LikeId);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in UpdateAsync for LikeId {LikeId}", t.LikeId);
+                _logger.LogError(ex, "Error in UpdateAsync for LikeId {LikeId}", t.LikeId);
                 throw;
             }
         }

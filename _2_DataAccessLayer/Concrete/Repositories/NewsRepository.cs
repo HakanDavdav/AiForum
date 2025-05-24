@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
@@ -22,19 +21,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             {
                 return await _context.News.AnyAsync(news => news.NewsId == id);
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in CheckEntity with NewsId {NewsId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in CheckEntity with NewsId {NewsId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in CheckEntity with NewsId {NewsId}", id);
+                _logger.LogError(ex, "Error in CheckEntity with NewsId {NewsId}", id);
                 throw;
             }
         }
@@ -46,19 +35,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _context.Remove(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in DeleteAsync for NewsId {NewsId}", t.NewsId);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in DeleteAsync for NewsId {NewsId}", t.NewsId);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in DeleteAsync for NewsId {NewsId}", t.NewsId);
+                _logger.LogError(ex, "Error in DeleteAsync for NewsId {NewsId}", t.NewsId);
                 throw;
             }
         }
@@ -72,22 +51,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                News news = await _context.News.FirstOrDefaultAsync(news => news.NewsId == id);
-                return news;
+                return await _context.News.FirstOrDefaultAsync(news => news.NewsId == id);
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetByIdAsync with NewsId {NewsId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByIdAsync with NewsId {NewsId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetByIdAsync with NewsId {NewsId}", id);
+                _logger.LogError(ex, "Error in GetByIdAsync with NewsId {NewsId}", id);
                 throw;
             }
         }
@@ -96,22 +64,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                IQueryable<News> news = _context.News.OrderBy(news => Guid.NewGuid()).Take(number);
-                return await news.ToListAsync();
+                var query = _context.News.OrderBy(n => Guid.NewGuid()).Take(number);
+                return await query.ToListAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetRandomNews");
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetRandomNews");
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetRandomNews");
+                _logger.LogError(ex, "Error in GetRandomNews");
                 throw;
             }
         }
@@ -123,19 +81,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 await _context.News.AddAsync(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in InsertAsync for NewsId {NewsId}", t.NewsId);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in InsertAsync for NewsId {NewsId}", t.NewsId);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in InsertAsync for NewsId {NewsId}", t.NewsId);
+                _logger.LogError(ex, "Error in InsertAsync for NewsId {NewsId}", t.NewsId);
                 throw;
             }
         }

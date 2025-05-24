@@ -16,8 +16,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public string? City { get; set; }
         public int DailyOperationCount {  get; set; }
         public bool IsProfileCreated { get; set; }
-        public DateTime DateTime { get; set; }
-
+        public DateTime DateTime { get; set; } 
 
 
 

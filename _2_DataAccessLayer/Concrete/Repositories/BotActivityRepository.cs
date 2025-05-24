@@ -6,7 +6,6 @@ using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Serilog;
 
 namespace _2_DataAccessLayer.Concrete.Repositories
 {
@@ -22,19 +21,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             {
                 return await _context.Activities.AnyAsync(activity => activity.ActivityId == id);
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in CheckEntity with ActivityId {ActivityId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in CheckEntity with ActivityId {ActivityId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in CheckEntity with ActivityId {ActivityId}", id);
+                _logger.LogError(ex, "Error in CheckEntity with ActivityId {ActivityId}", id);
                 throw;
             }
         }
@@ -46,19 +35,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _context.Activities.Remove(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in DeleteAsync for ActivityId {ActivityId}", t.ActivityId);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in DeleteAsync for ActivityId {ActivityId}", t.ActivityId);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in DeleteAsync for ActivityId {ActivityId}", t.ActivityId);
+                _logger.LogError(ex, "Error in DeleteAsync for ActivityId {ActivityId}", t.ActivityId);
                 throw;
             }
         }
@@ -67,50 +46,15 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                IQueryable<BotActivity> botActivities = _context.Activities.Where(activity => activity.BotId == id);
-                return await botActivities.ToListAsync();
+                var query = _context.Activities.Where(activity => activity.BotId == id);
+                return await query.ToListAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetAllByBotIdAsync with BotId {BotId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetAllByBotIdAsync with BotId {BotId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetAllByBotIdAsync with BotId {BotId}", id);
+                _logger.LogError(ex, "Error in GetAllByBotIdWithIntervalsAsync with BotId {BotId}", id);
                 throw;
             }
         }
-
-        public override async Task<List<BotActivity>> GetAllByUserIdAsync(int id)
-        {
-            try
-            {
-                IQueryable<BotActivity> botActivities = _context.Activities.Where(activity => activity.ActivityId == id);
-                return await botActivities.ToListAsync();
-            }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
-            {
-                _logger.LogError(sqlEx, "SQL Error in GetAllByUserIdAsync with UserId {UserId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetAllByUserIdAsync with UserId {UserId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetAllByUserIdAsync with UserId {UserId}", id);
-                throw;
-            }
-        }
-
         public override Task<List<BotActivity>> GetAllWithCustomSearch(Func<IQueryable<BotActivity>, IQueryable<BotActivity>> queryModifier)
         {
             throw new NotImplementedException();
@@ -120,22 +64,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                var activity = await _context.Activities.FirstOrDefaultAsync(activity => activity.ActivityId == id);
-                return activity;
+                return await _context.Activities.FirstOrDefaultAsync(activity => activity.ActivityId == id);
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in GetByIdAsync with ActivityId {ActivityId}", id);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in GetByIdAsync with ActivityId {ActivityId}", id);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in GetByIdAsync with ActivityId {ActivityId}", id);
+                _logger.LogError(ex, "Error in GetByIdAsync with ActivityId {ActivityId}", id);
                 throw;
             }
         }
@@ -144,22 +77,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                _context.Activities.Add(t);
+                await _context.Activities.AddAsync(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in InsertAsync for ActivityId {ActivityId}", t.ActivityId);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in InsertAsync for ActivityId {ActivityId}", t.ActivityId);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in InsertAsync for ActivityId {ActivityId}", t.ActivityId);
+                _logger.LogError(ex, "Error in InsertAsync for ActivityId {ActivityId}", t.ActivityId);
                 throw;
             }
         }
@@ -171,19 +94,9 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _context.Activities.Update(t);
                 await _context.SaveChangesAsync();
             }
-            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            catch (Exception ex)
             {
-                _logger.LogError(sqlEx, "SQL Error in UpdateAsync for ActivityId {ActivityId}", t.ActivityId);
-                throw;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "Invalid Operation Error in UpdateAsync for ActivityId {ActivityId}", t.ActivityId);
-                throw;
-            }
-            catch (DbUpdateException dbUpdateEx)
-            {
-                _logger.LogError(dbUpdateEx, "Database Update Error in UpdateAsync for ActivityId {ActivityId}", t.ActivityId);
+                _logger.LogError(ex, "Error in UpdateAsync for ActivityId {ActivityId}", t.ActivityId);
                 throw;
             }
         }
