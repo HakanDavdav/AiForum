@@ -157,12 +157,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             throw new NotImplementedException();
         }
 
-        public override async Task<int> GetEntryCountByUserAsync(int id)
+        public override async Task<int> GetEntryCountOfUserAsync(int id)
         {
             return await _context.Entries.CountAsync(e => e.UserId == id);
         }
 
-        public override async Task<int> GetPostCountByUserAsync(int id)
+        public override async Task<int> GetPostCountOfUserAsync(int id)
         {
             return await _context.Posts.CountAsync(p => p.UserId == id);
         }

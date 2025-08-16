@@ -16,17 +16,13 @@ namespace _2_DataAccessLayer.Abstractions
         {
         }
         public abstract Task<Post> GetByTitleAsync(string title);
-        public abstract Task<List<Post>> GetAllByUserIdAsync(int id,int startInterval, int endInterval);
-        public abstract Task<List<Post>> GetAllByBotIdAsync(int id,int startInterval, int endInterval);
+        public abstract Task<List<Post>> GetAllByUserIdWithIntervalAsync(int id,int startInterval, int endInterval);
+        public abstract Task<List<Post>> GetAllByBotIdWithIntervalAsync(int id,int startInterval, int endInterval);
         public abstract Task<List<Post>> GetRandomPosts(int number);
         public abstract Task<List<Post>> GetRandomPostsByUserId(int id, int number);
         public abstract Task<List<Post>> GetRandomPostsByBotId(int id, int number);
         public abstract Task<Post> GetByEntryId(int id);
-        public abstract Task<int> GetPostCountByUserIdAsync(int id);
-        public abstract Task<int> GetPostCountByBotIdAsync(int id);
-
-
-
+        public abstract Task<int> GetEntryCountOfPost(int id);
 
     }
 }

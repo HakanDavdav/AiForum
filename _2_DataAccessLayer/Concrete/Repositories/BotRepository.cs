@@ -74,6 +74,34 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
+        public override async Task<int> GetEntryCountOfBotAsync(int id)
+        {
+            try
+            {
+                return await _context.Entries.CountAsync(entry => entry.BotId == id);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex, "Error in  GetEntryCountOfBotAsync with BotId {BotId}", id);
+                throw;
+            }
+        }
+
+        public override async Task<int> GetPostCountOfBotAsync(int id)
+        {
+            try
+            {
+                return await _context.Posts.CountAsync(post => post.BotId == id);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex, "Error in  GetPostCountOfBotAsync with BotId {BotId}", id);
+                throw;
+            }
+        }
+
         public override async Task<List<Bot>> GetRandomBots(int number)
         {
             try

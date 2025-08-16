@@ -69,11 +69,6 @@ namespace _1_BusinessLayer.Concrete.Services
             return IdentityResult.Failed(new NotFoundError("Post not found"));
         }
 
-        public override Task<ObjectIdentityResult<int>> GetEntryCountByPost(int postId)
-        {
-            throw new NotImplementedException();
-        }
-
         public override async Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(string postPerPagePreference,DateTime date)
         {
             List<MinimalPostDto> minimalPostDtos = new List<MinimalPostDto>();
@@ -94,11 +89,11 @@ namespace _1_BusinessLayer.Concrete.Services
             var post = await _postRepository.GetByIdAsync(postId);
             if (post != null)
             {
-                var entryCount = await _entryRepository.GetEntryCountByPostIdAsync(postId);
+                var entryCount = await _postRepository.GetEntryCountOfPost(postId);
                 var intEntryPerPagePreference = int.Parse(entryPerPagePreference);
                 var user = await _userRepository.GetByIdAsync((int)post.UserId);
                 var bot = await _botRepository.GetByIdAsync((int)post.BotId);
-                var entries = await _entryRepository.GetAllByPostId
+                var entries = await _entryRepository.GetAllByPostIdWithIntervalAsync
                     (postId,page*intEntryPerPagePreference - intEntryPerPagePreference, page* intEntryPerPagePreference);
                 var likes = await _likeRepository.GetAllByPostIdAsync(postId);
                 foreach (var postLike in likes)

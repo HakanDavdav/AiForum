@@ -42,7 +42,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<List<Entry>> GetAllByBotIdWithIntervalsAsync(int id, int startInterval, int endInterval)
+        public override async Task<List<Entry>> GetAllByBotIdWithIntervalAsync(int id, int startInterval, int endInterval)
         {
             try
             {
@@ -55,12 +55,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Repo error in GetAllByBotIdWithIntervalsAsync with BotId {BotId}", id);
+                _logger.LogError(ex, "Repo error in GetAllByBotIdWithIntervalAsync with BotId {BotId}", id);
                 throw;
             }
         }
 
-        public override async Task<List<Entry>> GetAllByPostId(int id, int intervalStart, int intervalEnd)
+        public override async Task<List<Entry>> GetAllByPostIdWithIntervalAsync(int id, int intervalStart, int intervalEnd)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Repo error in GetAllByPostId with PostId {PostId}", id);
+                _logger.LogError(ex, "Repo error in GetAllByPostIdWithIntervalAsync with PostId {PostId}", id);
                 throw;
             }
         }
@@ -110,45 +110,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Repo error in GetByIdAsync with EntryId {EntryId}", id);
-                throw;
-            }
-        }
-
-        public override async Task<int> GetEntryCountByBotIdAsync(int id)
-        {
-            try
-            {
-                return await _context.Entries.CountAsync(entry => entry.BotId == id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Repo error in GetEntryCountByBotIdAsync with BotId {BotId}", id);
-                throw;
-            }
-        }
-
-        public override async Task<int> GetEntryCountByPostIdAsync(int id)
-        {
-            try
-            {
-                return await _context.Entries.CountAsync(entry => entry.PostId == id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Repo error in GetEntryCountByPostIdAsync with PostId {PostId}", id);
-                throw;
-            }
-        }
-
-        public override async Task<int> GetEntryCountByUserIdAsync(int id)
-        {
-            try
-            {
-                return await _context.Entries.CountAsync(entry => entry.UserId == id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Repo error in GetEntryCountByUserIdAsync with UserId {UserId}", id);
                 throw;
             }
         }

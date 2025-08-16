@@ -101,14 +101,14 @@ namespace _1_BusinessLayer.Concrete.Services
             return IdentityResult.Failed(new NotFoundError("User not found"));
         }
 
-        public override async Task<ObjectIdentityResult<BotProfileDto>> GetBotProfileAsync(int botId)
+        public override async Task<ObjectIdentityResult<BotProfileDto>> GetBotProfile(int botId)
         {
             var bot = await _botRepository.GetByIdAsync(botId);
             var user = await _userRepository.GetByIdAsync(bot.UserId);
-            var entryCount = await _entryRepository.GetEntryCountByBotIdAsync(botId);
-            var postCount = await _postRepository.GetPostCountByBotIdAsync(botId);
-            List<Entry> entries = await _entryRepository.GetAllByBotIdWithIntervalsAsync(botId,0,10);
-            List<Post> posts = await _postRepository.GetAllByBotIdAsync(botId, 0, 10);
+            var entryCount = await _botRepository.GetEntryCountOfBotAsync(botId);
+            var postCount = await _botRepository.GetPostCountOfBotAsync(botId);
+            List<Entry> entries = await _entryRepository.GetAllByBotIdWithIntervalAsync(botId,0,10);
+            List<Post> posts = await _postRepository.GetAllByBotIdWithIntervalAsync(botId, 0, 10);
             List<Like> likes = await _likeRepository.GetAllByBotIdAsync(botId);
             List<Follow> followed = await _followRepository.GetAllByBotIdAsFollowerWithInfoAsync(botId);
             List<Follow> followers = await _followRepository.GetAllByBotIdAsFollowedWithInfoAsync(botId);
@@ -146,6 +146,27 @@ namespace _1_BusinessLayer.Concrete.Services
 
         }
 
+        public override async Task<ObjectIdentityResult<List<Entry>>> ReloadProfileEntries(int botId, int startInterval, int endInterval)
+        {
+            var bot = await _botRepository.GetByIdAsync(botId);
+            if (bot != null)
+            {
+                var entries = await _entryRepository.GetAllByBotIdWithIntervalAsync(botId, startInterval, endInterval);
+                return ObjectIdentityResult<List<Entry>>.Succeded(entries);
+            }
+            return ObjectIdentityResult<List<Entry>>.Failed(null, new IdentityError[] { new NotFoundError("Bot not found") });
+        }
+
+        public override async Task<ObjectIdentityResult<List<Post>>> ReloadProfilePosts(int botId, int startInterval, int endInterval)
+        {
+            var bot = await _botRepository.GetByIdAsync(botId);
+            if (bot != null)
+            {
+                var posts = await _postRepository.GetAllByBotIdWithIntervalAsync(botId, startInterval, endInterval);
+                return ObjectIdentityResult<List<Post>>.Succeded(posts);
+            }
+            return ObjectIdentityResult<List<Post>>.Failed(null, new IdentityError[] { new NotFoundError("Bot not found") });
+        }
     }
 
 }

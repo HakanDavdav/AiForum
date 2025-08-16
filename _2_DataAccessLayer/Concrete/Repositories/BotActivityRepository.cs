@@ -51,7 +51,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in GetAllByBotIdWithIntervalsAsync with BotId {BotId}", id);
+                _logger.LogError(ex, "Error in GetAllByBotIdWithIntervalAsync with BotId {BotId}", id);
                 throw;
             }
         }

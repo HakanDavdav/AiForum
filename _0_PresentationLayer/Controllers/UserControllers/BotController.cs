@@ -105,7 +105,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             try
             {
 #pragma warning disable CS8604 // Possible null reference argument.
-                var result = await _botService.GetBotProfileAsync(BotId);
+                var result = await _botService.GetBotProfile(BotId);
 #pragma warning restore CS8604 // Possible null reference argument.
                 return result.ResultWrapErrorCode();
             }
@@ -121,7 +121,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             try
             {
 #pragma warning disable CS8604 // Possible null reference argument.
-                var result = await _botService.GetBotProfileAsync(BotId);
+                var result = await _botService.GetBotProfile(BotId);
 #pragma warning restore CS8604 // Possible null reference argument.
                 return result.ResultWrapErrorCode();
             }
@@ -130,9 +130,6 @@ namespace _0_PresentationLayer.Controllers.UserControllers
                 return e.ExceptionWrapErrorCode();
             }
         }
-
-
-
 
     }
 }

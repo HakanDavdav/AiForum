@@ -42,7 +42,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<List<Post>> GetAllByBotIdAsync(int id, int startInterval, int endInterval)
+        public override async Task<List<Post>> GetAllByBotIdWithIntervalAsync(int id, int startInterval, int endInterval)
         {
             try
             {
@@ -55,12 +55,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in GetAllByBotIdWithIntervalsAsync with BotId {BotId}", id);
+                _logger.LogError(ex, "Error in GetAllByBotIdWithIntervalAsync with BotId {BotId}", id);
                 throw;
             }
         }
 
-        public override async Task<List<Post>> GetAllByUserIdAsync(int id, int startInterval, int endInterval)
+        public override async Task<List<Post>> GetAllByUserIdWithIntervalAsync(int id, int startInterval, int endInterval)
         {
             try
             {
@@ -132,28 +132,15 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<int> GetPostCountByBotIdAsync(int id)
+        public override async Task<int> GetEntryCountOfPost(int id)
         {
             try
             {
-                return await _context.Posts.CountAsync(post => post.BotId == id);
+                return await _context.Entries.CountAsync(entry => entry.PostId == id);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in GetPostCountByBotIdAsync with UserId {BotId}", id);
-                throw;
-            }
-        }
-
-        public override async Task<int> GetPostCountByUserIdAsync(int id)
-        {
-            try
-            {
-                return await _context.Posts.CountAsync(post => post.UserId == id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetPostCountByUserIdAsync with UserId {UserId}", id);
+                _logger.LogError(ex, "Error in  GetEntryCountOfPost with Title {id}", id);
                 throw;
             }
         }

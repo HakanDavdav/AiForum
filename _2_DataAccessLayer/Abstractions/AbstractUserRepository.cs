@@ -17,8 +17,8 @@ namespace _2_DataAccessLayer.Abstractions
         {
         }
 
-        public abstract Task<int> GetEntryCountByUserAsync(int id);
-        public abstract Task<int> GetPostCountByUserAsync(int id);
+        public abstract Task<int> GetEntryCountOfUserAsync(int id);
+        public abstract Task<int> GetPostCountOfUserAsync(int id);
         public abstract Task<User> GetByEmailAsync(string email);
         public abstract Task<User> GetByUsernameAsync(string name);
         public abstract Task<User> GetByPhoneNumberAsync(string phoneNumber);
