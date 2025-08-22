@@ -176,8 +176,9 @@ namespace _1_BusinessLayer.Concrete.Services
         }
 
 
-        public override async Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId)
+        public override async Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId, int? entryPerPagePreference = 10)
         {
+
             var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
             {

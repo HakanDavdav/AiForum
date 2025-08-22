@@ -57,7 +57,7 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
         public abstract Task<ObjectIdentityResult<List<BotActivityDto>>> GetBotActivitiesFromUser(int userId);
         public abstract Task<ObjectIdentityResult<dynamic>> GetBotPanel(int userId);
         public abstract Task<ObjectIdentityResult<List<NotificationDto>>> GetNotificationsFromUser(int userId);
-        public abstract Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId);
+        public abstract Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId,int? entryPerPagePreference=10);
         public abstract Task<ObjectIdentityResult<List<Entry>>> ReloadProfileEntries(int userId, int startInterval, int endInterval);
         public abstract Task<ObjectIdentityResult<List<Post>>> ReloadProfilePosts(int userId, int startInterval, int endInterval);
     }

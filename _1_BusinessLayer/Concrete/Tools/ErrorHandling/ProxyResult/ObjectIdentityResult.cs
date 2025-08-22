@@ -30,5 +30,7 @@ namespace _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult
                 ObjectIdentityErrors = errors
             };
         }
+        
+
     }
 }

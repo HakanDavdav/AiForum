@@ -31,22 +31,22 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
             builder.HasMany(post => post.Entries)
                 .WithOne(entry => entry.Post)
                 .HasForeignKey(entry => entry.PostId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasMany(post => post.Likes)
                 .WithOne(like => like.Post)
                 .HasForeignKey(like => like.PostId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasOne(post => post.User)
                 .WithMany(user => user.Posts)
                 .HasForeignKey(post => post.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasOne(post => post.Bot)
                 .WithMany(bot => bot.Posts)
                 .HasForeignKey(post => post.BotId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
 
         }

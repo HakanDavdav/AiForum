@@ -116,7 +116,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         {
             try
             {
-                var objectResult = await _postService.GetPostAsync(postId, page, HttpContext.User.FindFirst("ENTRY PER PAGE")?.Value);
+                var objectResult = await _postService.GetPostAsync(postId, page, HttpContext.User.FindFirst("ENTRY PER PAGE").Value);
                 return objectResult.ResultWrapErrorCode();
             }
             catch (Exception e)

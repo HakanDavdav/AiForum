@@ -1,9 +1,10 @@
-﻿using _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices;
+﻿using System.Security.Claims;
+using _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
 using _2_DataAccessLayer.Concrete.Entities;
+using Azure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace _0_PresentationLayer.Controllers.UserControllers
 {
@@ -86,8 +87,9 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         {
             try
             {
+                var entryPerPageClaim = HttpContext.User.FindFirst("ENTRY PER PAGE");
 #pragma warning disable CS8604 // Possible null reference argument.
-                var result = await userService.GetUserProfile(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
+                var result = await userService.GetUserProfile(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value),int.Parse(entryPerPageClaim.Value));
 #pragma warning restore CS8604 // Possible null reference argument.
                 return Ok(result);
             }
@@ -100,8 +102,9 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserProfile(int userId)
         {
+            var entryPerPageClaim = HttpContext.User.FindFirst("ENTRY PER PAGE");
 #pragma warning disable CS8604 // Possible null reference argument.
-            var result = await userService.GetUserProfile(userId);
+            var result = await userService.GetUserProfile(userId, int.Parse(entryPerPageClaim.Value));
 #pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
         }
@@ -123,5 +126,17 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 #pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
         }
+
+
+        [Authorize(Policy = "UserPolicy")]
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> DeleteUser(int userId)
+        {
+#pragma warning disable CS8604 // Possible null reference argument.
+            var result = await userService.DeleteUser(userId);
+#pragma warning restore CS8604 // Possible null reference argument.
+            return Ok(result);
+        }
+
     }
 }
