@@ -15,6 +15,7 @@ namespace _2_DataAccessLayer.Abstractions
         protected AbstractNotificationRepository(ApplicationDbContext context, ILogger<Notification> logger) : base(context, logger)
         {
         }
+        public abstract Task<List<Notification>> GetNotificationModulesForUser(int id, int startInterval, int endInterval);
 
 
     }

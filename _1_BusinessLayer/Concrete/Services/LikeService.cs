@@ -28,7 +28,7 @@ namespace _1_BusinessLayer.Concrete.Services
                     EntryId = entryId,
                     UserId = userId
                 };
-                await _likeRepository.InsertAsync(like);
+                await _likeRepository.ManuallyInsertAsync(like);
                 return IdentityResult.Success;
             }
             return IdentityResult.Failed(new NotFoundError("Entry not found"));
@@ -44,7 +44,7 @@ namespace _1_BusinessLayer.Concrete.Services
                     PostId = postId,
                     UserId = userId
                 };
-                await _likeRepository.InsertAsync(like);
+                await _likeRepository.ManuallyInsertAsync(like);
                 return IdentityResult.Success;
             }
             return IdentityResult.Failed(new NotFoundError("Entry not found"));

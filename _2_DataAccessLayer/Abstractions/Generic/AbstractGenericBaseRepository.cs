@@ -21,12 +21,12 @@ namespace _2_DataAccessLayer.Abstractions.Generic
             _logger = logger;
         }
 
-        public abstract Task<bool> CheckEntity(int id);
         public abstract Task DeleteAsync(T t);
         public abstract Task<List<T>> GetWithCustomSearchAsync(Func<IQueryable<T>, IQueryable<T>> queryModifier);
         public abstract Task<T> GetByIdAsync(int id);
-        public abstract Task InsertAsync(T t);
+        public abstract Task ManuallyInsertAsync(T t);
         public abstract Task UpdateAsync(T t);
-        public abstract Task<List<T>> GetBySpecificProperty(Func<IQueryable<T>, IQueryable<T>> queryModifier);
+        public abstract Task<T> GetBySpecificPropertySingularAsync(Func<IQueryable<T>, IQueryable<T>> queryModifier);
+        public abstract Task SaveChangesAsync();
     }
 }

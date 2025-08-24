@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.AbstractServices.IServices;
 using _1_BusinessLayer.Concrete.Dtos.BotActivityDtos;
+using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
 using _1_BusinessLayer.Concrete.Dtos.NotificationDtos;
+using _1_BusinessLayer.Concrete.Dtos.PostDtos;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _2_DataAccessLayer.Abstractions;
@@ -54,11 +56,11 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
         public abstract Task<IdentityResult> DeleteUser(int userId);
         public abstract Task<IdentityResult> EditPreferences(int userId, UserEditPreferencesDto userEditPreferencesDto);
         public abstract Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto);
-        public abstract Task<ObjectIdentityResult<List<BotActivityDto>>> GetBotActivitiesFromUser(int userId);
         public abstract Task<ObjectIdentityResult<dynamic>> GetBotPanel(int userId);
-        public abstract Task<ObjectIdentityResult<List<NotificationDto>>> GetNotificationsFromUser(int userId);
-        public abstract Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId,int entryPerPagePreference=10);
-        public abstract Task<ObjectIdentityResult<List<Entry>>> ReloadProfileEntries(int userId, int startInterval, int endInterval);
-        public abstract Task<ObjectIdentityResult<List<Post>>> ReloadProfilePosts(int userId, int startInterval, int endInterval);
+        public abstract Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId, int startInterval, int endInterval);
+        public abstract Task<ObjectIdentityResult<List<NotificationDto>>> LoadNotifications(int userId, int startInterval, int endInterval);
+        public abstract Task<ObjectIdentityResult<List<BotActivityDto>>> LoadBotActivities(int userId, int startInterval, int endInterval);
+        public abstract Task<ObjectIdentityResult<List<EntryProfileDto>>> LoadProfileEntries(int userId, int startInterval, int endInterval);
+        public abstract Task<ObjectIdentityResult<List<PostProfileDto>>> LoadProfilePosts(int userId, int startInterval, int endInterval);
     }
 }

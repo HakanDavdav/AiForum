@@ -15,19 +15,10 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
         }
 
-        public override async Task<bool> CheckEntity(int id)
+        public override async Task SaveChangesAsync()
         {
-            try
-            {
-                return await _context.Bots.AnyAsync(bot => bot.BotId == id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in CheckEntity with BotId {BotId}", id);
-                throw;
-            }
+            await _context.SaveChangesAsync();
         }
-
         public override async Task DeleteAsync(Bot t)
         {
             try
@@ -42,14 +33,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-
-        public override async Task<List<Bot>> GetWithCustomSearchAsync(Func<IQueryable<Bot>, IQueryable<Bot>> queryModifier)
-        {
-            IQueryable<Bot> query = _context.Bots;
-            if (queryModifier != null)
-                query = queryModifier(query);
-            return await query.ToListAsync();
-        }
 
         public override async Task<Bot> GetByIdAsync(int id)
         {
@@ -91,22 +74,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 throw;
             }
         }
-
-        public override async Task<List<Bot>> GetRandomBots(int number)
-        {
-            try
-            {
-                var query = _context.Bots.OrderBy(bot => Guid.NewGuid()).Take(number);
-                return await query.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetRandomBots");
-                throw;
-            }
-        }
-
-        public override async Task InsertAsync(Bot t)
+        public override async Task ManuallyInsertAsync(Bot t)
         {
             try
             {
@@ -115,7 +83,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in InsertAsync for BotId {BotId}", t.BotId);
+                _logger.LogError(ex, "Error in ManuallyInsertAsync for BotId {BotId}", t.BotId);
                 throw;
             }
         }
@@ -134,9 +102,36 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override Task<List<Bot>> GetBySpecificProperty(Func<IQueryable<Bot>, IQueryable<Bot>> queryModifier)
+        public override async Task<List<Bot>> GetWithCustomSearchAsync(Func<IQueryable<Bot>, IQueryable<Bot>> queryModifier)
         {
-            throw new NotImplementedException();
+            IQueryable<Bot> query = _context.Bots;
+            if (queryModifier != null)
+                query = queryModifier(query);
+            return await query.ToListAsync();
+        }
+
+        public override async Task<Bot> GetBySpecificPropertySingularAsync(Func<IQueryable<Bot>, IQueryable<Bot>> queryModifier)
+        {
+            IQueryable<Bot> query = _context.Bots;
+            if (queryModifier != null)
+                query = queryModifier(query);
+#pragma warning disable CS8603 // Possible null reference return.
+            return await query.FirstOrDefaultAsync();
+#pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        public override async Task<Bot> GetBotModuleAsync(int id)
+        {
+            var bot = await _context.Bots.Where(bot => bot.BotId == id).Select(
+                bot => new Bot
+                {
+                    BotId = bot.BotId,
+                    BotGrade = bot.BotGrade,
+                    BotProfileName = bot.BotProfileName,
+                    User = bot.User,
+                    UserId = bot.UserId,
+                }).FirstOrDefaultAsync();
+            return bot;
         }
     }
 }

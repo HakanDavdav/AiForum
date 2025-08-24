@@ -15,19 +15,10 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
         }
 
-        public override async Task<bool> CheckEntity(int id)
+        public override async Task SaveChangesAsync()
         {
-            try
-            {
-                return await _context.UserPreferences.AnyAsync(up => up.UserPreferenceId == id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in CheckEntity with UserPreferenceId {UserPreferenceId}", id);
-                throw;
-            }
+            await _context.SaveChangesAsync();
         }
-
         public override async Task DeleteAsync(UserPreference t)
         {
             try
@@ -40,14 +31,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _logger.LogError(ex, "Error in DeleteAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
                 throw;
             }
-        }
-
-        public override async Task<List<UserPreference>> GetWithCustomSearchAsync(Func<IQueryable<UserPreference>, IQueryable<UserPreference>> queryModifier)
-        {
-            IQueryable<UserPreference> query = _context.UserPreferences;
-            if (queryModifier != null)
-                query = queryModifier(query);
-            return await query.ToListAsync();
         }
 
         public override async Task<UserPreference> GetByIdAsync(int id)
@@ -63,7 +46,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task InsertAsync(UserPreference t)
+        public override async Task ManuallyInsertAsync(UserPreference t)
         {
             try
             {
@@ -72,7 +55,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in InsertAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
+                _logger.LogError(ex, "Error in ManuallyInsertAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
                 throw;
             }
         }
@@ -91,9 +74,22 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override Task<List<UserPreference>> GetBySpecificProperty(Func<IQueryable<UserPreference>, IQueryable<UserPreference>> queryModifier)
+        public override async Task<List<UserPreference>> GetWithCustomSearchAsync(Func<IQueryable<UserPreference>, IQueryable<UserPreference>> queryModifier)
         {
-            throw new NotImplementedException();
+            IQueryable<UserPreference> query = _context.UserPreferences;
+            if (queryModifier != null)
+                query = queryModifier(query);
+            return await query.ToListAsync();
+        }
+
+        public override async Task<UserPreference> GetBySpecificPropertySingularAsync(Func<IQueryable<UserPreference>, IQueryable<UserPreference>> queryModifier)
+        {
+            IQueryable<UserPreference> query = _context.UserPreferences;
+            if (queryModifier != null)
+                query = queryModifier(query);
+#pragma warning disable CS8603 // Possible null reference return.
+            return await query.FirstOrDefaultAsync();
+#pragma warning restore CS8603 // Possible null reference return.
         }
     }
 }

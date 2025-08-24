@@ -11,11 +11,11 @@ namespace _2_DataAccessLayer.Abstractions.Generic
     public interface IGenericRepository<T> 
     {
         public Task<List<T>> GetWithCustomSearchAsync(Func<IQueryable<T>, IQueryable<T>> queryModifier);
-        public Task InsertAsync(T t);
+        public Task ManuallyInsertAsync(T t);
+        public Task SaveChangesAsync();
         public Task DeleteAsync(T t);
         public Task UpdateAsync(T t);
         public Task<T> GetByIdAsync(int id);
-        public Task<List<T>> GetBySpecificProperty(Func<IQueryable<T>, IQueryable<T>> queryModifier);
-        public Task<bool> CheckEntity(int id);
+        public Task<T> GetBySpecificPropertySingularAsync(Func<IQueryable<T>, IQueryable<T>> queryModifier);
     }
 }

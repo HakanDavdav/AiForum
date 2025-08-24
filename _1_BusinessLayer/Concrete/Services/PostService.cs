@@ -32,7 +32,8 @@ namespace _1_BusinessLayer.Concrete.Services
             if (user != null)
             {
                 var post = createPostDto.CreatePostDto_To_Post(userId);
-                await _postRepository.InsertAsync(post);
+                user.Posts.Add(post);
+                await _postRepository.SaveChangesAsync();
                 return IdentityResult.Success;
             }
             return IdentityResult.Failed(new NotFoundError("User not found"));
@@ -40,12 +41,14 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> DeletePost(int userId, int postId)
         {
-            var post = await _postRepository.GetByIdAsync(postId);
-            if (post != null)
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user != null)
             {
-                if (post.UserId == userId)
+                var post = await _postRepository.GetByIdAsync(postId);
+                if (post != null && post.UserId == userId)
                 {
-                    await _postRepository.DeleteAsync(post);
+                    user.Posts.Remove(post);
+                    await _postRepository.SaveChangesAsync();
                     return IdentityResult.Success;
                 }
                 return IdentityResult.Failed(new UnauthorizedError("User does not have that kind of post:)"));
@@ -55,33 +58,43 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> EditPost(int userId, EditPostDto editPostDto)
         {
-            var post = await _postRepository.GetByIdAsync(editPostDto.PostId);
-            if (post != null)
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user != null)
             {
-                if (post.UserId == userId)
+                var post = await _postRepository.GetByIdAsync(editPostDto.PostId);
+                if (post != null)
                 {
-                    post = editPostDto.Update___EditPostDto_To_Post(post);
-                    await _postRepository.UpdateAsync(post);
-                    return IdentityResult.Success;
+                    if (post.UserId == userId)
+                    {
+                        post = editPostDto.Update___EditPostDto_To_Post(post);
+                        await _postRepository.SaveChangesAsync();
+                        return IdentityResult.Success;
+                    }
+                    return IdentityResult.Failed(new UnauthorizedError("User does not have that kind of post:)"));
                 }
-                return IdentityResult.Failed(new UnauthorizedError("User does not have that kind of post:)"));
+                return IdentityResult.Failed(new NotFoundError("Post not found"));
             }
-            return IdentityResult.Failed(new NotFoundError("Post not found"));
+            return IdentityResult.Failed(new NotFoundError("User not found"));
         }
 
-        public override async Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(string postPerPagePreference,DateTime date)
+        public override async Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(DateTime date, int postPerPagePreference)
         {
             List<MinimalPostDto> minimalPostDtos = new List<MinimalPostDto>();
             List<Post> posts = await _postRepository.GetWithCustomSearchAsync(q =>
                 q.Where(p => p.DateTime.Date == date.Date) 
                 .OrderByDescending(p => p.Likes) 
-                .Take(int.Parse(postPerPagePreference)) 
+                .Take(postPerPagePreference) 
                  );
             foreach (var post in posts)
             {
                 minimalPostDtos.Add(post.Post_To_MinimalPostDto());
             }
             return ObjectIdentityResult<List<MinimalPostDto>>.Succeded(minimalPostDtos);
+        }
+
+        public override Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(int postPerPagePreference, DateTime date)
+        {
+            throw new NotImplementedException();
         }
 
         public override async Task<ObjectIdentityResult<PostDto>> GetPostAsync(int postId, int page, string? entryPerPagePreference = "10")
@@ -144,6 +157,11 @@ namespace _1_BusinessLayer.Concrete.Services
 
         }
 
+        public override Task<ObjectIdentityResult<PostDto>> GetPostAsync(int postId, int page, int entryPerPagePreference)
+        {
+            throw new NotImplementedException();
+        }
+
         public override async Task<ObjectIdentityResult<List<MinimalPostDto>>> GetTrendingPosts(string postPerPagePreference,DateTime date)
         {
             List<MinimalPostDto> minimalPostDtos = new List<MinimalPostDto>();
@@ -157,6 +175,11 @@ namespace _1_BusinessLayer.Concrete.Services
                 minimalPostDtos.Add(post.Post_To_MinimalPostDto());
             }
             return ObjectIdentityResult<List<MinimalPostDto>>.Succeded(minimalPostDtos);
+        }
+
+        public override Task<ObjectIdentityResult<List<MinimalPostDto>>> GetTrendingPosts(int entryPerPagePreference, DateTime date)
+        {
+            throw new NotImplementedException();
         }
     }
 }

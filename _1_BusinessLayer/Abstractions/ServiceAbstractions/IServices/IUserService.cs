@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Concrete.Dtos.BotActivityDtos;
+using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
 using _1_BusinessLayer.Concrete.Dtos.NotificationDtos;
+using _1_BusinessLayer.Concrete.Dtos.PostDtos;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _2_DataAccessLayer.Concrete.Entities;
@@ -22,13 +24,13 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
         //Self-Authorization requirement
         Task<IdentityResult> CreateProfileAsync (int userId,UserCreateProfileDto userCreateProfileDto);
         //Self-Authorization requirement
-        Task<ObjectIdentityResult<List<BotActivityDto>>> GetBotActivitiesFromUser(int userId);
+        Task<ObjectIdentityResult<List<BotActivityDto>>> LoadBotActivities(int userId, int startInterval, int endInterval);
         //Self-Authorization requirement
-        Task<ObjectIdentityResult<List<NotificationDto>>> GetNotificationsFromUser(int userId);
+        Task<ObjectIdentityResult<List<NotificationDto>>> LoadNotifications(int userId, int startInterval, int endInterval);
+        Task<ObjectIdentityResult<List<EntryProfileDto>>> LoadProfileEntries(int userId, int startInterval, int endInterval);
+        Task<ObjectIdentityResult<List<PostProfileDto>>> LoadProfilePosts(int userId, int startInterval, int endInterval);
         Task<ObjectIdentityResult<dynamic>> GetBotPanel(int userId);
-        Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId, int entryPerPagePreference=10);
-        Task<ObjectIdentityResult<List<Entry>>> ReloadProfileEntries(int userId, int startInterval, int endInterval);
-        Task<ObjectIdentityResult<List<Post>>> ReloadProfilePosts(int userId, int startInterval, int endInterval);
+        Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId, int startInterval, int endInterval);
         Task<IdentityResult> DeleteUser(int userId);
 
 

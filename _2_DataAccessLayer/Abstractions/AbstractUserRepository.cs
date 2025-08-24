@@ -17,9 +17,14 @@ namespace _2_DataAccessLayer.Abstractions
         {
         }
 
-        public abstract Task<int> GetEntryCountOfUserAsync(int id);
-        public abstract Task<int> GetPostCountOfUserAsync(int id);
-        public abstract Task<List<User>> GetRandomUsers(int number);
+        public abstract Task<User> GetUserModuleAsync(int id);
+        public abstract Task<int> GetEntryCountAsync(int id);
+        public abstract Task<int> GetPostCountAsync(int id);
+        public abstract Task<int> GetNotificationCountAsync(int id);
+        public abstract Task<int> GetBotActivitiesCountAsync(int id);
+        public abstract Task<int> GetLikeCountAsync(int id);
+        public abstract Task<int> GetFollowerCountAsync(int id);
+        public abstract Task<int> GetFollowedCountAsync(int id);
 
     }
 }

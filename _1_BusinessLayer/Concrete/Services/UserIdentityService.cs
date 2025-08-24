@@ -74,8 +74,8 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> ConfirmEmail(string emailConfirmationToken, string EmailOrUsernameOrPassword)
         {
-            var user = await _userRepository.GetByEmailAsync(EmailOrUsernameOrPassword) ??
-                       await _userRepository.GetByUsernameAsync(EmailOrUsernameOrPassword);
+            var user = await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.Email == EmailOrUsernameOrPassword)) ?? 
+                             await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.UserName == EmailOrUsernameOrPassword));
             if (user != null)
             {
                 if (!await _userManager.IsEmailConfirmedAsync(user))
@@ -114,7 +114,7 @@ namespace _1_BusinessLayer.Concrete.Services
             if (user != null)
             {
                 user.PhoneNumber = newPhoneNumber;
-                await _userRepository.UpdateAsync(user);
+                await _userRepository.SaveChangesAsync();
                 return IdentityResult.Success;
             }
             return IdentityResult.Failed(new NotFoundError("User not found"));
@@ -123,19 +123,20 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> LoginTwoFactor(UserLoginDto userLoginDto, string twoFactorToken, string provider)
         {
-            var user = await _userRepository.GetByEmailAsync(userLoginDto.UsernameOrEmailOrPhoneNumber) ??
-                       await _userRepository.GetByUsernameAsync(userLoginDto.UsernameOrEmailOrPhoneNumber);
+            var user = await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.Email == userLoginDto.UsernameOrEmailOrPhoneNumber)) ?? 
+                             await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.UserName == userLoginDto.UsernameOrEmailOrPhoneNumber));
+
             if (user != null)
             {
                 var twoFactorSignInResult = await _signInManager.TwoFactorSignInAsync(provider, twoFactorToken, false, true);
                 if (twoFactorSignInResult.Succeeded)
                 {
-                    var preference = await _userPreferenceRepository.GetByUserIdAsync(user.Id);
+                    var preference = await _userPreferenceRepository.GetBySpecificPropertySingularAsync(query => query.Where(userPreference => userPreference.UserId == user.Id));
                     var claims = new List<Claim>
                     {
-                        new Claim("THEME",preference.Theme),
-                        new Claim("POST PER PAGE", preference.PostPerPage.ToString()),
-                        new Claim("ENTRY PER PAGE", preference.EntryPerPage.ToString())
+                        new Claim("Theme",preference.Theme),
+                        new Claim("PostPerPage", preference.PostPerPage.ToString()),
+                        new Claim("EntryPerPage", preference.EntryPerPage.ToString())
                     };
                     var identity = new ClaimsIdentity(claims, "login");
                     var principal = new ClaimsPrincipal(identity);
@@ -149,9 +150,9 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> LoginDefault(UserLoginDto userLoginDto)
         {
-            var user = await _userRepository.GetByEmailAsync(userLoginDto.UsernameOrEmailOrPhoneNumber) ??
-                       await _userRepository.GetByUsernameAsync(userLoginDto.UsernameOrEmailOrPhoneNumber);
-            if(user != null)
+            var user = await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.Email == userLoginDto.UsernameOrEmailOrPhoneNumber)) ??
+                             await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.UserName == userLoginDto.UsernameOrEmailOrPhoneNumber));
+            if (user != null)
             {
                 if (await _signInManager.CanSignInAsync(user))
                 {
@@ -203,8 +204,8 @@ namespace _1_BusinessLayer.Concrete.Services
             (string provider, string operation, string usernameOrEmailOrPhoneNumber)
 
         {
-            var user = await _userRepository.GetByEmailAsync(usernameOrEmailOrPhoneNumber) ??
-                       await _userRepository.GetByUsernameAsync(usernameOrEmailOrPhoneNumber);
+            var user = await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.Email == usernameOrEmailOrPhoneNumber)) ??
+                             await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.UserName == usernameOrEmailOrPhoneNumber));
             if (user == null)
             {
                 return IdentityResult.Failed(new NotFoundError("User not found"));
@@ -236,8 +237,8 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> PasswordReset(string usernameOrEmailOrPhoneNumber, string resetPasswordToken, string newPassword)
         {
-            var user = await _userRepository.GetByEmailAsync(usernameOrEmailOrPhoneNumber) ??
-                      await _userRepository.GetByUsernameAsync(usernameOrEmailOrPhoneNumber);
+            var user = await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.Email == usernameOrEmailOrPhoneNumber)) ??
+                             await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.UserName == usernameOrEmailOrPhoneNumber));
             if (user != null)
             {
                 var passwordResetResult = await _userManager.ResetPasswordAsync(user, resetPasswordToken, newPassword);
@@ -254,11 +255,15 @@ namespace _1_BusinessLayer.Concrete.Services
             {
                 await _tokenSender.SendEmail_EmailConfirmationTokenAsync(user);
                 //Default preference
-                await _userPreferenceRepository.InsertAsync(new UserPreference
+                user.UserPreference = new UserPreference
                 {
+                    Theme = "Light",
+                    PostPerPage = 10,
+                    EntryPerPage = 10,
                     UserId = user.Id
-                });
+                };
                 await _userManager.AddToRoleAsync(user, "TempUser");
+                await _userRepository.SaveChangesAsync();
                 return createUserResult;
             }
             return createUserResult;
@@ -273,7 +278,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 if (user.UserName == oldUsername)
                 {
                     user.UserName = newUsername;
-                    await _userRepository.UpdateAsync(user);
+                    await _userRepository.SaveChangesAsync();
                     return IdentityResult.Success;
                 }
                 return IdentityResult.Failed(new UnauthorizedError("Wrong username"));

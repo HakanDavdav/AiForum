@@ -35,7 +35,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 if (bots.Count() <= 4)
                 {
                     var bot = createBotDto.CreateBotDto_To_Bot(userId);
-                    await _botRepository.InsertAsync(bot);
+                    await _botRepository.ManuallyInsertAsync(bot);
                     return IdentityResult.Success;
                 }
                 return IdentityResult.Failed(new ForbiddenError("Bot limit reached"));
@@ -103,93 +103,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<ObjectIdentityResult<BotProfileDto>> GetBotProfile(int botId, int entrPerPagePreference = 10)
         {
-            var listBot = await _botRepository.GetWithCustomSearchAsync(query => query.Where(bot => bot.BotId == botId)
-            .Select(bot => new Bot
-            {
-                BotId = bot.BotId,
-                UserId = bot.UserId,
-                ImageUrl = bot.ImageUrl,
-                BotProfileName = bot.BotProfileName,
-                User = bot.User,
-                DateTime = bot.DateTime,
-                Likes = bot.Likes.Select(like => new Like
-                {
-                    LikeId = like.LikeId,
-                    UserId = like.UserId,
-                    BotId = like.BotId,
-                    PostId = like.PostId,
-                    EntryId = like.EntryId,
-                    User = like.User,
-                    Bot = like.Bot
-                }).ToList(),
-                Posts = bot.Posts.Take(entrPerPagePreference).Select(post => new Post
-                {
-                    PostId = post.PostId,
-                    UserId = post.UserId,
-                    BotId = post.BotId,
-                    DateTime = post.DateTime,
-                    Title = post.Title,
-                    Context = post.Context,
-                    Bot = post.Bot,
-                    User = post.User,
-                    Likes = post.Likes.Select(like => new Like
-                    {
-                        LikeId = like.LikeId,
-                        UserId = like.UserId,
-                        BotId = like.BotId,
-                        PostId = like.PostId,
-                        EntryId = like.EntryId,
-                        User = like.User,
-                        Bot = like.Bot
-                    }).ToList()
-                }).ToList(),
-                Entries = bot.Entries.Take(entrPerPagePreference).Select(entry => new Entry
-                {
-                    EntryId = entry.EntryId,
-                    UserId = entry.UserId,
-                    PostId = entry.PostId,
-                    DateTime = entry.DateTime,
-                    Context = entry.Context,
-                    Bot = entry.Bot,
-                    User = entry.User,
-                    Likes = entry.Likes.Select(like => new Like
-                    {
-                        LikeId = like.LikeId,
-                        UserId = like.UserId,
-                        BotId = like.BotId,
-                        PostId = like.PostId,
-                        EntryId = like.EntryId,
-                        User = like.User,
-                        Bot = like.Bot
-                    }).ToList()
-                }).ToList(),
-                Followed = bot.Followed.Select(follow => new Follow
-                {
-                    FollowId = follow.FollowId,
-                    DateTime = follow.DateTime,
-                    BotFollowedId = follow.BotFollowedId,
-                    BotFollowerId = follow.BotFollowerId,
-                    UserFollowedId = follow.UserFollowedId,
-                    UserFollowerId = follow.UserFollowerId,
-                    BotFollowed = follow.BotFollowed,
-                    BotFollower = follow.BotFollower,
-                    UserFollower = follow.UserFollower,
-                    UserFollowed = follow.UserFollowed
-                }).ToList(),
-                Followers = bot.Followers.Select(follow => new Follow
-                {
-                    FollowId = follow.FollowId,
-                    DateTime = follow.DateTime,
-                    BotFollowedId = follow.BotFollowedId,
-                    BotFollowerId = follow.BotFollowerId,
-                    UserFollowedId = follow.UserFollowedId,
-                    UserFollowerId = follow.UserFollowerId,
-                    BotFollowed = follow.BotFollowed,
-                    BotFollower = follow.BotFollower,
-                    UserFollower = follow.UserFollower,
-                    UserFollowed = follow.UserFollowed
-                }).ToList()
-            }));
+           
             var bot = listBot.FirstOrDefault();
             if (bot != null) {
 
@@ -211,7 +125,7 @@ namespace _1_BusinessLayer.Concrete.Services
             var bot = await _botRepository.GetByIdAsync(botId);
             if (bot != null)
             {
-                var entries = await _entryRepository.GetAllByBotIdWithIntervalAsync(botId, startInterval, endInterval);
+                var entries = await _entryRepository.GetEntryModulesForBotAsync(botId, startInterval, endInterval);
                 return ObjectIdentityResult<List<Entry>>.Succeded(entries);
             }
             return ObjectIdentityResult<List<Entry>>.Failed(null, new IdentityError[] { new NotFoundError("Bot not found") });
@@ -222,7 +136,7 @@ namespace _1_BusinessLayer.Concrete.Services
             var bot = await _botRepository.GetByIdAsync(botId);
             if (bot != null)
             {
-                var posts = await _postRepository.GetAllByBotIdWithIntervalAsync(botId, startInterval, endInterval);
+                var posts = await _postRepository.GetPostModulesForBot(botId, startInterval, endInterval);
                 return ObjectIdentityResult<List<Post>>.Succeded(posts);
             }
             return ObjectIdentityResult<List<Post>>.Failed(null, new IdentityError[] { new NotFoundError("Bot not found") });

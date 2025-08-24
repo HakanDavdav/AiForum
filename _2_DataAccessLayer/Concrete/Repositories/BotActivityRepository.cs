@@ -16,19 +16,10 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
         }
 
-        public override async Task<bool> CheckEntity(int id)
+        public override async Task SaveChangesAsync()
         {
-            try
-            {
-                return await _context.Activities.AnyAsync(activity => activity.ActivityId == id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in CheckEntity with ActivityId {ActivityId}", id);
-                throw;
-            }
+            await _context.SaveChangesAsync();
         }
-
         public override async Task DeleteAsync(BotActivity t)
         {
             try
@@ -41,14 +32,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _logger.LogError(ex, "Error in DeleteAsync for ActivityId {ActivityId}", t.ActivityId);
                 throw;
             }
-        }
-
-        public override async Task<List<BotActivity>> GetWithCustomSearchAsync(Func<IQueryable<BotActivity>, IQueryable<BotActivity>> queryModifier)
-        {
-            IQueryable<BotActivity> query = _context.Activities;
-            if (queryModifier != null)
-                query = queryModifier(query);
-            return await query.ToListAsync();
         }
 
         public override async Task<BotActivity> GetByIdAsync(int id)
@@ -64,7 +47,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task InsertAsync(BotActivity t)
+        public override async Task ManuallyInsertAsync(BotActivity t)
         {
             try
             {
@@ -73,7 +56,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in InsertAsync for ActivityId {ActivityId}", t.ActivityId);
+                _logger.LogError(ex, "Error in ManuallyInsertAsync for ActivityId {ActivityId}", t.ActivityId);
                 throw;
             }
         }
@@ -92,13 +75,38 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-
-        public override async Task<List<BotActivity>> GetBySpecificProperty(Func<IQueryable<BotActivity>, IQueryable<BotActivity>> queryModifier)
+        public override async Task<List<BotActivity>> GetWithCustomSearchAsync(Func<IQueryable<BotActivity>, IQueryable<BotActivity>> queryModifier)
         {
             IQueryable<BotActivity> query = _context.Activities;
             if (queryModifier != null)
                 query = queryModifier(query);
             return await query.ToListAsync();
+        }
+
+
+        public override async Task<BotActivity> GetBySpecificPropertySingularAsync(Func<IQueryable<BotActivity>, IQueryable<BotActivity>> queryModifier)
+        {
+            IQueryable<BotActivity> query = _context.Activities;
+            if (queryModifier != null)
+                query = queryModifier(query);
+#pragma warning disable CS8603 // Possible null reference return.
+            return await query.FirstOrDefaultAsync();
+#pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        public override Task<List<BotActivity>> GetBotActivityModulesForBotAsync(int botId, int startInterval, int endInterval)
+        {
+            var BotActivities = _context.Activities.Where(activity => activity.BotId == botId).Skip(startInterval).Take(endInterval - startInterval).Select(
+                activity => new BotActivity
+                {
+                    ActivityId = activity.ActivityId,
+                    BotId = activity.BotId,
+                    ActivityType = activity.ActivityType,
+                    ActivityContext = activity.ActivityContext,
+                    DateTime = activity.DateTime,
+                    Bot = activity.Bot
+                });
+            return BotActivities.ToListAsync();
         }
 
     }

@@ -15,19 +15,10 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
         }
 
-        public override async Task<bool> CheckEntity(int id)
+        public override async Task SaveChangesAsync()
         {
-            try
-            {
-                return await _context.Likes.AnyAsync(like => like.LikeId == id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in CheckEntity with LikeId {LikeId}", id);
-                throw;
-            }
+            await _context.SaveChangesAsync();
         }
-
         public override async Task DeleteAsync(Like t)
         {
             try
@@ -42,13 +33,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<List<Like>> GetWithCustomSearchAsync(Func<IQueryable<Like>, IQueryable<Like>> queryModifier)
-        {
-            IQueryable<Like> query = _context.Likes;
-            if (queryModifier != null)
-                query = queryModifier(query);
-            return await query.ToListAsync();
-        }
         public override async Task<Like> GetByIdAsync(int id)
         {
             try
@@ -62,7 +46,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task InsertAsync(Like t)
+        public override async Task ManuallyInsertAsync(Like t)
         {
             try
             {
@@ -71,7 +55,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in InsertAsync for LikeId {LikeId}", t.LikeId);
+                _logger.LogError(ex, "Error in ManuallyInsertAsync for LikeId {LikeId}", t.LikeId);
                 throw;
             }
         }
@@ -90,9 +74,106 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override Task<List<Like>> GetBySpecificProperty(Func<IQueryable<Like>, IQueryable<Like>> queryModifier)
+        public override async Task<List<Like>> GetWithCustomSearchAsync(Func<IQueryable<Like>, IQueryable<Like>> queryModifier)
         {
-            throw new NotImplementedException();
+            IQueryable<Like> query = _context.Likes;
+            if (queryModifier != null)
+                query = queryModifier(query);
+            return await query.ToListAsync();
+        }
+
+        public override async Task<Like> GetBySpecificPropertySingularAsync(Func<IQueryable<Like>, IQueryable<Like>> queryModifier)
+        {
+            IQueryable<Like> query = _context.Likes;
+            if (queryModifier != null)
+                query = queryModifier(query);
+#pragma warning disable CS8603 // Possible null reference return.
+            return await query.FirstOrDefaultAsync();
+#pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        public override async Task<List<Like>> GetLikeModulesForUser(int userId, int startInterval, int endInterval)
+        {
+            var likes = await _context.Likes
+                .Where(like => like.UserId == userId)
+                .OrderByDescending(like => like.DateTime)
+                .Skip(startInterval)
+                .Take(endInterval - startInterval)
+                .Select(like => new Like
+                {
+                    LikeId = like.LikeId,
+                    DateTime = like.DateTime,
+                    UserId = like.UserId,
+                    BotId = like.BotId,
+                    PostId = like.PostId,
+                    User = like.User,
+                    Bot = like.Bot,
+                    Post = like.Post,
+                }).ToListAsync();
+            return likes;
+        }
+
+        public override async Task<List<Like>> GetLikeModulesForBot(int botId, int startInterval, int endInterval)
+        {
+            var likes = await _context.Likes
+                .Where(like => like.BotId == botId)
+                .OrderByDescending(like => like.DateTime)
+                .Skip(startInterval)
+                .Take(endInterval - startInterval)
+                .Select(like => new Like
+                {
+                    LikeId = like.LikeId,
+                    DateTime = like.DateTime,
+                    UserId = like.UserId,
+                    BotId = like.BotId,
+                    PostId = like.PostId,
+                    User = like.User,
+                    Bot = like.Bot,
+                    Post = like.Post,
+                }).ToListAsync();
+            return likes;
+        }
+
+        public override async Task<List<Like>> GetLikeModulesForEntry(int entryId, int startInterval, int endInterval)
+        {
+            var likes = await _context.Likes
+                .Where(like => like.EntryId == entryId)
+                .OrderByDescending(like => like.DateTime)
+                .Skip(startInterval)
+                .Take(endInterval - startInterval)
+                .Select(like => new Like
+                {
+                    LikeId = like.LikeId,
+                    DateTime = like.DateTime,
+                    UserId = like.UserId,
+                    BotId = like.BotId,
+                    PostId = like.PostId,
+                    User = like.User,
+                    Bot = like.Bot,
+                    Post = like.Post,
+                }).ToListAsync();
+            return likes;
+        }
+
+        public override async Task<List<Like>> GetLikeModulesForPost(int postId, int startInterval, int endInterval)
+        {
+            var likes = await _context.Likes
+                .Where(like => like.PostId == postId)
+                .OrderByDescending(like => like.DateTime)
+                .Skip(startInterval)
+                .Take(endInterval - startInterval)
+                .Select(like => new Like
+                {
+                    LikeId = like.LikeId,
+                    DateTime = like.DateTime,
+                    UserId = like.UserId,
+                    BotId = like.BotId,
+                    PostId = like.PostId,
+                    User = like.User,
+                    Bot = like.Bot,
+                    Post = like.Post,
+                }).ToListAsync();
+            return likes;
         }
     }
 }

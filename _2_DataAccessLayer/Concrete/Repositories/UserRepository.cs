@@ -16,19 +16,10 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
         }
 
-        public override async Task<bool> CheckEntity(int id)
+        public override async Task SaveChangesAsync()
         {
-            try
-            {
-                return await _context.Users.AnyAsync(user => user.Id == id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in CheckEntity with UserId {UserId}", id);
-                throw;
-            }
+            await _context.SaveChangesAsync();
         }
-
         public override async Task DeleteAsync(User t)
         {
             try
@@ -56,7 +47,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task InsertAsync(User t)
+        public override async Task ManuallyInsertAsync(User t)
         {
             try
             {
@@ -65,7 +56,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in InsertAsync for UserId {UserId}", t.Id);
+                _logger.LogError(ex, "Error in ManuallyInsertAsync for UserId {UserId}", t.Id);
                 throw;
             }
         }
@@ -100,6 +91,26 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
+        public override async Task<int> GetEntryCountAsync(int id)
+        {
+            return await _context.Entries.CountAsync(e => e.UserId == id);
+        }
+
+        public override async Task<int> GetPostCountAsync(int id)
+        {
+            return await _context.Posts.CountAsync(p => p.UserId == id);
+        }
+
+        public override async Task<User> GetBySpecificPropertySingularAsync(Func<IQueryable<User>, IQueryable<User>> queryModifier)
+        {
+            IQueryable<User> query = _context.Users;
+            if (queryModifier != null)
+                query = queryModifier(query);
+#pragma warning disable CS8603 // Possible null reference return.
+            return await query.FirstOrDefaultAsync();
+#pragma warning restore CS8603 // Possible null reference return.
+        }
+
         public override async Task<List<User>> GetWithCustomSearchAsync(Func<IQueryable<User>, IQueryable<User>> queryModifier)
         {
             IQueryable<User> query = _context.Users;
@@ -108,19 +119,22 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             return await query.ToListAsync();
         }
 
-        public override async Task<int> GetEntryCountOfUserAsync(int id)
+        public override async Task<User> GetUserModuleAsync(int id)
         {
-            return await _context.Entries.CountAsync(e => e.UserId == id);
-        }
-
-        public override async Task<int> GetPostCountOfUserAsync(int id)
-        {
-            return await _context.Posts.CountAsync(p => p.UserId == id);
-        }
-
-        public override Task<List<User>> GetBySpecificProperty(Func<IQueryable<User>, IQueryable<User>> queryModifier)
-        {
-            throw new NotImplementedException();
+#pragma warning disable CS8603 // Possible null reference return.
+            return await _context.Users
+                .Where(user => user.Id == id)
+                .Select(user => new User
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    ImageUrl = user.ImageUrl,
+                    Bots = user.Bots,
+                    City = user.City,               
+                })
+                .FirstOrDefaultAsync();
+#pragma warning restore CS8603 // Possible null reference return.
         }
     }
 }

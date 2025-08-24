@@ -20,6 +20,7 @@ namespace _1_BusinessLayer.Concrete.Dtos.UserDtos
         public string? City { get; set; }
         public int EntryCount { get; set; }
         public int PostCount { get; set; }
+        public int LikeCount { get; set; }
         public DateTime Date {  get; set; }
         public ICollection<MinimalBotDto> Bots { get; set; }
         public ICollection<PostProfileDto> Posts { get; set; }

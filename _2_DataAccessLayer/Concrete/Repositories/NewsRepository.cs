@@ -15,19 +15,10 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
         }
 
-        public override async Task<bool> CheckEntity(int id)
+        public override async Task SaveChangesAsync()
         {
-            try
-            {
-                return await _context.News.AnyAsync(news => news.NewsId == id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in CheckEntity with NewsId {NewsId}", id);
-                throw;
-            }
+            await _context.SaveChangesAsync();
         }
-
         public override async Task DeleteAsync(News t)
         {
             try
@@ -40,14 +31,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _logger.LogError(ex, "Error in DeleteAsync for NewsId {NewsId}", t.NewsId);
                 throw;
             }
-        }
-
-        public override async Task<List<News>> GetWithCustomSearchAsync(Func<IQueryable<News>, IQueryable<News>> queryModifier)
-        {
-            IQueryable<News> query = _context.News;
-            if (queryModifier != null)
-                query = queryModifier(query);
-            return await query.ToListAsync();
         }
 
 
@@ -78,7 +61,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task InsertAsync(News t)
+        public override async Task ManuallyInsertAsync(News t)
         {
             try
             {
@@ -87,19 +70,33 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in InsertAsync for NewsId {NewsId}", t.NewsId);
+                _logger.LogError(ex, "Error in ManuallyInsertAsync for NewsId {NewsId}", t.NewsId);
                 throw;
             }
         }
 
-        public override Task UpdateAsync(News t)
+        public override async Task UpdateAsync(News t)
         {
-            throw new NotImplementedException();
+            _context.News.Update(t);
+            await _context.SaveChangesAsync();
         }
 
-        public override Task<List<News>> GetBySpecificProperty(Func<IQueryable<News>, IQueryable<News>> queryModifier)
+        public override async Task<List<News>> GetWithCustomSearchAsync(Func<IQueryable<News>, IQueryable<News>> queryModifier)
         {
-            throw new NotImplementedException();
+            IQueryable<News> query = _context.News;
+            if (queryModifier != null)
+                query = queryModifier(query);
+            return await query.ToListAsync();
+        }
+
+        public override async Task<News> GetBySpecificPropertySingularAsync(Func<IQueryable<News>, IQueryable<News>> queryModifier)
+        {
+            IQueryable<News> query = _context.News;
+            if (queryModifier != null)
+                query = queryModifier(query);
+#pragma warning disable CS8603 // Possible null reference return.
+            return await query.FirstOrDefaultAsync();
+#pragma warning restore CS8603 // Possible null reference return.
         }
     }
 }

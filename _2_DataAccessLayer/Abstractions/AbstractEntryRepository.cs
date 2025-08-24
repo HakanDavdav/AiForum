@@ -16,13 +16,12 @@ namespace _2_DataAccessLayer.Abstractions
         protected AbstractEntryRepository(ApplicationDbContext context, ILogger<Entry> logger) : base(context, logger)
         {
         }
+        public abstract Task<List<Entry>> GetEntryModulesForUserAsync(int id, int startInterval, int endInterval);
+        public abstract Task<List<Entry>> GetEntryModulesForBotAsync(int id, int startInterval, int endInterval);
+        public abstract Task<List<Entry>> GetEntryModulesForPost(int id,int startInterval, int endInterval);
+        public abstract Task<Entry> GetEntryModuleAsync(int id);
+        public abstract Task<int> GetLikeCount(int id);
 
-        public abstract Task<List<Entry>> GetAllByBotIdWithIntervalAsync(int id, int startInterval, int endInterval);
-        public abstract Task<List<Entry>> GetAllByPostIdWithIntervalAsync(int id,int startInterval, int endInterval);
-        public abstract Task<List<Entry>> GetRandomEntriesByPostId(int id,int number);
-        public abstract Task<List<Entry>> GetRandomEntriesByUserId(int id,int number);
-        public abstract Task<List<Entry>> GetRandomEntriesByBotId(int id,int number);
-        public abstract Task<List<Entry>> GetAllByUserIdWithIntervalsAsync(int id, int startInterval, int endInterval);
 
 
     }

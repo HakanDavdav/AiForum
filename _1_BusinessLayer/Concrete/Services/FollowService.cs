@@ -21,8 +21,8 @@ namespace _1_BusinessLayer.Concrete.Services
         {
             var user = _userRepository.GetByIdAsync(userId);
             List<Follow> follows = new List<Follow>();
-            follows.AddRange(await _followRepository.GetAllByUserIdAsFollowerWithInfoAsync(userId));
-            follows.AddRange(await _followRepository.GetAllByUserIdAsFollowedWithInfoAsync(userId));
+            follows.AddRange(await _followRepository.GetFollowModulesForUserAsFollowerAsync(userId, followId, followId));
+            follows.AddRange(await _followRepository.GetFollowModulesForUserAsFollowedAsync(userId, followId, followId));
             if (user != null)
             {
                 foreach (var follow in follows)
@@ -46,7 +46,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 UserFollowerId = userId, 
                 BotFollowedId = followedBotId,
             };
-            await _followRepository.InsertAsync(follow);
+            await _followRepository.ManuallyInsertAsync(follow);
             return IdentityResult.Success;
         }
 
@@ -57,7 +57,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 UserFollowerId = userId,
                 UserFollowedId = followedUserId,
             };
-            await _followRepository.InsertAsync(follow);
+            await _followRepository.ManuallyInsertAsync(follow);
             return IdentityResult.Success;
         }
     }

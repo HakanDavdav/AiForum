@@ -23,7 +23,7 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<IdentityResult> CreateEntryAsync(int userId, int postId, CreateEntryDto createEntryDto)
         {
             var entry = createEntryDto.CreateEntryDto_To_Entry(userId);
-            await _entryRepository.InsertAsync(entry);
+            await _entryRepository.ManuallyInsertAsync(entry);
             return IdentityResult.Success;
         }
 
@@ -32,7 +32,7 @@ namespace _1_BusinessLayer.Concrete.Services
             var entry = await _entryRepository.GetByIdAsync(entryId);
             if(entry.UserId == userId)
             {
-                await _entryRepository.InsertAsync(entry);
+                await _entryRepository.ManuallyInsertAsync(entry);
                 return IdentityResult.Success;
             }
             return IdentityResult.Failed(new UnauthorizedError("You cannot delete another user's entry"));

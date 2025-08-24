@@ -15,6 +15,10 @@ namespace _2_DataAccessLayer.Abstractions
         protected AbstractLikeRepository(ApplicationDbContext context, ILogger<Like> logger) : base(context, logger)
         {
         }
+        public abstract Task<List<Like>> GetLikeModulesForUser(int userId, int startInterval, int endInterval);
+        public abstract Task<List<Like>> GetLikeModulesForBot(int botId, int startInterval, int endInterval);
+        public abstract Task<List<Like>> GetLikeModulesForEntry(int entryId, int startInterval, int endInterval);
+        public abstract Task<List<Like>> GetLikeModulesForPost(int postId, int startInterval, int endInterval);
 
     }
 }

@@ -15,6 +15,7 @@ namespace _2_DataAccessLayer.Abstractions
         protected AbstractActivityRepository(ApplicationDbContext context, ILogger<BotActivity> logger) : base(context, logger)
         {
         }
+        public abstract Task<List<BotActivity>> GetBotActivityModulesForBotAsync(int botId, int startInterval, int endInterval );
 
     }
 }

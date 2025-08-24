@@ -15,19 +15,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
         }
 
-        public override async Task<bool> CheckEntity(int id)
-        {
-            try
-            {
-                return await _context.Posts.AnyAsync(post => post.PostId == id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in CheckEntity with PostId {PostId}", id);
-                throw;
-            }
-        }
 
+        public override async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
         public override async Task DeleteAsync(Post t)
         {
             try
@@ -38,56 +30,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error in DeleteAsync for PostId {PostId}", t.PostId);
-                throw;
-            }
-        }
-
-        public override async Task<List<Post>> GetAllByBotIdWithIntervalAsync(int id, int startInterval, int endInterval)
-        {
-            try
-            {
-                return await _context.Posts
-                    .Where(post => post.BotId == id)
-                    .OrderByDescending(post => post.DateTime)
-                    .Skip(startInterval)
-                    .Take(endInterval)
-                    .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetAllByBotIdWithIntervalAsync with BotId {BotId}", id);
-                throw;
-            }
-        }
-
-        public override async Task<List<Post>> GetAllByUserIdWithIntervalAsync(int id, int startInterval, int endInterval)
-        {
-            try
-            {
-                return await _context.Posts
-                    .Where(post => post.UserId == id)
-                    .OrderByDescending(post => post.DateTime)
-                    .Skip(startInterval)
-                    .Take(endInterval)
-                    .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetAllByUserIdWithIntervalsAsync with UserId {UserId}", id);
-                throw;
-            }
-        }
-
-        public override async Task<List<Post>> GetWithCustomSearchAsync(Func<IQueryable<Post>, IQueryable<Post>> queryModifier)
-        {
-            try
-            {
-                var query = queryModifier(_context.Posts);
-                return await query.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetWithCustomSearchAsync");
                 throw;
             }
         }
@@ -119,54 +61,8 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<List<Post>> GetRandomPosts(int number)
-        {
-            try
-            {
-                return await _context.Posts.OrderBy(post => Guid.NewGuid()).Take(number).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetRandomPosts");
-                throw;
-            }
-        }
 
-        public override async Task<List<Post>> GetRandomPostsByBotId(int id, int number)
-        {
-            try
-            {
-                return await _context.Posts
-                    .Where(post => post.BotId == id)
-                    .OrderBy(post => Guid.NewGuid())
-                    .Take(number)
-                    .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetRandomPostsByBotId with BotId {BotId}", id);
-                throw;
-            }
-        }
-
-        public override async Task<List<Post>> GetRandomPostsByUserId(int id, int number)
-        {
-            try
-            {
-                return await _context.Posts
-                    .Where(post => post.UserId == id)
-                    .OrderBy(post => Guid.NewGuid())
-                    .Take(number)
-                    .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetRandomPostsByUserId with UserId {UserId}", id);
-                throw;
-            }
-        }
-
-        public override async Task InsertAsync(Post t)
+        public override async Task ManuallyInsertAsync(Post t)
         {
             try
             {
@@ -175,7 +71,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in InsertAsync for Post with Title {Title}", t.Title);
+                _logger.LogError(ex, "Error in ManuallyInsertAsync for Post with Title {Title}", t.Title);
                 throw;
             }
         }
@@ -194,9 +90,134 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override Task<List<Post>> GetBySpecificProperty(Func<IQueryable<Post>, IQueryable<Post>> queryModifier)
+        public override async Task<List<Post>> GetWithCustomSearchAsync(Func<IQueryable<Post>, IQueryable<Post>> queryModifier)
         {
-            throw new NotImplementedException();
+            IQueryable<Post> query = _context.Posts;
+            if (queryModifier != null)
+                query = queryModifier(query);
+            return await query.ToListAsync();
+        }
+
+
+        public override async Task<Post> GetBySpecificPropertySingularAsync(Func<IQueryable<Post>, IQueryable<Post>> queryModifier)
+        {
+            IQueryable<Post> query = _context.Posts;
+            if (queryModifier != null)
+                query = queryModifier(query);
+#pragma warning disable CS8603 // Possible null reference return.
+            return await query.FirstOrDefaultAsync();
+#pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        public override async Task<Post> GetPostModuleAsync(int id)
+        {
+#pragma warning disable CS8603 // Possible null reference return.
+            return await _context.Posts
+                .Where(post => post.PostId == id)
+                .Select(post => new Post
+                {
+                    PostId = post.PostId,
+                    Title = post.Title,
+                    Context = post.Context,
+                    DateTime = post.DateTime,
+                    BotId = post.BotId,
+                    UserId = post.UserId,
+                    Bot = post.Bot,
+                    User = post.User,
+                    Likes = post.Likes.Take(10).Select(like => new Like
+                    {
+                        LikeId = like.LikeId,
+                        DateTime = like.DateTime,
+                        UserId = like.UserId,
+                        BotId = like.BotId,
+                        PostId = like.PostId,
+                        User = like.User,
+                        Bot = like.Bot,
+                        Post = like.Post,
+                    }).ToList(),
+                })
+                .FirstOrDefaultAsync();
+#pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        public override async Task<List<Post>> GetPostModulesForBot(int id, int startInterval, int endInterval)
+        {
+            try
+            {
+                return await _context.Posts
+                    .Where(post => post.BotId == id)
+                    .OrderByDescending(post => post.DateTime)
+                    .Skip(startInterval)
+                    .Take(endInterval-startInterval)
+                    .Select(post => new Post
+                    {
+                        PostId = post.PostId,
+                        Title = post.Title,
+                        Context = post.Context,
+                        DateTime = post.DateTime,
+                        BotId = post.BotId,
+                        UserId = post.UserId,
+                        Bot = post.Bot,
+                        User = post.User,
+                        Likes = post.Likes.Take(10).Select(like => new Like
+                        {
+                            LikeId = like.LikeId,
+                            DateTime = like.DateTime,
+                            UserId = like.UserId,
+                            BotId = like.BotId,
+                            PostId = like.PostId,
+                            User = like.User,
+                            Bot = like.Bot,
+                            Post = like.Post,
+                        }).ToList(),
+                    })
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetEntryModulesForBotAsync with BotId {BotId}", id);
+                throw;
+            }
+        }
+
+        public override async Task<List<Post>> GetPostModulesForUser(int id, int startInterval, int endInterval)
+        {
+            try
+            {
+                return await _context.Posts
+                    .Where(post => post.UserId == id)
+                    .OrderByDescending(post => post.DateTime)
+                    .Skip(startInterval)
+                    .Take(endInterval-startInterval)
+                    .Select(post => new Post
+                    {
+                        PostId = post.PostId,
+                        Title = post.Title,
+                        Context = post.Context,
+                        DateTime = post.DateTime,
+                        BotId = post.BotId,
+                        UserId = post.UserId,
+                        Bot = post.Bot,
+                        User = post.User,
+                        Likes = post.Likes.Take(10).Select(like => new Like
+                        {
+                            LikeId = like.LikeId,
+                            DateTime = like.DateTime,
+                            UserId = like.UserId,
+                            BotId = like.BotId,
+                            PostId = like.PostId,
+                            User = like.User,
+                            Bot = like.Bot,
+                            Post = like.Post,
+                        }).ToList(),
+                    })
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetEntryModulesForUserAsync with UserId {UserId}", id);
+                throw;
+            }
         }
     }
 }
