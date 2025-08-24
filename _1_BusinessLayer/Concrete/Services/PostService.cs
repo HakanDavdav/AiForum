@@ -72,7 +72,7 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(string postPerPagePreference,DateTime date)
         {
             List<MinimalPostDto> minimalPostDtos = new List<MinimalPostDto>();
-            List<Post> posts = await _postRepository.GetAllWithCustomSearch(q =>
+            List<Post> posts = await _postRepository.GetWithCustomSearchAsync(q =>
                 q.Where(p => p.DateTime.Date == date.Date) 
                 .OrderByDescending(p => p.Likes) 
                 .Take(int.Parse(postPerPagePreference)) 
@@ -85,38 +85,57 @@ namespace _1_BusinessLayer.Concrete.Services
         }
 
         public override async Task<ObjectIdentityResult<PostDto>> GetPostAsync(int postId, int page, string? entryPerPagePreference = "10")
-        {            
-            var post = await _postRepository.GetByIdAsync(postId);
+        {
+            var intEntryPerPagePreference = int.Parse(entryPerPagePreference);
+            var listPost = await _postRepository.GetWithCustomSearchAsync(query => query.Where(post =>post.PostId == postId)
+            .Select(post => new Post
+            {
+                PostId = post.PostId,
+                UserId = post.UserId,
+                BotId = post.BotId,
+                DateTime = post.DateTime,
+                Title = post.Title,
+                Context = post.Context,
+                Likes = post.Likes.Select(like => new Like
+                {
+                    LikeId = like.LikeId,
+                    UserId = like.UserId,
+                    BotId = like.BotId,
+                    PostId = like.PostId,
+                    EntryId = like.EntryId,
+                    User = like.User,
+                    Bot = like.Bot,
+                    DateTime = like.DateTime            
+                }).ToList(),
+                Entries = post.Entries.Skip((page - 1) * intEntryPerPagePreference).Take(intEntryPerPagePreference).Select(entry => new Entry
+                {
+                    EntryId = entry.EntryId,
+                    UserId = entry.UserId,
+                    BotId = entry.BotId,
+                    PostId = entry.PostId,
+                    DateTime = entry.DateTime,
+                    Context = entry.Context,
+                    Likes = entry.Likes.Select(like => new Like
+                    {
+                        LikeId = like.LikeId,
+                        UserId = like.UserId,
+                        BotId = like.BotId,
+                        PostId = like.PostId,
+                        EntryId = like.EntryId,
+                        User = like.User,
+                        Bot = like.Bot,
+                        DateTime = like.DateTime
+                    }).ToList(),
+                    User = entry.User,
+                    Bot = entry.Bot
+                }).ToList()
+            }
+            )
+            );
+            var post = listPost.FirstOrDefault();
             if (post != null)
             {
                 var entryCount = await _postRepository.GetEntryCountOfPost(postId);
-                var intEntryPerPagePreference = int.Parse(entryPerPagePreference);
-                var user = await _userRepository.GetByIdAsync((int)post.UserId);
-                var bot = await _botRepository.GetByIdAsync((int)post.BotId);
-                var entries = await _entryRepository.GetAllByPostIdWithIntervalAsync
-                    (postId,page*intEntryPerPagePreference - intEntryPerPagePreference, page* intEntryPerPagePreference);
-                var likes = await _likeRepository.GetAllByPostIdAsync(postId);
-                foreach (var postLike in likes)
-                {
-                    postLike.User = await _userRepository.GetByIdAsync((int)post.UserId);
-                    postLike.Bot = await _botRepository.GetByIdAsync((int)(post.BotId));
-                }
-                foreach (var entry in entries)
-                {
-                    entry.Likes = await _likeRepository.GetAllByEntryIdAsync(entry.EntryId);
-                    entry.User = await _userRepository.GetByIdAsync((int)entry.UserId);
-                    entry.Bot = await _botRepository.GetByIdAsync(((int)entry.BotId));
-
-                    foreach (var entryLike in entry.Likes)
-                    {
-                        entryLike.User = await _userRepository.GetByIdAsync((int)entryLike.UserId);
-                        entryLike.Bot = await _botRepository.GetByIdAsync(((int)entryLike.BotId));
-                    }
-                }
-                post.Bot = bot;
-                post.User = user;
-                post.Likes = likes;
-                post.Entries = entries;
                 var postDto = post.Post_To_PostDto();
                 postDto.EntryCount = entryCount;
                 return ObjectIdentityResult<PostDto>.Succeded(postDto);
@@ -128,10 +147,10 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<ObjectIdentityResult<List<MinimalPostDto>>> GetTrendingPosts(string postPerPagePreference,DateTime date)
         {
             List<MinimalPostDto> minimalPostDtos = new List<MinimalPostDto>();
-            List<Post> posts = await _postRepository.GetAllWithCustomSearch(q =>
-                     q.Where(p => p.DateTime.Date > date.AddDays(-3)) // Son 3 gün içindeki postları al
-                     .OrderByDescending(p => p.Likes) // Beğeni sayısına göre azalan sırala
-                     .Take(int.Parse(postPerPagePreference)) // Opsiyonel: En çok beğeni alan ilk 10 postu getir
+            List<Post> posts = await _postRepository.GetWithCustomSearchAsync(q =>
+                     q.Where(p => p.DateTime.Date > date.AddDays(-3)) 
+                     .OrderByDescending(p => p.TrendPoint) 
+                     .Take(int.Parse(postPerPagePreference)) 
                       );
             foreach (var post in posts)
             {

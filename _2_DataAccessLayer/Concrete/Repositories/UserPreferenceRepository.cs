@@ -42,9 +42,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override Task<List<UserPreference>> GetAllWithCustomSearch(Func<IQueryable<UserPreference>, IQueryable<UserPreference>> queryModifier)
+        public override async Task<List<UserPreference>> GetWithCustomSearchAsync(Func<IQueryable<UserPreference>, IQueryable<UserPreference>> queryModifier)
         {
-            throw new NotImplementedException();
+            IQueryable<UserPreference> query = _context.UserPreferences;
+            if (queryModifier != null)
+                query = queryModifier(query);
+            return await query.ToListAsync();
         }
 
         public override async Task<UserPreference> GetByIdAsync(int id)
@@ -56,19 +59,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error in GetByIdAsync with UserPreferenceId {UserPreferenceId}", id);
-                throw;
-            }
-        }
-
-        public override async Task<UserPreference> GetByUserIdAsync(int id)
-        {
-            try
-            {
-                return await _context.UserPreferences.FirstOrDefaultAsync(up => up.UserId == id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetByUserIdAsync with UserId {UserId}", id);
                 throw;
             }
         }
@@ -99,6 +89,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _logger.LogError(ex, "Error in UpdateAsync for UserPreferenceId {UserPreferenceId}", t.UserPreferenceId);
                 throw;
             }
+        }
+
+        public override Task<List<UserPreference>> GetBySpecificProperty(Func<IQueryable<UserPreference>, IQueryable<UserPreference>> queryModifier)
+        {
+            throw new NotImplementedException();
         }
     }
 }

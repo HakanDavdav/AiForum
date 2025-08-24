@@ -53,6 +53,26 @@ namespace _1_BusinessLayer.Concrete.Services
             }
             return IdentityResult.Failed(new UnauthorizedError("You cannot edit another user's entry"));
         }
-        
+
+        public override async Task<ObjectIdentityResult<EntryProfileDto>> GetEntryAsync(int entryId)
+        {
+            var listEntry = await _entryRepository.GetWithCustomSearchAsync(query => query.Where(entry => entry.EntryId == entryId)
+            .Select(entry => new Entry
+            {
+                EntryId = entry.EntryId,
+                UserId = entry.UserId,
+                PostId = entry.PostId,
+                DateTime = entry.DateTime,
+                Context = entry.Context,
+                User = entry.User,
+            }));
+            var entry = listEntry.FirstOrDefault();
+            if (entry != null)
+            {
+                var entryProfileDto = entry.Entry_To_EntryProfileDto();
+                return ObjectIdentityResult<EntryProfileDto>.Succeded(entryProfileDto);
+            }
+            return ObjectIdentityResult<EntryProfileDto>.Failed(null, new IdentityError[]{ new NotFoundError("Entry not found") });
+        }
     }
 }

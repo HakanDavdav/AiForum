@@ -42,67 +42,13 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<List<Like>> GetAllByBotIdAsync(int id)
+        public override async Task<List<Like>> GetWithCustomSearchAsync(Func<IQueryable<Like>, IQueryable<Like>> queryModifier)
         {
-            try
-            {
-                var query = _context.Likes.Where(like => like.BotId == id);
-                return await query.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetAllByBotIdWithIntervalAsync with BotId {BotId}", id);
-                throw;
-            }
+            IQueryable<Like> query = _context.Likes;
+            if (queryModifier != null)
+                query = queryModifier(query);
+            return await query.ToListAsync();
         }
-
-        public override async Task<List<Like>> GetAllByEntryIdAsync(int id)
-        {
-            try
-            {
-                var query = _context.Likes.Where(like => like.EntryId == id);
-                return await query.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetAllByEntryIdAsync with EntryId {EntryId}", id);
-                throw;
-            }
-        }
-
-        public override async Task<List<Like>> GetAllByPostIdAsync(int id)
-        {
-            try
-            {
-                var query = _context.Likes.Where(like => like.PostId == id);
-                return await query.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetAllByPostIdAsync with PostId {PostId}", id);
-                throw;
-            }
-        }
-
-        public override async Task<List<Like>> GetAllByUserIdAsync(int id)
-        {
-            try
-            {
-                var query = _context.Likes.Where(like => like.UserId == id);
-                return await query.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetAllByUserIdWithIntervalsAsync with UserId {UserId}", id);
-                throw;
-            }
-        }
-
-        public override Task<List<Like>> GetAllWithCustomSearch(Func<IQueryable<Like>, IQueryable<Like>> queryModifier)
-        {
-            throw new NotImplementedException();
-        }
-
         public override async Task<Like> GetByIdAsync(int id)
         {
             try
@@ -142,6 +88,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _logger.LogError(ex, "Error in UpdateAsync for LikeId {LikeId}", t.LikeId);
                 throw;
             }
+        }
+
+        public override Task<List<Like>> GetBySpecificProperty(Func<IQueryable<Like>, IQueryable<Like>> queryModifier)
+        {
+            throw new NotImplementedException();
         }
     }
 }

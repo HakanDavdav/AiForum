@@ -78,7 +78,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<List<Post>> GetAllWithCustomSearch(Func<IQueryable<Post>, IQueryable<Post>> queryModifier)
+        public override async Task<List<Post>> GetWithCustomSearchAsync(Func<IQueryable<Post>, IQueryable<Post>> queryModifier)
         {
             try
             {
@@ -87,21 +87,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in GetAllWithCustomSearch");
-                throw;
-            }
-        }
-
-        public override async Task<Post> GetByEntryId(int id)
-        {
-            try
-            {
-                return await _context.Posts
-                    .FirstOrDefaultAsync(post => post.Entries.Any(entry => entry.EntryId == id));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetByEntryId with EntryId {EntryId}", id);
+                _logger.LogError(ex, "Error in GetWithCustomSearchAsync");
                 throw;
             }
         }
@@ -119,18 +105,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<Post> GetByTitleAsync(string title)
-        {
-            try
-            {
-                return await _context.Posts.FirstOrDefaultAsync(post => post.Title == title);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetByTitleAsync with Title {Title}", title);
-                throw;
-            }
-        }
 
         public override async Task<int> GetEntryCountOfPost(int id)
         {
@@ -218,6 +192,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _logger.LogError(ex, "Error in UpdateAsync for PostId {PostId}", t.PostId);
                 throw;
             }
+        }
+
+        public override Task<List<Post>> GetBySpecificProperty(Func<IQueryable<Post>, IQueryable<Post>> queryModifier)
+        {
+            throw new NotImplementedException();
         }
     }
 }

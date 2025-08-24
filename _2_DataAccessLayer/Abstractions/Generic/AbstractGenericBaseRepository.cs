@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Concrete;
@@ -22,9 +23,10 @@ namespace _2_DataAccessLayer.Abstractions.Generic
 
         public abstract Task<bool> CheckEntity(int id);
         public abstract Task DeleteAsync(T t);
-        public abstract Task<List<T>> GetAllWithCustomSearch(Func<IQueryable<T>, IQueryable<T>> queryModifier);
+        public abstract Task<List<T>> GetWithCustomSearchAsync(Func<IQueryable<T>, IQueryable<T>> queryModifier);
         public abstract Task<T> GetByIdAsync(int id);
         public abstract Task InsertAsync(T t);
         public abstract Task UpdateAsync(T t);
+        public abstract Task<List<T>> GetBySpecificProperty(Func<IQueryable<T>, IQueryable<T>> queryModifier);
     }
 }

@@ -20,6 +20,7 @@ using _2_DataAccessLayer.Concrete.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 namespace _1_BusinessLayer.Concrete.Services
 {
@@ -176,52 +177,99 @@ namespace _1_BusinessLayer.Concrete.Services
         }
 
 
-        public override async Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId, int? entryPerPagePreference = 10)
+        public override async Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId, int entryPerPagePreference = 10)
         {
+            var listUser = await _userRepository.GetWithCustomSearchAsync(query => query
+                .Where(user => user.Id == userId)
+                .Select(user => new User
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    IsProfileCreated = user.IsProfileCreated,
+                    DailyOperationCount = user.DailyOperationCount,
+                    Entries = user.Entries.Take(entryPerPagePreference).Select(entry => new Entry
+                    {
+                        EntryId = entry.EntryId,
+                        UserId = entry.UserId,
+                        Context = entry.Context,
+                        DateTime = entry.DateTime,
+                        Likes = entry.Likes.Select(like => new Like
+                        {
+                            LikeId = like.LikeId,
+                            UserId = like.UserId,
+                            BotId = like.BotId,
+                            EntryId = like.EntryId,
+                            PostId = like.PostId,
+                            DateTime = like.DateTime,
+                            User = like.User, 
+                            Bot = like.Bot 
+                        }).ToList(),
+                        User = user
+                    }).ToList(),
+                    Posts = user.Posts.Take(entryPerPagePreference).Select(post => new Post
+                    {
+                        PostId = post.PostId,
+                        UserId = post.UserId,
+                        Context = post.Context,
+                        DateTime = post.DateTime,
+                        Likes = post.Likes.Select(like => new Like
+                        {
+                            LikeId = like.LikeId,
+                            UserId = like.UserId,
+                            BotId = like.BotId,
+                            EntryId = like.EntryId,
+                            PostId = like.PostId,
+                            DateTime = like.DateTime,
+                            User = like.User,
+                            Bot = like.Bot
+                        }).ToList(),
+                        User = user
+                    }).ToList(),
+                    Likes = user.Likes.Select(like => new Like
+                    {
+                        LikeId = like.LikeId,
+                        UserId = like.UserId,
+                        BotId = like.BotId,
+                        EntryId = like.EntryId,
+                        PostId = like.PostId,
+                        DateTime = like.DateTime,
+                        User = user
+                    }).ToList(),
+                    Followers = user.Followers.Select(follow => new Follow
+                    {
+                        FollowId = follow.FollowId,
+                        DateTime = follow.DateTime,
+                        UserFollowerId = follow.UserFollowerId,
+                        UserFollowedId = follow.UserFollowedId,
+                        BotFollowedId = follow.BotFollowedId,
+                        BotFollowerId = follow.BotFollowerId,
+                        UserFollower = follow.UserFollower,
+                        UserFollowed = follow.UserFollowed,
+                        BotFollower = follow.BotFollower,
+                        BotFollowed = follow.BotFollowed
+                    }).ToList(),
+                    Followed = user.Followed.Select(follow => new Follow
+                    {
+                        FollowId = follow.FollowId,
+                        DateTime = follow.DateTime,
+                        UserFollowerId = follow.UserFollowerId,
+                        UserFollowedId = follow.UserFollowedId,
+                        BotFollowerId = follow.BotFollowerId,
+                        BotFollowedId = follow.BotFollowedId,
+                        UserFollower = follow.UserFollower,
+                        UserFollowed = follow.UserFollowed,
+                        BotFollower = follow.BotFollower,
+                        BotFollowed = follow.BotFollowed
+                    }).ToList()
+                }));
+            
+            var user = listUser.FirstOrDefault();
 
-            var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
             {
                 var entryCount = await _userRepository.GetEntryCountOfUserAsync(userId);
                 var postCount = await _userRepository.GetPostCountOfUserAsync(userId);
-                List<Entry> entries = await _entryRepository.GetAllByUserIdWithIntervalsAsync(userId,0,10);
-                List<Post> posts = await _postRepository.GetAllByUserIdWithIntervalAsync(userId,0,10);
-                List<Like> likes = await _likeRepository.GetAllByUserIdAsync(userId);
-                List<Follow> followers = await _followRepository.GetAllByUserIdAsFollowedWithInfoAsync(userId);
-                List<Follow> followed = await _followRepository.GetAllByUserIdAsFollowerWithInfoAsync(userId);
-
-                foreach (var entry in entries)
-                {
-                    entry.User = await _userRepository.GetByIdAsync((int)entry.UserId);
-                    entry.Likes = await _likeRepository.GetAllByEntryIdAsync((int)entry.EntryId);
-                    foreach (var entryLike in entry.Likes)
-                    {
-                        entryLike.User = await _userRepository.GetByIdAsync((int)entryLike.UserId);
-                        entryLike.Bot = await _botRepository.GetByIdAsync(((int)entryLike.BotId));
-                    }
-                }
-
-                foreach (var post in posts)
-                {
-                    post.User = await _userRepository.GetByIdAsync((int)post.UserId);
-                    post.Likes = await _likeRepository.GetAllByPostIdAsync(post.PostId);
-                    foreach (var postLike in post.Likes)
-                    {
-                        postLike.User = await _userRepository.GetByIdAsync((int)postLike.UserId);
-                        postLike.Bot = await _botRepository.GetByIdAsync(((int)(postLike.BotId)));
-                    }
-                }
-
-                foreach (var like in likes)
-                {
-                    like.User = await _userRepository.GetByIdAsync(userId);      
-                }
-
-                user.Entries = entries;
-                user.Posts = posts;
-                user.Likes = likes;
-                user.Followers = followers;
-                user.Followed = followed;
                 var userProfileDto = user.User_To_UserProfileDto();
                 userProfileDto.EntryCount = entryCount;
                 userProfileDto.PostCount = postCount;

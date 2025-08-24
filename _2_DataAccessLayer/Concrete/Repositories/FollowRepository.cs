@@ -118,11 +118,13 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override Task<List<Follow>> GetAllWithCustomSearch(Func<IQueryable<Follow>, IQueryable<Follow>> queryModifier)
+        public override async Task<List<Follow>> GetWithCustomSearchAsync(Func<IQueryable<Follow>, IQueryable<Follow>> queryModifier)
         {
-            throw new NotImplementedException();
+            IQueryable<Follow> query = _context.Follows;
+            if (queryModifier != null)
+                query = queryModifier(query);
+            return await query.ToListAsync();
         }
-
         public override async Task<Follow> GetByIdAsync(int id)
         {
             try
@@ -162,6 +164,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _logger.LogError(ex, "Error in UpdateAsync for FollowId {FollowId}", t.FollowId);
                 throw;
             }
+        }
+
+        public override Task<List<Follow>> GetBySpecificProperty(Func<IQueryable<Follow>, IQueryable<Follow>> queryModifier)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -16,7 +16,6 @@ namespace _2_DataAccessLayer.Abstractions
         {
         }
 
-        public abstract Task<List<Bot>> GetAllByUserIdAsync(int id);
         public abstract Task<List<Bot>> GetRandomBots(int number);
         public abstract Task<int> GetEntryCountOfBotAsync(int number);
         public abstract Task<int> GetPostCountOfBotAsync(int number);

@@ -18,6 +18,7 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
         Task<IdentityResult> EditEntryAsync(int userId, EditEntryDto editEntryDto);
         //Self-Authorization requirement
         Task<IdentityResult> DeleteEntryAsync(int userId, int entryId);
+        Task<ObjectIdentityResult<EntryProfileDto>> GetEntryAsync(int entryId);
 
     }
 }

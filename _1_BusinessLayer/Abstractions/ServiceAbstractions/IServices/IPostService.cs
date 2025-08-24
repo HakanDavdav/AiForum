@@ -21,10 +21,10 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
         //Self-Authorization requirement
         Task<IdentityResult> DeletePost(int userId,int postId);
         //Self-Preference check
-        Task<ObjectIdentityResult<List<MinimalPostDto>>> GetTrendingPosts(string entryPerPagePreference, DateTime date);
+        Task<ObjectIdentityResult<List<MinimalPostDto>>> GetTrendingPosts(int entryPerPagePreference, DateTime date);
         //Self-Preference check
-        Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(string postPerPagePreference, DateTime date);
-        Task<ObjectIdentityResult<PostDto>> GetPostAsync(int postId, int page, string? entryPerPagePreference);
+        Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(int postPerPagePreference, DateTime date);
+        Task<ObjectIdentityResult<PostDto>> GetPostAsync(int postId, int page, int entryPerPagePreference);
 
 
 

@@ -56,10 +56,14 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override Task<List<Notification>> GetAllWithCustomSearch(Func<IQueryable<Notification>, IQueryable<Notification>> queryModifier)
+        public override async Task<List<Notification>> GetWithCustomSearchAsync(Func<IQueryable<Notification>, IQueryable<Notification>> queryModifier)
         {
-            throw new NotImplementedException();
+            IQueryable<Notification> query = _context.Notifications;
+            if (queryModifier != null)
+                query = queryModifier(query);
+            return await query.ToListAsync();
         }
+
 
         public override async Task<Notification> GetByIdAsync(int id)
         {
@@ -100,6 +104,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _logger.LogError(ex, "Error in UpdateAsync for NotificationId {NotificationId}", t.NotificationId);
                 throw;
             }
+        }
+
+        public override Task<List<Notification>> GetBySpecificProperty(Func<IQueryable<Notification>, IQueryable<Notification>> queryModifier)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -56,32 +56,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<User> GetByUsernameAsync(string name)
-        {
-            try
-            {
-                return await _context.Users.FirstOrDefaultAsync(user => user.UserName == name);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetByUsernameAsync with Username {Username}", name);
-                throw;
-            }
-        }
-
-        public override async Task<User> GetByEmailAsync(string email)
-        {
-            try
-            {
-                return await _context.Users.FirstOrDefaultAsync(user => user.Email == email);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetByEmailAsync with Email {Email}", email);
-                throw;
-            }
-        }
-
         public override async Task InsertAsync(User t)
         {
             try
@@ -110,32 +84,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<User> GetByProfileNameAsync(string profileName)
-        {
-            try
-            {
-                return await _context.Users.FirstOrDefaultAsync(user => user.ProfileName == profileName);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetByProfileNameAsync with ProfileName {ProfileName}", profileName);
-                throw;
-            }
-        }
-
-        public override async Task<User> GetByPhoneNumberAsync(string phoneNumber)
-        {
-            try
-            {
-                return await _context.Users.FirstOrDefaultAsync(user => user.PhoneNumber == phoneNumber);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetByPhoneNumberAsync with PhoneNumber {PhoneNumber}", phoneNumber);
-                throw;
-            }
-        }
-
         public override async Task<List<User>> GetRandomUsers(int number)
         {
             try
@@ -152,9 +100,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override Task<List<User>> GetAllWithCustomSearch(Func<IQueryable<User>, IQueryable<User>> queryModifier)
+        public override async Task<List<User>> GetWithCustomSearchAsync(Func<IQueryable<User>, IQueryable<User>> queryModifier)
         {
-            throw new NotImplementedException();
+            IQueryable<User> query = _context.Users;
+            if (queryModifier != null)
+                query = queryModifier(query);
+            return await query.ToListAsync();
         }
 
         public override async Task<int> GetEntryCountOfUserAsync(int id)
@@ -165,6 +116,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public override async Task<int> GetPostCountOfUserAsync(int id)
         {
             return await _context.Posts.CountAsync(p => p.UserId == id);
+        }
+
+        public override Task<List<User>> GetBySpecificProperty(Func<IQueryable<User>, IQueryable<User>> queryModifier)
+        {
+            throw new NotImplementedException();
         }
     }
 }

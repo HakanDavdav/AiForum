@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
@@ -42,22 +43,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<List<BotActivity>> GetAllByBotIdAsync(int id)
+        public override async Task<List<BotActivity>> GetWithCustomSearchAsync(Func<IQueryable<BotActivity>, IQueryable<BotActivity>> queryModifier)
         {
-            try
-            {
-                var query = _context.Activities.Where(activity => activity.BotId == id);
-                return await query.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetAllByBotIdWithIntervalAsync with BotId {BotId}", id);
-                throw;
-            }
-        }
-        public override Task<List<BotActivity>> GetAllWithCustomSearch(Func<IQueryable<BotActivity>, IQueryable<BotActivity>> queryModifier)
-        {
-            throw new NotImplementedException();
+            IQueryable<BotActivity> query = _context.Activities;
+            if (queryModifier != null)
+                query = queryModifier(query);
+            return await query.ToListAsync();
         }
 
         public override async Task<BotActivity> GetByIdAsync(int id)
@@ -100,5 +91,15 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 throw;
             }
         }
+
+
+        public override async Task<List<BotActivity>> GetBySpecificProperty(Func<IQueryable<BotActivity>, IQueryable<BotActivity>> queryModifier)
+        {
+            IQueryable<BotActivity> query = _context.Activities;
+            if (queryModifier != null)
+                query = queryModifier(query);
+            return await query.ToListAsync();
+        }
+
     }
 }

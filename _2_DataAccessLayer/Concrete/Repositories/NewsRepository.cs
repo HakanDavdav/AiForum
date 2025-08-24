@@ -42,10 +42,14 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override Task<List<News>> GetAllWithCustomSearch(Func<IQueryable<News>, IQueryable<News>> queryModifier)
+        public override async Task<List<News>> GetWithCustomSearchAsync(Func<IQueryable<News>, IQueryable<News>> queryModifier)
         {
-            throw new NotImplementedException();
+            IQueryable<News> query = _context.News;
+            if (queryModifier != null)
+                query = queryModifier(query);
+            return await query.ToListAsync();
         }
+
 
         public override async Task<News> GetByIdAsync(int id)
         {
@@ -89,6 +93,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         }
 
         public override Task UpdateAsync(News t)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<List<News>> GetBySpecificProperty(Func<IQueryable<News>, IQueryable<News>> queryModifier)
         {
             throw new NotImplementedException();
         }

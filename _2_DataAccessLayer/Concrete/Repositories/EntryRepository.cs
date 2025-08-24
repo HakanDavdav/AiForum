@@ -96,16 +96,28 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override Task<List<Entry>> GetAllWithCustomSearch(Func<IQueryable<Entry>, IQueryable<Entry>> queryModifier)
+        public override async Task<List<Entry>> GetWithCustomSearchAsync(Func<IQueryable<Entry>, IQueryable<Entry>> queryModifier)
         {
-            throw new NotImplementedException();
+            IQueryable<Entry> query = _context.Entries;
+            if (queryModifier != null)
+                query = queryModifier(query);
+            return await query.ToListAsync();
         }
 
         public override async Task<Entry> GetByIdAsync(int id)
         {
             try
             {
-                return await _context.Entries.FirstOrDefaultAsync(entry => entry.EntryId == id);
+#pragma warning disable CS8603 // Possible null reference return.
+                return await _context.Entries
+                    .Include(entry => entry.User)
+                    .Include(entry => entry.Post)
+                    .Include(entry => entry.Likes)
+                    .ThenInclude(like => like.User)
+                    .Include(entry => entry.Likes)
+                    .ThenInclude(like => like.Bot)
+                    .FirstOrDefaultAsync(entry => entry.EntryId == id);
+#pragma warning restore CS8603 // Possible null reference return.
             }
             catch (Exception ex)
             {
@@ -191,6 +203,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _logger.LogError(ex, "Repo error in UpdateAsync for EntryId {EntryId}", t.EntryId);
                 throw;
             }
+        }
+
+        public override Task<List<Entry>> GetBySpecificProperty(Func<IQueryable<Entry>, IQueryable<Entry>> queryModifier)
+        {
+            throw new NotImplementedException();
         }
     }
 }

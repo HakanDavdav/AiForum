@@ -30,8 +30,8 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
         public abstract Task<IdentityResult> CreatePost(int userId, CreatePostDto createPostDto);
         public abstract Task<IdentityResult> DeletePost(int userId, int postId);
         public abstract Task<IdentityResult> EditPost(int userId, EditPostDto editPostDto);
-        public abstract Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(string postPerPagePreference,DateTime date);
-        public abstract Task<ObjectIdentityResult<PostDto>> GetPostAsync(int postId, int page, string? entryPerPagePreference);
-        public abstract Task<ObjectIdentityResult<List<MinimalPostDto>>> GetTrendingPosts(string entryPerPagePreference, DateTime date);
+        public abstract Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(int postPerPagePreference,DateTime date);
+        public abstract Task<ObjectIdentityResult<PostDto>> GetPostAsync(int postId, int page, int entryPerPagePreference);
+        public abstract Task<ObjectIdentityResult<List<MinimalPostDto>>> GetTrendingPosts(int entryPerPagePreference, DateTime date);
     }
 }

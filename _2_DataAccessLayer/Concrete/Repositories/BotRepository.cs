@@ -42,23 +42,13 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<List<Bot>> GetAllByUserIdAsync(int id)
-        {
-            try
-            {
-                var query = _context.Bots.Where(bot => bot.UserId == id);
-                return await query.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetAllByUserIdWithIntervalsAsync with UserId {UserId}", id);
-                throw;
-            }
-        }
 
-        public override Task<List<Bot>> GetAllWithCustomSearch(Func<IQueryable<Bot>, IQueryable<Bot>> queryModifier)
+        public override async Task<List<Bot>> GetWithCustomSearchAsync(Func<IQueryable<Bot>, IQueryable<Bot>> queryModifier)
         {
-            throw new NotImplementedException();
+            IQueryable<Bot> query = _context.Bots;
+            if (queryModifier != null)
+                query = queryModifier(query);
+            return await query.ToListAsync();
         }
 
         public override async Task<Bot> GetByIdAsync(int id)
@@ -142,6 +132,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _logger.LogError(ex, "Error in UpdateAsync for BotId {BotId}", t.BotId);
                 throw;
             }
+        }
+
+        public override Task<List<Bot>> GetBySpecificProperty(Func<IQueryable<Bot>, IQueryable<Bot>> queryModifier)
+        {
+            throw new NotImplementedException();
         }
     }
 }
