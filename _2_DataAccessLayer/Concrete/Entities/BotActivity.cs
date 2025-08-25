@@ -11,6 +11,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public int ActivityId {  get; set; }
         public string ActivityType {  get; set; }
         public string ActivityContext {  get; set; }
+        public bool IsRead { get; set; }
         public DateTime DateTime { get; set; }
        
         

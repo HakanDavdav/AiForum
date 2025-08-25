@@ -45,7 +45,7 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
         public abstract Task<IdentityResult> DeployBot(int userId, int botId);
         public abstract Task<IdentityResult> EditBot(int userId, EditBotDto editBotDto);
         public abstract Task<ObjectIdentityResult<BotProfileDto>> GetBotProfile(int botId, int entryPerPagePreference);
-        public abstract Task<ObjectIdentityResult<List<Entry>>> ReloadProfileEntries(int botId, int startInterval, int endInterval);
-        public abstract Task<ObjectIdentityResult<List<Post>>> ReloadProfilePosts(int botId, int startInterval, int endInterval);
+        public abstract Task<ObjectIdentityResult<List<Entry>>> LoadProfileEntries(int botId, int startInterval, int endInterval);
+        public abstract Task<ObjectIdentityResult<List<Post>>> LoadProfilePosts(int botId, int startInterval, int endInterval);
     }
 }

@@ -20,6 +20,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
 
             return new FollowProfileDto
             {
+                FollowId = follow.FollowId,
                 BotFollowed = minimalFollowedBot,
                 UserFollowed = minimalFollowedUser,
                 BotFollower = minimalFollowerBot,

@@ -17,6 +17,12 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public int DailyOperationCount {  get; set; }
         public bool IsProfileCreated { get; set; }
         public DateTime DateTime { get; set; } 
+        public int LikeCount { get; set; }
+        public int EntryCount { get; set; }
+        public int PostCount { get; set; }
+        public int FollowerCount { get; set; }
+        public int FollowedCount { get; set; }
+
 
 
 

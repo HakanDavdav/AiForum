@@ -63,11 +63,16 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             }
             return new UserProfileDto
             {
+                followedCount = user.FollowedCount,
+                followerCount = user.FollowerCount,
                 City = user.City,
                 Date = user.DateTime,
                 ProfileName = user.ProfileName,
                 ImageUrl = user.ImageUrl,
                 UserId = user.Id,
+                EntryCount = user.EntryCount,
+                PostCount = user.PostCount,
+                LikeCount = user.LikeCount,
                 Bots = minimalBotDtos,
                 Entries = entryProfileDtos,
                 Posts = postProfileDtos,

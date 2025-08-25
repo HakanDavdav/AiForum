@@ -13,6 +13,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
         public int EntryId { get; set; }
         public string Context { get; set; }
+        public int LikeCount { get; set; }
         public DateTime DateTime { get; set; }
 
 
@@ -28,7 +29,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
 
         public ICollection<Like> Likes { get; set; }
-      
+
     }
 }
 

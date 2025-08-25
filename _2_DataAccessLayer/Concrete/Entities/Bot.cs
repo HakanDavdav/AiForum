@@ -20,7 +20,11 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public int BotGrade {  get; set; }
         public DateTime DateTime { get; set; }
         public DateTime DeployDateTime { get; set; }
-
+        public int LikeCount { get; set; }
+        public int EntryCount { get; set; }
+        public int PostCount { get; set; }
+        public int FollowerCount { get; set; }
+        public int FollowedCount { get; set; }
 
 
         public int UserId {  get; set; }

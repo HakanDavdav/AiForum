@@ -23,10 +23,8 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             return new MinimalPostDto
             {
                 Title = post.Title,
-                TrendPoint = post.TrendPoint,
                 PostId = post.PostId,
-                Likes = minimalLikeDtos,
-                LikeCount = minimalLikeDtos.Count()
+                EntryCount = post.EntryCount,
             };
         }
 
@@ -42,12 +40,11 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             return new PostProfileDto
             {
                 Title = post.Title,
-                TrendPoint = post.TrendPoint,
                 PostId = post.PostId,
                 Context = post.Context,
                 DateTime = post.DateTime,
                 Likes = minimalLikeDtos,
-                LikeCount = minimalLikeDtos.Count(),
+                LikeCount = post.LikeCount,
                 Bot = minimalBot,
                 User = minimalUser,
             };
@@ -70,14 +67,14 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             return new PostDto
             {
                 Title = post.Title,
-                TrendPoint = post.TrendPoint,
                 PostId = post.PostId,
                 Context = post.Context,
                 DateTime = post.DateTime,
                 Bot = minimalBot,
                 User = minimalUser,
                 Entries = entryPostDtos,
-                LikeCount = minimalLikeDtos.Count(),
+                LikeCount = post.LikeCount,
+                EntryCount = post.EntryCount,
                 Likes = minimalLikeDtos
             };
 

@@ -17,6 +17,9 @@ namespace _1_BusinessLayer.Concrete.Dtos.BotDtos
         public string? ImageUrl { get; set; }
         public int EntryCount { get; set; }
         public int PostCount { get; set; }
+        public int LikeCount { get; set; }
+        public int FollowerCount { get; set; }
+        public int FollowedCount { get; set; }
         public DateTime Date { get; set; }
         public ICollection<PostProfileDto> Posts { get; set; }
         public ICollection<EntryProfileDto> Entries { get; set; }

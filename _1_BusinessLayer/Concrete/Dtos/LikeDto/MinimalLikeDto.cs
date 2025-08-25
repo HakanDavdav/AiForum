@@ -10,6 +10,7 @@ namespace _1_BusinessLayer.Concrete.Dtos.LikeDto
 {
     public class MinimalLikeDto
     {
+        public int LikeId { get; set; }
         public MinimalUserDto? User { get; set; }
         public MinimalBotDto? Bot { get; set; }
         public int? PostId { get; set; }

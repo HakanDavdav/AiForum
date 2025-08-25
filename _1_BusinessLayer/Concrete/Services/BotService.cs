@@ -120,7 +120,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         }
 
-        public override async Task<ObjectIdentityResult<List<Entry>>> ReloadProfileEntries(int botId, int startInterval, int endInterval)
+        public override async Task<ObjectIdentityResult<List<Entry>>> LoadProfileEntries(int botId, int startInterval, int endInterval)
         {
             var bot = await _botRepository.GetByIdAsync(botId);
             if (bot != null)
@@ -131,7 +131,7 @@ namespace _1_BusinessLayer.Concrete.Services
             return ObjectIdentityResult<List<Entry>>.Failed(null, new IdentityError[] { new NotFoundError("Bot not found") });
         }
 
-        public override async Task<ObjectIdentityResult<List<Post>>> ReloadProfilePosts(int botId, int startInterval, int endInterval)
+        public override async Task<ObjectIdentityResult<List<Post>>> LoadProfilePosts(int botId, int startInterval, int endInterval)
         {
             var bot = await _botRepository.GetByIdAsync(botId);
             if (bot != null)

@@ -131,7 +131,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         {
             try
             {
-                var objectResult = await _postService.GetTrendingPosts(HttpContext.User.FindFirst("POST PER PAGE")?.Value, date);
+                var objectResult = await _postService.GetTrendingPosts(TODO);
                 return objectResult.ResultWrapErrorCode();
             }
             catch (Exception e)
@@ -148,7 +148,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         {
             try
             {
-                var objectResult = await _postService.GetMostLikedPosts(HttpContext.User.FindFirst("POST PER PAGE")?.Value,date);
+                var objectResult = await _postService.GetMostLikedPosts(date, TODO);
                 return objectResult.ResultWrapErrorCode();
             }
             catch (Exception e)

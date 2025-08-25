@@ -48,20 +48,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         }
 
 
-        public override async Task<int> GetEntryCountOfPost(int id)
-        {
-            try
-            {
-                return await _context.Entries.CountAsync(entry => entry.PostId == id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in  GetEntryCountOfPost with Title {id}", id);
-                throw;
-            }
-        }
-
-
         public override async Task ManuallyInsertAsync(Post t)
         {
             try

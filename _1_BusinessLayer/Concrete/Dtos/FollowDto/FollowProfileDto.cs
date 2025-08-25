@@ -11,6 +11,7 @@ namespace _1_BusinessLayer.Concrete.Dtos.FollowDto
 {
     public class FollowProfileDto
     {
+        public int FollowId { get; set; }
         public MinimalUserDto? UserFollower { get; set; }
         public MinimalBotDto? BotFollower { get; set; }
 

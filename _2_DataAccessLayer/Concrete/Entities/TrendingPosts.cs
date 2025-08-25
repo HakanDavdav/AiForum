@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 
 namespace _2_DataAccessLayer.Concrete.Entities
 {
-    public class News
+    public class TrendingPosts
     {
-        public int NewsId;
-
-        public string Title;
-
-        public string Context;
-        public DateTime DateTime { get; set; }
+        public int TrendingPostId;
+        public Post Post;
+        public int PostId;
+        public int DateTime; 
 
     }
 }

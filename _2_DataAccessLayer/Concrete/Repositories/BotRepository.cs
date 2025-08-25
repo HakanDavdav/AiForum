@@ -47,33 +47,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<int> GetEntryCountOfBotAsync(int id)
-        {
-            try
-            {
-                return await _context.Entries.CountAsync(entry => entry.BotId == id);
-            }
-            catch (Exception ex)
-            {
 
-                _logger.LogError(ex, "Error in  GetEntryCountOfBotAsync with BotId {BotId}", id);
-                throw;
-            }
-        }
-
-        public override async Task<int> GetPostCountOfBotAsync(int id)
-        {
-            try
-            {
-                return await _context.Posts.CountAsync(post => post.BotId == id);
-            }
-            catch (Exception ex)
-            {
-
-                _logger.LogError(ex, "Error in  GetPostCountOfBotAsync with BotId {BotId}", id);
-                throw;
-            }
-        }
         public override async Task ManuallyInsertAsync(Bot t)
         {
             try
@@ -132,6 +106,16 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                     UserId = bot.UserId,
                 }).FirstOrDefaultAsync();
             return bot;
+        }
+
+        public async override Task<int> GetFollowerCountAsync(int id)
+        {
+            return await _context.Follows.CountAsync(follow => follow.BotFollowedId == id);
+        }
+
+        public async override Task<int> GetFollowedCountAsync(int id)
+        {
+            return await _context.Follows.CountAsync(follow => follow.BotFollowerId == id);
         }
     }
 }

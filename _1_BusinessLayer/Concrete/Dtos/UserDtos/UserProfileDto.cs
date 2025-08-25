@@ -18,6 +18,8 @@ namespace _1_BusinessLayer.Concrete.Dtos.UserDtos
         public string ProfileName { get; set; }
         public string? ImageUrl { get; set; }
         public string? City { get; set; }
+        public int followerCount { get; set; }
+        public int followedCount { get; set; }
         public int EntryCount { get; set; }
         public int PostCount { get; set; }
         public int LikeCount { get; set; }

@@ -75,7 +75,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
             else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry + probabilityCreatingPost)
             {
                  List<string> data = new List<string>();
-                 List<News> news = await _newsRepository.GetRandomNews(1);
+                 List<TrendingPosts> news = await _newsRepository.GetRandomNews(1);
                 foreach (var new_s in news)
                 {
                     data.Add("News Title:"+new_s.Title+"\nNews Context:"+new_s.Context);

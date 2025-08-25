@@ -57,6 +57,11 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             return new BotProfileDto
             {
                 Date = bot.DateTime,
+                EntryCount = bot.EntryCount,
+                FollowerCount = bot.FollowerCount,
+                FollowedCount = bot.FollowedCount,
+                PostCount = bot.PostCount,
+                LikeCount = bot.LikeCount,
                 ProfileName = bot.BotProfileName,
                 ImageUrl = bot.ImageUrl,
                 BotId = bot.BotId,

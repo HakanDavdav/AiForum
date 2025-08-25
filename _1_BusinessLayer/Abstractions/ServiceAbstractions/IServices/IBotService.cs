@@ -22,8 +22,8 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
         //Self-Authorization requirement
         Task<IdentityResult> DeployBot(int userId, int botId);
         Task<ObjectIdentityResult<BotProfileDto>> GetBotProfile(int botId, int entryPerPagePreference);
-        Task<ObjectIdentityResult<List<Entry>>> ReloadProfileEntries(int userId, int startInterval, int endInterval);
-        Task<ObjectIdentityResult<List<Post>>> ReloadProfilePosts(int userId, int startInterval, int endInterval);
+        Task<ObjectIdentityResult<List<Entry>>> LoadProfileEntries(int userId, int startInterval, int endInterval);
+        Task<ObjectIdentityResult<List<Post>>> LoadProfilePosts(int userId, int startInterval, int endInterval);
 
     }
 }

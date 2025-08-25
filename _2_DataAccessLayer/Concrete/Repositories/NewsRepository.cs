@@ -11,7 +11,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 {
     public class NewsRepository : AbstractNewsRepository
     {
-        public NewsRepository(ApplicationDbContext context, ILogger<News> logger) : base(context, logger)
+        public NewsRepository(ApplicationDbContext context, ILogger<TrendingPosts> logger) : base(context, logger)
         {
         }
 
@@ -19,7 +19,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             await _context.SaveChangesAsync();
         }
-        public override async Task DeleteAsync(News t)
+        public override async Task DeleteAsync(TrendingPosts t)
         {
             try
             {
@@ -28,26 +28,26 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in DeleteAsync for NewsId {NewsId}", t.NewsId);
+                _logger.LogError(ex, "Error in DeleteAsync for TrendingPostId {TrendingPostId}", t.TrendingPostId);
                 throw;
             }
         }
 
 
-        public override async Task<News> GetByIdAsync(int id)
+        public override async Task<TrendingPosts> GetByIdAsync(int id)
         {
             try
             {
-                return await _context.News.FirstOrDefaultAsync(news => news.NewsId == id);
+                return await _context.News.FirstOrDefaultAsync(news => news.TrendingPostId == id);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in GetByIdAsync with NewsId {NewsId}", id);
+                _logger.LogError(ex, "Error in GetByIdAsync with TrendingPostId {TrendingPostId}", id);
                 throw;
             }
         }
 
-        public override async Task<List<News>> GetRandomNews(int number)
+        public override async Task<List<TrendingPosts>> GetRandomNews(int number)
         {
             try
             {
@@ -61,7 +61,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task ManuallyInsertAsync(News t)
+        public override async Task ManuallyInsertAsync(TrendingPosts t)
         {
             try
             {
@@ -70,28 +70,28 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in ManuallyInsertAsync for NewsId {NewsId}", t.NewsId);
+                _logger.LogError(ex, "Error in ManuallyInsertAsync for TrendingPostId {TrendingPostId}", t.TrendingPostId);
                 throw;
             }
         }
 
-        public override async Task UpdateAsync(News t)
+        public override async Task UpdateAsync(TrendingPosts t)
         {
             _context.News.Update(t);
             await _context.SaveChangesAsync();
         }
 
-        public override async Task<List<News>> GetWithCustomSearchAsync(Func<IQueryable<News>, IQueryable<News>> queryModifier)
+        public override async Task<List<TrendingPosts>> GetWithCustomSearchAsync(Func<IQueryable<TrendingPosts>, IQueryable<TrendingPosts>> queryModifier)
         {
-            IQueryable<News> query = _context.News;
+            IQueryable<TrendingPosts> query = _context.News;
             if (queryModifier != null)
                 query = queryModifier(query);
             return await query.ToListAsync();
         }
 
-        public override async Task<News> GetBySpecificPropertySingularAsync(Func<IQueryable<News>, IQueryable<News>> queryModifier)
+        public override async Task<TrendingPosts> GetBySpecificPropertySingularAsync(Func<IQueryable<TrendingPosts>, IQueryable<TrendingPosts>> queryModifier)
         {
-            IQueryable<News> query = _context.News;
+            IQueryable<TrendingPosts> query = _context.News;
             if (queryModifier != null)
                 query = queryModifier(query);
 #pragma warning disable CS8603 // Possible null reference return.

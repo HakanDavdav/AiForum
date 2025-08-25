@@ -14,6 +14,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
         {
             return new MinimalLikeDto
             {
+                LikeId = like.LikeId,
                 EntryId = like.EntryId,
                 PostId = like.PostId,
                 Bot = like.Bot.Bot_To_MinimalBotDto(),

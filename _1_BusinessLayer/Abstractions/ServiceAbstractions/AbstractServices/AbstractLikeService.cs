@@ -27,7 +27,9 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
 
         public abstract Task<IdentityResult> LikeEntry(int entryId,int userId);
         public abstract Task<IdentityResult> LikePost(int postId,int userId);
-        public abstract Task<IdentityResult> Unlike(int userId, int likeId);
+        public abstract Task<IdentityResult> UnlikeEntry(int userId, int likeId);
+        public abstract Task<IdentityResult> UnlikePost(int userId, int likeId);
+
 
     }
 }

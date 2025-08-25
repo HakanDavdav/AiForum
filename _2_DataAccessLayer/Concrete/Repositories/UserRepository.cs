@@ -15,6 +15,25 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public UserRepository(ApplicationDbContext context, ILogger<User> logger) : base(context, logger)
         {
         }
+        public override async Task<int> GetNotificationCountAsync(int id)
+        {
+            return await _context.Notifications.CountAsync(notification => notification.UserId == id && !notification.IsRead);
+        }
+
+        public override async Task<int> GetBotActivitiesCountAsync(int id)
+        {
+            return await _context.Activities.CountAsync(activity => activity.Bot.UserId == id && !activity.IsRead);
+        }
+
+        public override async Task<int> GetFollowerCountAsync(int id)
+        {
+            return await _context.Follows.CountAsync(follow => follow.UserFollowedId == id);
+        }
+
+        public override async Task<int> GetFollowedCountAsync(int id)
+        {
+            return await _context.Follows.CountAsync(follow => follow.UserFollowerId == id);
+        }
 
         public override async Task SaveChangesAsync()
         {
@@ -75,31 +94,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<List<User>> GetRandomUsers(int number)
-        {
-            try
-            {
-                return await _context.Users
-                    .OrderBy(u => Guid.NewGuid())
-                    .Take(number)
-                    .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetRandomUsers");
-                throw;
-            }
-        }
-
-        public override async Task<int> GetEntryCountAsync(int id)
-        {
-            return await _context.Entries.CountAsync(e => e.UserId == id);
-        }
-
-        public override async Task<int> GetPostCountAsync(int id)
-        {
-            return await _context.Posts.CountAsync(p => p.UserId == id);
-        }
 
         public override async Task<User> GetBySpecificPropertySingularAsync(Func<IQueryable<User>, IQueryable<User>> queryModifier)
         {
@@ -130,11 +124,20 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                     UserName = user.UserName,
                     Email = user.Email,
                     ImageUrl = user.ImageUrl,
-                    Bots = user.Bots,
+                    Bots = user.Bots.Select(bot => new Bot
+                    {
+                        BotId = bot.BotId,
+                        ImageUrl = bot.ImageUrl,
+                        BotProfileName = bot.BotProfileName,
+                        BotGrade = bot.BotGrade,
+
+                    }).ToList(),
                     City = user.City,               
                 })
                 .FirstOrDefaultAsync();
 #pragma warning restore CS8603 // Possible null reference return.
         }
+
+
     }
 }

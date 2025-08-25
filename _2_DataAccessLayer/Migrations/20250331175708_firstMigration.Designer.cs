@@ -347,16 +347,16 @@ namespace _2_DataAccessLayer.Migrations
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.News", b =>
                 {
-                    b.Property<int>("NewsId")
+                    b.Property<int>("TrendingPostId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NewsId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TrendingPostId"));
 
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("NewsId");
+                    b.HasKey("TrendingPostId");
 
                     b.ToTable("News");
                 });

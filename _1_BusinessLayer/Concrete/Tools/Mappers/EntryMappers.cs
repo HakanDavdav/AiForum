@@ -25,7 +25,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             {
                 Context = entry.Context,
                 DateTime = entry.DateTime,
-                LikeCount = entry.Likes.Count,
+                LikeCount = entry.LikeCount,
                 EntryId = entry.EntryId,
                 Bot = minimalBotDto,
                 User = minimalUserDto,
@@ -48,7 +48,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
                 Context = entry.Context,
                 DateTime = entry.DateTime,               
                 EntryId = entry.EntryId,
-                LikeCount = minimalLikeDtos.Count(),
+                LikeCount = entry.LikeCount,
                 Bot = minimalBotDto,
                 User = minimalUserDto,
                 Likes = minimalLikeDtos,

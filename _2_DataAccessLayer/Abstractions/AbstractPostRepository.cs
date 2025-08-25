@@ -18,7 +18,6 @@ namespace _2_DataAccessLayer.Abstractions
         public abstract Task<List<Post>> GetPostModulesForUser(int id,int startInterval, int endInterval);
         public abstract Task<List<Post>> GetPostModulesForBot(int id,int startInterval, int endInterval);
         public abstract Task<Post> GetPostModuleAsync(int id);
-        public abstract Task<int> GetEntryCountOfPost(int id);
-        public abstract Task<int> GetLikeCountOfPost(int id);
+
     }
 }

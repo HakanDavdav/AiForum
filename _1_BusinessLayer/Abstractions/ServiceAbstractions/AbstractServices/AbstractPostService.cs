@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.AbstractServices.IServices;
+using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
+using _1_BusinessLayer.Concrete.Dtos.LikeDto;
 using _1_BusinessLayer.Concrete.Dtos.PostDtos;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _2_DataAccessLayer.Abstractions;
@@ -30,8 +32,10 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
         public abstract Task<IdentityResult> CreatePost(int userId, CreatePostDto createPostDto);
         public abstract Task<IdentityResult> DeletePost(int userId, int postId);
         public abstract Task<IdentityResult> EditPost(int userId, EditPostDto editPostDto);
-        public abstract Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(int postPerPagePreference,DateTime date);
+        public abstract Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(DateTime date, int postCount);
         public abstract Task<ObjectIdentityResult<PostDto>> GetPostAsync(int postId, int page, int entryPerPagePreference);
-        public abstract Task<ObjectIdentityResult<List<MinimalPostDto>>> GetTrendingPosts(int entryPerPagePreference, DateTime date);
+        public abstract Task<ObjectIdentityResult<List<MinimalPostDto>>> GetTrendingPosts(int postCount);
+        public abstract Task<ObjectIdentityResult<List<EntryPostDto>>> LoadPostEntries(int postId, int startInterval, int endInterval);
+        public abstract Task<ObjectIdentityResult<List<MinimalLikeDto>>> LoadPostLikes(int postId, int startInterval, int endInterval);
     }
 }

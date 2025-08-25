@@ -7,6 +7,8 @@ using _1_BusinessLayer.Abstractions.AbstractServices;
 using _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices;
 using _1_BusinessLayer.Abstractions.AbstractServices.IServices;
 using _1_BusinessLayer.Concrete.Dtos.BotDtos;
+using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
+using _1_BusinessLayer.Concrete.Dtos.LikeDto;
 using _1_BusinessLayer.Concrete.Dtos.NotificationDtos;
 using _1_BusinessLayer.Concrete.Dtos.PostDtos;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
@@ -77,13 +79,13 @@ namespace _1_BusinessLayer.Concrete.Services
             return IdentityResult.Failed(new NotFoundError("User not found"));
         }
 
-        public override async Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(DateTime date, int postPerPagePreference)
+        public override async Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(DateTime date, int postCount)
         {
             List<MinimalPostDto> minimalPostDtos = new List<MinimalPostDto>();
             List<Post> posts = await _postRepository.GetWithCustomSearchAsync(q =>
-                q.Where(p => p.DateTime.Date == date.Date) 
-                .OrderByDescending(p => p.Likes) 
-                .Take(postPerPagePreference) 
+                q.Where(p => p.DateTime.Date == date.Date)
+                .OrderByDescending(p => p.Likes)
+                .Take(postCount)
                  );
             foreach (var post in posts)
             {
@@ -92,94 +94,45 @@ namespace _1_BusinessLayer.Concrete.Services
             return ObjectIdentityResult<List<MinimalPostDto>>.Succeded(minimalPostDtos);
         }
 
-        public override Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(int postPerPagePreference, DateTime date)
+        public override async Task<ObjectIdentityResult<PostDto>> GetPostAsync(int postId, int entryStartInterval, int entryEndInterval)
         {
-            throw new NotImplementedException();
-        }
-
-        public override async Task<ObjectIdentityResult<PostDto>> GetPostAsync(int postId, int page, string? entryPerPagePreference = "10")
-        {
-            var intEntryPerPagePreference = int.Parse(entryPerPagePreference);
-            var listPost = await _postRepository.GetWithCustomSearchAsync(query => query.Where(post =>post.PostId == postId)
-            .Select(post => new Post
-            {
-                PostId = post.PostId,
-                UserId = post.UserId,
-                BotId = post.BotId,
-                DateTime = post.DateTime,
-                Title = post.Title,
-                Context = post.Context,
-                Likes = post.Likes.Select(like => new Like
-                {
-                    LikeId = like.LikeId,
-                    UserId = like.UserId,
-                    BotId = like.BotId,
-                    PostId = like.PostId,
-                    EntryId = like.EntryId,
-                    User = like.User,
-                    Bot = like.Bot,
-                    DateTime = like.DateTime            
-                }).ToList(),
-                Entries = post.Entries.Skip((page - 1) * intEntryPerPagePreference).Take(intEntryPerPagePreference).Select(entry => new Entry
-                {
-                    EntryId = entry.EntryId,
-                    UserId = entry.UserId,
-                    BotId = entry.BotId,
-                    PostId = entry.PostId,
-                    DateTime = entry.DateTime,
-                    Context = entry.Context,
-                    Likes = entry.Likes.Select(like => new Like
-                    {
-                        LikeId = like.LikeId,
-                        UserId = like.UserId,
-                        BotId = like.BotId,
-                        PostId = like.PostId,
-                        EntryId = like.EntryId,
-                        User = like.User,
-                        Bot = like.Bot,
-                        DateTime = like.DateTime
-                    }).ToList(),
-                    User = entry.User,
-                    Bot = entry.Bot
-                }).ToList()
-            }
-            )
-            );
-            var post = listPost.FirstOrDefault();
+           var post = await _postRepository.GetPostModuleAsync(postId);
             if (post != null)
             {
-                var entryCount = await _postRepository.GetEntryCountOfPost(postId);
+                post.Entries = await _entryRepository.GetEntryModulesForPostAsync(postId, entryStartInterval, entryEndInterval);
                 var postDto = post.Post_To_PostDto();
-                postDto.EntryCount = entryCount;
                 return ObjectIdentityResult<PostDto>.Succeded(postDto);
             }
             return ObjectIdentityResult<PostDto>.Failed(null, new IdentityError[] { new NotFoundError("Post not found") });
 
         }
 
-        public override Task<ObjectIdentityResult<PostDto>> GetPostAsync(int postId, int page, int entryPerPagePreference)
+
+        public override Task<ObjectIdentityResult<List<MinimalPostDto>>> GetTrendingPosts(int postCount)
         {
             throw new NotImplementedException();
         }
 
-        public override async Task<ObjectIdentityResult<List<MinimalPostDto>>> GetTrendingPosts(string postPerPagePreference,DateTime date)
+        public override async Task<ObjectIdentityResult<List<EntryPostDto>>> LoadPostEntries(int postId, int startInterval, int endInterval)
         {
-            List<MinimalPostDto> minimalPostDtos = new List<MinimalPostDto>();
-            List<Post> posts = await _postRepository.GetWithCustomSearchAsync(q =>
-                     q.Where(p => p.DateTime.Date > date.AddDays(-3)) 
-                     .OrderByDescending(p => p.TrendPoint) 
-                     .Take(int.Parse(postPerPagePreference)) 
-                      );
-            foreach (var post in posts)
+            var entries = await _entryRepository.GetEntryModulesForPostAsync(postId, startInterval, endInterval);
+            List<EntryPostDto> entryPostDtos = new List<EntryPostDto>();
+            foreach (var entry in entries)
             {
-                minimalPostDtos.Add(post.Post_To_MinimalPostDto());
+                entryPostDtos.Add(entry.Entry_To_EntryPostDto());
             }
-            return ObjectIdentityResult<List<MinimalPostDto>>.Succeded(minimalPostDtos);
+            return ObjectIdentityResult<List<EntryPostDto>>.Succeded(entryPostDtos);
         }
 
-        public override Task<ObjectIdentityResult<List<MinimalPostDto>>> GetTrendingPosts(int entryPerPagePreference, DateTime date)
+        public override async Task<ObjectIdentityResult<List<MinimalLikeDto>>> LoadPostLikes(int postId, int startInterval, int endInterval)
         {
-            throw new NotImplementedException();
+            var likes = await _likeRepository.GetLikeModulesForPost(postId, startInterval, endInterval);
+            List<MinimalLikeDto> minimalLikeDtos = new List<MinimalLikeDto>();
+            foreach (var like in likes)
+            {
+                minimalLikeDtos.Add(like.Like_To_MinimalLikeDto());
+            }
+            return ObjectIdentityResult<List<MinimalLikeDto>>.Succeded(minimalLikeDtos);
         }
     }
 }

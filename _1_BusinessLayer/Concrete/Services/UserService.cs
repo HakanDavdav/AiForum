@@ -8,6 +8,7 @@ using _1_BusinessLayer.Concrete.Dtos.BotActivityDtos;
 using _1_BusinessLayer.Concrete.Dtos.BotDtos;
 using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
 using _1_BusinessLayer.Concrete.Dtos.FollowDto;
+using _1_BusinessLayer.Concrete.Dtos.LikeDto;
 using _1_BusinessLayer.Concrete.Dtos.NotificationDtos;
 using _1_BusinessLayer.Concrete.Dtos.PostDtos;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
@@ -156,11 +157,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
             if (user != null)
             {
-                var entryCount = await _userRepository.GetEntryCountAsync(userId);
-                var postCount = await _userRepository.GetPostCountAsync(userId);
                 var userProfileDto = user.User_To_UserProfileDto();
-                userProfileDto.EntryCount = entryCount;
-                userProfileDto.PostCount = postCount;
                 return ObjectIdentityResult<UserProfileDto>.Succeded(userProfileDto);
             }
             return ObjectIdentityResult<UserProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("User not found") });
@@ -188,6 +185,17 @@ namespace _1_BusinessLayer.Concrete.Services
             }
             return ObjectIdentityResult<List<PostProfileDto>>.Succeded(postProfileDtos);
 
+        }
+
+        public override async Task<ObjectIdentityResult<List<MinimalLikeDto>>> LoadProfileLikes(int userId, int startInterval, int endInterval)
+        {
+            var likes = await _likeRepository.GetLikeModulesForUser(userId, startInterval, endInterval);
+            List<MinimalLikeDto> minimalLikeDtos = new List<MinimalLikeDto>();
+            foreach (var like in likes)
+            {
+                minimalLikeDtos.Add(like.Like_To_MinimalLikeDto());
+            }
+            return ObjectIdentityResult<List<MinimalLikeDto>>.Succeded(minimalLikeDtos);
         }
     }
 }

@@ -167,7 +167,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<List<Entry>> GetEntryModulesForPost(int id, int startInterval, int endInterval)
+        public override async Task<List<Entry>> GetEntryModulesForPostAsync(int id, int startInterval, int endInterval)
         {
             try
             {
@@ -204,7 +204,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Repo error in GetEntryModulesForPost with PostId {PostId}", id);
+                _logger.LogError(ex, "Repo error in GetEntryModulesForPostAsync with PostId {PostId}", id);
                 throw;
             }
         }
@@ -249,12 +249,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 _logger.LogError(ex, "Repo error in GetEntryModulesForUserAsync with UserId {UserId}", id);
                 throw;
             }
-        }
-
-        public override async Task<int> GetLikeCount(int id)
-        {
-            return await _context.Likes.CountAsync(like => like.EntryId == id);
-
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.AbstractServices.IServices;
 using _1_BusinessLayer.Concrete.Dtos.BotActivityDtos;
 using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
+using _1_BusinessLayer.Concrete.Dtos.LikeDto;
 using _1_BusinessLayer.Concrete.Dtos.NotificationDtos;
 using _1_BusinessLayer.Concrete.Dtos.PostDtos;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
@@ -62,5 +63,6 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
         public abstract Task<ObjectIdentityResult<List<BotActivityDto>>> LoadBotActivities(int userId, int startInterval, int endInterval);
         public abstract Task<ObjectIdentityResult<List<EntryProfileDto>>> LoadProfileEntries(int userId, int startInterval, int endInterval);
         public abstract Task<ObjectIdentityResult<List<PostProfileDto>>> LoadProfilePosts(int userId, int startInterval, int endInterval);
+        public abstract Task<ObjectIdentityResult<List<MinimalLikeDto>>> LoadProfileLikes(int userId, int startInterval, int endInterval);
     }
 }

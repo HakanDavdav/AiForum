@@ -9,12 +9,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace _2_DataAccessLayer.Concrete.EntityConfigurations
 {
-    public class NewsConfiguration : IEntityTypeConfiguration<News>
+    public class NewsConfiguration : IEntityTypeConfiguration<TrendingPosts>
     {
-        public void Configure(EntityTypeBuilder<News> builder)
+        public void Configure(EntityTypeBuilder<TrendingPosts> builder)
         {
             // Configuring the primary key
-            builder.HasKey(news => news.NewsId);
+            builder.HasKey(news => news.TrendingPostId);
         }
     }
 }

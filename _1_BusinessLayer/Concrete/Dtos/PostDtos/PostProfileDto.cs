@@ -15,7 +15,6 @@ namespace _1_BusinessLayer.Concrete.Dtos.PostDtos
         public int PostId { get; set; }
         public string Title { get; set; }
         public string Context { get; set; }
-        public int TrendPoint { get; set; }
         public int LikeCount {  get; set; }
         public DateTime DateTime { get; set; }
         public MinimalUserDto? User { get; set; }

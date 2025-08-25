@@ -13,11 +13,13 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
     {
         protected readonly AbstractFollowRepository _followRepository;
         protected readonly AbstractUserRepository _userRepository;
+        protected readonly AbstractBotRepository _botRepository;
 
-        public AbstractFollowService(AbstractFollowRepository followRepository, AbstractUserRepository userRepository)
+        public AbstractFollowService(AbstractFollowRepository followRepository, AbstractUserRepository userRepository, AbstractBotRepository botRepository  )
         {
             _followRepository = followRepository;
             _userRepository = userRepository;
+            _botRepository = botRepository;
         }
 
         public abstract Task<IdentityResult> DeleteFollow(int userId, int followId);

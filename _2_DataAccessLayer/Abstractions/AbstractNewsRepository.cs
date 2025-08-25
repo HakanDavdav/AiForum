@@ -10,9 +10,9 @@ using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Abstractions
 {
-    public abstract class AbstractNewsRepository : AbstractGenericBaseRepository<News>
+    public abstract class AbstractNewsRepository : AbstractGenericBaseRepository<TrendingPosts>
     {
-        protected AbstractNewsRepository(ApplicationDbContext context, ILogger<News> logger) : base(context, logger)
+        protected AbstractNewsRepository(ApplicationDbContext context, ILogger<TrendingPosts> logger) : base(context, logger)
         {
         }
 
