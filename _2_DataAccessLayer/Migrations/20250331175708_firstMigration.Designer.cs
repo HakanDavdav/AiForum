@@ -797,7 +797,7 @@ namespace _2_DataAccessLayer.Migrations
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("_2_DataAccessLayer.Concrete.Entities.User", "User")
-                        .WithMany("ReceivedNotifications")
+                        .WithMany("Notifications")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -882,7 +882,7 @@ namespace _2_DataAccessLayer.Migrations
 
                     b.Navigation("Posts");
 
-                    b.Navigation("ReceivedNotifications");
+                    b.Navigation("Notifications");
 
                     b.Navigation("SentNotifications");
 

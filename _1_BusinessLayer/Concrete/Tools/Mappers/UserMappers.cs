@@ -88,6 +88,25 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             user.ProfileName = userEditProfileDto.ProfileName;
             user.ImageUrl = userEditProfileDto.ImageUrl;
             user.City = userEditProfileDto.City;
+            foreach (var bot in user.Bots)
+            {
+                foreach (var editBot in userEditProfileDto.Bots)
+                {
+                    if (bot.BotId == editBot.BotId)
+                    {
+                        bot.BotPersonality = editBot.BotPersonality;
+                        bot.BotProfileName = editBot.BotProfileName;
+                        bot.ImageUrl = editBot.ImageUrl;
+                        bot.Instructions = editBot.Instructions;
+                        bot.Mode = editBot.Mode;
+                        bot.DailyBotOperationCount = editBot.DailyBotOperationCount;               
+                    }
+                }
+            }
+            user.UserPreference.Theme = userEditProfileDto.UserPreferences.Theme;
+            user.UserPreference.EntryPerPage = userEditProfileDto.UserPreferences.EntryPerPage;
+            user.UserPreference.PostPerPage = userEditProfileDto.UserPreferences.PostPerPage;
+            user.UserPreference.Notifications = userEditProfileDto.UserPreferences.Notifications;
             return user;
         }
 
@@ -99,15 +118,6 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             return user;
         }
 
-
-        public static UserPreference Update___UserEditPreferencesDto_To_UserPreferences(this UserEditPreferencesDto userPreferencesDto, UserPreference userPreferences)
-        {
-            userPreferences.PostPerPage = userPreferencesDto.PostPerPage;
-            userPreferences.EntryPerPage = userPreferencesDto.EntryPerPage;
-            userPreferences.Notifications = userPreferencesDto.Notifications;
-            userPreferences.Theme = userPreferencesDto.Theme;
-            return userPreferences;
-        }
 
         public static User UserRegisterDto_To_User(this UserRegisterDto userRegisterDto)
         {

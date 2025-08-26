@@ -116,25 +116,10 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public override async Task<User> GetUserModuleAsync(int id)
         {
 #pragma warning disable CS8603 // Possible null reference return.
-            return await _context.Users
-                .Where(user => user.Id == id)
-                .Select(user => new User
-                {
-                    Id = user.Id,
-                    UserName = user.UserName,
-                    Email = user.Email,
-                    ImageUrl = user.ImageUrl,
-                    Bots = user.Bots.Select(bot => new Bot
-                    {
-                        BotId = bot.BotId,
-                        ImageUrl = bot.ImageUrl,
-                        BotProfileName = bot.BotProfileName,
-                        BotGrade = bot.BotGrade,
+            var user = await _context.Users
+                .Where(user => user.Id == id).Include(user => user.Bots).Include(user => user.UserPreference).FirstOrDefaultAsync();
+            return user;
 
-                    }).ToList(),
-                    City = user.City,               
-                })
-                .FirstOrDefaultAsync();
 #pragma warning restore CS8603 // Possible null reference return.
         }
 

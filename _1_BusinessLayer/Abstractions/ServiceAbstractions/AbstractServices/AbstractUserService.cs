@@ -55,7 +55,6 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
 
         public abstract Task<IdentityResult> CreateProfileAsync(int userId, UserCreateProfileDto userCreateProfileDto);
         public abstract Task<IdentityResult> DeleteUser(int userId);
-        public abstract Task<IdentityResult> EditPreferences(int userId, UserEditPreferencesDto userEditPreferencesDto);
         public abstract Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto);
         public abstract Task<ObjectIdentityResult<dynamic>> GetBotPanel(int userId);
         public abstract Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId, int startInterval, int endInterval);

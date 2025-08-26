@@ -77,21 +77,9 @@ namespace _1_BusinessLayer.Concrete.Services
             return IdentityResult.Failed(new NotFoundError("User not found"));
         }
 
-        public override async Task<IdentityResult> EditPreferences(int userId, UserEditPreferencesDto userEditPreferencesDto)
-        {
-            var preference = await _preferenceRepository.GetBySpecificPropertySingularAsync(query => query.Where(p => p.UserId == userId));
-            if (preference != null)
-            {
-                preference = userEditPreferencesDto.Update___UserEditPreferencesDto_To_UserPreferences(preference);
-                await _preferenceRepository.SaveChangesAsync();
-                return IdentityResult.Success;
-            }
-            return IdentityResult.Failed(new NotFoundError("User's preference not found"));
-        }
-
         public override async Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetUserModuleAsync(userId);
             if (user != null)
             {
                 user = userEditProfileDto.Update___UserEditProfileDto_To_User(user);

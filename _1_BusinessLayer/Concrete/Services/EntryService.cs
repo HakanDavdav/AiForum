@@ -39,12 +39,14 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<IdentityResult> DeleteEntryAsync(int userId, int entryId)
         {
             var entry = await _entryRepository.GetByIdAsync(entryId);
+            if (entry == null) return IdentityResult.Failed(new NotFoundError("Entry not found"));
             var user = await _userRepository.GetByIdAsync(userId);
-            if(entry == null) return IdentityResult.Failed(new NotFoundError("Entry not found"));
-            if (entry.UserId == userId)
+            if (user == null) return IdentityResult.Failed(new NotFoundError("User not found"));
+            if (entry.UserId == user.Id)
             {
-                user.EntryCount--;
                 await _entryRepository.DeleteAsync(entry);
+                user.EntryCount--;
+
                 await _entryRepository.SaveChangesAsync();
                 return IdentityResult.Success;
             }
@@ -59,7 +61,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 if (entry.UserId == userId)
                 {
                     entry = editEntryDto.Update___EditEntryDto_To_Entry(entry);
-                    await _entryRepository.UpdateAsync(entry);
+                    await _entryRepository.SaveChangesAsync();
                     return IdentityResult.Success;
                 }
                 return IdentityResult.Failed(new UnauthorizedError("You cannot edit another user's entry"));

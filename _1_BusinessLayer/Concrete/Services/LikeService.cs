@@ -58,19 +58,19 @@ namespace _1_BusinessLayer.Concrete.Services
             var like = await _likeRepository.GetByIdAsync(likeId);
             if (like != null)
             {
-                if (like.EntryId != null)
-                {
-                    var entry = await _entryRepository.GetByIdAsync(like.EntryId.Value);
-                    if (entry != null)
+                 var entry = await _entryRepository.GetByIdAsync(like.EntryId.Value);
+                 if (entry != null)
+                 {
+                    if (entry.EntryId == like.EntryId)
                     {
-                        entry.LikeCount--;
                         await _likeRepository.DeleteAsync(like);
+                        entry.LikeCount--;
                         await _likeRepository.SaveChangesAsync();
                         return IdentityResult.Success;
                     }
-                    return IdentityResult.Failed(new UnauthorizedError("Post doesen't have that like "));
+                    return IdentityResult.Failed(new UnauthorizedError("Entry doesen't have that like "));
                 }
-                return IdentityResult.Failed(new UnexpectedError("Like is not attached to any entry"));
+                 return IdentityResult.Failed(new UnauthorizedError("Entry not found "));
             }
             return IdentityResult.Failed(new NotFoundError("Like not found"));
         }
@@ -80,19 +80,19 @@ namespace _1_BusinessLayer.Concrete.Services
             var like = await _likeRepository.GetByIdAsync(likeId);
             if (like != null)
             {
-                if (like.PostId != null)
-                {
-                    var post = await _postRepository.GetByIdAsync(like.PostId.Value);
-                    if (post != null)
-                    {
-                        post.LikeCount--;
-                        await _likeRepository.DeleteAsync(like);
-                        await _likeRepository.SaveChangesAsync();
-                        return IdentityResult.Success;
+                 var post = await _postRepository.GetByIdAsync(like.PostId.Value);      
+                 if (post != null)
+                 {
+                    if ( post.PostId == like.PostId) 
+                    { 
+                     await _likeRepository.DeleteAsync(like);
+                     post.LikeCount--;
+                     await _likeRepository.SaveChangesAsync();
+                     return IdentityResult.Success;
                     }
                     return IdentityResult.Failed(new UnauthorizedError("Post doesen't have that like "));
                 }
-                return IdentityResult.Failed(new UnexpectedError("Like is not attached to any entry"));
+              return IdentityResult.Failed(new NotFoundError("Post not found"));
             }
             return IdentityResult.Failed(new NotFoundError("Like not found"));
         }

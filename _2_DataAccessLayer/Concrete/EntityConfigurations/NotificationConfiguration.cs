@@ -29,7 +29,7 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .HasDefaultValue(false);  // Default value set to false
 
             builder.HasOne(notification => notification.User)
-                .WithMany(user => user.ReceivedNotifications)
+                .WithMany(user => user.Notifications)
                 .HasForeignKey(notification => notification.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
            

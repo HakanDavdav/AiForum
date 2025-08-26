@@ -32,7 +32,6 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
 
         public ICollection<BotActivity> Activities { get; set; }
-        public ICollection<Notification> SentNotifications { get; set; }
         public ICollection<Post> Posts { get; set; }
         public ICollection<Entry> Entries { get; set; }
         public ICollection<Like> Likes { get; set; }

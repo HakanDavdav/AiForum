@@ -40,7 +40,7 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .WithOne(userPreference => userPreference.User)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(user => user.ReceivedNotifications)
+            builder.HasMany(user => user.Notifications)
                 .WithOne(notification => notification.User)
                 .HasForeignKey(notification => notification.UserId)
                 .OnDelete(DeleteBehavior.Cascade);

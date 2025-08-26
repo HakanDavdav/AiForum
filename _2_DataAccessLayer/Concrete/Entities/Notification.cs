@@ -7,6 +7,15 @@ using System.Threading.Tasks;
 
 namespace _2_DataAccessLayer.Concrete.Entities
 {
+    public enum NotificationType
+    {
+        Like = 1,
+        CreateEntry = 2,
+        CreatePost = 3,
+        GainFollower = 4,
+        ReceiveFollower = 5,
+
+    }
     public class Notification 
     {
         public int NotificationId {  get; set; }

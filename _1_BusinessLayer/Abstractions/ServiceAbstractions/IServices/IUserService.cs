@@ -17,8 +17,7 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
 {
     public interface IUserService
     {
-        //Self-Authorization requirement
-        Task<IdentityResult> EditPreferences (int userId,UserEditPreferencesDto userEditPreferencesDto);
+
         //Self-Authorization requirement
         Task<IdentityResult> EditProfile (int userId,UserEditProfileDto userEditProfileDto);
         //Self-Authorization requirement

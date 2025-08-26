@@ -35,6 +35,7 @@ namespace _1_BusinessLayer.Concrete.Services
             {
                 var post = createPostDto.CreatePostDto_To_Post(userId);
                 user.Posts.Add(post);
+                user.PostCount += 1;
                 await _postRepository.SaveChangesAsync();
                 return IdentityResult.Success;
             }
@@ -47,13 +48,18 @@ namespace _1_BusinessLayer.Concrete.Services
             if (user != null)
             {
                 var post = await _postRepository.GetByIdAsync(postId);
-                if (post != null && post.UserId == userId)
+                if (post != null)
                 {
-                    user.Posts.Remove(post);
-                    await _postRepository.SaveChangesAsync();
-                    return IdentityResult.Success;
+                    if (post.UserId == userId)
+                    {
+                        await _postRepository.DeleteAsync(post);
+                        user.PostCount -= 1;
+                        await _postRepository.SaveChangesAsync();
+                        return IdentityResult.Success;
+                    }
+                    return IdentityResult.Failed(new UnauthorizedError("User does not have that kind of post:)"));
                 }
-                return IdentityResult.Failed(new UnauthorizedError("User does not have that kind of post:)"));
+                return IdentityResult.Failed(new NotFoundError("Post not found"));
             }
             return IdentityResult.Failed(new NotFoundError("Post not found"));
         }
