@@ -242,7 +242,7 @@ namespace _2_DataAccessLayer.Migrations
                     b.Property<int?>("BotId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Context")
+                    b.Property<string>("NotificationContext")
                         .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
@@ -369,7 +369,7 @@ namespace _2_DataAccessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NotificationId"));
 
-                    b.Property<string>("Context")
+                    b.Property<string>("NotificationContext")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
@@ -421,7 +421,7 @@ namespace _2_DataAccessLayer.Migrations
                     b.Property<int?>("BotId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Context")
+                    b.Property<string>("NotificationContext")
                         .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");

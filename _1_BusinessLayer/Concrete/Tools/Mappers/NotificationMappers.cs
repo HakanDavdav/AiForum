@@ -17,7 +17,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             var minimalFromBot = notification.FromBot.Bot_To_MinimalBotDto();
             return new NotificationDto()
             {
-                Context = notification.Context,
+                Context = notification.NotificationContext,
                 DateTime = notification.DateTime,
                 ImageUrl = notification.ImageUrl,
                 IsRead = notification.IsRead,

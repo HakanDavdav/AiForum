@@ -10,10 +10,10 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices
 {
     public interface IActivityBaseService
     {
-        public Task<IdentityResult> CreateNotificationAsync(int fromUserOrBotId,int toUserId, NotificationType type);
+        public Task<IdentityResult> CreateNotificationAsync(User FromUser, Bot FromBot, List<User> ToUsers, NotificationType type, int additionalInfo, int additionalId);
         public Task<IdentityResult> ClearNotifications(int userId);
         public Task<IdentityResult> MarkAsRead(int userId, int[] notificationIds);
-        public Task<IdentityResult> CreateBotActivityAsync(int botId, BotActivity);
+        public Task<IdentityResult> CreateBotActivityAsync(int botId, ActivityType type, string additionalInfo, int additionalId);
 
     }
 }

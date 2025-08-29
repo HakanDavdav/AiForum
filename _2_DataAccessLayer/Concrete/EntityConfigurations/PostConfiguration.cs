@@ -20,7 +20,7 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
             builder.Property(post => post.Title)
                 .HasMaxLength(50);  // Max length of 50 characters
 
-            // Context: Maximum length of 1000 characters
+            // NotificationContext: Maximum length of 1000 characters
             builder.Property(post => post.Context)
                 .HasMaxLength(1000);  // Max length of 1000 characters
 

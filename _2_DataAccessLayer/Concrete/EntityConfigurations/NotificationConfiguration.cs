@@ -20,8 +20,8 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
             builder.Property(notification => notification.Title)
                 .HasMaxLength(100);  // Max length of 100 characters
 
-            // Context: Maximum length of 200 characters
-            builder.Property(notification => notification.Context)
+            // NotificationContext: Maximum length of 200 characters
+            builder.Property(notification => notification.NotificationContext)
                 .HasMaxLength(200);  // Max length of 200 characters
 
             // IsRead: Default value is false

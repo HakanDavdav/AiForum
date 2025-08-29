@@ -26,7 +26,8 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
         }
 
         public abstract Task<IdentityResult> ClearNotifications(int userId);
-        public abstract Task<IdentityResult> CreateNotificationAsync(int fromUserOrBotId, int toUserId, NotificationType type);
+        public abstract Task<IdentityResult> CreateBotActivityAsync(int botId, ActivityType type, string additionalInfo, int additionalId);
+        public abstract Task<IdentityResult> CreateNotificationAsync(User FromUser, Bot FromBot, List<User> ToUsers, NotificationType type, int additionalInfo, int additionalId);
         public abstract Task<IdentityResult> MarkAsRead(int userId, int[] notificationIds);
     }
 }

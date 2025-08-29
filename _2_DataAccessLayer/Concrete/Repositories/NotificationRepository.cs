@@ -104,18 +104,13 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 .Select(notification => new Notification
                 {
                     NotificationId = notification.NotificationId,
-                    Context = notification.Context,
+                    NotificationContext = notification.NotificationContext,
                     DateTime = notification.DateTime,
                     IsRead = notification.IsRead,
                     UserId = notification.UserId,
                     User = notification.User,
-                    FromBot = notification.FromBot,
-                    FromBotId = notification.FromBotId,
-                    FromUser = notification.FromUser,
                     ImageUrl = notification.ImageUrl,
-                    Title = notification.Title,
-                    FromUserId = notification.FromUserId
-                    
+                    Title = notification.Title,                    
                 });
             return notifications.ToListAsync();
         }
