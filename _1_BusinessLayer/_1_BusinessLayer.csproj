@@ -51,7 +51,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\ToolAbstractions\AbstractBotManagers\" />
+    <Folder Include="Abstractions\ToolAbstractions\AbstractManagers\" />
     <Folder Include="Concrete\Tools\AdditionalFilters\" />
     <Folder Include="Concrete\Tools\Validators\" />
   </ItemGroup>

@@ -12,7 +12,9 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
 
         Task<IdentityResult> LikeEntry(int entryId, int userId);
         Task<IdentityResult> LikePost(int postId, int userId);
-        Task<IdentityResult> Unlike(int userId, int likeId);
+        Task<IdentityResult> UnlikePost(int userId, int likeId);
+        Task<IdentityResult> UnlikeEntry(int userId, int likeId);
+
 
     }
 }

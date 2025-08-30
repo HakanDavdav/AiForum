@@ -7,6 +7,7 @@ using _1_BusinessLayer.Abstractions.AbstractServices.IServices;
 using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
 using _1_BusinessLayer.Concrete.Dtos.LikeDto;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
+using _1_BusinessLayer.Concrete.Tools.Managers.UserToolManagers;
 using _2_DataAccessLayer.Abstractions;
 using Microsoft.AspNetCore.Identity;
 
@@ -18,13 +19,19 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
         protected readonly AbstractUserRepository _userRepository;
         protected readonly AbstractLikeRepository _likeRepository;
         protected readonly AbstractPostRepository _postRepository;
+        protected readonly ActivityBaseManager _activityBaseManager;
+        protected readonly AbstractFollowRepository _followRepository;
 
-        protected AbstractEntryService(AbstractEntryRepository entryRepository, AbstractUserRepository userRepository, AbstractLikeRepository likeRepository, AbstractPostRepository postRepository)
+        protected AbstractEntryService(AbstractEntryRepository entryRepository, AbstractUserRepository userRepository,
+            AbstractLikeRepository likeRepository, AbstractPostRepository postRepository,AbstractFollowRepository followRepository, ActivityBaseManager activityBaseManager)
         {
             _entryRepository = entryRepository;
             _userRepository = userRepository;
             _likeRepository = likeRepository;
             _postRepository = postRepository;
+            _followRepository = followRepository;
+            _activityBaseManager = activityBaseManager;
+
         }
 
         public abstract Task<IdentityResult> CreateEntryAsync(int userId, int postId, CreateEntryDto createEntryDto);

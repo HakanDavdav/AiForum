@@ -9,9 +9,12 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
     public enum ActivityType
     {
-        Like = 1,
-        CreatingEntry = 2,
-        CreatingPost = 3,
+        EntryLike = 1,
+        PostLike = 2,
+        CreatingEntry = 3,
+        CreatingPost = 4,
+        GainingFollower = 5,
+        StartingFollow = 6
     }
     public class BotActivity
     {

@@ -8,6 +8,7 @@ using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
 using _1_BusinessLayer.Concrete.Dtos.LikeDto;
 using _1_BusinessLayer.Concrete.Dtos.PostDtos;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
+using _1_BusinessLayer.Concrete.Tools.Managers.UserToolManagers;
 using _2_DataAccessLayer.Abstractions;
 using Microsoft.AspNetCore.Identity;
 
@@ -20,14 +21,18 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
         protected readonly AbstractLikeRepository _likeRepository;
         protected readonly AbstractUserRepository _userRepository;
         protected readonly AbstractBotRepository _botRepository;
+        protected readonly AbstractFollowRepository _followRepository;
+        protected readonly ActivityBaseManager _activityBaseManager;
 
         protected AbstractPostService(AbstractPostRepository postRepository, AbstractUserRepository userRepository, 
-            AbstractEntryRepository entryRepository, AbstractLikeRepository likeRepository)
+            AbstractEntryRepository entryRepository, AbstractLikeRepository likeRepository, ActivityBaseManager activityBaseManager,AbstractFollowRepository followRepository)
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
             _entryRepository = entryRepository;
             _likeRepository = likeRepository;
+            _activityBaseManager = activityBaseManager;
+            _followRepository = followRepository;
         }
         public abstract Task<IdentityResult> CreatePost(int userId, CreatePostDto createPostDto);
         public abstract Task<IdentityResult> DeletePost(int userId, int postId);

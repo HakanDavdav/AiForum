@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.AbstractServices.IServices;
+using _1_BusinessLayer.Concrete.Tools.Managers.UserToolManagers;
 using _2_DataAccessLayer.Abstractions;
 using Microsoft.AspNetCore.Identity;
 
@@ -15,14 +16,16 @@ namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
         protected readonly AbstractEntryRepository _entryRepository;
         protected readonly AbstractPostRepository _postRepository;
         protected readonly AbstractUserRepository _userRepository;
+        protected readonly ActivityBaseManager _activityBaseManager;
 
         protected AbstractLikeService(AbstractLikeRepository likeRepository,AbstractUserRepository userRepository,
-            AbstractPostRepository postRepository,AbstractEntryRepository entryRepository) 
+            AbstractPostRepository postRepository,AbstractEntryRepository entryRepository, ActivityBaseManager activityBaseManager) 
         {
            _likeRepository = likeRepository;
             _userRepository = userRepository;
             _postRepository = postRepository;
             _entryRepository = entryRepository;
+            _activityBaseManager = activityBaseManager;
         }
 
         public abstract Task<IdentityResult> LikeEntry(int entryId,int userId);

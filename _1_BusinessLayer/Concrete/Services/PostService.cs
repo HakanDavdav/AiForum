@@ -13,18 +13,22 @@ using _1_BusinessLayer.Concrete.Dtos.NotificationDtos;
 using _1_BusinessLayer.Concrete.Dtos.PostDtos;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
+using _1_BusinessLayer.Concrete.Tools.Managers.UserToolManagers;
 using _1_BusinessLayer.Concrete.Tools.Mappers;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace _1_BusinessLayer.Concrete.Services
 {
     public class PostService : AbstractPostService
     {
-        public PostService(AbstractPostRepository postRepository, AbstractUserRepository userRepository, 
-            AbstractEntryRepository entryRepository, AbstractLikeRepository likeRepository) : base(postRepository, userRepository, entryRepository, likeRepository)
+        public PostService(AbstractPostRepository postRepository, AbstractUserRepository userRepository,
+            AbstractEntryRepository entryRepository, AbstractLikeRepository likeRepository, 
+            ActivityBaseManager activityBaseManager, AbstractFollowRepository followRepository)
+            : base(postRepository, userRepository, entryRepository, likeRepository, activityBaseManager, followRepository)
         {
         }
 
@@ -36,6 +40,13 @@ namespace _1_BusinessLayer.Concrete.Services
                 var post = createPostDto.CreatePostDto_To_Post(userId);
                 user.Posts.Add(post);
                 user.PostCount += 1;
+                var follows = await _followRepository.GetWithCustomSearchAsync(query => query.Where(follow => follow.UserFollowedId == userId).AsNoTracking());
+                var userIds = new List<int?>();
+                for (global::System.Int32 i = 0; i < follows.Count; i++)
+                {
+                    userIds.Add(follows[i].UserFollowedId);
+                }
+                await _activityBaseManager.CreateNotificationsAsync(user,null,userIds, NotificationType.CreatingPost, post.Title, post.PostId);
                 await _postRepository.SaveChangesAsync();
                 return IdentityResult.Success;
             }

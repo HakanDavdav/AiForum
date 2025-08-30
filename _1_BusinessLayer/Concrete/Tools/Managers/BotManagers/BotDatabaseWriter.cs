@@ -7,7 +7,7 @@ using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace _1_BusinessLayer.Concrete.Tools.BotManagers
+namespace _1_BusinessLayer.Concrete.Tools.Managers.BotManagers
 {
     public class BotDatabaseWriter
     {
@@ -25,7 +25,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
             _followRepository = followRepository;
             _notificationRepository = notificationRepository;
         }
-        public Task<Notification> WriteOnDatabase(Bot bot,int requiredId,string filteredAiResponse, string parseResponseType)
+        public Task<Notification> WriteOnDatabase(Bot bot, int requiredId, string filteredAiResponse, string parseResponseType)
         {
             switch (parseResponseType)
             {
@@ -49,7 +49,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
             }
         }
 
-        public Task<Notification> WriteEntry(Bot bot,string filteredAiResponse,int requiredID)
+        public Task<Notification> WriteEntry(Bot bot, string filteredAiResponse, int requiredID)
         {
             throw new NotImplementedException();
         }

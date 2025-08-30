@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _1_BusinessLayer.Concrete.Tools.BotManagers
+namespace _1_BusinessLayer.Concrete.Tools.Managers.BotManagers
 {
     public class ProbabilitySet
     {

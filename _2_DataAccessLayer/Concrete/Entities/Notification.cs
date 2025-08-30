@@ -9,12 +9,14 @@ namespace _2_DataAccessLayer.Concrete.Entities
 {
     public enum NotificationType
     {
-        Like = 1,
-        CreatingEntry = 2,
-        CreatingPost = 3,
-        Message = 4,
-        BotActivity = 5,
-        FollowGain = 6,
+        PostLike = 1,
+        EntryLike = 2,
+        CreatingEntry = 3,
+        CreatingPost = 4,
+        Message = 5,
+        BotActivity = 6,
+        GainedFollower = 7,
+        NewEntryForPost = 8
     }
     public class Notification 
     {

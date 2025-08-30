@@ -8,7 +8,7 @@ using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace _1_BusinessLayer.Concrete.Tools.BotManagers
+namespace _1_BusinessLayer.Concrete.Tools.Managers.BotManagers
 {
     public class BotDatabaseReader
     {
@@ -32,8 +32,8 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
             Random random = new Random();
             double ActionPossibility = random.NextDouble(); // 0 ile 1 arasında rastgele sayı üretir
 
-            double probabilityCreatingEntry = probabilitySet.probabilityCreatingEntry;  
-            double probabilityCreatingOpposingEntry = probabilitySet.probabilityCreatingOpposingEntry;  
+            double probabilityCreatingEntry = probabilitySet.probabilityCreatingEntry;
+            double probabilityCreatingOpposingEntry = probabilitySet.probabilityCreatingOpposingEntry;
             double probabilityCreatingPost = probabilitySet.probabilityCreatingPost;
             double probabilityUserFollowing = probabilitySet.probabilityUserFollowing;
             double probabilityBotFollowing = probabilitySet.probabilityBotFollowing;
@@ -47,23 +47,23 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
                 List<Post> posts = await _postRepository.GetRandomPosts(1);
                 foreach (var post in posts)
                 {
-                    data.Add("Post Id:"+post.PostId+"\nPost Title:"+post.Title+"\nPost NotificationContext:"+post.Context);
+                    data.Add("Post Id:" + post.PostId + "\nPost Title:" + post.Title + "\nPost NotificationContext:" + post.Context);
                 }
-                return (data,"creatingEntry") ;
+                return (data, "creatingEntry");
 
             }
             else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry)
             {
-               List <string> data = new List<string>();
-               StringBuilder stringBuilder = new StringBuilder();
-               List<Post> posts = await _postRepository.GetRandomPosts(1);
+                List<string> data = new List<string>();
+                StringBuilder stringBuilder = new StringBuilder();
+                List<Post> posts = await _postRepository.GetRandomPosts(1);
                 foreach (var post in posts)
                 {
-                    List<Entry> entries = await _entryRepository.GetRandomEntriesByPostId(post.PostId,3);
-                    stringBuilder.Append("Post Id:"+post.PostId+"\nPost Title:"+post.Title+"\nPost NotificationContext"+post.Context);
+                    List<Entry> entries = await _entryRepository.GetRandomEntriesByPostId(post.PostId, 3);
+                    stringBuilder.Append("Post Id:" + post.PostId + "\nPost Title:" + post.Title + "\nPost NotificationContext" + post.Context);
                     foreach (var entry in entries)
                     {
-                        stringBuilder.AppendLine("Entry NotificationContext:"+entry.Context);
+                        stringBuilder.AppendLine("Entry NotificationContext:" + entry.Context);
                     }
                     data.Add(stringBuilder.ToString());
                     stringBuilder.Clear();
@@ -74,11 +74,11 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
 
             else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry + probabilityCreatingPost)
             {
-                 List<string> data = new List<string>();
-                 List<TrendingPosts> news = await _newsRepository.GetRandomNews(1);
+                List<string> data = new List<string>();
+                List<TrendingPosts> news = await _newsRepository.GetRandomNews(1);
                 foreach (var new_s in news)
                 {
-                    data.Add("News Title:"+new_s.Title+"\nNews NotificationContext:"+new_s.Context);
+                    data.Add("News Title:" + new_s.Title + "\nNews NotificationContext:" + new_s.Context);
                 }
                 return (data, "creatingPost");
 
@@ -94,9 +94,9 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
                     List<Entry> entries = await _entryRepository.GetRandomEntriesByUserId(user.Id, 3);
                     foreach (var entry in entries)
                     {
-                        stringBuilder.AppendLine("Post Title:"+(await _postRepository.GetByEntryId(entry.EntryId)).Title
-                                                 +"Post NotificationContext"+ (await _postRepository.GetByEntryId(entry.EntryId)).Context);
-                        stringBuilder.AppendLine("Entry NotificationContext:"+entry.Context);
+                        stringBuilder.AppendLine("Post Title:" + (await _postRepository.GetByEntryId(entry.EntryId)).Title
+                                                 + "Post NotificationContext" + (await _postRepository.GetByEntryId(entry.EntryId)).Context);
+                        stringBuilder.AppendLine("Entry NotificationContext:" + entry.Context);
                     }
                     data.Add(stringBuilder.ToString());
                     stringBuilder.Clear();
@@ -123,7 +123,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
                     data.Add(stringBuilder.ToString());
                     stringBuilder.Clear();
                 }
-                return (data,"creatingBotFollowing");
+                return (data, "creatingBotFollowing");
 
             }
             else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry + probabilityCreatingPost + probabilityUserFollowing + probabilityBotFollowing + probabilityLikePost)
@@ -132,9 +132,9 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
                 List<Post> posts = await _postRepository.GetRandomPosts(3);
                 foreach (var post in posts)
                 {
-                    data.Add("Post Id:"+post.PostId + "\nPost Title:" + post.Title + "\nPost NotificationContext:" + post.Context);
+                    data.Add("Post Id:" + post.PostId + "\nPost Title:" + post.Title + "\nPost NotificationContext:" + post.Context);
                 }
-                return (data,"likePost");
+                return (data, "likePost");
             }
             else
             {
@@ -144,15 +144,15 @@ namespace _1_BusinessLayer.Concrete.Tools.BotManagers
                 foreach (var post in posts)
                 {
                     stringBuilder.Append("Post Title:" + post.Title + "\nPost NotificationContext:" + post.Context);
-                    List<Entry> entries = await _entryRepository.GetRandomEntriesByPostId(post.PostId,3);
+                    List<Entry> entries = await _entryRepository.GetRandomEntriesByPostId(post.PostId, 3);
                     foreach (var entry in entries)
                     {
-                        stringBuilder.AppendLine("Entry Id:"+entry.EntryId+"\nEntry NotificationContext:"+entry.Context);
+                        stringBuilder.AppendLine("Entry Id:" + entry.EntryId + "\nEntry NotificationContext:" + entry.Context);
                     }
                     data.Add(stringBuilder.ToString());
                 }
                 return (data, "likeEntry");
             }
         }
-    }      
+    }
 }
