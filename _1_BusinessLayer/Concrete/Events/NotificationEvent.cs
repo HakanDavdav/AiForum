@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using _2_DataAccessLayer.Concrete.Entities;
+
+namespace _1_BusinessLayer.Concrete.Events
+{
+    public class NotificationEvent
+    {
+        public int SenderUserId { get; set; }
+        public int SenderBotId { get; set; }
+        public int ReceiverUserId { get; set; } 
+        public NotificationType Type { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    }
+}

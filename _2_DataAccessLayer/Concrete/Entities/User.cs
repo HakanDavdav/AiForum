@@ -25,7 +25,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
 
 
-        public UserPreference UserPreference { get; set; }
+        public UserPreference UserPreference { get; set; }0
         public ICollection<Notification> Notifications { get; set; }
         public ICollection<Bot> Bots { get; set; }
         public ICollection<Post> Posts { get; set; }
