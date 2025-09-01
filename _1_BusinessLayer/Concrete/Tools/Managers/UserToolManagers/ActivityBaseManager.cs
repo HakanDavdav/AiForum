@@ -83,7 +83,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers.UserToolManagers
             return IdentityResult.Failed(new NotFoundError("Bot not found"));
         }
 
-        public async Task<IdentityResult> CreateNotificationsAsync(User? FromUser, Bot? FromBot, List<int?> toUserIds, NotificationType type, string additionalInfo, int additionalId)
+        public async Task<IdentityResult> CreateNotificationAsync(User? FromUser, Bot? FromBot, User toUser, NotificationType type, string additionalInfo, int additionalId)
         {
             var notificationContext = string.Empty;
 
@@ -117,23 +117,19 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers.UserToolManagers
                 {
                     return IdentityResult.Failed(new NotFoundError("Notification type not found"));
                 }
-                for (global::System.Int32 i = 0; i < toUserIds.Count; i++)
+                await _notificationRepository.ManuallyInsertAsync(new Notification
                 {
-                        await _notificationRepository.ManuallyInsertAsync(new Notification
-                        {
-                            AdditionalId = additionalId,
-                            FromUser = FromUser,
-                            UserId = (int)toUserIds[i],
-                            NotificationType = type,
-                            NotificationContext = notificationContext,
-                            DateTime = DateTime.UtcNow,
-                            IsRead = false,
-                            ImageUrl = FromUser.ImageUrl,
-                            Title = "New Notification",
-                        }
-                        );
+                    AdditionalId = additionalId,
+                    FromUser = FromUser,
+                    User = toUser,
+                    NotificationType = type,
+                    NotificationContext = notificationContext,
+                    DateTime = DateTime.UtcNow,
+                    IsRead = false,
+                    ImageUrl = FromUser.ImageUrl,
+                    Title = "New Notification",
                 }
-
+                );
                 await _notificationRepository.SaveChangesAsync();
                 return IdentityResult.Success;
             }
@@ -168,21 +164,20 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers.UserToolManagers
                 {
                     return IdentityResult.Failed(new NotFoundError("Notification type not found"));
                 }
-                for (global::System.Int32 i = 0; i < toUserIds.Count; i++)
+
+                await _notificationRepository.ManuallyInsertAsync(new Notification
                 {
-                    await _notificationRepository.ManuallyInsertAsync(new Notification
-                    {
-                        AdditionalId = additionalId,
-                        FromBot = FromBot,
-                        UserId = (int)toUserIds[i],
-                        NotificationType = type,
-                        NotificationContext = notificationContext,
-                        DateTime = DateTime.UtcNow,
-                        IsRead = false,
-                        ImageUrl = FromBot.ImageUrl,
-                        Title = "New Notification",
-                    });
-                }
+                    AdditionalId = additionalId,
+                    FromBot = FromBot,
+                    User = toUser,
+                    NotificationType = type,
+                    NotificationContext = notificationContext,
+                    DateTime = DateTime.UtcNow,
+                    IsRead = false,
+                    ImageUrl = FromBot.ImageUrl,
+                    Title = "New Notification",
+                });
+
                 return IdentityResult.Success;
             }
             else
@@ -190,5 +185,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers.UserToolManagers
                 return IdentityResult.Failed(new NotFoundError("Sender not found"));
             }
         }
+
+        public a
     }
 }

@@ -12,15 +12,6 @@ namespace _1_BusinessLayer.Concrete.Tools.Workers
 {
     public class QueueSender : QueueConnection
     {
-
-        public QueueSender()
-        {      
-            _senderChannel.ExchangeDeclareAsync(_defaultExchangeName, ExchangeType.Direct, durable: true, autoDelete: false).Wait();
-            _senderChannel.QueueDeclareAsync(_mailQueueName, durable: true, exclusive: false, autoDelete: false).Wait();
-            _senderChannel.QueueDeclareAsync(_notificationQueueName, durable: true, exclusive: false, autoDelete: false).Wait();
-            _senderChannel.ExchangeBindAsync(_mailQueueName, _defaultExchangeName, _mailRoutingKey).Wait();
-            _senderChannel.ExchangeBindAsync(_notificationQueueName, _defaultExchangeName, _notificationRoutingKey).Wait();
-        }
         public async Task NotificationQueueSendAsync(List<NotificationEvent> notificationEvents)
         {
 
@@ -46,7 +37,6 @@ namespace _1_BusinessLayer.Concrete.Tools.Workers
                 await _senderChannel.BasicPublishAsync(_defaultExchangeName, _mailRoutingKey, false, basicProperties, body);
             }
         }
-
 
     }
 }

@@ -6,6 +6,14 @@ using System.Threading.Tasks;
 
 namespace _1_BusinessLayer.Concrete.Events
 {
+
+    public enum MailEventType
+    {
+        AccountConfirmation,
+        PasswordReset,
+        Notification,
+        Newsletter
+    }
     public class MailEvent
     {
     }

@@ -46,7 +46,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 {
                     userIds.Add(follows[i].UserFollowedId);
                 }
-                await _activityBaseManager.CreateNotificationsAsync(user,null,userIds, NotificationType.CreatingPost, post.Title, post.PostId);
+                await _activityBaseManager.CreateNotificationFromEventAsync(user,null,userIds, NotificationType.CreatingPost, post.Title, post.PostId);
                 await _postRepository.SaveChangesAsync();
                 return IdentityResult.Success;
             }
