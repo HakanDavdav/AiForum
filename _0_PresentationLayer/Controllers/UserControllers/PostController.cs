@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 using _1_BusinessLayer.Abstractions.AbstractServices;
-using _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices;
+using _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices;
 using _1_BusinessLayer.Concrete.Dtos.PostDtos;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Authorization;

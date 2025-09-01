@@ -5,15 +5,14 @@ using _2_DataAccessLayer.Concrete.Extensions;
 using _2_DataAccessLayer.Concrete.Repositories;
 using Microsoft.AspNetCore.Identity;
 using _2_DataAccessLayer.Concrete.Entities;
-using _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders;
-using _1_BusinessLayer.Concrete.Tools.AuthenticationManagers.Senders;
-using _1_BusinessLayer.Concrete.Tools.AuthenticationManagers.BodyBuilders;
-using _1_BusinessLayer.Concrete.Tools.AuthenticationManagers.Factories;
-using _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices;
 using _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices;
 using Serilog.Extensions.Logging;
 using Serilog;
 using _1_BusinessLayer.Concrete.Tools.Managers.BotManagers;
+using _1_BusinessLayer.Abstractions.ToolAbstractions.AbstractSenders;
+using _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Factories;
+using _1_BusinessLayer.Concrete.Tools.AuthIntegrations.BodyBuilders;
+using _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Senders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,7 +39,7 @@ builder.Services.AddScoped<UserManager<User>>();
 builder.Services.AddScoped<AbstractTokenSender, TokenSender>();
 builder.Services.AddScoped<TokenFactory>();
 builder.Services.AddScoped<SmsBodyBuilder>();
-builder.Services.AddScoped<EmailBodyBuilder>();
+builder.Services.AddScoped<MailBodyBuilder>();
 //autowiring bot Tools
 builder.Services.AddScoped<BotApiCaller>();
 builder.Services.AddScoped<BotDatabaseReader>();

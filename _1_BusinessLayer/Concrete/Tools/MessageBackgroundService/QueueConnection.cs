@@ -8,7 +8,7 @@ using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace _1_BusinessLayer.Concrete.Tools.Workers
+namespace _1_BusinessLayer.Concrete.Tools.MessageBackgroundService
 {
     public class QueueConnection : BackgroundService
     {

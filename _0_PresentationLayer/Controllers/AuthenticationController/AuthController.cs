@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices;
+using _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -71,9 +71,9 @@ namespace _0_PresentationLayer.Controllers.GuestControllers
         [HttpPost("ChooseProviderAndSendToken")]
         public async Task<IActionResult> ChooseProviderAndSendToken(string usernameEmailOrPhoneNumber, string provider, string operation)
         {
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference BotActivityType.
             var result = await _userIdentityService.ChooseProviderAndSendToken(provider, operation, usernameEmailOrPhoneNumber);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference BotActivityType.
             return Ok(result);
         }
 

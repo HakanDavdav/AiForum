@@ -5,15 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Concrete.Events;
 using _2_DataAccessLayer.Concrete.Entities;
+using static _2_DataAccessLayer.Concrete.Enums.NotificationTypes;
 
-namespace _1_BusinessLayer.Concrete.Tools.Factories
+namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Factories
 {
     public class NotificationEventFactory
     {
-        public List<NotificationEvent> CreateNotificationEvents(User fromUser,Bot fromBot,List<int> toUserId,NotificationType type,string additionalInfo,int additionalId, int startInterval, int endInterval)
+        public List<NotificationEvent> CreateNotificationEvents(User fromUser,Bot fromBot,List<int> toUserId,NotificationType type,string additionalInfo,int additionalId)
         {
             List<NotificationEvent> notificationEvents = new List<NotificationEvent>();
-            for (int i = startInterval; i < endInterval; i++)
+            for (int i = 0; i < toUserId.Count; i++)
             {
                 notificationEvents.Add(new NotificationEvent
                 {

@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace _1_BusinessLayer.Concrete.Tools.AuthenticationManagers.Factories
+namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Factories
 {
     public class TokenFactory 
     {

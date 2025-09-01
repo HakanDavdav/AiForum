@@ -8,7 +8,7 @@ using _2_DataAccessLayer.Concrete;
 using Microsoft.EntityFrameworkCore.Metadata;
 using RabbitMQ.Client;
 
-namespace _1_BusinessLayer.Concrete.Tools.Workers
+namespace _1_BusinessLayer.Concrete.Tools.MessageBackgroundService
 {
     public class QueueSender : QueueConnection
     {

@@ -8,7 +8,7 @@ using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using Microsoft.AspNetCore.Identity;
 
-namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
+namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices
 {
     public interface IEntryService
     {

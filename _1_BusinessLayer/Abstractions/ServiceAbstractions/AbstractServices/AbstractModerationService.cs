@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
+namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
 {
     public abstract class AbstractModerationService
     {

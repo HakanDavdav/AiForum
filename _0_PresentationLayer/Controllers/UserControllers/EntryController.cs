@@ -2,8 +2,8 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using _1_BusinessLayer.Abstractions.AbstractServices;
-using _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices;
 using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
+using _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices;
 
 namespace _0_PresentationLayer.Controllers.UserControllers
 {

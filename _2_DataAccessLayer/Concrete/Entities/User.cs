@@ -16,6 +16,8 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public string? City { get; set; }
         public bool IsProfileCreated { get; set; }
         public DateTime DateTime { get; set; } 
+        public bool SocialNotificationPreference { get; set; }
+        public bool SocialEmailPreference { get; set; }
         public int LikeCount { get; set; }
         public int EntryCount { get; set; }
         public int PostCount { get; set; }
@@ -25,7 +27,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
 
 
-        public UserPreference UserPreference { get; set; }0
+        public UserPreference UserPreference { get; set; }
         public ICollection<Notification> Notifications { get; set; }
         public ICollection<Bot> Bots { get; set; }
         public ICollection<Post> Posts { get; set; }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _1_BusinessLayer.Abstractions.AbstractServices.IServices
+namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices
 {
     internal interface ISearchService
     {

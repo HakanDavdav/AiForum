@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using _1_BusinessLayer.Abstractions.AbstractServices.IServices;
-using _1_BusinessLayer.Abstractions.AbstractTools.AbstractSenders;
+using _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices;
+using _1_BusinessLayer.Abstractions.ToolAbstractions.AbstractSenders;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 
 
-namespace _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices
+namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
 {
     public abstract class AbstractUserIdentityService : IUserIdentityService
     {

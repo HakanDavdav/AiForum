@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using _1_BusinessLayer.Abstractions.AbstractServices;
-using _1_BusinessLayer.Abstractions.AbstractServices.AbstractServices;
-using _1_BusinessLayer.Abstractions.AbstractServices.IServices;
+using _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices;
 using _1_BusinessLayer.Concrete.Dtos.BotDtos;
 using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
 using _1_BusinessLayer.Concrete.Dtos.LikeDto;
@@ -25,10 +23,9 @@ namespace _1_BusinessLayer.Concrete.Services
 {
     public class PostService : AbstractPostService
     {
-        public PostService(AbstractPostRepository postRepository, AbstractUserRepository userRepository,
-            AbstractEntryRepository entryRepository, AbstractLikeRepository likeRepository, 
-            ActivityBaseManager activityBaseManager, AbstractFollowRepository followRepository)
-            : base(postRepository, userRepository, entryRepository, likeRepository, activityBaseManager, followRepository)
+        public PostService(AbstractPostRepository postRepository, AbstractUserRepository userRepository, 
+            AbstractEntryRepository entryRepository, AbstractLikeRepository likeRepository, AbstractFollowRepository followRepository) 
+            : base(postRepository, userRepository, entryRepository, likeRepository, followRepository)
         {
         }
 
@@ -46,7 +43,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 {
                     userIds.Add(follows[i].UserFollowedId);
                 }
-                await _activityBaseManager.CreateNotificationFromEventAsync(user,null,userIds, NotificationType.CreatingPost, post.Title, post.PostId);
+                
                 await _postRepository.SaveChangesAsync();
                 return IdentityResult.Success;
             }

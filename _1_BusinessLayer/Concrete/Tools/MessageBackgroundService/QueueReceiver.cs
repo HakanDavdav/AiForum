@@ -5,18 +5,19 @@ using System.Text;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Concrete.Events;
+using _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Senders;
 using _1_BusinessLayer.Concrete.Tools.Managers.UserToolManagers;
 using _2_DataAccessLayer.Abstractions;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace _1_BusinessLayer.Concrete.Tools.Workers
+namespace _1_BusinessLayer.Concrete.Tools.MessageBackgroundService
 {
     public class NotificationConsumer : AsyncDefaultBasicConsumer
     {
-        private readonly Func<NotificationEvent, Task> _handleMessage;
+        private readonly Func<MailEvent?, NotificationEvent?, Task> _handleMessage;
 
-        public NotificationConsumer(IChannel channel, Func<NotificationEvent, Task> handleMessage)
+        public NotificationConsumer(IChannel channel, Func<MailEvent?,NotificationEvent? , Task> handleMessage)
             : base(channel)
         {
             _handleMessage = handleMessage;
@@ -36,16 +37,16 @@ namespace _1_BusinessLayer.Concrete.Tools.Workers
             var notificationEvent = System.Text.Json.JsonSerializer.Deserialize<NotificationEvent>(notification);
             if (notificationEvent != null)
             {
-                await _handleMessage(notificationEvent);
+                await _handleMessage(null,notificationEvent);
             }
             await Channel.BasicAckAsync(deliveryTag, false, cancellationToken);
         }
     }
     public class MailConsumer : AsyncDefaultBasicConsumer
     {
-        private readonly Func<MailEvent, Task> _handleMail;
+        private readonly Func<MailEvent?,NotificationEvent?, Task> _handleMail;
 
-        public MailConsumer(IChannel channel, Func<MailEvent, Task> handleMail)
+        public MailConsumer(IChannel channel, Func<MailEvent?, NotificationEvent?, Task> handleMail)
             : base(channel)
         {
             _handleMail = handleMail;
@@ -65,7 +66,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Workers
             var mailEvent = System.Text.Json.JsonSerializer.Deserialize<MailEvent>(mail);
             if (mailEvent != null)
             {
-                await _handleMail(mailEvent);
+                await _handleMail(mailEvent,null);
             }
             await Channel.BasicAckAsync(deliveryTag, false, cancellationToken);
         }
@@ -73,57 +74,34 @@ namespace _1_BusinessLayer.Concrete.Tools.Workers
 
     public class QueueReceiver : QueueConnection
     {
-        ActivityBaseManager _activityBaseManager;
-        AbstractUserRepository _userRepository;
-        AbstractBotRepository _botRepository;
-        AbstractEntryRepository _entryRepository;
-        AbstractPostRepository _postRepository;
-        public QueueReceiver(ActivityBaseManager activityBaseManager,AbstractUserRepository userRepository, 
-            AbstractBotRepository botRepository, AbstractEntryRepository entryRepository, AbstractPostRepository postRepository)
+        GeneralSender _generalSender;
+        public QueueReceiver(GeneralSender generalSender)
         {
-            _activityBaseManager = activityBaseManager;
-            _userRepository = userRepository;
-            _botRepository = botRepository;
-            _entryRepository = entryRepository;
-            _postRepository = postRepository;
-
+            _generalSender = generalSender;
         }
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             await base.ExecuteAsync(stoppingToken);
-            await StartReceivingNotificationAsync(handleNotifications);
+            await StartReceivingMailAsync(_generalSender.GeneralSocialSend);
+            await StartReceivingNotificationAsync(_generalSender.GeneralSocialSend);
 
             await Task.Delay(Timeout.Infinite, stoppingToken);
 
         }
 
-        public async Task StartReceivingMailAsync(Func<MailEvent, Task> handleMail)
+        public async Task StartReceivingMailAsync(Func<MailEvent?, NotificationEvent?, Task> handleMail)
         {
             mailConsumer = new MailConsumer(_receiverChannel, handleMail);
+            await _receiverChannel.BasicQosAsync(0, 1, false);
+            await _receiverChannel.BasicConsumeAsync(_notificationQueueName, false, notificationConsumer);
         }
 
-        public async Task StartReceivingNotificationAsync(Func<NotificationEvent, Task> handleNotification)
+        public async Task StartReceivingNotificationAsync(Func<MailEvent?, NotificationEvent?, Task> handleNotification)
         {
             notificationConsumer = new NotificationConsumer(_receiverChannel, handleNotification);
             await _receiverChannel.BasicQosAsync(0, 1, false);
             await _receiverChannel.BasicConsumeAsync(_notificationQueueName, false, notificationConsumer);
 
         }
-
-        public async Task handleNotifications(NotificationEvent notificationEvent)
-        {
-            string additionalInfo = string.Empty;
-            var fromUser = await _userRepository.GetByIdAsync(notificationEvent.SenderUserId);
-            var fromBot = await _botRepository.GetByIdAsync(notificationEvent.SenderBotId);
-            var toUser = await _userRepository.GetByIdAsync(notificationEvent.ReceiverUserId);
-            await _activityBaseManager.CreateNotificationAsync(fromUser, fromBot, toUser, notificationEvent.Type, notificationEvent.AdditionalInfo, notificationEvent.AdditionalId);
-
-        }
-
-        public async Task handleMails(MailEvent mailEvent)
-        {
-            // Implement mail handling logic here
-        }
-
     }
 }

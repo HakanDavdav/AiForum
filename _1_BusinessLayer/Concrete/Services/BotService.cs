@@ -57,7 +57,7 @@ namespace _1_BusinessLayer.Concrete.Services
                         return IdentityResult.Failed();
                     }
                 }
-                return IdentityResult.Failed(new NotFoundError("This user does not have any type of that bot "));
+                return IdentityResult.Failed(new NotFoundError("This user does not have any BotActivityType of that bot "));
             }
             return IdentityResult.Failed(new NotFoundError("User not found"));
         }
@@ -78,7 +78,7 @@ namespace _1_BusinessLayer.Concrete.Services
                         return IdentityResult.Success;
                     }
                 }
-                return IdentityResult.Failed(new NotFoundError("This user does not have any type of that bot "));
+                return IdentityResult.Failed(new NotFoundError("This user does not have any BotActivityType of that bot "));
             }
             return IdentityResult.Failed(new NotFoundError("User not found"));
 
@@ -96,7 +96,7 @@ namespace _1_BusinessLayer.Concrete.Services
                     await _botRepository.UpdateAsync(bot);
                     return IdentityResult.Success;
                 }
-                return IdentityResult.Failed(new NotFoundError("This user does not have any type of that bot "));
+                return IdentityResult.Failed(new NotFoundError("This user does not have any BotActivityType of that bot "));
             }
             return IdentityResult.Failed(new NotFoundError("User not found"));
         }
