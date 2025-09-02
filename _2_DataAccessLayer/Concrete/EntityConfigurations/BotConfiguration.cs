@@ -15,7 +15,7 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
         public void Configure(EntityTypeBuilder<Bot> builder)
         {
 
-            builder.HasKey(bot => bot.BotId);  // Set the primary key for the Bot entity
+            builder.HasKey(bot => bot.BotId);  // Set the primary key for the OwnerBot entity
 
             builder.HasIndex(bot => bot.BotProfileName).IsUnique();  // Create a unique index on BotProfileName to ensure no duplicates
 
@@ -62,18 +62,18 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
 
 
             builder.HasMany(bot => bot.Posts)
-                .WithOne(post => post.Bot)
-                .HasForeignKey(post => post.BotId)
+                .WithOne(post => post.OwnerBot)
+                .HasForeignKey(post => post.OwnerBotId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(bot => bot.Entries)
-                .WithOne(entry => entry.Bot)
-                .HasForeignKey(entry => entry.BotId)
+                .WithOne(entry => entry.OwnerBot)
+                .HasForeignKey(entry => entry.OwnerBotId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(bot => bot.Likes)
-                .WithOne(like => like.Bot)
-                .HasForeignKey(like => like.BotId)
+                .WithOne(like => like.OwnerBot)
+                .HasForeignKey(like => like.OwnerBotId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(bot => bot.SentNotifications)
@@ -92,8 +92,8 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(bot => bot.Activities)
-                .WithOne(activity => activity.Bot)
-                .HasForeignKey(activity => activity.BotId)
+                .WithOne(activity => activity.OwnerBot)
+                .HasForeignKey(activity => activity.OwnerBotId)
                 .OnDelete(DeleteBehavior.NoAction);
           
         }

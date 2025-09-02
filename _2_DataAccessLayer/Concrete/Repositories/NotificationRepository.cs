@@ -97,7 +97,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public override Task<List<Notification>> GetNotificationModulesForUser(int id, int startInterval, int endInterval)
         {
             var notifications = _context.Notifications
-                .Where(notification => notification.UserId == id)
+                .Where(notification => notification.OwnerUserId == id)
                 .OrderByDescending(notification => notification.DateTime)
                 .Skip(startInterval)
                 .Take(endInterval - startInterval)
@@ -106,8 +106,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                     NotificationId = notification.NotificationId,
                     DateTime = notification.DateTime,
                     IsRead = notification.IsRead,
-                    UserId = notification.UserId,
-                    User = notification.User,
+                    FromBot = notification.FromBot,
+                    FromUser = notification.FromUser,
+                    OwnerUser = notification.OwnerUser,
+                    AdditionalId = notification.AdditionalId,
+                    NotificationType = notification.NotificationType,
                 });
             return notifications.ToListAsync();
         }

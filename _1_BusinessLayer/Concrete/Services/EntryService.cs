@@ -26,7 +26,7 @@ namespace _1_BusinessLayer.Concrete.Services
             var post = await _postRepository.GetByIdAsync(postId);
             if (post == null) return IdentityResult.Failed(new NotFoundError("Post not found"));
             var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null) return IdentityResult.Failed(new NotFoundError("User not found"));
+            if (user == null) return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
             var entry = createEntryDto.CreateEntryDto_To_Entry(userId);
             post.Entries.Add(entry);
             user.Entries.Add(entry);
@@ -41,8 +41,8 @@ namespace _1_BusinessLayer.Concrete.Services
             var entry = await _entryRepository.GetByIdAsync(entryId);
             if (entry == null) return IdentityResult.Failed(new NotFoundError("Entry not found"));
             var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null) return IdentityResult.Failed(new NotFoundError("User not found"));
-            if (entry.UserId == user.Id)
+            if (user == null) return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            if (entry.OwnerUserId == user.Id)
             {
                 await _entryRepository.DeleteAsync(entry);
                 user.EntryCount--;
@@ -58,7 +58,7 @@ namespace _1_BusinessLayer.Concrete.Services
             var entry = await _entryRepository.GetByIdAsync(editEntryDto.EntryId);
             if (entry != null)
             {
-                if (entry.UserId == userId)
+                if (entry.OwnerUserId == userId)
                 {
                     entry = editEntryDto.Update___EditEntryDto_To_Entry(entry);
                     await _entryRepository.SaveChangesAsync();

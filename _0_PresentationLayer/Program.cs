@@ -86,7 +86,7 @@ builder.Services.AddIdentity<User, UserRole>(options =>
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.AllowedForNewUsers = true;
 
-    // User config
+    // OwnerUser config
     options.User.RequireUniqueEmail = true;
     options.SignIn.RequireConfirmedAccount = true;
 

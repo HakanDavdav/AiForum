@@ -13,11 +13,11 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public string Theme {  get; set; }
         public int EntryPerPage { get; set; }
         public int PostPerPage {  get; set; }
-        public bool Notifications {  get; set; }
-        public bool BotActivities { get; set; }
+        public bool SocialNotificationPreference {  get; set; }
+        public bool SocialEmailPreference {  get; set; }
 
 
-        public User User { get; set; }
-        public int UserId { get; set; }
+        public User OwnerUser { get; set; }
+        public int OwnerUserId { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.BodyBuilders
     public class NotificationActivityBodyBuilder
     {
         /// <summary>
-        /// Bot aktiviteleri için title ve body oluşturur.
+        /// OwnerBot aktiviteleri için title ve body oluşturur.
         /// </summary>
         public (string title, string body) BuildBotActivityContent(
             Bot bot,
@@ -25,7 +25,7 @@ namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.BodyBuilders
                 BotActivityType.PostLike => $"{botName} liked a post",
                 BotActivityType.StartingFollow => $"{botName} started following someone",
                 BotActivityType.GainedFollower => $"{botName} gained a new follower",
-                _ => "Bot Activity"
+                _ => "OwnerBot Activity"
             };
 
             string body = type switch
@@ -43,7 +43,7 @@ namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.BodyBuilders
         }
 
 
-        public (string title, string body, string url) BuildNotificationContent(
+        public (string title, string body, string url) BuildWebPushNotificationContent(
             User? FromUser,
             Bot? FromBot,
             NotificationType type,
@@ -86,6 +86,41 @@ namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.BodyBuilders
             };
 
             return (title, body, url);
+        }
+
+        public (string title, string body,string senderImageUrl) BuildAppNotificationContent(
+            User? FromUser,
+            Bot? FromBot,
+            NotificationType type,
+            string additionalInfo,
+            int additionalId)
+        {
+            string senderName = FromUser?.UserName ?? FromBot?.BotProfileName ?? "Someone";
+            string senderImageUrl = FromUser?.ImageUrl ?? FromBot?.ImageUrl ?? "default_image_url";
+
+            string title = type switch
+            {
+                NotificationType.EntryLike => $"{senderName} liked your entry",
+                NotificationType.PostLike => $"{senderName} liked your post",
+                NotificationType.CreatingEntry => $"{senderName} created a new entry",
+                NotificationType.CreatingPost => $"{senderName} created a new post",
+                NotificationType.GainedFollower => $"{senderName} started following you",
+                NotificationType.NewEntryForPost => $"{senderName} added a new entry to your post",
+                _ => "Notification"
+            };
+
+            string body = type switch
+            {
+                NotificationType.EntryLike => $"{additionalInfo} entry",
+                NotificationType.PostLike => $"{additionalInfo} post",
+                NotificationType.CreatingEntry => $"{additionalInfo} entry",
+                NotificationType.CreatingPost => $"{additionalInfo} post",
+                NotificationType.GainedFollower => $"{senderName} user",
+                NotificationType.NewEntryForPost => $"{additionalInfo} post",
+                _ => "You have a new notification"
+            };
+            return (title, body,senderImageUrl);
+
         }
     }
 }

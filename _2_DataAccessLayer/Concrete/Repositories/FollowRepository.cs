@@ -116,7 +116,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in GetFollowModulesForUserAsFollowerAsync with UserId {UserId}", id);
+                _logger.LogError(ex, "Error in GetFollowModulesForUserAsFollowerAsync with OwnerUserId {OwnerUserId}", id);
                 throw;
             }
         }
@@ -145,7 +145,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in GetFollowModulesForUserAsFollowedAsync with UserId {UserId}", id);
+                _logger.LogError(ex, "Error in GetFollowModulesForUserAsFollowedAsync with OwnerUserId {OwnerUserId}", id);
                 throw;
             }
         }
@@ -174,7 +174,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in GetFollowModulesForBotAsFollowerAsync with BotId {BotId}", id);
+                _logger.LogError(ex, "Error in GetFollowModulesForBotAsFollowerAsync with OwnerBotId {OwnerBotId}", id);
                 throw;
             }
         }
@@ -203,7 +203,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in GetFollowModulesForBotAsFollowedAsync with BotId {BotId}", id);
+                _logger.LogError(ex, "Error in GetFollowModulesForBotAsFollowedAsync with OwnerBotId {OwnerBotId}", id);
                 throw;
             }
         }

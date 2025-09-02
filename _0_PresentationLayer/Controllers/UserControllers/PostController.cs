@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using _1_BusinessLayer.Abstractions.AbstractServices;
 using _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices;
 using _1_BusinessLayer.Concrete.Dtos.PostDtos;
 using _2_DataAccessLayer.Concrete.Entities;
@@ -100,7 +99,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         {
             try
             {
-                var result = await _likeService.Unlike(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), likeId);
+                var result = await _likeService.UnlikePost(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), likeId);
                 return result.ResultWrapErrorCode();
             }
             catch (Exception e)

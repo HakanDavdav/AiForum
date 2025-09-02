@@ -28,9 +28,9 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
             builder.Property(notification => notification.IsRead)
                 .HasDefaultValue(false);  // Default value set to false
 
-            builder.HasOne(notification => notification.User)
+            builder.HasOne(notification => notification.OwnerUser)
                 .WithMany(user => user.Notifications)
-                .HasForeignKey(notification => notification.UserId)
+                .HasForeignKey(notification => notification.OwnerUserId)
                 .OnDelete(DeleteBehavior.NoAction);
            
             builder.HasOne(notification => notification.FromUser)

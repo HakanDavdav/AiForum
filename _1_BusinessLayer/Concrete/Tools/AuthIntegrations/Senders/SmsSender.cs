@@ -12,9 +12,9 @@ namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Senders
 {
     public class SmsSender
     {
-        public async Task<IdentityResult> SendAuthenticationSms(User user, string token, SmsType smsType )
+        public async Task<IdentityResult> SendAuthenticationSms(User user, string token, SmsType? smsType )
         {
-
+            throw new NotImplementedException();
         }
     }
 }

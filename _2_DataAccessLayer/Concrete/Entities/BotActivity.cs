@@ -16,8 +16,8 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public DateTime DateTime { get; set; }
        
         public int? AdditionalId { get; set; }
-        public Bot Bot { get; set; }
-        public int BotId { get; set; }
+        public Bot OwnerBot { get; set; }
+        public int OwnerBotId { get; set; }
 
     }
 }

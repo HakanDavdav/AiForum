@@ -90,7 +90,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers.BotManagers
                 List<User> users = await _userRepository.GetRandomUsers(1);
                 foreach (var user in users)
                 {
-                    stringBuilder.Append("User Id:" + user.Id);
+                    stringBuilder.Append("OwnerUser Id:" + user.Id);
                     List<Entry> entries = await _entryRepository.GetRandomEntriesByUserId(user.Id, 3);
                     foreach (var entry in entries)
                     {
@@ -112,7 +112,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers.BotManagers
                 List<Bot> bots = await _botRepository.GetRandomBots(1);
                 foreach (var bot in bots)
                 {
-                    stringBuilder.Append("Bot Id:" + bot.BotId);
+                    stringBuilder.Append("OwnerBot Id:" + bot.BotId);
                     List<Entry> entries = await _entryRepository.GetRandomEntriesByBotId(bot.BotId, 3);
                     foreach (var entry in entries)
                     {

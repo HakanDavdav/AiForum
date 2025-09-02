@@ -10,6 +10,7 @@ using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete.Enums;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using static _2_DataAccessLayer.Concrete.Enums.MailTypes;
 using static _2_DataAccessLayer.Concrete.Enums.NotificationTypes;
 using static _2_DataAccessLayer.Concrete.Enums.SmsTypes;
@@ -72,22 +73,22 @@ namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Senders
                 {
                     case SmsType.ConfirmPhoneNumber:
                         token = await _tokenFactory.CreateConfirmPhoneNumberTokenAsync(user, newPhoneNumber);
-                        await _smsSender.SendAuthenticationSms(user, token);
+                        await _smsSender.SendAuthenticationSms(user, token, smsType);
                         break;
 
                     case SmsType.TwoFactor:
-                        token = await _tokenFactory.CreateTwoFactorTokenAsync(user);
-                        await _smsSender.SendAuthenticationSms(user, token);
+                        token = await _tokenFactory.CreateTwoFactorTokenAsync(user, "Phone");
+                        await _smsSender.SendAuthenticationSms(user, token, smsType);
                         break;
 
                     case SmsType.ChangePhoneNumber:
                         token = await _tokenFactory.CreateConfirmPhoneNumberTokenAsync(user, user.PhoneNumber);
-                        await _smsSender.SendAuthenticationSms(user, token);
+                        await _smsSender.SendAuthenticationSms(user, token, smsType);
                         break;
 
                     case SmsType.ResetPassword:
                         token = await _tokenFactory.CreatePasswordResetTokenAsync(user);
-                        await _smsSender.SendAuthenticationSms(user, token);
+                        await _smsSender.SendAuthenticationSms(user, token, smsType);
                         break;
 
                     default:
@@ -101,17 +102,17 @@ namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Senders
         {
             if (mailEvent != null)
             {
-                var toUser = await _userRepository.GetByIdAsync(mailEvent.ReceiverUserId);
+                var toUser = await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.Id==mailEvent.ReceiverUserId).Include(user => user.UserPreference);
                 var fromBot = await _botRepository.GetByIdAsync(mailEvent.SenderBotId);
                 var fromUser = await _userRepository.GetByIdAsync(mailEvent.SenderUserId);
                 if (toUser != null )
                 {
-                    if (toUser.EmailConfirmed == true && toUser.SocialEmailPreference == true)
+                    if (toUser.EmailConfirmed == true && toUser.UserPreference.SocialEmailPreference == true)
                     {
                         await _mailSender.SendSocialMailAsync(fromUser, fromBot, toUser, mailEvent.Type, mailEvent.AdditionalInfo, mailEvent.AdditionalId);
                         return IdentityResult.Success;
                     }
-                    return IdentityResult.Failed(new UnauthorizedError("User has disabled social emails or email is not confirmed")
+                    return IdentityResult.Failed(new UnauthorizedError("OwnerUser has disabled social emails or email is not confirmed"));
                 }
                 return IdentityResult.Failed(new NotFoundError("Receiver user not found"));
             }
@@ -122,12 +123,12 @@ namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Senders
                 var fromUser = await _userRepository.GetByIdAsync(notificationEvent.SenderUserId);
                 if (toUser != null)
                 {
-                    if (toUser.SocialNotificationPreference == true)
+                    if (toUser.UserPreference.SocialNotificationPreference == true)
                     {
                         await _notificationSender.SendSocialNotificationAsync(fromUser, fromBot, toUser, notificationEvent.Type, notificationEvent.AdditionalInfo, notificationEvent.AdditionalId);
                         return IdentityResult.Success;
                     }
-                    return IdentityResult.Failed(new UnauthorizedError("User has disabled social notifications"));
+                    return IdentityResult.Failed(new UnauthorizedError("OwnerUser has disabled social notifications"));
                 }
                 return IdentityResult.Failed(new NotFoundError("Receiver user not found"));
             }

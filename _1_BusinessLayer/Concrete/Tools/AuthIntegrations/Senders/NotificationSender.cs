@@ -19,7 +19,7 @@ namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Senders
         }
         public async Task<IdentityResult> SendSocialNotificationAsync(User? FromUser, Bot? FromBot, User toUser, NotificationType type, string additionalInfo, int additionalId)
         {
-            var (title, notificationContext, url) = _notificationActivityBodyBuilder.BuildNotificationContent(FromUser, FromBot, type, additionalInfo, additionalId);
+            var (title, notificationContext, url) = _notificationActivityBodyBuilder.BuildWebPushNotificationContent(FromUser, FromBot, type, additionalInfo, additionalId);
             //firebase
             return IdentityResult.Success;
         }

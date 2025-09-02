@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices;
@@ -48,22 +49,22 @@ namespace _1_BusinessLayer.Concrete.Services
                     user.IsProfileCreated = true;
                     var removeResult = await _userManager.RemoveFromRoleAsync(user, "TempUser");
                     if (!removeResult.Succeeded)
-                        return IdentityResult.Failed(removeResult.Errors.ToArray());
+                        return removeResult;
 
                     var addResult = await _userManager.AddToRoleAsync(user, "StandardUser");
                     if (!addResult.Succeeded)
-                        return IdentityResult.Failed(addResult.Errors.ToArray());
+                        return addResult;
 
                     var stampResult = await _userManager.UpdateSecurityStampAsync(user);
                     if (!stampResult.Succeeded)
-                        return IdentityResult.Failed(stampResult.Errors.ToArray());
+                        return stampResult;
                     await _signInManager.RefreshSignInAsync(user);
                     await _userRepository.SaveChangesAsync();
                     return IdentityResult.Success;
                 }
                 return IdentityResult.Failed(new UnauthorizedError("Profile already created initally"));
             }
-            return IdentityResult.Failed(new NotFoundError("User not found"));
+            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
         }
 
         public override async Task<IdentityResult> DeleteUser(int userId)
@@ -74,19 +75,32 @@ namespace _1_BusinessLayer.Concrete.Services
                 await _userRepository.DeleteAsync(user);
                 return IdentityResult.Success;
             }
-            return IdentityResult.Failed(new NotFoundError("User not found"));
+            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
         }
 
         public override async Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto)
         {
-            var user = await _userRepository.GetUserModuleAsync(userId);
+            var user = await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.Id == userId).Include(user => user.UserPreference));
             if (user != null)
             {
                 user = userEditProfileDto.Update___UserEditProfileDto_To_User(user);
+                var oldClaims = await _userManager.GetClaimsAsync(user);
+                foreach (var claim in oldClaims)
+                {
+                    await _userManager.RemoveClaimAsync(user, claim);
+                }
+                var claims = new List<Claim>
+                  {
+                     new Claim("Theme",user.UserPreference.Theme),
+                     new Claim("PostPerPage", user.UserPreference.PostPerPage.ToString()),
+                     new Claim("EntryPerPage", user.UserPreference.EntryPerPage.ToString())
+                  };
+                await _userManager.AddClaimsAsync(user, claims);
+                await _signInManager.RefreshSignInAsync(user);
                 await _userRepository.SaveChangesAsync();
                 return IdentityResult.Success;
             }
-            return IdentityResult.Failed(new NotFoundError("User not found"));
+            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
         }
 
         public override async Task<ObjectIdentityResult<List<BotActivityDto>>> LoadBotActivities(int userId, int startInterval, int endInterval)
@@ -106,7 +120,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
                 return ObjectIdentityResult<List<BotActivityDto>>.Succeded(botActivityDtos);      
             }
-            return ObjectIdentityResult<List<BotActivityDto>>.Failed(null,new IdentityError[] {new NotFoundError("User not found") });
+            return ObjectIdentityResult<List<BotActivityDto>>.Failed(null,new IdentityError[] {new NotFoundError("OwnerUser not found") });
         }
 
         public override async Task<ObjectIdentityResult<dynamic>> GetBotPanel(int userId)
@@ -129,7 +143,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 }
                 return ObjectIdentityResult<List<NotificationDto>>.Succeded(notificationsDtos);
             }
-            return ObjectIdentityResult<List<NotificationDto>>.Failed(null, new IdentityError[] { new NotFoundError("User not found") });
+            return ObjectIdentityResult<List<NotificationDto>>.Failed(null, new IdentityError[] { new NotFoundError("OwnerUser not found") });
 
         }
 
@@ -148,7 +162,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 var userProfileDto = user.User_To_UserProfileDto();
                 return ObjectIdentityResult<UserProfileDto>.Succeded(userProfileDto);
             }
-            return ObjectIdentityResult<UserProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("User not found") });
+            return ObjectIdentityResult<UserProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("OwnerUser not found") });
 
         }
 

@@ -24,9 +24,9 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
             builder.Property(botActivity => botActivity.ActivityContext)
                 .HasMaxLength(200);  // Limit the length to 500 characters
 
-            builder.HasOne(botActivity => botActivity.Bot)
+            builder.HasOne(botActivity => botActivity.OwnerBot)
                 .WithMany(bot => bot.Activities)
-                .HasForeignKey(botActivity => botActivity.BotId)
+                .HasForeignKey(botActivity => botActivity.OwnerBotId)
                 .OnDelete(DeleteBehavior.NoAction);
 
         }

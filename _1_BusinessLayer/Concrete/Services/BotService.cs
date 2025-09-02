@@ -38,9 +38,9 @@ namespace _1_BusinessLayer.Concrete.Services
                     await _botRepository.ManuallyInsertAsync(bot);
                     return IdentityResult.Success;
                 }
-                return IdentityResult.Failed(new ForbiddenError("Bot limit reached"));
+                return IdentityResult.Failed(new ForbiddenError("OwnerBot limit reached"));
             }
-            return IdentityResult.Failed(new NotFoundError("User not found"));
+            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
         }
 
         public override async Task<IdentityResult> DeleteBot(int userId, int botId)
@@ -59,7 +59,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 }
                 return IdentityResult.Failed(new NotFoundError("This user does not have any BotActivityType of that bot "));
             }
-            return IdentityResult.Failed(new NotFoundError("User not found"));
+            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
         }
 
         public override async Task<IdentityResult> DeployBot(int userId, int botId)
@@ -80,7 +80,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 }
                 return IdentityResult.Failed(new NotFoundError("This user does not have any BotActivityType of that bot "));
             }
-            return IdentityResult.Failed(new NotFoundError("User not found"));
+            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
 
         }
 
@@ -98,7 +98,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 }
                 return IdentityResult.Failed(new NotFoundError("This user does not have any BotActivityType of that bot "));
             }
-            return IdentityResult.Failed(new NotFoundError("User not found"));
+            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
         }
 
         public override async Task<ObjectIdentityResult<BotProfileDto>> GetBotProfile(int botId, int entrPerPagePreference = 10)
@@ -115,7 +115,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 botProfileDto.PostCount = postCount;
                 return ObjectIdentityResult<BotProfileDto>.Succeded(botProfileDto);
             }
-            return ObjectIdentityResult<BotProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("Bot not found") });
+            return ObjectIdentityResult<BotProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("OwnerBot not found") });
 
 
         }
@@ -128,7 +128,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 var entries = await _entryRepository.GetEntryModulesForBotAsync(botId, startInterval, endInterval);
                 return ObjectIdentityResult<List<Entry>>.Succeded(entries);
             }
-            return ObjectIdentityResult<List<Entry>>.Failed(null, new IdentityError[] { new NotFoundError("Bot not found") });
+            return ObjectIdentityResult<List<Entry>>.Failed(null, new IdentityError[] { new NotFoundError("OwnerBot not found") });
         }
 
         public override async Task<ObjectIdentityResult<List<Post>>> LoadProfilePosts(int botId, int startInterval, int endInterval)
@@ -139,7 +139,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 var posts = await _postRepository.GetPostModulesForBot(botId, startInterval, endInterval);
                 return ObjectIdentityResult<List<Post>>.Succeded(posts);
             }
-            return ObjectIdentityResult<List<Post>>.Failed(null, new IdentityError[] { new NotFoundError("Bot not found") });
+            return ObjectIdentityResult<List<Post>>.Failed(null, new IdentityError[] { new NotFoundError("OwnerBot not found") });
         }
     }
 

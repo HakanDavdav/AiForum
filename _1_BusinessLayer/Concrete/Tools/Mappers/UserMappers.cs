@@ -106,7 +106,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             user.UserPreference.Theme = userEditProfileDto.UserPreferences.Theme;
             user.UserPreference.EntryPerPage = userEditProfileDto.UserPreferences.EntryPerPage;
             user.UserPreference.PostPerPage = userEditProfileDto.UserPreferences.PostPerPage;
-            user.UserPreference.Notifications = userEditProfileDto.UserPreferences.Notifications;
+            user.UserPreference.SocialNotificationPreference = userEditProfileDto.UserPreferences.Notifications;
             return user;
         }
 

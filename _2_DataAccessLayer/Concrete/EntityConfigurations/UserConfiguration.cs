@@ -32,17 +32,17 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .HasDefaultValue(10);  // Default value for DateTime
 
             builder.HasMany(user => user.Bots)
-                .WithOne(bot => bot.User)
-                .HasForeignKey(bot => bot.UserId)
+                .WithOne(bot => bot.OwnerUser)
+                .HasForeignKey(bot => bot.OwnerUserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(user => user.UserPreference)
-                .WithOne(userPreference => userPreference.User)
+                .WithOne(userPreference => userPreference.OwnerUser)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(user => user.Notifications)
-                .WithOne(notification => notification.User)
-                .HasForeignKey(notification => notification.UserId)
+                .WithOne(notification => notification.OwnerUser)
+                .HasForeignKey(notification => notification.OwnerUserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(user => user.SentNotifications)
@@ -51,18 +51,18 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(user => user.Entries)
-                .WithOne(entry => entry.User)
-                .HasForeignKey(entry => entry.UserId)
+                .WithOne(entry => entry.OwnerUser)
+                .HasForeignKey(entry => entry.OwnerUserId)
                 .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasMany(user => user.Posts)
-                .WithOne(post => post.User)
-                .HasForeignKey(post => post.UserId)
+                .WithOne(post => post.OwnerUser)
+                .HasForeignKey(post => post.OwnerUserId)
                 .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasMany(user => user.Likes)
-                .WithOne(like => like.User)
-                .HasForeignKey(like => like.UserId)
+                .WithOne(like => like.OwnerUser)
+                .HasForeignKey(like => like.OwnerUserId)
                 .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasMany(user => user.Followed)

@@ -106,19 +106,19 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                     Title = post.Title,
                     Context = post.Context,
                     DateTime = post.DateTime,
-                    BotId = post.BotId,
-                    UserId = post.UserId,
-                    Bot = post.Bot,
-                    User = post.User,
+                    OwnerBotId = post.OwnerBotId,
+                    OwnerUserId = post.OwnerUserId,
+                    OwnerBot = post.OwnerBot,
+                    OwnerUser = post.OwnerUser,
                     Likes = post.Likes.Take(10).Select(like => new Like
                     {
                         LikeId = like.LikeId,
                         DateTime = like.DateTime,
-                        UserId = like.UserId,
-                        BotId = like.BotId,
+                        OwnerUserId = like.OwnerUserId,
+                        OwnerBotId = like.OwnerBotId,
                         PostId = like.PostId,
-                        User = like.User,
-                        Bot = like.Bot,
+                        OwnerUser = like.OwnerUser,
+                        OwnerBot = like.OwnerBot,
                         Post = like.Post,
                     }).ToList(),
                 })
@@ -131,7 +131,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             try
             {
                 return await _context.Posts
-                    .Where(post => post.BotId == id)
+                    .Where(post => post.OwnerBotId == id)
                     .OrderByDescending(post => post.DateTime)
                     .Skip(startInterval)
                     .Take(endInterval-startInterval)
@@ -141,19 +141,19 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                         Title = post.Title,
                         Context = post.Context,
                         DateTime = post.DateTime,
-                        BotId = post.BotId,
-                        UserId = post.UserId,
-                        Bot = post.Bot,
-                        User = post.User,
+                        OwnerBotId = post.OwnerBotId,
+                        OwnerUserId = post.OwnerUserId,
+                        OwnerBot = post.OwnerBot,
+                        OwnerUser = post.OwnerUser,
                         Likes = post.Likes.Take(10).Select(like => new Like
                         {
                             LikeId = like.LikeId,
                             DateTime = like.DateTime,
-                            UserId = like.UserId,
-                            BotId = like.BotId,
+                            OwnerUserId = like.OwnerUserId,
+                            OwnerBotId = like.OwnerBotId,
                             PostId = like.PostId,
-                            User = like.User,
-                            Bot = like.Bot,
+                            OwnerUser = like.OwnerUser,
+                            OwnerBot = like.OwnerBot,
                             Post = like.Post,
                         }).ToList(),
                     })
@@ -161,7 +161,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in GetEntryModulesForBotAsync with BotId {BotId}", id);
+                _logger.LogError(ex, "Error in GetEntryModulesForBotAsync with OwnerBotId {OwnerBotId}", id);
                 throw;
             }
         }
@@ -171,7 +171,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             try
             {
                 return await _context.Posts
-                    .Where(post => post.UserId == id)
+                    .Where(post => post.OwnerUserId == id)
                     .OrderByDescending(post => post.DateTime)
                     .Skip(startInterval)
                     .Take(endInterval-startInterval)
@@ -181,19 +181,19 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                         Title = post.Title,
                         Context = post.Context,
                         DateTime = post.DateTime,
-                        BotId = post.BotId,
-                        UserId = post.UserId,
-                        Bot = post.Bot,
-                        User = post.User,
+                        OwnerBotId = post.OwnerBotId,
+                        OwnerUserId = post.OwnerUserId,
+                        OwnerBot = post.OwnerBot,
+                        OwnerUser = post.OwnerUser,
                         Likes = post.Likes.Take(10).Select(like => new Like
                         {
                             LikeId = like.LikeId,
                             DateTime = like.DateTime,
-                            UserId = like.UserId,
-                            BotId = like.BotId,
+                            OwnerUserId = like.OwnerUserId,
+                            OwnerBotId = like.OwnerBotId,
                             PostId = like.PostId,
-                            User = like.User,
-                            Bot = like.Bot,
+                            OwnerUser = like.OwnerUser,
+                            OwnerBot = like.OwnerBot,
                             Post = like.Post,
                         }).ToList(),
                     })
@@ -201,7 +201,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in GetEntryModulesForUserAsync with UserId {UserId}", id);
+                _logger.LogError(ex, "Error in GetEntryModulesForUserAsync with OwnerUserId {OwnerUserId}", id);
                 throw;
             }
         }

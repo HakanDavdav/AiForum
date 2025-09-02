@@ -38,14 +38,14 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .HasForeignKey(like => like.PostId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            builder.HasOne(post => post.User)
+            builder.HasOne(post => post.OwnerUser)
                 .WithMany(user => user.Posts)
-                .HasForeignKey(post => post.UserId)
+                .HasForeignKey(post => post.OwnerUserId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            builder.HasOne(post => post.Bot)
+            builder.HasOne(post => post.OwnerBot)
                 .WithMany(bot => bot.Posts)
-                .HasForeignKey(post => post.BotId)
+                .HasForeignKey(post => post.OwnerBotId)
                 .OnDelete(DeleteBehavior.SetNull);
 
 

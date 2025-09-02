@@ -6,7 +6,6 @@ using System.Threading.Channels;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Concrete.Events;
 using _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Senders;
-using _1_BusinessLayer.Concrete.Tools.Managers.UserToolManagers;
 using _2_DataAccessLayer.Abstractions;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;

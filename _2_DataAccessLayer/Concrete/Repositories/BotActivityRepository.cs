@@ -96,15 +96,16 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override Task<List<BotActivity>> GetBotActivityModulesForBotAsync(int botId, int startInterval, int endInterval)
         {
-            var BotActivities = _context.Activities.Where(activity => activity.BotId == botId).Skip(startInterval).Take(endInterval - startInterval).Select(
+            var BotActivities = _context.Activities.Where(activity => activity.OwnerBotId == botId).Skip(startInterval).Take(endInterval - startInterval).Select(
                 activity => new BotActivity
                 {
                     ActivityId = activity.ActivityId,
-                    BotId = activity.BotId,
-                    ActivityType = activity.ActivityType,
-                    ActivityContext = activity.ActivityContext,
+                    OwnerBotId = activity.OwnerBotId,
+                    BotActivityType = activity.BotActivityType,
+                    IsRead = activity.IsRead,
+                    AdditionalId = activity.AdditionalId,
                     DateTime = activity.DateTime,
-                    Bot = activity.Bot
+                    OwnerBot = activity.OwnerBot,
                 });
             return BotActivities.ToListAsync();
         }

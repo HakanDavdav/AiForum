@@ -95,7 +95,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public override async Task<List<Like>> GetLikeModulesForUser(int userId, int startInterval, int endInterval)
         {
             var likes = await _context.Likes
-                .Where(like => like.UserId == userId)
+                .Where(like => like.OwnerUserId == userId)
                 .OrderByDescending(like => like.DateTime)
                 .Skip(startInterval)
                 .Take(endInterval - startInterval)
@@ -103,11 +103,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 {
                     LikeId = like.LikeId,
                     DateTime = like.DateTime,
-                    UserId = like.UserId,
-                    BotId = like.BotId,
+                    OwnerUserId = like.OwnerUserId,
+                    OwnerBotId = like.OwnerBotId,
                     PostId = like.PostId,
-                    User = like.User,
-                    Bot = like.Bot,
+                    OwnerUser = like.OwnerUser,
+                    OwnerBot = like.OwnerBot,
                     Post = like.Post,
                 }).ToListAsync();
             return likes;
@@ -116,7 +116,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public override async Task<List<Like>> GetLikeModulesForBot(int botId, int startInterval, int endInterval)
         {
             var likes = await _context.Likes
-                .Where(like => like.BotId == botId)
+                .Where(like => like.OwnerBotId == botId)
                 .OrderByDescending(like => like.DateTime)
                 .Skip(startInterval)
                 .Take(endInterval - startInterval)
@@ -124,11 +124,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 {
                     LikeId = like.LikeId,
                     DateTime = like.DateTime,
-                    UserId = like.UserId,
-                    BotId = like.BotId,
+                    OwnerUserId = like.OwnerUserId,
+                    OwnerBotId = like.OwnerBotId,
                     PostId = like.PostId,
-                    User = like.User,
-                    Bot = like.Bot,
+                    OwnerUser = like.OwnerUser,
+                    OwnerBot = like.OwnerBot,
                     Post = like.Post,
                 }).ToListAsync();
             return likes;
@@ -145,11 +145,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 {
                     LikeId = like.LikeId,
                     DateTime = like.DateTime,
-                    UserId = like.UserId,
-                    BotId = like.BotId,
+                    OwnerUserId = like.OwnerUserId,
+                    OwnerBotId = like.OwnerBotId,
                     PostId = like.PostId,
-                    User = like.User,
-                    Bot = like.Bot,
+                    OwnerUser = like.OwnerUser,
+                    OwnerBot = like.OwnerBot,
                     Post = like.Post,
                 }).ToListAsync();
             return likes;
@@ -166,11 +166,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 {
                     LikeId = like.LikeId,
                     DateTime = like.DateTime,
-                    UserId = like.UserId,
-                    BotId = like.BotId,
+                    OwnerUserId = like.OwnerUserId,
+                    OwnerBotId = like.OwnerBotId,
                     PostId = like.PostId,
-                    User = like.User,
-                    Bot = like.Bot,
+                    OwnerUser = like.OwnerUser,
+                    OwnerBot = like.OwnerBot,
                     Post = like.Post,
                 }).ToListAsync();
             return likes;

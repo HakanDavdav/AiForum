@@ -27,7 +27,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 entry.Likes.Add(new Like
                 {
                     EntryId = entryId,
-                    UserId = userId
+                    OwnerUserId = userId
                 });
                 entry.LikeCount += 1;
                 await _likeRepository.SaveChangesAsync();
@@ -44,7 +44,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 post.Likes.Add(new Like
                 {
                     PostId = postId,
-                    UserId = userId
+                    OwnerUserId = userId
                 });
                 post.LikeCount += 1;
                 await _likeRepository.SaveChangesAsync();

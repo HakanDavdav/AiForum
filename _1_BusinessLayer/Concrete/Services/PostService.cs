@@ -47,7 +47,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 await _postRepository.SaveChangesAsync();
                 return IdentityResult.Success;
             }
-            return IdentityResult.Failed(new NotFoundError("User not found"));
+            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
         }
 
         public override async Task<IdentityResult> DeletePost(int userId, int postId)
@@ -58,14 +58,14 @@ namespace _1_BusinessLayer.Concrete.Services
                 var post = await _postRepository.GetByIdAsync(postId);
                 if (post != null)
                 {
-                    if (post.UserId == userId)
+                    if (post.OwnerUserId == userId)
                     {
                         await _postRepository.DeleteAsync(post);
                         user.PostCount -= 1;
                         await _postRepository.SaveChangesAsync();
                         return IdentityResult.Success;
                     }
-                    return IdentityResult.Failed(new UnauthorizedError("User does not have that kind of post:)"));
+                    return IdentityResult.Failed(new UnauthorizedError("OwnerUser does not have that kind of post:)"));
                 }
                 return IdentityResult.Failed(new NotFoundError("Post not found"));
             }
@@ -80,17 +80,17 @@ namespace _1_BusinessLayer.Concrete.Services
                 var post = await _postRepository.GetByIdAsync(editPostDto.PostId);
                 if (post != null)
                 {
-                    if (post.UserId == userId)
+                    if (post.OwnerUserId == userId)
                     {
                         post = editPostDto.Update___EditPostDto_To_Post(post);
                         await _postRepository.SaveChangesAsync();
                         return IdentityResult.Success;
                     }
-                    return IdentityResult.Failed(new UnauthorizedError("User does not have that kind of post:)"));
+                    return IdentityResult.Failed(new UnauthorizedError("OwnerUser does not have that kind of post:)"));
                 }
                 return IdentityResult.Failed(new NotFoundError("Post not found"));
             }
-            return IdentityResult.Failed(new NotFoundError("User not found"));
+            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
         }
 
         public override async Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(DateTime date, int postCount)

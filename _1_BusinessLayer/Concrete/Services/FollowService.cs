@@ -74,9 +74,9 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<IdentityResult> FollowBot(int userId, int followedBotId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null) return IdentityResult.Failed(new NotFoundError("User not found"));
+            if (user == null) return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
             var bot = await _botRepository.GetByIdAsync(followedBotId);
-            if (bot == null) return IdentityResult.Failed(new NotFoundError("Bot not found"));
+            if (bot == null) return IdentityResult.Failed(new NotFoundError("OwnerBot not found"));
             var follow = new Follow
             {
                 UserFollowerId = userId,
@@ -93,9 +93,9 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<IdentityResult> FollowUser(int userId, int followedUserId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null) return IdentityResult.Failed(new NotFoundError("User not found"));
+            if (user == null) return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
             var followedUser = await _userRepository.GetByIdAsync(followedUserId);
-            if (followedUser == null) return IdentityResult.Failed(new NotFoundError("User not found"));
+            if (followedUser == null) return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
             var follow = new Follow
             {
                 UserFollowerId = userId,

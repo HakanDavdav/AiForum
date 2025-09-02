@@ -25,12 +25,12 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
             builder.Property(userPreference => userPreference.PostPerPage)
                 .HasDefaultValue("40");
 
-            builder.Property(userPreference => userPreference.Notifications)
+            builder.Property(userPreference => userPreference.SocialNotificationPreference)
                 .HasDefaultValue(true);
 
-            builder.HasOne(UserPreference => UserPreference.User)
+            builder.HasOne(UserPreference => UserPreference.OwnerUser)
                .WithOne(User => User.UserPreference)
-               .HasForeignKey<UserPreference>(userpreference => userpreference.UserId)
+               .HasForeignKey<UserPreference>(userpreference => userpreference.OwnerUserId)
                .OnDelete(DeleteBehavior.NoAction);
         }
     }

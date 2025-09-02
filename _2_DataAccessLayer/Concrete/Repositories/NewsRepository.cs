@@ -46,21 +46,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 throw;
             }
         }
-
-        public override async Task<List<TrendingPosts>> GetRandomNews(int number)
-        {
-            try
-            {
-                var query = _context.News.OrderBy(n => Guid.NewGuid()).Take(number);
-                return await query.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetRandomNews");
-                throw;
-            }
-        }
-
         public override async Task ManuallyInsertAsync(TrendingPosts t)
         {
             try

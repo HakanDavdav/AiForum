@@ -17,8 +17,8 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
                 LikeId = like.LikeId,
                 EntryId = like.EntryId,
                 PostId = like.PostId,
-                Bot = like.Bot.Bot_To_MinimalBotDto(),
-                User = like.User.User_To_MinimalUserDto(),              
+                Bot = like.OwnerBot.Bot_To_MinimalBotDto(),
+                User = like.OwnerUser.User_To_MinimalUserDto(),              
             };
         }
     }

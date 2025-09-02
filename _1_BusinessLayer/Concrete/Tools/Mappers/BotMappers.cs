@@ -77,7 +77,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
         {
             return new Bot
             {
-                UserId = userId,
+                OwnerUserId = userId,
                 BotPersonality = createBotDto.BotPersonality,
                 DailyBotOperationCount = createBotDto.DailyBotOperationCount,
                 ImageUrl = createBotDto.ImageUrl,

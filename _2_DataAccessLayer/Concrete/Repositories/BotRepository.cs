@@ -28,7 +28,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in DeleteAsync for BotId {BotId}", t.BotId);
+                _logger.LogError(ex, "Error in DeleteAsync for OwnerBotId {OwnerBotId}", t.BotId);
                 throw;
             }
         }
@@ -42,7 +42,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in GetByIdAsync with BotId {BotId}", id);
+                _logger.LogError(ex, "Error in GetByIdAsync with OwnerBotId {OwnerBotId}", id);
                 throw;
             }
         }
@@ -57,7 +57,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in ManuallyInsertAsync for BotId {BotId}", t.BotId);
+                _logger.LogError(ex, "Error in ManuallyInsertAsync for OwnerBotId {OwnerBotId}", t.BotId);
                 throw;
             }
         }
@@ -71,7 +71,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in UpdateAsync for BotId {BotId}", t.BotId);
+                _logger.LogError(ex, "Error in UpdateAsync for OwnerBotId {OwnerBotId}", t.BotId);
                 throw;
             }
         }
@@ -102,20 +102,13 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                     BotId = bot.BotId,
                     BotGrade = bot.BotGrade,
                     BotProfileName = bot.BotProfileName,
-                    User = bot.User,
-                    UserId = bot.UserId,
+                    OwnerUser = bot.OwnerUser,
+                    OwnerUserId = bot.OwnerUserId,
+                    OwnerBot = bot.OwnerBot,
+                    OwnerBotId = bot.OwnerBotId,
                 }).FirstOrDefaultAsync();
             return bot;
         }
 
-        public async override Task<int> GetFollowerCountAsync(int id)
-        {
-            return await _context.Follows.CountAsync(follow => follow.BotFollowedId == id);
-        }
-
-        public async override Task<int> GetFollowedCountAsync(int id)
-        {
-            return await _context.Follows.CountAsync(follow => follow.BotFollowerId == id);
-        }
     }
 }

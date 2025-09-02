@@ -15,24 +15,14 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         public UserRepository(ApplicationDbContext context, ILogger<User> logger) : base(context, logger)
         {
         }
-        public override async Task<int> GetNotificationCountAsync(int id)
+        public override async Task<int> GetUnreadNotificationCountAsync(int id)
         {
-            return await _context.Notifications.CountAsync(notification => notification.UserId == id && !notification.IsRead);
+            return await _context.Notifications.CountAsync(notification => notification.OwnerUserId == id && !notification.IsRead);
         }
 
-        public override async Task<int> GetBotActivitiesCountAsync(int id)
+        public override async Task<int> GetUnreadBotActivitiesCountAsync(int id)
         {
-            return await _context.Activities.CountAsync(activity => activity.Bot.UserId == id && !activity.IsRead);
-        }
-
-        public override async Task<int> GetFollowerCountAsync(int id)
-        {
-            return await _context.Follows.CountAsync(follow => follow.UserFollowedId == id);
-        }
-
-        public override async Task<int> GetFollowedCountAsync(int id)
-        {
-            return await _context.Follows.CountAsync(follow => follow.UserFollowerId == id);
+            return await _context.Activities.CountAsync(activity => activity.OwnerBot.OwnerUserId == id && !activity.IsRead);
         }
 
         public override async Task SaveChangesAsync()
@@ -48,7 +38,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in DeleteAsync for UserId {UserId}", t.Id);
+                _logger.LogError(ex, "Error in DeleteAsync for OwnerUserId {OwnerUserId}", t.Id);
                 throw;
             }
         }
@@ -61,7 +51,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in GetByIdAsync with UserId {UserId}", id);
+                _logger.LogError(ex, "Error in GetByIdAsync with OwnerUserId {OwnerUserId}", id);
                 throw;
             }
         }
@@ -75,7 +65,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in ManuallyInsertAsync for UserId {UserId}", t.Id);
+                _logger.LogError(ex, "Error in ManuallyInsertAsync for OwnerUserId {OwnerUserId}", t.Id);
                 throw;
             }
         }
@@ -89,7 +79,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in UpdateAsync for UserId {UserId}", t.Id);
+                _logger.LogError(ex, "Error in UpdateAsync for OwnerUserId {OwnerUserId}", t.Id);
                 throw;
             }
         }
@@ -115,14 +105,34 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task<User> GetUserModuleAsync(int id)
         {
-#pragma warning disable CS8603 // Possible null reference return.
             var user = await _context.Users
-                .Where(user => user.Id == id).Include(user => user.Bots).Include(user => user.UserPreference).FirstOrDefaultAsync();
+                .Where(user => user.Id == id)
+                .Select(user => new User
+                {
+                    Id = user.Id,
+                    ProfileName = user.ProfileName,
+                    City = user.City,
+                    DateTime = user.DateTime,
+                    EntryCount = user.EntryCount,
+                    PostCount = user.PostCount,
+                    ImageUrl = user.ImageUrl,
+                    FollowerCount = user.FollowerCount,
+                    FollowedCount = user.FollowedCount,
+                    LikeCount = user.LikeCount,
+                    EmailConfirmed = user.EmailConfirmed,
+                    Bots = user.Bots.Select(bot => new Bot
+                    {
+                        BotId = bot.BotId,
+                        ImageUrl = bot.ImageUrl,
+                        BotGrade = bot.BotGrade,
+                        BotProfileName = bot.BotProfileName,
+                        Mode = bot.Mode
+                    }).ToList()
+                })
+                .FirstOrDefaultAsync(); // Tek bir kullanıcı çekiyoruz
             return user;
 
-#pragma warning restore CS8603 // Possible null reference return.
+
         }
-
-
     }
 }

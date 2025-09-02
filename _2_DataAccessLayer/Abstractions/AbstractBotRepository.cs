@@ -15,8 +15,6 @@ namespace _2_DataAccessLayer.Abstractions
         protected AbstractBotRepository(ApplicationDbContext context, ILogger<Bot> logger) : base(context, logger)
         {
         }
-        public abstract Task<int> GetFollowerCountAsync(int id);
-        public abstract Task<int> GetFollowedCountAsync(int id);
         public abstract Task<Bot> GetBotModuleAsync(int id);
 
     }

@@ -21,7 +21,7 @@ namespace _1_BusinessLayer.Concrete.Dtos.UserDtos
         [Range(5, 100, ErrorMessage = "The 'PostPerPage' must be between 5 and 100.")]
         public int PostPerPage { get; set; }
 
-        [Required(ErrorMessage = "The 'Notifications' field is required.")]
+        [Required(ErrorMessage = "The 'SocialNotificationPreference' field is required.")]
         public bool Notifications { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

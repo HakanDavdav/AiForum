@@ -5,7 +5,7 @@ namespace _1_BusinessLayer.Concrete.Dtos.BotDtos
 {
     public class EditBotDto
     {
-        [Required(ErrorMessage = "BotId is required.")]
+        [Required(ErrorMessage = "OwnerBotId is required.")]
         public int BotId { get; set; }
 
         [Required(ErrorMessage = "BotProfileName is required.")]

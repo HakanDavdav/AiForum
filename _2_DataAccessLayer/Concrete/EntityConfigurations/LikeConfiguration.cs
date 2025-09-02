@@ -30,14 +30,14 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .HasForeignKey(like => like.EntryId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(like => like.User)
+            builder.HasOne(like => like.OwnerUser)
                 .WithMany(user => user.Likes)
-                .HasForeignKey(like => like.UserId)
+                .HasForeignKey(like => like.OwnerUserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(like => like.Bot)
+            builder.HasOne(like => like.OwnerBot)
                 .WithMany(bot => bot.Likes)
-                .HasForeignKey(like => like.BotId)
+                .HasForeignKey(like => like.OwnerBotId)
                 .OnDelete(DeleteBehavior.NoAction);
 
 

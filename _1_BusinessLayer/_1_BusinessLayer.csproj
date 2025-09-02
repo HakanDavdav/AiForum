@@ -7,14 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Abstractions\ToolAbstractions\AbstractBodyBuilders\**" />
     <Compile Remove="Concrete\Extensions\**" />
+    <Compile Remove="Concrete\Tools\AdditionalFilters\**" />
     <Compile Remove="Concrete\Tools\Validators\**" />
-    <EmbeddedResource Remove="Abstractions\ToolAbstractions\AbstractBodyBuilders\**" />
     <EmbeddedResource Remove="Concrete\Extensions\**" />
+    <EmbeddedResource Remove="Concrete\Tools\AdditionalFilters\**" />
     <EmbeddedResource Remove="Concrete\Tools\Validators\**" />
-    <None Remove="Abstractions\ToolAbstractions\AbstractBodyBuilders\**" />
     <None Remove="Concrete\Extensions\**" />
+    <None Remove="Concrete\Tools\AdditionalFilters\**" />
     <None Remove="Concrete\Tools\Validators\**" />
   </ItemGroup>
 
@@ -52,11 +52,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\_2_DataAccessLayer\_2_DataAccessLayer.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Abstractions\ToolAbstractions\AbstractManagers\" />
-    <Folder Include="Concrete\Tools\AdditionalFilters\" />
   </ItemGroup>
 
 </Project>

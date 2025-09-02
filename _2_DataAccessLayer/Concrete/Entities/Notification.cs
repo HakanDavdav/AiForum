@@ -25,8 +25,8 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
 
 
-        public int UserId {  get; set; }
-        public User User { get; set; }
+        public int OwnerUserId {  get; set; }
+        public User OwnerUser { get; set; }
         
     }
 }

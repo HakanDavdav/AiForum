@@ -91,11 +91,11 @@ namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.BodyBuilders
                 MailType
                 .CreatingPost => $"{additionalInfo} post <br/><a href='https://example.com/post/{additionalId}'>View Post</a>",
                 MailType
-                .GainedFollower => $"{additionalInfo} user <br/><a href='https://example.com/post/{additionalId}'>View User</a>",
+                .GainedFollower => $"{additionalInfo} user <br/><a href='https://example.com/post/{additionalId}'>View OwnerUser</a>",
                 MailType
-                .Message => $"{additionalInfo} user <br/><a href='https://example.com/post/{additionalId}'>View User</a>",
+                .Message => $"{additionalInfo} user <br/><a href='https://example.com/post/{additionalId}'>View OwnerUser</a>",
                 MailType
-                .BotActivity => $"{additionalInfo} bot <br/><a href='https://example.com/post/{additionalId}'>View Bot</a>",
+                .BotActivity => $"{additionalInfo} bot <br/><a href='https://example.com/post/{additionalId}'>View OwnerBot</a>",
                 MailType
                 .NewEntryForPost => $"{additionalInfo} entry <br/><a href='https://example.com/post/{additionalId}'>View Entry</a>",
                 _ => ""

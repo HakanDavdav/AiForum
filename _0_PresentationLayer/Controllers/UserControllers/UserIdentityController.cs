@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace _0_PresentationLayer.Controllers.UserControllers
 {
-    [Route("AiForum/User/You/Security")]
+    [Route("AiForum/OwnerUser/You/Security")]
     [ApiController]
     public class UserIdentityController : ControllerBase
     {
@@ -28,11 +28,11 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize(Policy = "UserPolicy")]
-        [HttpPatch("ChangeEmail")]
+        [HttpPatch("ConfirmChangeEmailToken")]
         public async Task<IActionResult> ChangeEmail(string changeEmailToken, string newEmail)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
-            var result = await _userService.ChangeEmail(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), newEmail, changeEmailToken);
+            var result = await _userService.ConfirmChangeEmailToken(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), newEmail, changeEmailToken);
 #pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
         }
@@ -70,22 +70,22 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         }
 
         [Authorize(Policy = "UserPolicy")]
-        [HttpPatch("ConfirmPhoneNumber")]
+        [HttpPatch("ConfirmPhoneNumberConfirmationToken")]
         public async Task<IActionResult> ConfirmPhoneNumber(string confirmPhoneNumberToken)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
-            var result = await _userService.ConfirmPhoneNumber((int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value)), confirmPhoneNumberToken);
+            var result = await _userService.ConfirmPhoneNumberConfirmationToken((int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value)), confirmPhoneNumberToken);
 #pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
 
         }
 
         [Authorize(Policy = "UserPolicy")]
-        [HttpPatch("SetPhoneNumber")]
+        [HttpPatch("SetUnconfirmedPhoneNumber")]
         public async Task<IActionResult> SetPhoneNumber(string newPhoneNumber)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
-            var result = await _userService.SetPhoneNumber((int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value)), newPhoneNumber);
+            var result = await _userService.SetUnconfirmedPhoneNumber((int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value)), newPhoneNumber);
 #pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
 
@@ -104,7 +104,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         public async Task<IActionResult> ChooseProviderAndSendToken(string provider, string operation, string? newEmail = null, string? newPhoneNumber = null)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
-            var result = await _userService.ChooseProviderAndSendToken((int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value)), provider, operation, newEmail, newPhoneNumber);
+            var result = await _userService.ChooseProviderAndSendToken((int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value)), provider, TODO, TODO, newPhoneNumber, newPhoneNumber, newPhoneNumber);
 #pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
         }

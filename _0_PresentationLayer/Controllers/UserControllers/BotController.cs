@@ -99,7 +99,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
 
 
-        [HttpGet("Bot/{BotId}")]
+        [HttpGet("OwnerBot/{OwnerBotId}")]
         public async Task<IActionResult> GetBotProfile(int BotId)
         {
             try
@@ -115,7 +115,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             }
         }
 
-        [HttpGet("Bot/{BotId}/BotActivities")]
+        [HttpGet("OwnerBot/{OwnerBotId}/BotActivities")]
         public async Task<IActionResult> GetBotActivitiesFromBot(int BotId)
         {
             try

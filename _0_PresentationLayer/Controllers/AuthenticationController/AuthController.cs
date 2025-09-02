@@ -53,17 +53,17 @@ namespace _0_PresentationLayer.Controllers.GuestControllers
         }
 
 
-        [HttpPost("ConfirmEmail")]
+        [HttpPost("ConfirmEmailConfirmationToken")]
         public async Task<IActionResult> ConfirmEmail(string usernameEmailOrPhoneNumber, string confirmMailToken)
         {
-            var result = await _userIdentityService.ConfirmEmail(confirmMailToken, usernameEmailOrPhoneNumber);
+            var result = await _userIdentityService.ConfirmEmailConfirmationToken(confirmMailToken, usernameEmailOrPhoneNumber);
             return Ok(result);
         }
 
         [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPassword(string usernameEmailOrPhoneNumber, string resetPasswordToken, string newPassword)
         {
-            var result = await _userIdentityService.PasswordReset(usernameEmailOrPhoneNumber, resetPasswordToken, newPassword);
+            var result = await _userIdentityService.ConfirmPasswordResetToken(usernameEmailOrPhoneNumber, resetPasswordToken, newPassword);
             return Ok(result);
         }
 

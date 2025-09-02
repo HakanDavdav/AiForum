@@ -12,7 +12,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
     {
         public static NotificationDto Notification_To_NotificationDto(this Notification notification)
         {
-            var minimalOwnerUser = notification.User.User_To_MinimalUserDto();
+            var minimalOwnerUser = notification.OwnerUser.User_To_MinimalUserDto();
             var minimalFromUser = notification.FromUser.User_To_MinimalUserDto();
             var minimalFromBot = notification.FromBot.Bot_To_MinimalBotDto();
             return new NotificationDto()

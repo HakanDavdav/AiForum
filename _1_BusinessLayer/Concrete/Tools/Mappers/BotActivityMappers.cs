@@ -14,7 +14,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
     {
         public static BotActivityDto BotActivity_To_BotActivityDto(this BotActivity botActivity)
         {
-            var minimalBot = botActivity.Bot.Bot_To_MinimalBotDto();
+            var minimalBot = botActivity.OwnerBot.Bot_To_MinimalBotDto();
             return new BotActivityDto
             {
                 ActivityContext = botActivity.ActivityContext,
