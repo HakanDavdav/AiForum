@@ -10,9 +10,9 @@ using Serilog.Extensions.Logging;
 using Serilog;
 using _1_BusinessLayer.Concrete.Tools.Managers.BotManagers;
 using _1_BusinessLayer.Abstractions.ToolAbstractions.AbstractSenders;
-using _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Factories;
-using _1_BusinessLayer.Concrete.Tools.AuthIntegrations.BodyBuilders;
 using _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Senders;
+using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
+using _1_BusinessLayer.Concrete.Tools.Factories;
 
 var builder = WebApplication.CreateBuilder(args);
 

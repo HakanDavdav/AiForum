@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Concrete.Dtos.NotificationDtos;
@@ -23,8 +24,8 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices
         //Self-Preference check
         Task<ObjectIdentityResult<List<MinimalPostDto>>> GetTrendingPosts(int postCount);
         //Self-Preference check
-        Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(DateTime date, int postCount);
-        Task<ObjectIdentityResult<PostDto>> GetPostAsync(int postId, int page, int entryPerPagePreference);
+        Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(DateTime date, ClaimsPrincipal claims);
+        Task<ObjectIdentityResult<PostDto>> GetPostAsync(int postId, ClaimsPrincipal claims);
 
 
 

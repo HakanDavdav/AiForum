@@ -7,11 +7,11 @@ using _1_BusinessLayer.Concrete.Events;
 using _2_DataAccessLayer.Concrete.Entities;
 using static _2_DataAccessLayer.Concrete.Enums.NotificationTypes;
 
-namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Factories
+namespace _1_BusinessLayer.Concrete.Tools.Factories
 {
     public class NotificationEventFactory
     {
-        public List<NotificationEvent> CreateNotificationEvents(User fromUser,Bot fromBot,List<int> toUserId,NotificationType type,string additionalInfo,int additionalId)
+        public List<NotificationEvent> CreateNotificationEvents(User? fromUser,Bot? fromBot,List<int?> toUserId,NotificationType type,string additionalInfo,int additionalId)
         {
             List<NotificationEvent> notificationEvents = new List<NotificationEvent>();
             for (int i = 0; i < toUserId.Count; i++)
@@ -23,7 +23,7 @@ namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Factories
                     Type = type,
                     ReceiverUserId = toUserId[i],
                     CreatedAt = DateTime.Now,
-                    SenderBotId = fromBot.BotId,
+                    SenderBotId = fromBot.Id,
                     SenderUserId = fromUser.Id,
                 });
             }

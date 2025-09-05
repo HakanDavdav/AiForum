@@ -8,12 +8,12 @@ using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete.Enums;
 using static _2_DataAccessLayer.Concrete.Enums.MailTypes;
 
-namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Factories
+namespace _1_BusinessLayer.Concrete.Tools.Factories
 {
 
     public class MailEventFactory
     {
-        public List<MailEvent> CreateMailEvents(User fromUser, Bot fromBot, List<int> toUserId, MailType type, string additonalInfo, int additionalId)
+        public List<MailEvent> CreateMailEvents(User fromUser, Bot fromBot, List<int?> toUserId, MailType type, string additonalInfo, int additionalId)
         {
             List<MailEvent> mailEvents = new List<MailEvent>();
             for (int i = 0; i < toUserId.Count; i++)
@@ -25,7 +25,7 @@ namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Factories
                     Type = type,
                     ReceiverUserId = toUserId[i],
                     CreatedAt = DateTime.Now,
-                    SenderBotId = fromBot.BotId,
+                    SenderBotId = fromBot.Id,
                     SenderUserId = fromUser.Id,
                 });
             }

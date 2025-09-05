@@ -8,7 +8,7 @@ using _2_DataAccessLayer.Concrete.Enums;
 using Microsoft.AspNetCore.Identity;
 using static _2_DataAccessLayer.Concrete.Enums.SmsTypes;
 
-namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Senders
+namespace _1_BusinessLayer.Concrete.Tools.Senders
 {
     public class SmsSender
     {

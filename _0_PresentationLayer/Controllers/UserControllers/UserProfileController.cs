@@ -89,7 +89,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
             {
                 var entryPerPageClaim = HttpContext.User.FindFirst("ENTRY PER PAGE");
 #pragma warning disable CS8604 // Possible null reference argument.
-                var result = await userService.GetUserProfile(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), TODO, TODO);
+                var result = await userService.GetUserProfile(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), TODO);
 #pragma warning restore CS8604 // Possible null reference argument.
                 return Ok(result);
             }
@@ -104,7 +104,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         {
             var entryPerPageClaim = HttpContext.User.FindFirst("ENTRY PER PAGE");
 #pragma warning disable CS8604 // Possible null reference argument.
-            var result = await userService.GetUserProfile(userId, userId, userId);
+            var result = await userService.GetUserProfile(userId, TODO);
 #pragma warning restore CS8604 // Possible null reference argument.
             return Ok(result);
         }

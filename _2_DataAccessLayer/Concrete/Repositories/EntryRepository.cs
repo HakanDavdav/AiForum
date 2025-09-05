@@ -250,5 +250,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 throw;
             }
         }
+
+        public override async Task ManuallyInsertRangeAsync(List<Entry> entries)
+        {
+            _context.Entries.AddRange(entries);
+            await _context.SaveChangesAsync();
+        }
     }
 }

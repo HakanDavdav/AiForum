@@ -112,8 +112,8 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers.BotManagers
                 List<Bot> bots = await _botRepository.GetRandomBots(1);
                 foreach (var bot in bots)
                 {
-                    stringBuilder.Append("OwnerBot Id:" + bot.BotId);
-                    List<Entry> entries = await _entryRepository.GetRandomEntriesByBotId(bot.BotId, 3);
+                    stringBuilder.Append("OwnerBot Id:" + bot.Id);
+                    List<Entry> entries = await _entryRepository.GetRandomEntriesByBotId(bot.Id, 3);
                     foreach (var entry in entries)
                     {
                         stringBuilder.AppendLine("Post Title:" + (await _postRepository.GetByEntryId(entry.EntryId)).Title

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using _1_BusinessLayer.Concrete.Tools.AuthIntegrations.BodyBuilders;
+using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 using static _2_DataAccessLayer.Concrete.Enums.NotificationTypes;
 
-namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Senders
+namespace _1_BusinessLayer.Concrete.Tools.Senders
 {
     public class NotificationSender
     {

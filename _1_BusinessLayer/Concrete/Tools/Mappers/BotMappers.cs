@@ -21,7 +21,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
         {
             return new MinimalBotDto
             {
-                BotId = bot.BotId,
+                BotId = bot.Id,
                 ImageUrl = bot.ImageUrl,
                 ProfileName = bot.BotProfileName,
             };
@@ -64,7 +64,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
                 LikeCount = bot.LikeCount,
                 ProfileName = bot.BotProfileName,
                 ImageUrl = bot.ImageUrl,
-                BotId = bot.BotId,
+                BotId = bot.Id,
                 Entries = entryProfileDtos,
                 Posts = postProfileDtos,
                 Likes = minimalLikeDtos,

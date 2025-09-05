@@ -7,7 +7,8 @@ using _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices;
 using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
 using _1_BusinessLayer.Concrete.Dtos.LikeDto;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
-using _1_BusinessLayer.Concrete.Tools.Managers.UserToolManagers;
+using _1_BusinessLayer.Concrete.Tools.Factories;
+using _1_BusinessLayer.Concrete.Tools.MessageBackgroundService;
 using _2_DataAccessLayer.Abstractions;
 using Microsoft.AspNetCore.Identity;
 
@@ -19,18 +20,25 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
         protected readonly AbstractUserRepository _userRepository;
         protected readonly AbstractLikeRepository _likeRepository;
         protected readonly AbstractPostRepository _postRepository;
-        protected readonly ActivityBaseManager _activityBaseManager;
         protected readonly AbstractFollowRepository _followRepository;
+        protected readonly AbstractNotificationRepository _notificationRepository;
+        protected readonly MailEventFactory _mailEventFactory;
+        protected readonly NotificationEventFactory _notificationEventFactory;
+        protected readonly QueueSender _queueSender;
 
         protected AbstractEntryService(AbstractEntryRepository entryRepository, AbstractUserRepository userRepository,
-            AbstractLikeRepository likeRepository, AbstractPostRepository postRepository,AbstractFollowRepository followRepository, ActivityBaseManager activityBaseManager)
+            AbstractLikeRepository likeRepository, AbstractPostRepository postRepository,AbstractFollowRepository followRepository,
+            MailEventFactory mailEventFactory, NotificationEventFactory notificationEventFactory, QueueSender queueSender, AbstractNotificationRepository notificationRepository)
         {
             _entryRepository = entryRepository;
             _userRepository = userRepository;
             _likeRepository = likeRepository;
             _postRepository = postRepository;
             _followRepository = followRepository;
-            _activityBaseManager = activityBaseManager;
+            _notificationRepository = notificationRepository;
+            _notificationEventFactory = notificationEventFactory;
+            _mailEventFactory = mailEventFactory;
+            _queueSender = queueSender;
 
         }
 

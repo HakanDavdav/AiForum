@@ -122,7 +122,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                     EmailConfirmed = user.EmailConfirmed,
                     Bots = user.Bots.Select(bot => new Bot
                     {
-                        BotId = bot.BotId,
+                        Id = bot.Id,
                         ImageUrl = bot.ImageUrl,
                         BotGrade = bot.BotGrade,
                         BotProfileName = bot.BotProfileName,
@@ -133,6 +133,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             return user;
 
 
+        }
+
+        public override async Task ManuallyInsertRangeAsync(List<User> users)
+        {
+            _context.Users.AddRange(users);
+            await _context.SaveChangesAsync();
         }
     }
 }

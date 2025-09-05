@@ -51,7 +51,7 @@ namespace _1_BusinessLayer.Concrete.Services
             {
                 foreach (var bot in bots)
                 {
-                    if (bot.BotId == botId)
+                    if (bot.Id == botId)
                     {
                         await _botRepository.DeleteAsync(bot);
                         return IdentityResult.Failed();
@@ -70,7 +70,7 @@ namespace _1_BusinessLayer.Concrete.Services
             {
                 foreach (var bot in bots)
                 {
-                    if(bot.BotId == botId)
+                    if(bot.Id == botId)
                     {
                         await _botDeployManager.BotDoActionAsync(bot);
                         bot.DailyOperationCheck = false;

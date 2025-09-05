@@ -175,5 +175,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 }).ToListAsync();
             return likes;
         }
+
+        public override async Task ManuallyInsertRangeAsync(List<Like> likes)
+        {
+            _context.Likes.AddRange(likes);
+            await _context.SaveChangesAsync();
+        }
     }
 }

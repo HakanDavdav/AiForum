@@ -12,6 +12,7 @@ namespace _2_DataAccessLayer.Abstractions.Generic
     {
         public Task<List<T>> GetWithCustomSearchAsync(Func<IQueryable<T>, IQueryable<T>> queryModifier);
         public Task ManuallyInsertAsync(T t);
+        public Task ManuallyInsertRangeAsync(List<T> t);
         public Task SaveChangesAsync();
         public Task DeleteAsync(T t);
         public Task UpdateAsync(T t);

@@ -9,7 +9,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
 {
     public class Bot
     {
-        public int BotId { get; set; }
+        public int Id { get; set; }
         public string BotProfileName { get; set; }
         public string? ImageUrl { get; set; }
         public string BotPersonality{  get; set; }

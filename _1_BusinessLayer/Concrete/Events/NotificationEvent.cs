@@ -10,9 +10,9 @@ namespace _1_BusinessLayer.Concrete.Events
 {
     public class NotificationEvent
     {
-        public int SenderUserId { get; set; }
-        public int SenderBotId { get; set; }
-        public int ReceiverUserId { get; set; } 
+        public int? SenderUserId { get; set; }
+        public int? SenderBotId { get; set; }
+        public int? ReceiverUserId { get; set; } 
         public string AdditionalInfo { get; set; }
         public NotificationType Type { get; set; }
         public int AdditionalId { get; set; }

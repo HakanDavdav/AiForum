@@ -28,7 +28,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in DeleteAsync for OwnerBotId {OwnerBotId}", t.BotId);
+                _logger.LogError(ex, "Error in DeleteAsync for OwnerBotId {OwnerBotId}", t.Id);
                 throw;
             }
         }
@@ -38,7 +38,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
             try
             {
-                return await _context.Bots.FirstOrDefaultAsync(bot => bot.BotId == id);
+                return await _context.Bots.FirstOrDefaultAsync(bot => bot.Id == id);
             }
             catch (Exception ex)
             {
@@ -57,7 +57,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in ManuallyInsertAsync for OwnerBotId {OwnerBotId}", t.BotId);
+                _logger.LogError(ex, "Error in ManuallyInsertAsync for OwnerBotId {OwnerBotId}", t.Id);
                 throw;
             }
         }
@@ -71,7 +71,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in UpdateAsync for OwnerBotId {OwnerBotId}", t.BotId);
+                _logger.LogError(ex, "Error in UpdateAsync for OwnerBotId {OwnerBotId}", t.Id);
                 throw;
             }
         }
@@ -96,10 +96,10 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
         public override async Task<Bot> GetBotModuleAsync(int id)
         {
-            var bot = await _context.Bots.Where(bot => bot.BotId == id).Select(
+            var bot = await _context.Bots.Where(bot => bot.Id == id).Select(
                 bot => new Bot
                 {
-                    BotId = bot.BotId,
+                    Id = bot.Id,
                     BotGrade = bot.BotGrade,
                     BotProfileName = bot.BotProfileName,
                     OwnerUser = bot.OwnerUser,
@@ -110,5 +110,10 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             return bot;
         }
 
+        public override async Task ManuallyInsertRangeAsync(List<Bot> bots)
+        {
+            _context.Bots.AddRange(bots);
+            await _context.SaveChangesAsync();
+        }
     }
 }

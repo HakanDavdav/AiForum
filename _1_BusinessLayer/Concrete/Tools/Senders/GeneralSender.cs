@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Concrete.Events;
-using _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Factories;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
+using _1_BusinessLayer.Concrete.Tools.Factories;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete.Enums;
@@ -15,7 +15,7 @@ using static _2_DataAccessLayer.Concrete.Enums.MailTypes;
 using static _2_DataAccessLayer.Concrete.Enums.NotificationTypes;
 using static _2_DataAccessLayer.Concrete.Enums.SmsTypes;
 
-namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Senders
+namespace _1_BusinessLayer.Concrete.Tools.Senders
 {
     public class GeneralSender
     {
@@ -100,38 +100,41 @@ namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Senders
 
         public async Task<IdentityResult> GeneralSocialSend(MailEvent? mailEvent, NotificationEvent? notificationEvent)
         {
+            var receiverUser = null as User;
+            object fromUserOrBot = null;
             if (mailEvent != null)
             {
-                var toUser = await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.Id==mailEvent.ReceiverUserId).Include(user => user.UserPreference);
-                var fromBot = await _botRepository.GetByIdAsync(mailEvent.SenderBotId);
-                var fromUser = await _userRepository.GetByIdAsync(mailEvent.SenderUserId);
-                if (toUser != null )
+                if(!mailEvent.SenderUserId.HasValue && !mailEvent.SenderBotId.HasValue) throw new Exception();
+                if(!mailEvent.ReceiverUserId.HasValue) return IdentityResult.Failed(new NotFoundError("User does not have any followers"));
+                if (mailEvent.SenderUserId.HasValue) fromUserOrBot = await _userRepository.GetByIdAsync(mailEvent.SenderUserId.Value);
+                if (mailEvent.SenderBotId.HasValue) fromUserOrBot = await _botRepository.GetByIdAsync(mailEvent.SenderBotId.Value);
+                receiverUser = await _userRepository.GetByIdAsync(mailEvent.ReceiverUserId.Value);
+                if (receiverUser == null) return IdentityResult.Failed(new NotFoundError("Receiver user not found"));
+                if (fromUserOrBot != null )
                 {
-                    if (toUser.EmailConfirmed == true && toUser.UserPreference.SocialEmailPreference == true)
-                    {
-                        await _mailSender.SendSocialMailAsync(fromUser, fromBot, toUser, mailEvent.Type, mailEvent.AdditionalInfo, mailEvent.AdditionalId);
-                        return IdentityResult.Success;
-                    }
-                    return IdentityResult.Failed(new UnauthorizedError("OwnerUser has disabled social emails or email is not confirmed"));
+                    await _mailSender.SendSocialMailAsync(fromUserOrBot as User, fromUserOrBot as Bot, receiverUser, mailEvent.Type, mailEvent.AdditionalInfo, mailEvent.AdditionalId);
+                    return IdentityResult.Success;
                 }
-                return IdentityResult.Failed(new NotFoundError("Receiver user not found"));
+                return IdentityResult.Failed(new NotFoundError("Sender not found"));
+
+               
             }
             if (notificationEvent != null)
             {
-                var toUser = await _userRepository.GetByIdAsync(notificationEvent.ReceiverUserId);
-                var fromBot = await _botRepository.GetByIdAsync(notificationEvent.SenderBotId);
-                var fromUser = await _userRepository.GetByIdAsync(notificationEvent.SenderUserId);
-                if (toUser != null)
+                if (!notificationEvent.SenderUserId.HasValue && !notificationEvent.SenderBotId.HasValue) throw new Exception();
+                if (!notificationEvent.ReceiverUserId.HasValue) return IdentityResult.Failed(new NotFoundError("User does not have any followers"));
+                if (notificationEvent.SenderUserId.HasValue) fromUserOrBot = await _userRepository.GetByIdAsync(notificationEvent.SenderUserId.Value);
+                if (notificationEvent.SenderBotId.HasValue) fromUserOrBot = await _botRepository.GetByIdAsync(notificationEvent.SenderBotId.Value);
+                receiverUser = await _userRepository.GetByIdAsync(notificationEvent.ReceiverUserId.Value);
+                if (receiverUser == null) return IdentityResult.Failed(new NotFoundError("Receiver user not found"));
+                if (fromUserOrBot != null)
                 {
-                    if (toUser.UserPreference.SocialNotificationPreference == true)
-                    {
-                        await _notificationSender.SendSocialNotificationAsync(fromUser, fromBot, toUser, notificationEvent.Type, notificationEvent.AdditionalInfo, notificationEvent.AdditionalId);
-                        return IdentityResult.Success;
-                    }
-                    return IdentityResult.Failed(new UnauthorizedError("OwnerUser has disabled social notifications"));
+                    await _notificationSender.SendSocialNotificationAsync(fromUserOrBot as User, fromUserOrBot as Bot, receiverUser, notificationEvent.Type, notificationEvent.AdditionalInfo, notificationEvent.AdditionalId);
+                    return IdentityResult.Success;
                 }
-                return IdentityResult.Failed(new NotFoundError("Receiver user not found"));
+                return IdentityResult.Failed(new NotFoundError("Sender not found"));
             }
+
             return IdentityResult.Failed(new UnexpectedError("Both events are null"));
         }
 

@@ -5,15 +5,21 @@ using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
+using _1_BusinessLayer.Concrete.Tools.Factories;
+using _1_BusinessLayer.Concrete.Tools.MessageBackgroundService;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
+using static _2_DataAccessLayer.Concrete.Enums.MailTypes;
+using static _2_DataAccessLayer.Concrete.Enums.NotificationTypes;
 
 namespace _1_BusinessLayer.Concrete.Services
 {
     public class FollowService : AbstractFollowService
     {
-        public FollowService(AbstractFollowRepository followRepository, AbstractUserRepository userRepository, AbstractBotRepository botRepository) : base(followRepository, userRepository, botRepository)
+        public FollowService(AbstractFollowRepository followRepository, AbstractUserRepository userRepository, AbstractBotRepository botRepository, 
+            MailEventFactory mailEventFactory, NotificationEventFactory notificationEventFactory, QueueSender queueSender) 
+            : base(followRepository, userRepository, botRepository, mailEventFactory, notificationEventFactory, queueSender)
         {
         }
 
@@ -105,7 +111,20 @@ namespace _1_BusinessLayer.Concrete.Services
             followedUser.Followers.Add(follow);
             user.FollowedCount += 1;
             followedUser.FollowerCount += 1;
+            followedUser.Notifications.Add(new Notification
+            {
+                FromUserId = userId,
+                OwnerUserId = followedUserId,
+                NotificationType = NotificationType.GainedFollower,
+                AdditionalId = userId,
+                IsRead = false,
+                DateTime = DateTime.UtcNow,
+            });
             await _followRepository.SaveChangesAsync();
+            var notificationEvents = _notificationEventFactory.CreateNotificationEvents(user, null, new List<int?>{ followedUserId }, NotificationType.GainedFollower, user.ProfileName, userId);
+            var mailEvents = _mailEventFactory.CreateMailEvents(user, null, new List<int?> { followedUserId }, MailType.GainedFollower, user.ProfileName, userId);
+            await _queueSender.MailQueueSendAsync(mailEvents);
+            await _queueSender.NotificationQueueSendAsync(notificationEvents);
             return IdentityResult.Success;
         }
     }

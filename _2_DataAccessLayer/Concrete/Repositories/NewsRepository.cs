@@ -83,5 +83,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             return await query.FirstOrDefaultAsync();
 #pragma warning restore CS8603 // Possible null reference return.
         }
+
+        public override async Task ManuallyInsertRangeAsync(List<TrendingPosts> trendingPosts)
+        {
+            _context.News.AddRange(trendingPosts);
+            await _context.SaveChangesAsync();
+        }
     }
 }

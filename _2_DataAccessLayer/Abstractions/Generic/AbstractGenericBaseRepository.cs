@@ -28,5 +28,6 @@ namespace _2_DataAccessLayer.Abstractions.Generic
         public abstract Task UpdateAsync(T t);
         public abstract Task<T> GetBySpecificPropertySingularAsync(Func<IQueryable<T>, IQueryable<T>> queryModifier);
         public abstract Task SaveChangesAsync();
+        public abstract Task ManuallyInsertRangeAsync(List<T> t);
     }
 }

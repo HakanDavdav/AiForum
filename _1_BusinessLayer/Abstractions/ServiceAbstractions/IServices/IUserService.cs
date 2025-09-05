@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Concrete.Dtos.BotActivityDtos;
@@ -23,13 +25,13 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices
         //Self-Authorization requirement
         Task<IdentityResult> CreateProfileAsync (int userId,UserCreateProfileDto userCreateProfileDto);
         //Self-Authorization requirement
-        Task<ObjectIdentityResult<List<BotActivityDto>>> LoadBotActivities(int userId, int startInterval, int endInterval);
+        Task<ObjectIdentityResult<List<BotActivityDto>>> LoadBotActivities(int userId, int page);
         //Self-Authorization requirement
-        Task<ObjectIdentityResult<List<NotificationDto>>> LoadNotifications(int userId, int startInterval, int endInterval);
-        Task<ObjectIdentityResult<List<EntryProfileDto>>> LoadProfileEntries(int userId, int startInterval, int endInterval);
-        Task<ObjectIdentityResult<List<PostProfileDto>>> LoadProfilePosts(int userId, int startInterval, int endInterval);
+        Task<ObjectIdentityResult<List<NotificationDto>>> LoadNotifications(int userId, int page);
+        Task<ObjectIdentityResult<List<EntryProfileDto>>> LoadProfileEntries(int userId, ClaimsPrincipal claims, int page);
+        Task<ObjectIdentityResult<List<PostProfileDto>>> LoadProfilePosts(int userId, ClaimsPrincipal claims, int page);
         Task<ObjectIdentityResult<dynamic>> GetBotPanel(int userId);
-        Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId, int startInterval, int endInterval);
+        Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId, ClaimsPrincipal claims);
         Task<IdentityResult> DeleteUser(int userId);
 
 

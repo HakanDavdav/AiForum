@@ -15,7 +15,7 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
         public void Configure(EntityTypeBuilder<Bot> builder)
         {
 
-            builder.HasKey(bot => bot.BotId);  // Set the primary key for the OwnerBot entity
+            builder.HasKey(bot => bot.Id);  // Set the primary key for the OwnerBot entity
 
             builder.HasIndex(bot => bot.BotProfileName).IsUnique();  // Create a unique index on BotProfileName to ensure no duplicates
 

@@ -91,5 +91,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             return await query.FirstOrDefaultAsync();
 #pragma warning restore CS8603 // Possible null reference return.
         }
+
+        public override async Task ManuallyInsertRangeAsync(List<UserPreference> userPreferences)
+        {
+            _context.UserPreferences.AddRange(userPreferences);
+            await _context.SaveChangesAsync();
+        }
     }
 }

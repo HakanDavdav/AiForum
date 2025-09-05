@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices;
@@ -103,15 +104,17 @@ namespace _1_BusinessLayer.Concrete.Services
             return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
         }
 
-        public override async Task<ObjectIdentityResult<List<BotActivityDto>>> LoadBotActivities(int userId, int startInterval, int endInterval)
+        public override async Task<ObjectIdentityResult<List<BotActivityDto>>> LoadBotActivities(int userId, int page)
         {
+            var startInterval = (page - 1) * 10;
+            var endInterval = startInterval + 10;
             var user = await _userRepository.GetUserModuleAsync(userId);
             List<BotActivityDto> botActivityDtos = new List<BotActivityDto>();
             if (user != null)
             {
                 foreach (var bot in user.Bots)
                 {
-                    var botActivities = _activityRepository.GetBotActivityModulesForBotAsync(bot.BotId, startInterval , endInterval);
+                    var botActivities = _activityRepository.GetBotActivityModulesForBotAsync(bot.Id, startInterval , endInterval);
                     foreach (var activity in botActivities.Result)
                     {
                         botActivityDtos.Add(activity.BotActivity_To_BotActivityDto());
@@ -130,27 +133,10 @@ namespace _1_BusinessLayer.Concrete.Services
         }
 
 
-        public override async Task<ObjectIdentityResult<List<NotificationDto>>> LoadNotifications(int userId, int startInterval, int endInterval)
+        public override async Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId, ClaimsPrincipal claims)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
-            List<NotificationDto> notificationsDtos = new List<NotificationDto>();
-            if (user != null)
-            {
-                List<Notification> notifications = await _notificationRepository.GetNotificationModulesForUser(userId, startInterval, endInterval);
-                foreach (var notification in notifications)
-                {
-                    notificationsDtos.Add(notification.Notification_To_NotificationDto());
-                }
-                return ObjectIdentityResult<List<NotificationDto>>.Succeded(notificationsDtos);
-            }
-            return ObjectIdentityResult<List<NotificationDto>>.Failed(null, new IdentityError[] { new NotFoundError("OwnerUser not found") });
-
-        }
-
-
-        public override async Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId, int startInterval, int endInterval)
-        {
-           
+            var startInterval = 0 ;
+            var endInterval = claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10;
             var user = await _userRepository.GetUserModuleAsync(userId);
             user.Posts = await _postRepository.GetPostModulesForUser(userId, startInterval, endInterval);
             user.Entries = await _entryRepository.GetEntryModulesForUserAsync(userId, startInterval, endInterval);
@@ -166,8 +152,10 @@ namespace _1_BusinessLayer.Concrete.Services
 
         }
 
-        public override async Task<ObjectIdentityResult<List<EntryProfileDto>>> LoadProfileEntries(int userId, int startInterval, int endInterval)
+        public override async Task<ObjectIdentityResult<List<EntryProfileDto>>> LoadProfileEntries(int userId, ClaimsPrincipal claims, int page)
         {
+            var startInterval = (page - 1) * (claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10);
+            var endInterval = startInterval + (claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10);
             var entries = await _entryRepository.GetEntryModulesForUserAsync(userId,startInterval,endInterval);
             List<EntryProfileDto> entryProfileDtos = new List<EntryProfileDto>();
             foreach (var entry in entries)
@@ -177,8 +165,10 @@ namespace _1_BusinessLayer.Concrete.Services
             return ObjectIdentityResult<List<EntryProfileDto>>.Succeded(entryProfileDtos);
         }
 
-        public override async Task<ObjectIdentityResult<List<PostProfileDto>>> LoadProfilePosts(int userId, int startInterval, int endInterval)
+        public override async Task<ObjectIdentityResult<List<PostProfileDto>>> LoadProfilePosts(int userId, ClaimsPrincipal claims, int page)
         {
+            var startInterval = (page - 1) * (claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10);
+            var endInterval = startInterval + (claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10);
             var posts =  await _postRepository.GetPostModulesForUser(userId, startInterval, endInterval);
             List<PostProfileDto> postProfileDtos = new List<PostProfileDto>();
             foreach (var post in posts)
@@ -189,8 +179,10 @@ namespace _1_BusinessLayer.Concrete.Services
 
         }
 
-        public override async Task<ObjectIdentityResult<List<MinimalLikeDto>>> LoadProfileLikes(int userId, int startInterval, int endInterval)
+        public override async Task<ObjectIdentityResult<List<MinimalLikeDto>>> LoadProfileLikes(int userId, int page)
         {
+            var startInterval = (page - 1) * 10;
+            var endInterval = startInterval + 10;
             var likes = await _likeRepository.GetLikeModulesForUser(userId, startInterval, endInterval);
             List<MinimalLikeDto> minimalLikeDtos = new List<MinimalLikeDto>();
             foreach (var like in likes)
@@ -198,6 +190,48 @@ namespace _1_BusinessLayer.Concrete.Services
                 minimalLikeDtos.Add(like.Like_To_MinimalLikeDto());
             }
             return ObjectIdentityResult<List<MinimalLikeDto>>.Succeded(minimalLikeDtos);
+        }
+
+        public override async Task<ObjectIdentityResult<List<NotificationDto>>> LoadNotifications(int userId, int page)
+        {
+            var startInterval = (page - 1) * 10;
+            var endInterval = startInterval + 10;
+            var user = await _userRepository.GetByIdAsync(userId);
+            List<NotificationDto> notificationsDtos = new List<NotificationDto>();
+            if (user != null)
+            {
+                List<Notification> notifications = await _notificationRepository.GetNotificationModulesForUser(userId, startInterval, endInterval);
+                foreach (var notification in notifications)
+                {
+                    notificationsDtos.Add(notification.Notification_To_NotificationDto());
+                }
+                return ObjectIdentityResult<List<NotificationDto>>.Succeded(notificationsDtos);
+            }
+            return ObjectIdentityResult<List<NotificationDto>>.Failed(null, new IdentityError[] { new NotFoundError("OwnerUser not found") });
+
+        }
+
+        public override Task<ObjectIdentityResult<List<MinimalUserDto>>> LoadFollowers(int userId, int page)
+        {
+            var startInterval = (page - 1) * 10;
+            var endInterval = startInterval + 10;
+            List<MinimalUserDto> minimalUserDtos = new List<MinimalUserDto>();
+            List<MinimalBotDto> minimalBotDtos = new List<MinimalBotDto>();
+            var user = _userRepository.GetByIdAsync(userId);
+            if (user != null)
+            {
+                var followers = await _followRepository.GetFollowModulesForUserAsFollowedAsync(userId, startInterval, endInterval);
+                foreach (var follow in followers)
+                {
+                    
+                }
+            }
+        }
+
+        public override Task<ObjectIdentityResult<List<MinimalUserDto>>> LoadFollowed(int userId, int page)
+        {
+            var startInterval = (page - 1) * 10;
+            var endInterval = startInterval + 10;
         }
     }
 }

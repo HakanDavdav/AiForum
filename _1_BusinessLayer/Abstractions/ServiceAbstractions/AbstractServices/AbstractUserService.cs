@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices;
@@ -57,11 +59,13 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
         public abstract Task<IdentityResult> DeleteUser(int userId);
         public abstract Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto);
         public abstract Task<ObjectIdentityResult<dynamic>> GetBotPanel(int userId);
-        public abstract Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId, int startInterval, int endInterval);
-        public abstract Task<ObjectIdentityResult<List<NotificationDto>>> LoadNotifications(int userId, int startInterval, int endInterval);
-        public abstract Task<ObjectIdentityResult<List<BotActivityDto>>> LoadBotActivities(int userId, int startInterval, int endInterval);
-        public abstract Task<ObjectIdentityResult<List<EntryProfileDto>>> LoadProfileEntries(int userId, int startInterval, int endInterval);
-        public abstract Task<ObjectIdentityResult<List<PostProfileDto>>> LoadProfilePosts(int userId, int startInterval, int endInterval);
-        public abstract Task<ObjectIdentityResult<List<MinimalLikeDto>>> LoadProfileLikes(int userId, int startInterval, int endInterval);
+        public abstract Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId, ClaimsPrincipal claims);
+        public abstract Task<ObjectIdentityResult<List<NotificationDto>>> LoadNotifications(int userId, int page);
+        public abstract Task<ObjectIdentityResult<List<BotActivityDto>>> LoadBotActivities(int userId, int page);
+        public abstract Task<ObjectIdentityResult<List<EntryProfileDto>>> LoadProfileEntries(int userId, ClaimsPrincipal claims, int page);
+        public abstract Task<ObjectIdentityResult<List<PostProfileDto>>> LoadProfilePosts(int userId, ClaimsPrincipal claims, int page);
+        public abstract Task<ObjectIdentityResult<List<MinimalLikeDto>>> LoadProfileLikes(int userId, int page);
+        public abstract Task<ObjectIdentityResult<List<MinimalUserDto>>> LoadFollowers(int userId, int page);
+        public abstract Task<ObjectIdentityResult<List<MinimalUserDto>>> LoadFollowed(int userId, int page);
     }
 }

@@ -114,5 +114,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 });
             return notifications.ToListAsync();
         }
+
+        public override async Task ManuallyInsertRangeAsync(List<Notification> notifications)
+        {
+            _context.Notifications.AddRange(notifications);
+            await _context.SaveChangesAsync();
+        }
     }
 }

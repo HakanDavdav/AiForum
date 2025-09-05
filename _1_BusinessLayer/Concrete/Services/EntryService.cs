@@ -8,16 +8,24 @@ using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
 using _1_BusinessLayer.Concrete.Dtos.LikeDto;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
+using _1_BusinessLayer.Concrete.Tools.Factories;
 using _1_BusinessLayer.Concrete.Tools.Mappers;
+using _1_BusinessLayer.Concrete.Tools.MessageBackgroundService;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using static _2_DataAccessLayer.Concrete.Enums.MailTypes;
+using static _2_DataAccessLayer.Concrete.Enums.NotificationTypes;
 
 namespace _1_BusinessLayer.Concrete.Services
 {
     public class EntryService : AbstractEntryService
     {
-        public EntryService(AbstractEntryRepository entryRepository, AbstractUserRepository userRepository, AbstractLikeRepository likeRepository, AbstractPostRepository postRepository) : base(entryRepository, userRepository, likeRepository, postRepository)
+        public EntryService(AbstractEntryRepository entryRepository, AbstractUserRepository userRepository, AbstractLikeRepository likeRepository, 
+            AbstractPostRepository postRepository, AbstractFollowRepository followRepository, MailEventFactory mailEventFactory, 
+            NotificationEventFactory notificationEventFactory, QueueSender queueSender, AbstractNotificationRepository notificationRepository) 
+            : base(entryRepository, userRepository, likeRepository, postRepository, followRepository, mailEventFactory, notificationEventFactory, queueSender, notificationRepository)
         {
         }
 
@@ -28,11 +36,31 @@ namespace _1_BusinessLayer.Concrete.Services
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null) return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
             var entry = createEntryDto.CreateEntryDto_To_Entry(userId);
+            var follows = await _followRepository.GetWithCustomSearchAsync(query => query.Where(follow => follow.UserFollowedId == userId).AsNoTracking());
+            var toUserIds = follows.Select(follow => follow.UserFollowerId).ToList();
+            var notifications = new List<Notification>();
+            foreach (var toUserId in toUserIds)
+            {
+                notifications.Add(new Notification
+                {
+                    FromUserId = userId,
+                    OwnerUserId = toUserId,
+                    NotificationType = NotificationType.CreatingEntry,
+                    AdditionalId = entry.EntryId,
+                    IsRead = false,
+                    DateTime = DateTime.UtcNow,
+                });
+            }
+            await _notificationRepository.ManuallyInsertRangeAsync(notifications);
             post.Entries.Add(entry);
             user.Entries.Add(entry);
             post.EntryCount += 1;
             user.EntryCount += 1;
             await _entryRepository.SaveChangesAsync();
+            var mailEvents = _mailEventFactory.CreateMailEvents(user, null, toUserIds, MailType.CreatingEntry, entry.Context, entry.EntryId);
+            var notificationEvents = _notificationEventFactory.CreateNotificationEvents(user, null, toUserIds, NotificationType.CreatingEntry, entry.Context, entry.EntryId);
+            await _queueSender.MailQueueSendAsync(mailEvents);
+            await _queueSender.NotificationQueueSendAsync(notificationEvents);
             return IdentityResult.Success;
         }
 
@@ -42,11 +70,13 @@ namespace _1_BusinessLayer.Concrete.Services
             if (entry == null) return IdentityResult.Failed(new NotFoundError("Entry not found"));
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null) return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            var post = await _postRepository.GetByIdAsync(entry.PostId);
+            if (post == null) return IdentityResult.Failed(new NotFoundError("Post not found"));
             if (entry.OwnerUserId == user.Id)
             {
                 await _entryRepository.DeleteAsync(entry);
                 user.EntryCount--;
-
+                post.EntryCount--;
                 await _entryRepository.SaveChangesAsync();
                 return IdentityResult.Success;
             }

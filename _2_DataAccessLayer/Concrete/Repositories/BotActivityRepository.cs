@@ -110,5 +110,10 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             return BotActivities.ToListAsync();
         }
 
+        public override async Task ManuallyInsertRangeAsync(List<BotActivity> activities)
+        {
+            _context.Activities.AddRange(activities);
+            await _context.SaveChangesAsync();
+        }
     }
 }

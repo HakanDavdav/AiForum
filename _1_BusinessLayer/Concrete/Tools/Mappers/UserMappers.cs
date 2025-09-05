@@ -92,7 +92,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             {
                 foreach (var editBot in userEditProfileDto.Bots)
                 {
-                    if (bot.BotId == editBot.BotId)
+                    if (bot.Id == editBot.BotId)
                     {
                         bot.BotPersonality = editBot.BotPersonality;
                         bot.BotProfileName = editBot.BotProfileName;

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using static _2_DataAccessLayer.Concrete.Enums.MailTypes;
 
-namespace _1_BusinessLayer.Concrete.Tools.AuthIntegrations.BodyBuilders
+namespace _1_BusinessLayer.Concrete.Tools.BodyBuilders
 {
     public class MailBodyBuilder
     {

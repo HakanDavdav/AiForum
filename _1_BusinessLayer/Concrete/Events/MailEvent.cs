@@ -12,9 +12,9 @@ namespace _1_BusinessLayer.Concrete.Events
     public class MailEvent
     {
 
-        public int SenderUserId { get; set; }
-        public int SenderBotId { get; set; }
-        public int ReceiverUserId { get; set; }
+        public int? SenderUserId { get; set; }
+        public int? SenderBotId { get; set; }
+        public int? ReceiverUserId { get; set; }
         public string AdditionalInfo { get; set; }
         public MailType Type { get; set; }
         public int AdditionalId { get; set; }

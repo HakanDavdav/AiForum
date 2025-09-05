@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
-using _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Senders;
+using _1_BusinessLayer.Concrete.Tools.Senders;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete.Enums;
