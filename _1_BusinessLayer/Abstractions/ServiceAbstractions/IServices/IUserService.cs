@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Concrete.Dtos.BotActivityDtos;
 using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
+using _1_BusinessLayer.Concrete.Dtos.FollowDto;
+using _1_BusinessLayer.Concrete.Dtos.LikeDto;
 using _1_BusinessLayer.Concrete.Dtos.NotificationDtos;
 using _1_BusinessLayer.Concrete.Dtos.PostDtos;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
@@ -20,16 +22,15 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices
     public interface IUserService
     {
 
-        //Self-Authorization requirement
         Task<IdentityResult> EditProfile (int userId,UserEditProfileDto userEditProfileDto);
-        //Self-Authorization requirement
         Task<IdentityResult> CreateProfileAsync (int userId,UserCreateProfileDto userCreateProfileDto);
-        //Self-Authorization requirement
         Task<ObjectIdentityResult<List<BotActivityDto>>> LoadBotActivities(int userId, int page);
-        //Self-Authorization requirement
         Task<ObjectIdentityResult<List<NotificationDto>>> LoadNotifications(int userId, int page);
         Task<ObjectIdentityResult<List<EntryProfileDto>>> LoadProfileEntries(int userId, ClaimsPrincipal claims, int page);
         Task<ObjectIdentityResult<List<PostProfileDto>>> LoadProfilePosts(int userId, ClaimsPrincipal claims, int page);
+        Task<ObjectIdentityResult<List<FollowProfileDto>>> LoadFollowers(int userId, int page);
+        Task<ObjectIdentityResult<List<FollowProfileDto>>> LoadFollowed(int userId, int page);
+        Task<ObjectIdentityResult<List<MinimalLikeDto>>> LoadProfileLikes(int userId, int page);
         Task<ObjectIdentityResult<dynamic>> GetBotPanel(int userId);
         Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId, ClaimsPrincipal claims);
         Task<IdentityResult> DeleteUser(int userId);

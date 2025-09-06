@@ -88,12 +88,11 @@ namespace _1_BusinessLayer.Concrete.Tools.BodyBuilders
             return (title, body, url);
         }
 
-        public (string title, string body,string senderImageUrl) BuildAppNotificationContent(
+        public (string title, string body) BuildAppNotificationContent(
             User? FromUser,
             Bot? FromBot,
             NotificationType type,
-            string additionalInfo,
-            int additionalId)
+            string additionalInfo)
         {
             string senderName = FromUser?.UserName ?? FromBot?.BotProfileName ?? "Someone";
             string senderImageUrl = FromUser?.ImageUrl ?? FromBot?.ImageUrl ?? "default_image_url";
@@ -119,7 +118,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BodyBuilders
                 NotificationType.NewEntryForPost => $"{additionalInfo} post",
                 _ => "You have a new notification"
             };
-            return (title, body,senderImageUrl);
+            return (title, body);
 
         }
     }

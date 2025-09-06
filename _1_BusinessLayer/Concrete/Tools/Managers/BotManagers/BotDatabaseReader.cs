@@ -47,7 +47,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers.BotManagers
                 List<Post> posts = await _postRepository.GetRandomPosts(1);
                 foreach (var post in posts)
                 {
-                    data.Add("Post Id:" + post.PostId + "\nPost Title:" + post.Title + "\nPost NotificationContext:" + post.Context);
+                    data.Add("Post Id:" + post.PostId + "\nPost NotificationTitle:" + post.Title + "\nPost NotificationContext:" + post.Context);
                 }
                 return (data, "creatingEntry");
 
@@ -60,7 +60,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers.BotManagers
                 foreach (var post in posts)
                 {
                     List<Entry> entries = await _entryRepository.GetRandomEntriesByPostId(post.PostId, 3);
-                    stringBuilder.Append("Post Id:" + post.PostId + "\nPost Title:" + post.Title + "\nPost NotificationContext" + post.Context);
+                    stringBuilder.Append("Post Id:" + post.PostId + "\nPost NotificationTitle:" + post.Title + "\nPost NotificationContext" + post.Context);
                     foreach (var entry in entries)
                     {
                         stringBuilder.AppendLine("Entry NotificationContext:" + entry.Context);
@@ -78,7 +78,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers.BotManagers
                 List<TrendingPosts> news = await _newsRepository.GetRandomNews(1);
                 foreach (var new_s in news)
                 {
-                    data.Add("News Title:" + new_s.Title + "\nNews NotificationContext:" + new_s.Context);
+                    data.Add("News NotificationTitle:" + new_s.Title + "\nNews NotificationContext:" + new_s.Context);
                 }
                 return (data, "creatingPost");
 
@@ -94,7 +94,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers.BotManagers
                     List<Entry> entries = await _entryRepository.GetRandomEntriesByUserId(user.Id, 3);
                     foreach (var entry in entries)
                     {
-                        stringBuilder.AppendLine("Post Title:" + (await _postRepository.GetByEntryId(entry.EntryId)).Title
+                        stringBuilder.AppendLine("Post NotificationTitle:" + (await _postRepository.GetByEntryId(entry.EntryId)).Title
                                                  + "Post NotificationContext" + (await _postRepository.GetByEntryId(entry.EntryId)).Context);
                         stringBuilder.AppendLine("Entry NotificationContext:" + entry.Context);
                     }
@@ -116,7 +116,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers.BotManagers
                     List<Entry> entries = await _entryRepository.GetRandomEntriesByBotId(bot.Id, 3);
                     foreach (var entry in entries)
                     {
-                        stringBuilder.AppendLine("Post Title:" + (await _postRepository.GetByEntryId(entry.EntryId)).Title
+                        stringBuilder.AppendLine("Post NotificationTitle:" + (await _postRepository.GetByEntryId(entry.EntryId)).Title
                                                 + "Post NotificationContext" + (await _postRepository.GetByEntryId(entry.EntryId)).Context);
                         stringBuilder.AppendLine("Entry NotificationContext:" + entry.Context);
                     }
@@ -132,7 +132,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers.BotManagers
                 List<Post> posts = await _postRepository.GetRandomPosts(3);
                 foreach (var post in posts)
                 {
-                    data.Add("Post Id:" + post.PostId + "\nPost Title:" + post.Title + "\nPost NotificationContext:" + post.Context);
+                    data.Add("Post Id:" + post.PostId + "\nPost NotificationTitle:" + post.Title + "\nPost NotificationContext:" + post.Context);
                 }
                 return (data, "likePost");
             }
@@ -143,7 +143,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers.BotManagers
                 List<Post> posts = await _postRepository.GetRandomPosts(1);
                 foreach (var post in posts)
                 {
-                    stringBuilder.Append("Post Title:" + post.Title + "\nPost NotificationContext:" + post.Context);
+                    stringBuilder.Append("Post NotificationTitle:" + post.Title + "\nPost NotificationContext:" + post.Context);
                     List<Entry> entries = await _entryRepository.GetRandomEntriesByPostId(post.PostId, 3);
                     foreach (var entry in entries)
                     {

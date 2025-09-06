@@ -9,7 +9,6 @@ using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Exceptions;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
-using _1_BusinessLayer.Concrete.Tools.BotManagers;
 
 namespace _1_BusinessLayer.Concrete.Tools.Managers.BotManagers
 {

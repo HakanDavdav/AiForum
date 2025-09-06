@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace _0_PresentationLayer.Controllers.GuestControllers
+namespace _0_PresentationLayer.Controllers.AuthenticationController
 {
     [Route("AiForum")]
     [ApiController]
@@ -20,8 +20,8 @@ namespace _0_PresentationLayer.Controllers.GuestControllers
             _userService = userService;
         }
 
-       
-        
+
+
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterDto userRegisterDto)
         {
@@ -29,7 +29,7 @@ namespace _0_PresentationLayer.Controllers.GuestControllers
             return Ok(result);
         }
 
-        
+
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto)
         {
@@ -40,7 +40,7 @@ namespace _0_PresentationLayer.Controllers.GuestControllers
         [HttpPost("CreateProfile")]
         public async Task<IActionResult> CreateProfile([FromBody] UserCreateProfileDto userCreateProfileDto)
         {
-            var result = await _userService.CreateProfileAsync((int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value)),userCreateProfileDto);
+            var result = await _userService.CreateProfileAsync(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), userCreateProfileDto);
             return Ok(result);
         }
 
@@ -48,7 +48,7 @@ namespace _0_PresentationLayer.Controllers.GuestControllers
         [HttpPost("TwoFactorLogin")]
         public async Task<IActionResult> LoginTwoFactor([FromBody] UserLoginDto userLoginDto, string twoFactorToken, string provider)
         {
-            var result = await _userIdentityService.LoginTwoFactor(userLoginDto,twoFactorToken,provider);
+            var result = await _userIdentityService.LoginTwoFactor(userLoginDto, twoFactorToken, provider);
             return Ok(result);
         }
 

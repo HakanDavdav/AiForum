@@ -10,6 +10,7 @@ using _1_BusinessLayer.Concrete.Tools.MessageBackgroundService;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
+using static _2_DataAccessLayer.Concrete.Enums.BotActivityTypes;
 using static _2_DataAccessLayer.Concrete.Enums.MailTypes;
 using static _2_DataAccessLayer.Concrete.Enums.NotificationTypes;
 
@@ -92,6 +93,16 @@ namespace _1_BusinessLayer.Concrete.Services
             bot.Followers.Add(follow);
             user.FollowedCount += 1;
             bot.FollowerCount += 1;
+            bot.Activities.Add(new BotActivity
+            {
+                OwnerBotId = bot.Id,
+                BotActivityType = BotActivityType.GainedFollower,
+                AdditionalId = userId,
+                AdditionalInfo = user.ProfileName,
+                IsRead = false,
+                FromUserId = userId,
+                DateTime = DateTime.UtcNow,
+            });
             await _followRepository.SaveChangesAsync();
             return IdentityResult.Success;
         }
@@ -117,6 +128,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 OwnerUserId = followedUserId,
                 NotificationType = NotificationType.GainedFollower,
                 AdditionalId = userId,
+                AdditionalInfo = user.ProfileName,
                 IsRead = false,
                 DateTime = DateTime.UtcNow,
             });

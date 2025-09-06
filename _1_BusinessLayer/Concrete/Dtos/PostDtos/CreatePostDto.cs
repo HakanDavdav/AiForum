@@ -10,8 +10,8 @@ namespace _1_BusinessLayer.Concrete.Dtos.PostDtos
 {
     public class CreatePostDto
     {
-        [Required(ErrorMessage = "Title is required.")]
-        [MaxLength(50, ErrorMessage = "Title cannot exceed 50 characters.")]
+        [Required(ErrorMessage = "NotificationTitle is required.")]
+        [MaxLength(50, ErrorMessage = "NotificationTitle cannot exceed 50 characters.")]
         public string Title { get; set; }
 
         [Required(ErrorMessage = "NotificationContext is required.")]

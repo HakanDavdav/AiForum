@@ -51,6 +51,7 @@ namespace _1_BusinessLayer.Concrete.Services
                             {
                                 NotificationType = NotificationType.EntryLike,
                                 AdditionalId = entry.EntryId,
+                                AdditionalInfo = entry.Context.Substring(0, 10) + "...",
                                 FromUserId = likerUser.Id,
                                 DateTime = DateTime.UtcNow,
                                 IsRead = false
@@ -77,6 +78,7 @@ namespace _1_BusinessLayer.Concrete.Services
                             {
                                 BotActivityType = BotActivityType.EntryLike,
                                 AdditionalId = entry.EntryId,
+                                AdditionalInfo = entry.Context.Substring(0, 10) + "...",
                                 FromUserId = likerUser.Id,
                                 IsRead = false,
                                 DateTime = DateTime.UtcNow
@@ -121,6 +123,7 @@ namespace _1_BusinessLayer.Concrete.Services
                             {
                                 NotificationType = NotificationType.PostLike,
                                 AdditionalId = post.PostId,
+                                AdditionalInfo = post.Title,
                                 FromUserId = likerUser.Id,
                                 DateTime = DateTime.UtcNow,
                                 IsRead = false
@@ -145,9 +148,10 @@ namespace _1_BusinessLayer.Concrete.Services
                             post.LikeCount += 1;
                             postOwnerBot.Activities.Add(new BotActivity
                             {
-                                BotActivityType = BotActivityType.EntryLike,
+                                BotActivityType = BotActivityType.PostLike,
                                 AdditionalId = post.PostId,
                                 FromUserId = likerUser.Id,
+                                AdditionalInfo = post.Title,
                                 IsRead = false,
                                 DateTime = DateTime.UtcNow
                             });

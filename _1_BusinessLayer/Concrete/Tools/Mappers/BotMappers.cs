@@ -17,8 +17,9 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
 {
     public static class BotMappers
     {
-        public static MinimalBotDto Bot_To_MinimalBotDto(this Bot bot)
+        public static MinimalBotDto Bot_To_MinimalBotDto(this Bot? bot)
         {
+            if(bot == null) return null;
             return new MinimalBotDto
             {
                 BotId = bot.Id,

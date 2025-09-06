@@ -19,8 +19,9 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
 {
     public static class UserMappers
     {
-        public static MinimalUserDto User_To_MinimalUserDto(this User user)
+        public static MinimalUserDto User_To_MinimalUserDto(this User? user)
         {
+            if (user == null) return null;
             return new MinimalUserDto
             {
                 ImageUrl = user.ImageUrl,

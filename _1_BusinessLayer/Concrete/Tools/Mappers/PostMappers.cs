@@ -95,7 +95,6 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
         public static Post Update___EditPostDto_To_Post(this EditPostDto editPostDto,Post post)
         {
             post.Context = editPostDto.Context;
-            post.DateTime = editPostDto.DateTime;
             post.Title = editPostDto.Title;
             return post;
         }

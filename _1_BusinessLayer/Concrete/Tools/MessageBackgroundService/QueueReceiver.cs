@@ -83,7 +83,6 @@ namespace _1_BusinessLayer.Concrete.Tools.MessageBackgroundService
             await base.ExecuteAsync(stoppingToken);
             await StartReceivingMailAsync(_generalSender.GeneralSocialSend);
             await StartReceivingNotificationAsync(_generalSender.GeneralSocialSend);
-
             await Task.Delay(Timeout.Infinite, stoppingToken);
 
         }

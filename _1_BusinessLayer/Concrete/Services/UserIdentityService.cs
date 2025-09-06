@@ -209,13 +209,13 @@ namespace _1_BusinessLayer.Concrete.Services
                     case "Email":
                         if (mailType != null)
                         {
-                            await _generalSender.GeneralAuthenticationSend(user, mailType, null, null, newEmail, newPassword);
+                            return await _generalSender.GeneralAuthenticationSend(user, mailType, null, null, newEmail, newPassword);
                         }
                         return IdentityResult.Failed(new NotFoundError("Mail type is required for email provider"));
                     case "Phone":
                         if (smsType != null)
                         {
-                            await _generalSender.GeneralAuthenticationSend(user, null, smsType, newPhoneNumber, null, newPassword);
+                            return await _generalSender.GeneralAuthenticationSend(user, null, smsType, newPhoneNumber, null, newPassword);
                         }
                          return IdentityResult.Failed(new NotFoundError("Sms type is required for phone provider"));
                     default:
@@ -231,7 +231,8 @@ namespace _1_BusinessLayer.Concrete.Services
             var createUserResult = await _userManager.CreateAsync(user, userRegisterDto.Password);         
             if (createUserResult.Succeeded)
             {
-                await _generalSender.GeneralAuthenticationSend(user, MailType.ConfirmEmail, null, null, null, null);
+                var result = await _generalSender.GeneralAuthenticationSend(user, MailType.ConfirmEmail, null, null, null, null);
+                if (result.Succeeded!) { return IdentityResult.Failed(result.Errors.ToArray()); }
                 //Default preference
                 user.UserPreference = new UserPreference
                 {
@@ -253,9 +254,6 @@ namespace _1_BusinessLayer.Concrete.Services
             }
             return createUserResult;
         }
-
-
-       
     }
 }
 

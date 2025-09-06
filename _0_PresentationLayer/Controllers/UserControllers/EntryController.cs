@@ -22,73 +22,28 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         [HttpPost("{postId}/Entries")]
         public async Task<IActionResult> CreateEntry([FromBody] CreateEntryDto createEntryDto, int postId)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState); 
-            }
 
-            try
-            {
-                var IdentityResult = await _entryService.CreateEntryAsync(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), postId, createEntryDto);
-                return IdentityResult.ResultWrapErrorCode();
-            }
-            catch (Exception e)
-            {
-
-                return e.ExceptionWrapErrorCode();
-            }
         }
 
         [Authorize(Policy = "UserPolicy")]
         [HttpDelete("{postId}/Entries/{entryId}")]
         public async Task<IActionResult> DeleteEntry(int entryId)
         {
-            try
-            {
-                var IdentityResult = await _entryService.DeleteEntryAsync(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), entryId);
-                return IdentityResult.ResultWrapErrorCode();
-            }
-            catch (Exception e)
-            {
-                return e.ExceptionWrapErrorCode();
-            }
+
         }
 
         [Authorize(Policy = "UserPolicy")]
         [HttpPatch("{postId}/Entries/{entryId}")]
         public async Task<IActionResult> EditEntry([FromBody] EditEntryDto editEntryDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
-            try
-            {
-                var IdentityResult = await _entryService.EditEntryAsync(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), editEntryDto);
-                return IdentityResult.ResultWrapErrorCode();
-            }
-            catch (Exception e)
-            {
-
-                return e.ExceptionWrapErrorCode();
-            }
         }
 
         [Authorize(Policy = "UserPolicy")]
         [HttpPost("{postId}/Entries/{entryId}/Like")]
         public async Task<IActionResult> LikeEntry(int entryId)
         {
-            try
-            {
-                var IdentityResult = await _likeService.LikeEntry(entryId, int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
-                return IdentityResult.ResultWrapErrorCode();
-            }
-            catch (Exception e)
-            {
 
-                return e.ExceptionWrapErrorCode();
-            }
         }
 
 
@@ -96,16 +51,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
         [HttpDelete("{postId}/Entries/{entryId}/{likeId}")]
         public async Task<IActionResult> UnlikeEntry(int likeId)
         {
-            try
-            {
-                var IdentityResult = await _likeService.UnlikeEntry(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), likeId);
-                return IdentityResult.ResultWrapErrorCode();
-            }
-            catch (Exception e)
-            {
 
-                return e.ExceptionWrapErrorCode();
-            }
         }
     }
 }

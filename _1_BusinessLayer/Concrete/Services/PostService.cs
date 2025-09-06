@@ -64,6 +64,7 @@ namespace _1_BusinessLayer.Concrete.Services
                         OwnerUserId = toUserId,
                         NotificationType = NotificationType.CreatingPost,
                         AdditionalId = post.PostId,
+                        AdditionalInfo = post.Title,
                         IsRead = false,
                         DateTime = DateTime.UtcNow,
                     });

@@ -46,6 +46,6 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
         public abstract Task<IdentityResult> DeleteEntryAsync(int userId, int entryId);
         public abstract Task<IdentityResult> EditEntryAsync(int userId, EditEntryDto editEntryDto);
         public abstract Task<ObjectIdentityResult<EntryProfileDto>> GetEntryAsync(int entryId);
-        public abstract Task<ObjectIdentityResult<List<MinimalLikeDto>>> LoadEntryLikes(int entryId, int startInterval, int endInterval);
+        public abstract Task<ObjectIdentityResult<List<MinimalLikeDto>>> LoadEntryLikes(int entryId, int page);
     }
 }

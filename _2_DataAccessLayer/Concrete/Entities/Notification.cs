@@ -22,6 +22,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public int? FromBotId { get; set; }
         public Bot? FromBot { get; set; }
         public int? AdditionalId { get; set; }
+        public string AdditionalInfo { get; set; }
 
 
 

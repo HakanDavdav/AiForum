@@ -14,6 +14,7 @@ using _1_BusinessLayer.Concrete.Dtos.LikeDto;
 using _1_BusinessLayer.Concrete.Dtos.NotificationDtos;
 using _1_BusinessLayer.Concrete.Dtos.PostDtos;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
+using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _1_BusinessLayer.Concrete.Tools.Mappers;
@@ -29,13 +30,12 @@ namespace _1_BusinessLayer.Concrete.Services
 {
     public class UserService : AbstractUserService
     {
-        public UserService(AbstractUserRepository userRepository, AbstractNotificationRepository notificationRepository, 
-            AbstractActivityRepository activityRepository, AbstractBotRepository botRepository,
-            AbstractUserPreferenceRepository preferenceRepository, AbstractEntryRepository entryRepository, 
-            AbstractPostRepository postRepository, AbstractLikeRepository likeRepository, 
-            AbstractFollowRepository followRepository, UserManager<User> userManager, 
-            SignInManager<User> signInManager) 
-            :base(userRepository, notificationRepository, activityRepository, botRepository, preferenceRepository, entryRepository, postRepository, likeRepository, followRepository, userManager, signInManager)
+        public UserService(AbstractUserRepository userRepository, AbstractNotificationRepository notificationRepository, AbstractActivityRepository activityRepository,
+            AbstractBotRepository botRepository, AbstractUserPreferenceRepository preferenceRepository, AbstractEntryRepository entryRepository, 
+            AbstractPostRepository postRepository, AbstractLikeRepository likeRepository, AbstractFollowRepository followRepository, 
+            UserManager<User> userManager, SignInManager<User> signInManager, NotificationActivityBodyBuilder notificationActivityBodyBuilder) :
+            base(userRepository, notificationRepository, activityRepository, botRepository, preferenceRepository, 
+                entryRepository, postRepository, likeRepository, followRepository, userManager, signInManager, notificationActivityBodyBuilder)
         {
         }
 
@@ -114,13 +114,13 @@ namespace _1_BusinessLayer.Concrete.Services
             {
                 foreach (var bot in user.Bots)
                 {
-                    var botActivities = _activityRepository.GetBotActivityModulesForBotAsync(bot.Id, startInterval , endInterval);
-                    foreach (var activity in botActivities.Result)
+                    var botActivities = await _activityRepository.GetBotActivityModulesForBotAsync(bot.Id, startInterval , endInterval);
+                    foreach (var activity in botActivities)
                     {
-                        botActivityDtos.Add(activity.BotActivity_To_BotActivityDto());
+                        var (title,body) = _notificationActivityBodyBuilder.BuildBotActivityContent(activity.OwnerBot, activity.BotActivityType, activity.AdditionalInfo);
+                        botActivityDtos.Add(activity.BotActivity_To_BotActivityDto(body,title));
                     }
                 }
-
                 return ObjectIdentityResult<List<BotActivityDto>>.Succeded(botActivityDtos);      
             }
             return ObjectIdentityResult<List<BotActivityDto>>.Failed(null,new IdentityError[] {new NotFoundError("OwnerUser not found") });
@@ -198,40 +198,40 @@ namespace _1_BusinessLayer.Concrete.Services
             var endInterval = startInterval + 10;
             var user = await _userRepository.GetByIdAsync(userId);
             List<NotificationDto> notificationsDtos = new List<NotificationDto>();
-            if (user != null)
+            List<Notification> notifications = await _notificationRepository.GetNotificationModulesForUser(userId, startInterval, endInterval);
+            foreach (var notification in notifications)
             {
-                List<Notification> notifications = await _notificationRepository.GetNotificationModulesForUser(userId, startInterval, endInterval);
-                foreach (var notification in notifications)
-                {
-                    notificationsDtos.Add(notification.Notification_To_NotificationDto());
-                }
-                return ObjectIdentityResult<List<NotificationDto>>.Succeded(notificationsDtos);
+                var (title, body) = _notificationActivityBodyBuilder.BuildAppNotificationContent(notification.FromUser,notification.FromBot,notification.NotificationType, notification.AdditionalInfo);
+                notificationsDtos.Add(notification.Notification_To_NotificationDto(body,title));
             }
-            return ObjectIdentityResult<List<NotificationDto>>.Failed(null, new IdentityError[] { new NotFoundError("OwnerUser not found") });
-
+            return ObjectIdentityResult<List<NotificationDto>>.Succeded(notificationsDtos);
         }
 
-        public override Task<ObjectIdentityResult<List<MinimalUserDto>>> LoadFollowers(int userId, int page)
+        public override async Task<ObjectIdentityResult<List<FollowProfileDto>>> LoadFollowers(int userId, int page)
         {
             var startInterval = (page - 1) * 10;
             var endInterval = startInterval + 10;
-            List<MinimalUserDto> minimalUserDtos = new List<MinimalUserDto>();
-            List<MinimalBotDto> minimalBotDtos = new List<MinimalBotDto>();
-            var user = _userRepository.GetByIdAsync(userId);
-            if (user != null)
+            List<FollowProfileDto> followProfileDtos = new List<FollowProfileDto>();
+            var followers = await _followRepository.GetFollowModulesForUserAsFollowedAsync(userId, startInterval, endInterval);
+            foreach (var follow in followers)
             {
-                var followers = await _followRepository.GetFollowModulesForUserAsFollowedAsync(userId, startInterval, endInterval);
-                foreach (var follow in followers)
-                {
-                    
-                }
+                followProfileDtos.Add(follow.Follow_To_FollowProfileDto());
             }
+            return ObjectIdentityResult<List<FollowProfileDto>>.Succeded(followProfileDtos);
+
         }
 
-        public override Task<ObjectIdentityResult<List<MinimalUserDto>>> LoadFollowed(int userId, int page)
+        public override async Task<ObjectIdentityResult<List<FollowProfileDto>>> LoadFollowed(int userId, int page)
         {
             var startInterval = (page - 1) * 10;
             var endInterval = startInterval + 10;
+            List<FollowProfileDto> followProfileDtos = new List<FollowProfileDto>();
+            var followers = await _followRepository.GetFollowModulesForUserAsFollowerAsync(userId, startInterval, endInterval);
+            foreach (var follow in followers)
+            {
+                followProfileDtos.Add(follow.Follow_To_FollowProfileDto());
+            }
+            return ObjectIdentityResult<List<FollowProfileDto>>.Succeded(followProfileDtos);
         }
     }
 }

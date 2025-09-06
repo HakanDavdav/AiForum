@@ -110,8 +110,11 @@ namespace _1_BusinessLayer.Concrete.Services
             return ObjectIdentityResult<EntryProfileDto>.Failed(null, new[] { new NotFoundError("Entry not found") });
         }
 
-        public override async Task<ObjectIdentityResult<List<MinimalLikeDto>>> LoadEntryLikes(int entryId, int startInterval, int endInterval)
+
+        public override async Task<ObjectIdentityResult<List<MinimalLikeDto>>> LoadEntryLikes(int entryId, int page)
         {
+            var startInterval = (page - 1) * 10;
+            var endInterval = startInterval + 10;
             var likes = await _likeRepository.GetLikeModulesForEntry(entryId, startInterval, endInterval);
             List<MinimalLikeDto> minimalLikeDtos = new List<MinimalLikeDto>();
             foreach (var like in likes)
@@ -119,7 +122,6 @@ namespace _1_BusinessLayer.Concrete.Services
                 minimalLikeDtos.Add(like.Like_To_MinimalLikeDto());
             }
             return ObjectIdentityResult<List<MinimalLikeDto>>.Succeded(minimalLikeDtos);
-
         }
     }
 }

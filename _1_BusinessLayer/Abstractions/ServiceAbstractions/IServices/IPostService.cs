@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using _1_BusinessLayer.Concrete.Dtos.LikeDto;
 using _1_BusinessLayer.Concrete.Dtos.NotificationDtos;
 using _1_BusinessLayer.Concrete.Dtos.PostDtos;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
@@ -26,7 +27,7 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices
         //Self-Preference check
         Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(DateTime date, ClaimsPrincipal claims);
         Task<ObjectIdentityResult<PostDto>> GetPostAsync(int postId, ClaimsPrincipal claims);
-
+        Task<ObjectIdentityResult<List<MinimalLikeDto>>> LoadPostLikes (int postId, int page);
 
 
     }
