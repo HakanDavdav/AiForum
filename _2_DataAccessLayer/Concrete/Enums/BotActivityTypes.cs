@@ -10,12 +10,12 @@ namespace _2_DataAccessLayer.Concrete.Enums
     {
         public enum BotActivityType
         {
-            EntryLike,
-            PostLike,
-            CreatingEntry,
-            CreatingPost,
-            GainedFollower,
-            StartingFollow
+            BotLikedEntry,
+            BotLikedPost,
+            BotCreatedEntry,
+            BotCreatedPost,
+            BotGainedFollower,
+            BotStartedFollow
         }
     }
 }

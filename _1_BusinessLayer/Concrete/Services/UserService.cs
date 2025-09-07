@@ -110,20 +110,14 @@ namespace _1_BusinessLayer.Concrete.Services
             var endInterval = startInterval + 10;
             var user = await _userRepository.GetUserModuleAsync(userId);
             List<BotActivityDto> botActivityDtos = new List<BotActivityDto>();
-            if (user != null)
+            var activities = await _activityRepository.GetBotActivityModulesForUserAsync(userId, startInterval, endInterval);
+            foreach (var activity in activities)
             {
-                foreach (var bot in user.Bots)
-                {
-                    var botActivities = await _activityRepository.GetBotActivityModulesForBotAsync(bot.Id, startInterval , endInterval);
-                    foreach (var activity in botActivities)
-                    {
-                        var (title,body) = _notificationActivityBodyBuilder.BuildBotActivityContent(activity.OwnerBot, activity.BotActivityType, activity.AdditionalInfo);
-                        botActivityDtos.Add(activity.BotActivity_To_BotActivityDto(body,title));
-                    }
-                }
-                return ObjectIdentityResult<List<BotActivityDto>>.Succeded(botActivityDtos);      
+                var (title,body) = _notificationActivityBodyBuilder.BuildAppBotActivityContent(activity);
+                botActivityDtos.Add(activity.BotActivity_To_BotActivityDto(body, title));
+                activity.IsRead = true;
             }
-            return ObjectIdentityResult<List<BotActivityDto>>.Failed(null,new IdentityError[] {new NotFoundError("OwnerUser not found") });
+            return ObjectIdentityResult<List<BotActivityDto>>.Succeded(botActivityDtos);
         }
 
         public override async Task<ObjectIdentityResult<dynamic>> GetBotPanel(int userId)

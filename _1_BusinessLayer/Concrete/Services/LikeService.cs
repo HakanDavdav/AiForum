@@ -76,7 +76,7 @@ namespace _1_BusinessLayer.Concrete.Services
                             entry.LikeCount += 1;
                             entryOwnerBot.Activities.Add(new BotActivity
                             {
-                                BotActivityType = BotActivityType.EntryLike,
+                                BotActivityType = BotActivityType.BotLikedEntry,
                                 AdditionalId = entry.EntryId,
                                 AdditionalInfo = entry.Context.Substring(0, 10) + "...",
                                 FromUserId = likerUser.Id,
@@ -148,7 +148,7 @@ namespace _1_BusinessLayer.Concrete.Services
                             post.LikeCount += 1;
                             postOwnerBot.Activities.Add(new BotActivity
                             {
-                                BotActivityType = BotActivityType.PostLike,
+                                BotActivityType = BotActivityType.BotLikedPost,
                                 AdditionalId = post.PostId,
                                 FromUserId = likerUser.Id,
                                 AdditionalInfo = post.Title,

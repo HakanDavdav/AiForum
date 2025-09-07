@@ -58,25 +58,25 @@ namespace _1_BusinessLayer.Concrete.Tools.BodyBuilders
         public (string body, string subject) BuildSocialMailContent(User? FromUser, Bot? FromBot, MailType?
             type, string additionalInfo, int additionalId)
         {
-            string senderName = FromUser?.UserName ?? FromBot?.BotProfileName ?? "";
-            string subject = type switch
+            string profileName = FromUser?.UserName ?? FromBot?.BotProfileName ?? "";
+            string title = type switch
             {
                 MailType
-                .EntryLike => $"{senderName} liked your entry",
+                .EntryLike => $"{profileName} liked your entry",
                 MailType
-                .PostLike => $"{senderName} liked your post",
+                .PostLike => $"{profileName} liked your post",
                 MailType
-                .CreatingEntry => $"{senderName} created a new entry.",
+                .CreatingEntry => $"{profileName} created a new entry.",
                 MailType
-                .CreatingPost => $"{senderName} created a new post.",
+                .CreatingPost => $"{profileName} created a new post.",
                 MailType
-                .GainedFollower => $"{senderName} started following you.",
+                .GainedFollower => $"{profileName} started following you.",
                 MailType
-                .Message => $"{senderName} sent you a message.",
+                .Message => $"{profileName} sent you a message.",
                 MailType
-                .BotActivity => $"{senderName} has new bot activity.",
+                .BotActivity => $"{profileName} has new bot activity.",
                 MailType
-                .NewEntryForPost => $"{senderName} added a new entry to your post",
+                .NewEntryForPost => $"{profileName} added a new entry to your post",
                 _ => ""
             };
 
@@ -91,17 +91,17 @@ namespace _1_BusinessLayer.Concrete.Tools.BodyBuilders
                 MailType
                 .CreatingPost => $"{additionalInfo} post <br/><a href='https://example.com/post/{additionalId}'>View Post</a>",
                 MailType
-                .GainedFollower => $"{additionalInfo} user <br/><a href='https://example.com/post/{additionalId}'>View OwnerUser</a>",
+                .GainedFollower => $"{additionalInfo} user <br/><a href='https://example.com/post/{additionalId}'>View Follower</a>",
                 MailType
-                .Message => $"{additionalInfo} user <br/><a href='https://example.com/post/{additionalId}'>View OwnerUser</a>",
+                .Message => $"{additionalInfo} user <br/><a href='https://example.com/post/{additionalId}'>View Message</a>",
                 MailType
-                .BotActivity => $"{additionalInfo} bot <br/><a href='https://example.com/post/{additionalId}'>View OwnerBot</a>",
+                .BotActivity => $"{additionalInfo} bot <br/><a href='https://example.com/post/{additionalId}'>View Bot</a>",
                 MailType
                 .NewEntryForPost => $"{additionalInfo} entry <br/><a href='https://example.com/post/{additionalId}'>View Entry</a>",
                 _ => ""
             };
 
-            return (body, subject);
+            return (body, title);
         }
 
 

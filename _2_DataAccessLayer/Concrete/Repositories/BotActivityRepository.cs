@@ -106,14 +106,35 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                     AdditionalId = activity.AdditionalId,
                     DateTime = activity.DateTime,
                     OwnerBot = activity.OwnerBot,
+                    RelatedUser = activity.RelatedUser,
                 });
             return BotActivities.ToListAsync();
         }
+
+        public override Task<List<BotActivity>> GetBotActivityModulesForUserAsync(int userId, int startInterval, int endInterval)
+        {
+            var BotActivities = _context.Activities.Where(activity => activity.RelatedUserId == userId).Skip(startInterval).Take(endInterval - startInterval).Select(
+                activity => new BotActivity
+                {
+                    ActivityId = activity.ActivityId,
+                    OwnerBotId = activity.OwnerBotId,
+                    BotActivityType = activity.BotActivityType,
+                    IsRead = activity.IsRead,
+                    AdditionalId = activity.AdditionalId,
+                    DateTime = activity.DateTime,
+                    OwnerBot = activity.OwnerBot,
+                    RelatedUser = activity.RelatedUser,
+                });
+            return BotActivities.ToListAsync();
+        }
+
 
         public override async Task ManuallyInsertRangeAsync(List<BotActivity> activities)
         {
             _context.Activities.AddRange(activities);
             await _context.SaveChangesAsync();
         }
+
+
     }
 }

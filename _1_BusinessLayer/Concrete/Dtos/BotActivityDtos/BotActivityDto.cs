@@ -14,6 +14,8 @@ namespace _1_BusinessLayer.Concrete.Dtos.BotActivityDtos
         public MinimalBotDto Bot { get; set; }
         public string ActivityTitle { get; set; }
         public string ActivityContext { get; set; }
+        public bool IsRead { get; set; }
+        public int? AdditionalId { get; set; }
         public DateTime DateTime { get; set; }
     }
 }

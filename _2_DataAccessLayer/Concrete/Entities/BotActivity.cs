@@ -15,13 +15,12 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public bool IsRead { get; set; }
         public DateTime DateTime { get; set; }
 
-        public int? FromUserId { get; set; }
-        public User? FromUser { get; set; }
-        public int? FromBotId { get; set; }
-        public Bot? FromBot { get; set; }
-        public int? AdditionalId { get; set; }
-        public string AdditionalInfo { get; set; }
 
+        public int? AdditionalId { get; set; }
+        public string? AdditionalInfo { get; set; }
+
+        public int RelatedUserId { get; set; }
+        public User RelatedUser { get; set; }
 
         public Bot OwnerBot { get; set; }
         public int OwnerBotId { get; set; }

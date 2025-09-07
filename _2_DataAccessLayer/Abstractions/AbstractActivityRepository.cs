@@ -16,6 +16,7 @@ namespace _2_DataAccessLayer.Abstractions
         {
         }
         public abstract Task<List<BotActivity>> GetBotActivityModulesForBotAsync(int botId, int startInterval, int endInterval );
+        public abstract Task<List<BotActivity>> GetBotActivityModulesForUserAsync(int botId, int startInterval, int endInterval);
 
     }
 }

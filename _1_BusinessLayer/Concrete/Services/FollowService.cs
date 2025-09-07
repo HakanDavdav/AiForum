@@ -96,7 +96,7 @@ namespace _1_BusinessLayer.Concrete.Services
             bot.Activities.Add(new BotActivity
             {
                 OwnerBotId = bot.Id,
-                BotActivityType = BotActivityType.GainedFollower,
+                BotActivityType = BotActivityType.BotGainedFollower,
                 AdditionalId = userId,
                 AdditionalInfo = user.ProfileName,
                 IsRead = false,

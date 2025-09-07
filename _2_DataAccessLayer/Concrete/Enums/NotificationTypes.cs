@@ -15,7 +15,6 @@ namespace _2_DataAccessLayer.Concrete.Enums
             CreatingEntry,
             CreatingPost,
             Message,
-            BotActivity,
             GainedFollower,
             NewEntryForPost
         }

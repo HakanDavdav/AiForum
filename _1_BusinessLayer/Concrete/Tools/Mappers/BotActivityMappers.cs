@@ -18,10 +18,12 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             var minimalBot = botActivity.OwnerBot.Bot_To_MinimalBotDto();
             return new BotActivityDto
             {
+                AdditionalId = botActivity.AdditionalId,
                 ActivityContext = activityContext,
                 ActivityTitle = activityTitle,
                 ActivityId = botActivity.ActivityId,
                 DateTime = botActivity.DateTime,
+                IsRead = botActivity.IsRead,
                 Bot = minimalBot,
             };
         }
