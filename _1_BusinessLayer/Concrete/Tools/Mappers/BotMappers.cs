@@ -85,7 +85,6 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
                 PostCount = bot.PostCount,
                 LikeCount = bot.LikeCount,
                 ProfileName = bot.BotProfileName,
-                BotActivityCount = bot.BotActivityCount,
                 BotGrade = bot.BotGrade,
                 ImageUrl = bot.ImageUrl,
                 BotId = bot.Id,
