@@ -106,13 +106,14 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
             {
                 if(!mailEvent.SenderUserId.HasValue && !mailEvent.SenderBotId.HasValue) throw new Exception();
                 if(!mailEvent.ReceiverUserId.HasValue) return IdentityResult.Failed(new NotFoundError("User does not have any followers"));
-                if (mailEvent.SenderUserId.HasValue) fromUserOrBot = await _userRepository.GetByIdAsync(mailEvent.SenderUserId.Value);
-                if (mailEvent.SenderBotId.HasValue) fromUserOrBot = await _botRepository.GetByIdAsync(mailEvent.SenderBotId.Value);
-                receiverUser = await _userRepository.GetByIdAsync(mailEvent.ReceiverUserId.Value);
-                if (receiverUser == null) return IdentityResult.Failed(new NotFoundError("Receiver user not found"));
+                if (mailEvent.SenderUserId.HasValue) fromUserOrBot = await _userRepository.GetByIdAsync(mailEvent.SenderUserId);
+                if (mailEvent.SenderBotId.HasValue) fromUserOrBot = await _botRepository.GetByIdAsync(mailEvent.SenderBotId);
+                receiverUser = await _userRepository.GetByIdAsync(mailEvent.ReceiverUserId);
+                if (receiverUser == null) return IdentityResult.Failed(new NotFoundError("Receiver user been deleted or changed"));
                 if (fromUserOrBot != null )
                 {
-                    await _mailSender.SendSocialMailAsync(fromUserOrBot as User, fromUserOrBot as Bot, receiverUser, mailEvent.Type, mailEvent.AdditionalInfo, mailEvent.AdditionalId);
+                    var result = await _mailSender.SendSocialMailAsync(fromUserOrBot as User, fromUserOrBot as Bot, receiverUser, mailEvent);
+                    if (!result.Succeeded) return result;
                     return IdentityResult.Success;
                 }
                 return IdentityResult.Failed(new NotFoundError("Sender not found"));
@@ -123,13 +124,14 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
             {
                 if (!notificationEvent.SenderUserId.HasValue && !notificationEvent.SenderBotId.HasValue) throw new Exception();
                 if (!notificationEvent.ReceiverUserId.HasValue) return IdentityResult.Failed(new NotFoundError("User does not have any followers"));
-                if (notificationEvent.SenderUserId.HasValue) fromUserOrBot = await _userRepository.GetByIdAsync(notificationEvent.SenderUserId.Value);
-                if (notificationEvent.SenderBotId.HasValue) fromUserOrBot = await _botRepository.GetByIdAsync(notificationEvent.SenderBotId.Value);
-                receiverUser = await _userRepository.GetByIdAsync(notificationEvent.ReceiverUserId.Value);
-                if (receiverUser == null) return IdentityResult.Failed(new NotFoundError("Receiver user not found"));
+                if (notificationEvent.SenderUserId.HasValue) fromUserOrBot = await _userRepository.GetByIdAsync(notificationEvent.SenderUserId);
+                if (notificationEvent.SenderBotId.HasValue) fromUserOrBot = await _botRepository.GetByIdAsync(notificationEvent.SenderBotId);
+                receiverUser = await _userRepository.GetByIdAsync(notificationEvent.ReceiverUserId);
+                if (receiverUser == null) return IdentityResult.Failed(new NotFoundError("Receiver user been deleted or changed"));
                 if (fromUserOrBot != null)
                 {
-                    await _notificationSender.SendSocialNotificationAsync(fromUserOrBot as User, fromUserOrBot as Bot, receiverUser, notificationEvent.Type, notificationEvent.AdditionalInfo, notificationEvent.AdditionalId);
+                    var result = await _notificationSender.SendSocialNotificationAsync(fromUserOrBot as User, fromUserOrBot as Bot, receiverUser, notificationEvent);
+                    if (!result.Succeeded) return result;
                     return IdentityResult.Success;
                 }
                 return IdentityResult.Failed(new NotFoundError("Sender not found"));

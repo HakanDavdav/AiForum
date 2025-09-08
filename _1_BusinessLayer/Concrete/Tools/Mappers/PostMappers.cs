@@ -80,11 +80,10 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
 
         }
 
-        public static Post CreatePostDto_To_Post(this CreatePostDto createPostDto, int userId)
+        public static Post CreatePostDto_To_Post(this CreatePostDto createPostDto)
         {
             return new Post
             {
-                OwnerUserId = userId,
                 Context = createPostDto.Context,
                 DateTime = createPostDto.DateTime,
                 Title = createPostDto.Title,

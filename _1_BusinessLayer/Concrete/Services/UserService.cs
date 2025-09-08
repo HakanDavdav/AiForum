@@ -81,7 +81,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto)
         {
-            var user = await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.Id == userId).Include(user => user.UserPreference));
+            var user = await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.Id == userId).Include(user => user.UserPreference).Include(user => user.Bots));
             if (user != null)
             {
                 user = userEditProfileDto.Update___UserEditProfileDto_To_User(user);
@@ -188,7 +188,7 @@ namespace _1_BusinessLayer.Concrete.Services
         {
             var startInterval = (page - 1) * 10;
             var endInterval = startInterval + 10;
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(endInterval);
             List<NotificationDto> notificationsDtos = new List<NotificationDto>();
             List<Notification> notifications = await _notificationRepository.GetNotificationModulesForUser(userId, startInterval, endInterval);
             foreach (var notification in notifications)
@@ -224,6 +224,13 @@ namespace _1_BusinessLayer.Concrete.Services
                 followProfileDtos.Add(follow.Follow_To_FollowProfileDto());
             }
             return ObjectIdentityResult<List<FollowProfileDto>>.Succeded(followProfileDtos);
+        }
+
+        public override async Task<ObjectIdentityResult<UserProfileSettingsDto>> GetUserProfileSettings(int userId)
+        {
+            var user =  await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.Id == userId).Include(user => user.UserPreference).Include(user => user.Bots));
+            var userProfileSettingsDto = user.User_To_UserProfileSettingsDto();
+            return ObjectIdentityResult<UserProfileSettingsDto>.Succeded(userProfileSettingsDto);
         }
     }
 }

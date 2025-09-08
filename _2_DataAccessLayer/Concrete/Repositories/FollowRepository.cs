@@ -33,10 +33,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<Follow> GetByIdAsync(int id)
+        public override async Task<Follow> GetByIdAsync(int? id)
         {
             try
             {
+                if (id == null) return null;
                 return await _context.Follows.FirstOrDefaultAsync(f => f.FollowId == id);
             }
             catch (Exception ex)

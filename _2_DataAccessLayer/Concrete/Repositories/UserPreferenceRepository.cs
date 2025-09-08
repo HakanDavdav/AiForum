@@ -33,10 +33,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<UserPreference> GetByIdAsync(int id)
+        public override async Task<UserPreference> GetByIdAsync(int? id)
         {
             try
             {
+                if (id == null) return null;
                 return await _context.UserPreferences.FirstOrDefaultAsync(up => up.UserPreferenceId == id);
             }
             catch (Exception ex)

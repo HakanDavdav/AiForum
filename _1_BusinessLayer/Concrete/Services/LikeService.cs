@@ -27,11 +27,11 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<IdentityResult> LikeEntry(int entryId, int userId)
         {
             object entryOwner = null; 
-            var entry = await _entryRepository.GetByIdAsync(entryId);
+            var entry = await _entryRepository.GetByIdAsync(userId);
             if (entry != null)
             {
-                if (entry.OwnerUserId.HasValue) entryOwner = await _userRepository.GetByIdAsync(entry.OwnerUserId.Value);
-                if (entry.OwnerBotId.HasValue) entryOwner = await _botRepository.GetByIdAsync(entry.OwnerBotId.Value);
+                if (entry.OwnerUserId.HasValue) entryOwner = await _userRepository.GetByIdAsync(userId);
+                if (entry.OwnerBotId.HasValue) entryOwner = await _botRepository.GetByIdAsync(userId);
                 if (entryOwner != null)
                 {
                     var likerUser = await _userRepository.GetByIdAsync(userId);
@@ -47,7 +47,7 @@ namespace _1_BusinessLayer.Concrete.Services
                             likerUser.Likes.Add(like);
                             entry.Likes.Add(like);
                             likerUser.LikeCount += 1;
-                            entryOwnerUser.ReceivedNotifications.Add(new Notification
+                            var notification = new Notification
                             {
                                 NotificationType = NotificationType.EntryLike,
                                 AdditionalId = entry.EntryId,
@@ -56,7 +56,9 @@ namespace _1_BusinessLayer.Concrete.Services
                                 OwnerUserId = entryOwnerUser.Id,
                                 DateTime = DateTime.UtcNow,
                                 IsRead = false
-                            });
+                            };
+                            entryOwnerUser.ReceivedNotifications.Add(notification);
+                            likerUser.SentNotifications.Add(notification);
                             await _likeRepository.SaveChangesAsync();
                             var notificationEvents = _notificationEventFactory.CreateNotificationEvents(likerUser, null, new List<int?> { entryOwnerUser.Id }, NotificationType.EntryLike, entry.Context, entry.EntryId);
                             var mailEvents = _mailEventFactory.CreateMailEvents(likerUser, null, new List<int?> { entryOwnerUser.Id }, MailType.EntryLike, entry.Context, entry.EntryId);
@@ -81,7 +83,6 @@ namespace _1_BusinessLayer.Concrete.Services
                                 AdditionalId = entry.EntryId,
                                 AdditionalInfo = likerUser.ProfileName,
                                 OwnerBotId = entryOwnerBot.Id,
-                                
                                 IsRead = false,
                                 DateTime = DateTime.UtcNow
                             });
@@ -100,11 +101,11 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<IdentityResult> LikePost(int postId, int userId)
         {
             object postOwner = null;
-            var post = await _postRepository.GetByIdAsync(postId);
+            var post = await _postRepository.GetByIdAsync(userId);
             if (post != null)
             {
-                if (post.OwnerBotId.HasValue) postOwner = await _botRepository.GetByIdAsync(post.OwnerBotId.Value);
-                if (post.OwnerUserId.HasValue) postOwner = await _userRepository.GetByIdAsync(post.OwnerUserId.Value);
+                if (post.OwnerBotId.HasValue) postOwner = await _botRepository.GetByIdAsync(userId);
+                if (post.OwnerUserId.HasValue) postOwner = await _userRepository.GetByIdAsync(userId);
                 if (postOwner != null)
                 {
                     var likerUser = await _userRepository.GetByIdAsync(userId);
@@ -120,8 +121,8 @@ namespace _1_BusinessLayer.Concrete.Services
                             likerUser.Likes.Add(like);
                             post.Likes.Add(like);
                             likerUser.LikeCount += 1;
-                            post.LikeCount += 1;
-                            postOwnerUser.ReceivedNotifications.Add(new Notification
+                            post.LikeCount += 1;                
+                            var notification = new Notification
                             {
                                 NotificationType = NotificationType.PostLike,
                                 AdditionalId = post.PostId,
@@ -130,7 +131,9 @@ namespace _1_BusinessLayer.Concrete.Services
                                 OwnerUserId = postOwnerUser.Id,
                                 DateTime = DateTime.UtcNow,
                                 IsRead = false
-                            });
+                            };
+                            postOwnerUser.ReceivedNotifications.Add(notification);
+                            likerUser.SentNotifications.Add(notification);
                             await _likeRepository.SaveChangesAsync();
                             var notificationEvents = _notificationEventFactory.CreateNotificationEvents(likerUser, null, new List<int?> { postOwnerUser.Id }, NotificationType.PostLike, post.Title, post.PostId);
                             var mailEvents = _mailEventFactory.CreateMailEvents(likerUser, null, new List<int?> { postOwnerUser.Id }, MailType.PostLike, post.Title, post.PostId);
@@ -151,10 +154,10 @@ namespace _1_BusinessLayer.Concrete.Services
                             post.LikeCount += 1;
                             postOwnerBot.Activities.Add(new BotActivity
                             {
-                                BotActivityType = BotActivityType.BotLikedPost,
+                                BotActivityType = BotActivityType.BotPostLiked,
                                 AdditionalId = post.PostId,
-                                RelatedUserId = postOwnerBot.ParentUserId.Value,
                                 AdditionalInfo = likerUser.ProfileName,
+                                OwnerBotId = postOwnerBot.Id,
                                 IsRead = false,
                                 DateTime = DateTime.UtcNow
                             });
@@ -180,12 +183,12 @@ namespace _1_BusinessLayer.Concrete.Services
             {
                 if (like.EntryId != null)
                 {
-                    var entry = await _entryRepository.GetByIdAsync(like.EntryId.Value);
+                    var entry = await _entryRepository.GetByIdAsync(likeId);
                     if (entry != null)
                     {
                         if (entry.EntryId == like.EntryId)
                         {
-                            var user = await _userRepository.GetByIdAsync(userId);
+                            var user = await _userRepository.GetByIdAsync(likeId);
                             if (user != null)
                             {
                                 await _likeRepository.DeleteAsync(like);
@@ -212,12 +215,12 @@ namespace _1_BusinessLayer.Concrete.Services
             {
                 if (like.PostId != null)
                 {
-                    var post = await _postRepository.GetByIdAsync(like.PostId.Value);
+                    var post = await _postRepository.GetByIdAsync(likeId);
                     if (post != null)
                     {
                         if (post.PostId == like.PostId)
                         {
-                            var user = await _userRepository.GetByIdAsync(userId);
+                            var user = await _userRepository.GetByIdAsync(likeId);
                             if (user != null)
                             {
                                 await _likeRepository.DeleteAsync(like);

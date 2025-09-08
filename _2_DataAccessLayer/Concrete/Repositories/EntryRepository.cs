@@ -34,11 +34,12 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         }
 
 
-        public override async Task<Entry> GetByIdAsync(int id)
+        public override async Task<Entry> GetByIdAsync(int? id)
         {
             try
             {
 #pragma warning disable CS8603 // Possible null reference return.
+                if (id == null) return null;
                 return await _context.Entries.FirstOrDefaultAsync(entry => entry.EntryId == id);    
 #pragma warning restore CS8603 // Possible null reference return.
             }

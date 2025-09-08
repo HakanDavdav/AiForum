@@ -34,10 +34,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<Post> GetByIdAsync(int id)
+        public override async Task<Post> GetByIdAsync(int? id)
         {
             try
             {
+                if (id == null) return null;
                 return await _context.Posts.FirstOrDefaultAsync(post => post.PostId == id);
             }
             catch (Exception ex)

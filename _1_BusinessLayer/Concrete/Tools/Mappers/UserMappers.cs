@@ -30,6 +30,27 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             };
         }
 
+        public static UserProfileSettingsDto User_To_UserProfileSettingsDto(this User user)
+        {
+            
+            var botSettingsDtos = new List<BotSettingsDto>();
+            foreach (var bot in user.Bots ?? new List<Bot>())
+            {
+                botSettingsDtos.Add(bot.Bot_To_BotSettingsDto());
+            }
+            var userSettingsDto = new UserProfileSettingsDto
+            {
+                City = user.City,
+                ProfileName = user.ProfileName,
+                ImageUrl = user.ImageUrl,
+                UserId = user.Id,
+                Bots = botSettingsDtos,
+                Date = user.DateTime,
+                UserPreference = user.UserPreference,
+            };
+            return userSettingsDto;
+        }
+
         public static UserProfileDto User_To_UserProfileDto(this User user)
         {
             List<MinimalBotDto> minimalBotDtos = new List<MinimalBotDto>();

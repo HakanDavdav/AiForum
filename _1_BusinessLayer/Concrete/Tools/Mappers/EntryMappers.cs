@@ -57,11 +57,10 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             };
         }
 
-        public static Entry CreateEntryDto_To_Entry(this CreateEntryDto entry,int userId)
+        public static Entry CreateEntryDto_To_Entry(this CreateEntryDto entry)
         {
             return new Entry
             {
-                OwnerUserId = userId,
                 Context = entry.Context,
                 DateTime = entry.DateTime,
                 PostId = entry.PostId,             

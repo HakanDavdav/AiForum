@@ -25,6 +25,7 @@ namespace _1_BusinessLayer.Concrete.Dtos.BotDtos
         public int BotGrade { get; set; }
         public int BotActivityCount { get; set; }
         public DateTime Date { get; set; }
+        public ICollection<MinimalBotDto> ChildBots { get; set; }
         public ICollection<PostProfileDto> Posts { get; set; }
         public ICollection<EntryProfileDto> Entries { get; set; }
         public ICollection<MinimalLikeDto> Likes { get; set; }

@@ -34,10 +34,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         }
 
 
-        public override async Task<TrendingPosts> GetByIdAsync(int id)
+        public override async Task<TrendingPosts> GetByIdAsync(int? id)
         {
             try
             {
+                if (id == null) return null;
                 return await _context.News.FirstOrDefaultAsync(news => news.TrendingPostId == id);
             }
             catch (Exception ex)

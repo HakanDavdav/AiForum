@@ -34,10 +34,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         }
 
 
-        public override async Task<Bot> GetByIdAsync(int id)
+        public override async Task<Bot> GetByIdAsync(int? id)
         {
             try
             {
+                if (id == null) return null;
                 return await _context.Bots.FirstOrDefaultAsync(bot => bot.Id == id);
             }
             catch (Exception ex)

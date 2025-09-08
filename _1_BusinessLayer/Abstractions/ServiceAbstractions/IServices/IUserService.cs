@@ -33,6 +33,7 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices
         Task<ObjectIdentityResult<List<MinimalLikeDto>>> LoadProfileLikes(int userId, int page);
         Task<ObjectIdentityResult<dynamic>> GetBotPanel(int userId);
         Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId, ClaimsPrincipal claims);
+        Task<ObjectIdentityResult<UserProfileSettingsDto>> GetUserProfileSettings(int userId);
         Task<IdentityResult> DeleteUser(int userId);
 
 

@@ -43,10 +43,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<User> GetByIdAsync(int id)
+        public override async Task<User> GetByIdAsync(int? id)
         {
             try
             {
+                if (id == null) return null;
                 return await _context.Users.FirstOrDefaultAsync(user => user.Id == id);
             }
             catch (Exception ex)
@@ -141,7 +142,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public override async Task<List<Bot>> GetBotsRecursivelyAsync(int id)
+        public override async Task<List<Bot>> GetUserBotsRecursivelyAsync(int id)
         {
             var user = await _context.Users
                              .Where(u => u.Id == id)

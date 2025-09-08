@@ -42,21 +42,15 @@ namespace _1_BusinessLayer.Concrete.Services
             var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
             {
-                var post = createPostDto.CreatePostDto_To_Post(userId);
+                var post = createPostDto.CreatePostDto_To_Post();
                 user.Posts.Add(post);
                 user.PostCount += 1;
                 var follows = await _followRepository.GetWithCustomSearchAsync(query => query.Where(follow => follow.UserFollowedId == userId).AsNoTracking());
-                var userIds = new List<int?>();
-                for (global::System.Int32 i = 0; i < follows.Count; i++)
-                {
-                    userIds.Add(follows[i].UserFollowedId);
-                }                
-                await _postRepository.SaveChangesAsync();
-
-                var mailEvents = _mailEventFactory.CreateMailEvents(user, null, userIds, MailType.CreatingPost, post.Title, post.PostId);
-                var notificationEvents = _notificationEventFactory.CreateNotificationEvents(user, null, userIds, NotificationType.CreatingPost, post.Title, post.PostId);
+                var toUserIds = follows.Select(follow => follow.UserFollowerId).ToList();
+                var mailEvents = _mailEventFactory.CreateMailEvents(user, null, toUserIds, MailType.CreatingPost, post.Title, post.PostId);
+                var notificationEvents = _notificationEventFactory.CreateNotificationEvents(user, null, toUserIds, NotificationType.CreatingPost, post.Title, post.PostId);
                 var notifications = new List<Notification>();
-                foreach (var toUserId in userIds)
+                foreach (var toUserId in toUserIds)
                 {
                     notifications.Add(new Notification
                     {
@@ -69,7 +63,8 @@ namespace _1_BusinessLayer.Concrete.Services
                         DateTime = DateTime.UtcNow,
                     });
                 }
-                await _notificationRepository.ManuallyInsertRangeAsync(notifications);               
+                await _notificationRepository.ManuallyInsertRangeAsync(notifications);
+                await _postRepository.SaveChangesAsync();
                 await _queueSender.MailQueueSendAsync(mailEvents);
                 await _queueSender.NotificationQueueSendAsync(notificationEvents);
                 return IdentityResult.Success;
@@ -79,7 +74,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> DeletePost(int userId, int postId)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(postId);
             if (user != null)
             {
                 var post = await _postRepository.GetByIdAsync(postId);
@@ -104,7 +99,7 @@ namespace _1_BusinessLayer.Concrete.Services
             var user = await _userRepository.GetByIdAsync(userId);
             if (user != null)
             {
-                var post = await _postRepository.GetByIdAsync(editPostDto.PostId);
+                var post = await _postRepository.GetByIdAsync(userId);
                 if (post != null)
                 {
                     if (post.OwnerUserId == userId)

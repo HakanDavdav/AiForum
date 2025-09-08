@@ -30,6 +30,19 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             };
         }
 
+        public static BotSettingsDto Bot_To_BotSettingsDto(this Bot? bot)
+        {          
+            return new BotSettingsDto
+            {
+                BotPersonality = bot.BotPersonality,
+                DailyBotOperationCount = bot.DailyBotOperationCount,
+                ImageUrl = bot.ImageUrl,
+                Instructions = bot.Instructions,
+                Mode = bot.Mode,
+                BotProfileName = bot.BotProfileName,
+            };
+        }
+
         public static BotProfileDto Bot_To_BotProfileDto(this Bot bot,NotificationActivityBodyBuilder notificationActivityBodyBuilder)
         {
             List<PostProfileDto> postProfileDtos = new List<PostProfileDto>();

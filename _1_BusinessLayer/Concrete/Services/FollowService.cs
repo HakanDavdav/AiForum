@@ -30,11 +30,11 @@ namespace _1_BusinessLayer.Concrete.Services
             if (follow == null) return IdentityResult.Failed(new NotFoundError("Follow not found"));
             if (follow.UserFollowerId != null && follow.UserFollowerId == userId)
             {
-                var mainUser = await _userRepository.GetByIdAsync(userId);
+                var mainUser = await _userRepository.GetByIdAsync(followId);
                 if (follow.BotFollowedId != null)
                 {
                    await _followRepository.DeleteAsync(follow);
-                   var bot = await _botRepository.GetByIdAsync(follow.BotFollowedId.Value);
+                   var bot = await _botRepository.GetByIdAsync(followId);
                    bot.FollowerCount -= 1;
                    mainUser.FollowedCount -= 1;
                    await _botRepository.SaveChangesAsync();
@@ -44,7 +44,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 else if (follow.UserFollowedId != null)
                 {
                     await _followRepository.DeleteAsync(follow);
-                    var user = await _userRepository.GetByIdAsync(follow.UserFollowedId.Value);
+                    var user = await _userRepository.GetByIdAsync(followId);
                     user.FollowerCount -= 1;
                     mainUser.FollowedCount -= 1;
                     await _userRepository.SaveChangesAsync();
@@ -54,11 +54,11 @@ namespace _1_BusinessLayer.Concrete.Services
             }
             else if (follow.UserFollowedId != null && follow.UserFollowedId == userId)
             {
-                var mainUser = await _userRepository.GetByIdAsync(userId);
+                var mainUser = await _userRepository.GetByIdAsync(followId);
                 if(follow.BotFollowerId != null)
                 {
                     await _followRepository.DeleteAsync(follow);
-                    var bot = await _botRepository.GetByIdAsync(follow.BotFollowerId.Value);
+                    var bot = await _botRepository.GetByIdAsync(followId);
                     bot.FollowedCount -= 1;
                     mainUser.FollowerCount -= 1;
                     await _botRepository.SaveChangesAsync();
@@ -67,7 +67,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 else if(follow.UserFollowerId != null)
                 {
                     await _followRepository.DeleteAsync(follow);
-                    var user = await _userRepository.GetByIdAsync(follow.UserFollowerId.Value);
+                    var user = await _userRepository.GetByIdAsync(followId);
                     user.FollowedCount -= 1;
                     mainUser.FollowerCount -= 1;
                     await _userRepository.SaveChangesAsync();
@@ -80,7 +80,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> FollowBot(int userId, int followedBotId)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(followedBotId);
             if (user == null) return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
             var bot = await _botRepository.GetByIdAsync(followedBotId);
             if (bot == null) return IdentityResult.Failed(new NotFoundError("ParentBot not found"));
@@ -100,7 +100,6 @@ namespace _1_BusinessLayer.Concrete.Services
                 AdditionalId = userId,
                 AdditionalInfo = user.ProfileName,
                 IsRead = false,
-                FromUserId = userId,
                 DateTime = DateTime.UtcNow,
             });
             await _followRepository.SaveChangesAsync();
@@ -109,7 +108,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> FollowUser(int userId, int followedUserId)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(followedUserId);
             if (user == null) return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
             var followedUser = await _userRepository.GetByIdAsync(followedUserId);
             if (followedUser == null) return IdentityResult.Failed(new NotFoundError("ParentUser not found"));

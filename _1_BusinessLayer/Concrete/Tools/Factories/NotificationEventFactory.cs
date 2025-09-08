@@ -13,6 +13,8 @@ namespace _1_BusinessLayer.Concrete.Tools.Factories
     {
         public List<NotificationEvent> CreateNotificationEvents(User? fromUser,Bot? fromBot,List<int?> toUserId,NotificationType type,string additionalInfo,int additionalId)
         {
+            if (toUserId == null || toUserId.Count == 0)
+                return new List<NotificationEvent>();
             List<NotificationEvent> notificationEvents = new List<NotificationEvent>();
             for (int i = 0; i < toUserId.Count; i++)
             {

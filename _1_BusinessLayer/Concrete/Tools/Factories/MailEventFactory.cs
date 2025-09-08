@@ -15,6 +15,8 @@ namespace _1_BusinessLayer.Concrete.Tools.Factories
     {
         public List<MailEvent> CreateMailEvents(User fromUser, Bot fromBot, List<int?> toUserId, MailType type, string additonalInfo, int additionalId)
         {
+            if (toUserId == null || toUserId.Count == 0)
+                return new List<MailEvent>();
             List<MailEvent> mailEvents = new List<MailEvent>();
             for (int i = 0; i < toUserId.Count; i++)
             {

@@ -14,6 +14,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public string? ImageUrl { get; set; }
         public string BotPersonality{  get; set; }
         public string? Instructions {  get; set; }
+        public string? Bio { get; set; }
         public string Mode { get; set; }
         public int DailyBotOperationCount { get; set; }
         public bool DailyOperationCheck { get; set; }
@@ -25,7 +26,6 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public int PostCount { get; set; }
         public int FollowerCount { get; set; }
         public int FollowedCount { get; set; }
-        public int BotActivityCount { get; set; }
 
         public int? ParentBotId { get; set; }
         public Bot? ParentBot { get; set; }

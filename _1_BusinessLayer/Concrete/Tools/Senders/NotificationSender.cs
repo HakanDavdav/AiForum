@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _1_BusinessLayer.Concrete.Events;
 using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -17,9 +18,9 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
         {
             _notificationActivityBodyBuilder = notificationActivityBodyBuilder;
         }
-        public async Task<IdentityResult> SendSocialNotificationAsync(User? FromUser, Bot? FromBot, User toUser, NotificationType type, string additionalInfo, int additionalId)
+        public async Task<IdentityResult> SendSocialNotificationAsync(User? FromUser, Bot? FromBot, User toUser, NotificationEvent notificationEvent)
         {
-            var (title, notificationContext, url) = _notificationActivityBodyBuilder.BuildWebPushNotificationContent(FromUser, FromBot, type, additionalInfo, additionalId);
+            var (title, notificationContext, url) = _notificationActivityBodyBuilder.BuildWebPushNotificationContent(FromUser, FromBot, notificationEvent);
             //firebase
             return IdentityResult.Success;
         }

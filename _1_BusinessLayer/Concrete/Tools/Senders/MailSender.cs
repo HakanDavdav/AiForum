@@ -5,7 +5,9 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using _1_BusinessLayer.Concrete.Events;
 using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
+using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete.Enums;
 using MailKit;
@@ -53,9 +55,10 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
             }
         }
 
-        public async Task<IdentityResult> SendSocialMailAsync(User? FromUser, Bot? FromBot, User toUser, MailType type, string additionalInfo, int additionalId)
+        public async Task<IdentityResult> SendSocialMailAsync(User? FromUser, Bot? FromBot, User toUser, MailEvent mailEvent)
         {
-            var (body, subject) = _mailBodyBuilder.BuildSocialMailContent(FromUser, FromBot, type, additionalInfo, additionalId);
+            if (toUser.EmailConfirmed == false) return IdentityResult.Failed(new UnauthorizedError("Email not confirmed"));
+            var (body, subject) = _mailBodyBuilder.BuildSocialMailContent(FromUser, FromBot, mailEvent);
             SmtpClient smtpClient = null;
             try
             {

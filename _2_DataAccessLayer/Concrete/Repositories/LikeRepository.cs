@@ -33,10 +33,11 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task<Like> GetByIdAsync(int id)
+        public override async Task<Like> GetByIdAsync(int? id)
         {
             try
             {
+                if (id == null) return null;
                 return await _context.Likes.FirstOrDefaultAsync(like => like.LikeId == id);
             }
             catch (Exception ex)

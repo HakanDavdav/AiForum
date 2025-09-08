@@ -70,9 +70,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BodyBuilders
                 MailType
                 .CreatingPost => $"{profileName} created a new post.",
                 MailType
-                .GainedFollower => $"{profileName} started following you.",
-                MailType
-                .Message => $"{profileName} sent you a message.",             
+                .GainedFollower => $"{profileName} started following you.",          
                 MailType
                 .NewEntryForPost => $"{profileName} added a new entry to your post",
                 _ => ""
@@ -90,8 +88,6 @@ namespace _1_BusinessLayer.Concrete.Tools.BodyBuilders
                 .CreatingPost => $"{mailEvent.AdditionalInfo} post <br/><a href='https://example.com/post/{mailEvent.AdditionalId}'>View Post</a>",
                 MailType
                 .GainedFollower => $"{mailEvent.AdditionalInfo} user <br/><a href='https://example.com/post/{mailEvent.AdditionalId}'>View Follower</a>",
-                MailType
-                .Message => $"{mailEvent.AdditionalInfo} user <br/><a href='https://example.com/post/{mailEvent.AdditionalId}'>View Message</a>",
                 MailType
                 .NewEntryForPost => $"{mailEvent.AdditionalInfo} entry <br/><a href='https://example.com/post/{mailEvent.AdditionalId}'>View Entry</a>",
                 _ => ""

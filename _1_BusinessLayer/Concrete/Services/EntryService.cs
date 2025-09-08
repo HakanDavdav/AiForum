@@ -33,9 +33,9 @@ namespace _1_BusinessLayer.Concrete.Services
         {
             var post = await _postRepository.GetByIdAsync(postId);
             if (post == null) return IdentityResult.Failed(new NotFoundError("Post not found"));
-            var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null) return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
-            var entry = createEntryDto.CreateEntryDto_To_Entry(userId);
+            var user = await _userRepository.GetByIdAsync(postId);
+            if (user == null) return IdentityResult.Failed(new NotFoundError("User not found"));
+            var entry = createEntryDto.CreateEntryDto_To_Entry();
             var follows = await _followRepository.GetWithCustomSearchAsync(query => query.Where(follow => follow.UserFollowedId == userId).AsNoTracking());
             var toUserIds = follows.Select(follow => follow.UserFollowerId).ToList();
             var notifications = new List<Notification>();
@@ -46,11 +46,13 @@ namespace _1_BusinessLayer.Concrete.Services
                     FromUserId = userId,
                     OwnerUserId = toUserId,
                     NotificationType = NotificationType.CreatingEntry,
+                    AdditionalInfo = entry.Context,
                     AdditionalId = entry.EntryId,
                     IsRead = false,
                     DateTime = DateTime.UtcNow,
                 });
             }
+            //insert entry and notifications in a single transaction
             await _notificationRepository.ManuallyInsertRangeAsync(notifications);
             post.Entries.Add(entry);
             user.Entries.Add(entry);
@@ -68,9 +70,9 @@ namespace _1_BusinessLayer.Concrete.Services
         {
             var entry = await _entryRepository.GetByIdAsync(entryId);
             if (entry == null) return IdentityResult.Failed(new NotFoundError("Entry not found"));
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(entryId);
             if (user == null) return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
-            var post = await _postRepository.GetByIdAsync(entry.PostId);
+            var post = await _postRepository.GetByIdAsync(entryId);
             if (post == null) return IdentityResult.Failed(new NotFoundError("Post not found"));
             if (entry.OwnerUserId == user.Id)
             {
@@ -85,7 +87,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> EditEntryAsync(int userId, EditEntryDto editEntryDto)
         {
-            var entry = await _entryRepository.GetByIdAsync(editEntryDto.EntryId);
+            var entry = await _entryRepository.GetByIdAsync(userId);
             if (entry != null)
             {
                 if (entry.OwnerUserId == userId)
