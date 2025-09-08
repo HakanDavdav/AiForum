@@ -60,12 +60,12 @@ namespace _2_DataAccessLayer.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OwnerUserId")
+                    b.Property<int>("ParentUserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerUserId");
+                    b.HasIndex("ParentUserId");
 
                     b.ToTable("AspNetUserClaims", (string)null);
                 });
@@ -81,25 +81,25 @@ namespace _2_DataAccessLayer.Migrations
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OwnerUserId")
+                    b.Property<int>("ParentUserId")
                         .HasColumnType("int");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
-                    b.HasIndex("OwnerUserId");
+                    b.HasIndex("ParentUserId");
 
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
-                    b.Property<int>("OwnerUserId")
+                    b.Property<int>("ParentUserId")
                         .HasColumnType("int");
 
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
-                    b.HasKey("OwnerUserId", "RoleId");
+                    b.HasKey("ParentUserId", "RoleId");
 
                     b.HasIndex("RoleId");
 
@@ -108,7 +108,7 @@ namespace _2_DataAccessLayer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.Property<int>("OwnerUserId")
+                    b.Property<int>("ParentUserId")
                         .HasColumnType("int");
 
                     b.Property<string>("LoginProvider")
@@ -120,18 +120,18 @@ namespace _2_DataAccessLayer.Migrations
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("OwnerUserId", "LoginProvider", "Name");
+                    b.HasKey("ParentUserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.OwnerBot", b =>
+            modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.ParentBot", b =>
                 {
-                    b.Property<int>("OwnerBotId")
+                    b.Property<int>("ParentBotId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OwnerBotId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ParentBotId"));
 
                     b.Property<int>("BotGrade")
                         .ValueGeneratedOnAdd()
@@ -179,17 +179,17 @@ namespace _2_DataAccessLayer.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasDefaultValue("DEFAULT");
 
-                    b.Property<int>("OwnerUserId")
+                    b.Property<int>("ParentUserId")
                         .HasColumnType("int");
 
-                    b.HasKey("OwnerBotId");
+                    b.HasKey("ParentBotId");
 
                     b.HasIndex("BotProfileName")
                         .IsUnique();
 
-                    b.HasIndex("OwnerUserId");
+                    b.HasIndex("ParentUserId");
 
-                    b.ToTable("Bots");
+                    b.ToTable("ChildBots");
                 });
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.BotActivity", b =>
@@ -210,20 +210,20 @@ namespace _2_DataAccessLayer.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("OwnerBotId")
+                    b.Property<int>("ParentBotId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("OwnerUserId")
+                    b.Property<int?>("ParentUserId")
                         .HasColumnType("int");
 
                     b.HasKey("ActivityId");
 
-                    b.HasIndex("OwnerBotId");
+                    b.HasIndex("ParentBotId");
 
-                    b.HasIndex("OwnerUserId");
+                    b.HasIndex("ParentUserId");
 
                     b.ToTable("Activities");
                 });
@@ -236,7 +236,7 @@ namespace _2_DataAccessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EntryId"));
 
-                    b.Property<int?>("OwnerBotId")
+                    b.Property<int?>("ParentBotId")
                         .HasColumnType("int");
 
                     b.Property<string>("NotificationContext")
@@ -252,16 +252,16 @@ namespace _2_DataAccessLayer.Migrations
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OwnerUserId")
+                    b.Property<int?>("ParentUserId")
                         .HasColumnType("int");
 
                     b.HasKey("EntryId");
 
-                    b.HasIndex("OwnerBotId");
+                    b.HasIndex("ParentBotId");
 
                     b.HasIndex("PostId");
 
-                    b.HasIndex("OwnerUserId");
+                    b.HasIndex("ParentUserId");
 
                     b.ToTable("Entries");
                 });
@@ -312,7 +312,7 @@ namespace _2_DataAccessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LikeId"));
 
-                    b.Property<int?>("OwnerBotId")
+                    b.Property<int?>("ParentBotId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateTime")
@@ -326,18 +326,18 @@ namespace _2_DataAccessLayer.Migrations
                     b.Property<int?>("PostId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OwnerUserId")
+                    b.Property<int?>("ParentUserId")
                         .HasColumnType("int");
 
                     b.HasKey("LikeId");
 
-                    b.HasIndex("OwnerBotId");
+                    b.HasIndex("ParentBotId");
 
                     b.HasIndex("EntryId");
 
                     b.HasIndex("PostId");
 
-                    b.HasIndex("OwnerUserId");
+                    b.HasIndex("ParentUserId");
 
                     b.ToTable("Likes");
                 });
@@ -393,7 +393,7 @@ namespace _2_DataAccessLayer.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("OwnerUserId")
+                    b.Property<int>("ParentUserId")
                         .HasColumnType("int");
 
                     b.HasKey("NotificationId");
@@ -402,7 +402,7 @@ namespace _2_DataAccessLayer.Migrations
 
                     b.HasIndex("FromUserId");
 
-                    b.HasIndex("OwnerUserId");
+                    b.HasIndex("ParentUserId");
 
                     b.ToTable("SocialNotificationPreference");
                 });
@@ -415,7 +415,7 @@ namespace _2_DataAccessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PostId"));
 
-                    b.Property<int?>("OwnerBotId")
+                    b.Property<int?>("ParentBotId")
                         .HasColumnType("int");
 
                     b.Property<string>("NotificationContext")
@@ -436,19 +436,19 @@ namespace _2_DataAccessLayer.Migrations
                     b.Property<int>("TrendPoint")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OwnerUserId")
+                    b.Property<int?>("ParentUserId")
                         .HasColumnType("int");
 
                     b.HasKey("PostId");
 
-                    b.HasIndex("OwnerBotId");
+                    b.HasIndex("ParentBotId");
 
-                    b.HasIndex("OwnerUserId");
+                    b.HasIndex("ParentUserId");
 
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.OwnerUser", b =>
+            modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.ParentUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -576,12 +576,12 @@ namespace _2_DataAccessLayer.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("White");
 
-                    b.Property<int>("OwnerUserId")
+                    b.Property<int>("ParentUserId")
                         .HasColumnType("int");
 
                     b.HasKey("UserPreferenceId");
 
-                    b.HasIndex("OwnerUserId")
+                    b.HasIndex("ParentUserId")
                         .IsUnique();
 
                     b.ToTable("UserPreferences");
@@ -628,18 +628,18 @@ namespace _2_DataAccessLayer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerUser", null)
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentUser", null)
                         .WithMany()
-                        .HasForeignKey("OwnerUserId")
+                        .HasForeignKey("ParentUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerUser", null)
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentUser", null)
                         .WithMany()
-                        .HasForeignKey("OwnerUserId")
+                        .HasForeignKey("ParentUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -652,53 +652,53 @@ namespace _2_DataAccessLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerUser", null)
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentUser", null)
                         .WithMany()
-                        .HasForeignKey("OwnerUserId")
+                        .HasForeignKey("ParentUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerUser", null)
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentUser", null)
                         .WithMany()
-                        .HasForeignKey("OwnerUserId")
+                        .HasForeignKey("ParentUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.OwnerBot", b =>
+            modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.ParentBot", b =>
                 {
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerUser", "OwnerUser")
-                        .WithMany("Bots")
-                        .HasForeignKey("OwnerUserId")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentUser", "ParentUser")
+                        .WithMany("ChildBots")
+                        .HasForeignKey("ParentUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("OwnerUser");
+                    b.Navigation("ParentUser");
                 });
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.BotActivity", b =>
                 {
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerBot", "OwnerBot")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentBot", "ParentBot")
                         .WithMany("Activities")
-                        .HasForeignKey("OwnerBotId")
+                        .HasForeignKey("ParentBotId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerUser", null)
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentUser", null)
                         .WithMany("BotActivities")
-                        .HasForeignKey("OwnerUserId");
+                        .HasForeignKey("ParentUserId");
 
-                    b.Navigation("OwnerBot");
+                    b.Navigation("ParentBot");
                 });
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.Entry", b =>
                 {
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerBot", "OwnerBot")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentBot", "ParentBot")
                         .WithMany("Entries")
-                        .HasForeignKey("OwnerBotId")
+                        .HasForeignKey("ParentBotId")
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("_2_DataAccessLayer.Concrete.Entities.Post", "Post")
@@ -707,36 +707,36 @@ namespace _2_DataAccessLayer.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerUser", "OwnerUser")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentUser", "ParentUser")
                         .WithMany("Entries")
-                        .HasForeignKey("OwnerUserId")
+                        .HasForeignKey("ParentUserId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("OwnerBot");
+                    b.Navigation("ParentBot");
 
                     b.Navigation("Post");
 
-                    b.Navigation("OwnerUser");
+                    b.Navigation("ParentUser");
                 });
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.Follow", b =>
                 {
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerBot", "BotFollowed")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentBot", "BotFollowed")
                         .WithMany("Followers")
                         .HasForeignKey("BotFollowedId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerBot", "BotFollower")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentBot", "BotFollower")
                         .WithMany("Followed")
                         .HasForeignKey("BotFollowerId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerUser", "UserFollowed")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentUser", "UserFollowed")
                         .WithMany("Followers")
                         .HasForeignKey("UserFollowedId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerUser", "UserFollower")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentUser", "UserFollower")
                         .WithMany("Followed")
                         .HasForeignKey("UserFollowerId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -752,9 +752,9 @@ namespace _2_DataAccessLayer.Migrations
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.Like", b =>
                 {
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerBot", "OwnerBot")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentBot", "ParentBot")
                         .WithMany("Likes")
-                        .HasForeignKey("OwnerBotId")
+                        .HasForeignKey("ParentBotId")
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("_2_DataAccessLayer.Concrete.Entities.Entry", "Entry")
@@ -767,35 +767,35 @@ namespace _2_DataAccessLayer.Migrations
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerUser", "OwnerUser")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentUser", "ParentUser")
                         .WithMany("Likes")
-                        .HasForeignKey("OwnerUserId")
+                        .HasForeignKey("ParentUserId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("OwnerBot");
+                    b.Navigation("ParentBot");
 
                     b.Navigation("Entry");
 
                     b.Navigation("Post");
 
-                    b.Navigation("OwnerUser");
+                    b.Navigation("ParentUser");
                 });
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.Notification", b =>
                 {
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerBot", "FromBot")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentBot", "FromBot")
                         .WithMany("SentNotifications")
                         .HasForeignKey("FromBotId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerUser", "FromUser")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentUser", "FromUser")
                         .WithMany("SentNotifications")
                         .HasForeignKey("FromUserId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerUser", "OwnerUser")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentUser", "ParentUser")
                         .WithMany("SocialNotificationPreference")
-                        .HasForeignKey("OwnerUserId")
+                        .HasForeignKey("ParentUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -803,38 +803,38 @@ namespace _2_DataAccessLayer.Migrations
 
                     b.Navigation("FromUser");
 
-                    b.Navigation("OwnerUser");
+                    b.Navigation("ParentUser");
                 });
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.Post", b =>
                 {
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerBot", "OwnerBot")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentBot", "ParentBot")
                         .WithMany("Posts")
-                        .HasForeignKey("OwnerBotId")
+                        .HasForeignKey("ParentBotId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerUser", "OwnerUser")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentUser", "ParentUser")
                         .WithMany("Posts")
-                        .HasForeignKey("OwnerUserId")
+                        .HasForeignKey("ParentUserId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("OwnerBot");
+                    b.Navigation("ParentBot");
 
-                    b.Navigation("OwnerUser");
+                    b.Navigation("ParentUser");
                 });
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.UserPreference", b =>
                 {
-                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.OwnerUser", "OwnerUser")
+                    b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentUser", "ParentUser")
                         .WithOne("UserPreference")
-                        .HasForeignKey("_2_DataAccessLayer.Concrete.Entities.UserPreference", "OwnerUserId")
+                        .HasForeignKey("_2_DataAccessLayer.Concrete.Entities.UserPreference", "ParentUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("OwnerUser");
+                    b.Navigation("ParentUser");
                 });
 
-            modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.OwnerBot", b =>
+            modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.ParentBot", b =>
                 {
                     b.Navigation("Activities");
 
@@ -863,11 +863,11 @@ namespace _2_DataAccessLayer.Migrations
                     b.Navigation("Likes");
                 });
 
-            modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.OwnerUser", b =>
+            modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.ParentUser", b =>
                 {
                     b.Navigation("BotActivities");
 
-                    b.Navigation("Bots");
+                    b.Navigation("ChildBots");
 
                     b.Navigation("Entries");
 

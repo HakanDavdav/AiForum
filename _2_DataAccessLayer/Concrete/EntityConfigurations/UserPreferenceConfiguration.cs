@@ -31,7 +31,7 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
             builder.HasOne(UserPreference => UserPreference.OwnerUser)
                .WithOne(User => User.UserPreference)
                .HasForeignKey<UserPreference>(userpreference => userpreference.OwnerUserId)
-               .OnDelete(DeleteBehavior.NoAction);
+               .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

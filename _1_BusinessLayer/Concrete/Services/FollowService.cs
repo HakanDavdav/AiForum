@@ -81,9 +81,9 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<IdentityResult> FollowBot(int userId, int followedBotId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null) return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            if (user == null) return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
             var bot = await _botRepository.GetByIdAsync(followedBotId);
-            if (bot == null) return IdentityResult.Failed(new NotFoundError("OwnerBot not found"));
+            if (bot == null) return IdentityResult.Failed(new NotFoundError("ParentBot not found"));
             var follow = new Follow
             {
                 UserFollowerId = userId,
@@ -110,9 +110,9 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<IdentityResult> FollowUser(int userId, int followedUserId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null) return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            if (user == null) return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
             var followedUser = await _userRepository.GetByIdAsync(followedUserId);
-            if (followedUser == null) return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            if (followedUser == null) return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
             var follow = new Follow
             {
                 UserFollowerId = userId,
@@ -122,7 +122,7 @@ namespace _1_BusinessLayer.Concrete.Services
             followedUser.Followers.Add(follow);
             user.FollowedCount += 1;
             followedUser.FollowerCount += 1;
-            followedUser.Notifications.Add(new Notification
+            followedUser.ReceivedNotifications.Add(new Notification
             {
                 FromUserId = userId,
                 OwnerUserId = followedUserId,

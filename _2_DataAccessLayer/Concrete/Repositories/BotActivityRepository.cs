@@ -106,14 +106,45 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                     AdditionalId = activity.AdditionalId,
                     DateTime = activity.DateTime,
                     OwnerBot = activity.OwnerBot,
-                    RelatedUser = activity.RelatedUser,
                 });
             return BotActivities.ToListAsync();
         }
 
-        public override Task<List<BotActivity>> GetBotActivityModulesForUserAsync(int userId, int startInterval, int endInterval)
+        public override async Task<List<BotActivity>> GetBotActivityModulesForUserAsync(int id, int startInterval, int endInterval)
         {
-            var BotActivities = _context.Activities.Where(activity => activity.RelatedUserId == userId).Skip(startInterval).Take(endInterval - startInterval).Select(
+            var user = await _context.Users
+                             .Where(u => u.Id == id)
+                             .Include(u => u.Bots)
+                             .FirstOrDefaultAsync();
+
+            if (user == null)
+                return new List<BotActivity>();
+
+            var botList = new List<Bot>();
+
+            foreach (var bot in user.Bots)
+            {
+                await CollectBotsTreeAsync(bot, botList);
+            }
+
+            async Task CollectBotsTreeAsync(Bot bot, List<Bot> collectedBots)
+            {
+                collectedBots.Add(bot);
+
+                // Properly await loading child bots
+                await _context.Entry(bot)
+                              .Collection(b => b.ChildBots)
+                              .LoadAsync();
+
+                foreach (var childBot in bot.ChildBots)
+                {
+                    await CollectBotsTreeAsync(childBot, collectedBots);
+                }
+            }
+
+            var botIds = botList.Select(bot =>bot.Id).ToList();
+            var BotActivities = _context.Activities.
+                Where(activity => activity.OwnerBotId != null && botIds.Contains(activity.OwnerBotId.Value)).Skip(startInterval).Take(endInterval - startInterval).Select(
                 activity => new BotActivity
                 {
                     ActivityId = activity.ActivityId,
@@ -123,9 +154,8 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                     AdditionalId = activity.AdditionalId,
                     DateTime = activity.DateTime,
                     OwnerBot = activity.OwnerBot,
-                    RelatedUser = activity.RelatedUser,
                 });
-            return BotActivities.ToListAsync();
+            return await BotActivities.ToListAsync();
         }
 
 

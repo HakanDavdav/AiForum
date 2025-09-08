@@ -161,7 +161,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in GetEntryModulesForBotAsync with OwnerBotId {OwnerBotId}", id);
+                _logger.LogError(ex, "Error in GetEntryModulesForBotAsync with ParentBotId {ParentBotId}", id);
                 throw;
             }
         }
@@ -201,7 +201,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in GetEntryModulesForUserAsync with OwnerUserId {OwnerUserId}", id);
+                _logger.LogError(ex, "Error in GetEntryModulesForUserAsync with ParentUserId {ParentUserId}", id);
                 throw;
             }
         }

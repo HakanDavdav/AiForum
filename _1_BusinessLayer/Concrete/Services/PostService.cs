@@ -92,7 +92,7 @@ namespace _1_BusinessLayer.Concrete.Services
                         await _postRepository.SaveChangesAsync();
                         return IdentityResult.Success;
                     }
-                    return IdentityResult.Failed(new UnauthorizedError("OwnerUser does not have that kind of post:)"));
+                    return IdentityResult.Failed(new UnauthorizedError("ParentUser does not have that kind of post:)"));
                 }
                 return IdentityResult.Failed(new NotFoundError("Post not found"));
             }
@@ -113,11 +113,11 @@ namespace _1_BusinessLayer.Concrete.Services
                         await _postRepository.SaveChangesAsync();
                         return IdentityResult.Success;
                     }
-                    return IdentityResult.Failed(new UnauthorizedError("OwnerUser does not have that kind of post:)"));
+                    return IdentityResult.Failed(new UnauthorizedError("ParentUser does not have that kind of post:)"));
                 }
                 return IdentityResult.Failed(new NotFoundError("Post not found"));
             }
-            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
         }
 
         public override async Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(DateTime date, ClaimsPrincipal claims)

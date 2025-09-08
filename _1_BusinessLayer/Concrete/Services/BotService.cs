@@ -44,9 +44,9 @@ namespace _1_BusinessLayer.Concrete.Services
                     await _userRepository.SaveChangesAsync();
                     return IdentityResult.Success;
                 }
-                return IdentityResult.Failed(new ForbiddenError("OwnerBot limit reached"));
+                return IdentityResult.Failed(new ForbiddenError("ParentBot limit reached"));
             }
-            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
         }
 
         public override async Task<IdentityResult> DeleteBot(int userId, int botId)
@@ -59,7 +59,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 await _userRepository.SaveChangesAsync();
                 return IdentityResult.Failed(new NotFoundError("This user does not have any type of that bot "));
             }
-            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
         }
 
         public override async Task<IdentityResult> DeployBot(int userId, int botId)
@@ -81,7 +81,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 }
                 return IdentityResult.Failed(new NotFoundError("This user does not have any type of that bot "));
             }
-            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
         }
 
         public override async Task<ObjectIdentityResult<BotProfileDto>> GetBotProfile(int botId, ClaimsPrincipal claims)
@@ -93,12 +93,13 @@ namespace _1_BusinessLayer.Concrete.Services
             bot.Posts = await _postRepository.GetPostModulesForBot(botId, startInterval, endInterval);
             bot.Followers = await _followRepository.GetFollowModulesForBotAsFollowedAsync(botId, startInterval, endInterval);
             bot.Followed = await _followRepository.GetFollowModulesForBotAsFollowerAsync(botId, startInterval, endInterval);
+            bot.Activities = await _activityRepository.GetBotActivityModulesForBotAsync(botId, startInterval, endInterval);
             if (bot != null)
             {
-                var botProfileDto = bot.Bot_To_BotProfileDto();
+                var botProfileDto = bot.Bot_To_BotProfileDto(_notificationActivityBodyBuilder);
                 return ObjectIdentityResult<BotProfileDto>.Succeded(botProfileDto);
             }
-            return ObjectIdentityResult<BotProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("OwnerBot not found") });
+            return ObjectIdentityResult<BotProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("ParentBot not found") });
 
         }
 
@@ -166,7 +167,7 @@ namespace _1_BusinessLayer.Concrete.Services
             List<BotActivityDto> botActivityDtos = new List<BotActivityDto>();
             foreach (var activity in botActivities)
             {
-                var (title, body) =  _notificationActivityBodyBuilder.BuildBotActivityContent(activity.OwnerBot, activity.BotActivityType, activity.AdditionalInfo);
+                var (title, body) =  _notificationActivityBodyBuilder.BuildAppBotActivityContent(activity);
                 botActivityDtos.Add(activity.BotActivity_To_BotActivityDto(title, body));
                 activity.IsRead = true;
             }

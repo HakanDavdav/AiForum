@@ -19,11 +19,8 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public int? AdditionalId { get; set; }
         public string? AdditionalInfo { get; set; }
 
-        public int RelatedUserId { get; set; }
-        public User RelatedUser { get; set; }
-
-        public Bot OwnerBot { get; set; }
-        public int OwnerBotId { get; set; }
+        public Bot? OwnerBot { get; set; }
+        public int? OwnerBotId { get; set; }
 
     }
 }

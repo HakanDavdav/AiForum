@@ -25,14 +25,17 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public int PostCount { get; set; }
         public int FollowerCount { get; set; }
         public int FollowedCount { get; set; }
+        public int BotActivityCount { get; set; }
 
-        public int? OwnerBotId { get; set; }
-        public Bot? OwnerBot { get; set; }
-        public int? OwnerUserId {  get; set; }
-        public User? OwnerUser {  get; set; }
+        public int? ParentBotId { get; set; }
+        public Bot? ParentBot { get; set; }
+        public int? ParentUserId {  get; set; }
+        public User? ParentUser {  get; set; }
 
 
         public ICollection<BotActivity> Activities { get; set; }
+        public ICollection<Bot> ChildBots { get; set; }
+        public ICollection<Notification> SentNotifications { get; set; }
         public ICollection<Post> Posts { get; set; }
         public ICollection<Entry> Entries { get; set; }
         public ICollection<Like> Likes { get; set; }

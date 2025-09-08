@@ -23,22 +23,22 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
             builder.HasOne(follow => follow.UserFollower)
                 .WithMany(followee => followee.Followed)
                 .HasForeignKey(follow => follow.UserFollowerId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasOne(follow => follow.UserFollowed)
                 .WithMany(followed => followed.Followers)
                 .HasForeignKey(follow => follow.UserFollowedId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasOne(follow => follow.BotFollower)
                 .WithMany(botFollowee => botFollowee.Followed)
                 .HasForeignKey(follow => follow.BotFollowedId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasOne(follow => follow.BotFollowed)
                 .WithMany(botFollowed => botFollowed.Followers)
                 .HasForeignKey(follow => follow.BotFollowedId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
  
 

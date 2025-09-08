@@ -12,9 +12,6 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
     {
         public static NotificationDto Notification_To_NotificationDto(this Notification notification,string notificationContext, string notificationTitle)
         {
-            var minimalOwnerUser = notification.OwnerUser.User_To_MinimalUserDto();
-            var minimalFromUser = notification.FromUser.User_To_MinimalUserDto();
-            var minimalFromBot = notification.FromBot.Bot_To_MinimalBotDto();
             return new NotificationDto()
             {
                 NotificationTitle = notificationTitle,
@@ -22,9 +19,9 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
                 DateTime = notification.DateTime,
                 IsRead = notification.IsRead,
                 NotificationId = notification.NotificationId,
-                OwnerUser = minimalOwnerUser,
-                FromUser = minimalFromUser,
-                FromBot = minimalFromBot,
+                AdditionalId = notification.AdditionalId,
+                NotificationType = notification.NotificationType,
+
             };
         }
     }

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _1_BusinessLayer.Concrete.Dtos.BotActivityDtos;
 using _1_BusinessLayer.Concrete.Dtos.BotDtos;
 using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
 using _1_BusinessLayer.Concrete.Dtos.FollowDto;
 using _1_BusinessLayer.Concrete.Dtos.LikeDto;
 using _1_BusinessLayer.Concrete.Dtos.PostDtos;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
+using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
@@ -28,13 +30,14 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             };
         }
 
-        public static BotProfileDto Bot_To_BotProfileDto(this Bot bot)
+        public static BotProfileDto Bot_To_BotProfileDto(this Bot bot,NotificationActivityBodyBuilder notificationActivityBodyBuilder)
         {
             List<PostProfileDto> postProfileDtos = new List<PostProfileDto>();
             List<EntryProfileDto> entryProfileDtos = new List<EntryProfileDto>();
             List<MinimalLikeDto> minimalLikeDtos = new List<MinimalLikeDto>();
             List<FollowProfileDto> followerDtos = new List<FollowProfileDto>();
             List<FollowProfileDto> followedDtos = new List<FollowProfileDto>();
+            List<BotActivityDto> botActivityDtos = new List<BotActivityDto>();
             foreach (var post in bot.Posts ?? new List<Post>())
             {
                 postProfileDtos.Add(post.Post_To_PostProfileDto());
@@ -55,6 +58,11 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             {
                 followedDtos.Add(followed.Follow_To_FollowProfileDto());
             }
+            foreach (var activity in bot.Activities ?? new List<BotActivity>())
+            {
+                var (title,body) = notificationActivityBodyBuilder.BuildAppBotActivityContent(activity);
+                botActivityDtos.Add(activity.BotActivity_To_BotActivityDto(body,title));
+            }
             return new BotProfileDto
             {
                 Date = bot.DateTime,
@@ -64,6 +72,8 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
                 PostCount = bot.PostCount,
                 LikeCount = bot.LikeCount,
                 ProfileName = bot.BotProfileName,
+                BotActivityCount = bot.BotActivityCount,
+                BotGrade = bot.BotGrade,
                 ImageUrl = bot.ImageUrl,
                 BotId = bot.Id,
                 Entries = entryProfileDtos,
@@ -78,7 +88,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
         {
             return new Bot
             {
-                OwnerUserId = userId,
+                ParentUserId = userId,
                 BotPersonality = createBotDto.BotPersonality,
                 DailyBotOperationCount = createBotDto.DailyBotOperationCount,
                 ImageUrl = createBotDto.ImageUrl,

@@ -19,7 +19,7 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
             builder.HasOne(botActivity => botActivity.OwnerBot)
                 .WithMany(bot => bot.Activities)
                 .HasForeignKey(botActivity => botActivity.OwnerBotId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
         }
     }

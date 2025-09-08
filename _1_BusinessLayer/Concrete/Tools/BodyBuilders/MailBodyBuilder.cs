@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _1_BusinessLayer.Concrete.Events;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.Factories;
 using _2_DataAccessLayer.Concrete.Entities;
@@ -55,11 +56,10 @@ namespace _1_BusinessLayer.Concrete.Tools.BodyBuilders
         }
 
 
-        public (string body, string subject) BuildSocialMailContent(User? FromUser, Bot? FromBot, MailType?
-            type, string additionalInfo, int additionalId)
+        public (string body, string subject) BuildSocialMailContent(User? FromUser, Bot? FromBot, MailEvent mailEvent)
         {
             string profileName = FromUser?.UserName ?? FromBot?.BotProfileName ?? "";
-            string title = type switch
+            string title = mailEvent.Type switch
             {
                 MailType
                 .EntryLike => $"{profileName} liked your entry",
@@ -72,32 +72,28 @@ namespace _1_BusinessLayer.Concrete.Tools.BodyBuilders
                 MailType
                 .GainedFollower => $"{profileName} started following you.",
                 MailType
-                .Message => $"{profileName} sent you a message.",
-                MailType
-                .BotActivity => $"{profileName} has new bot activity.",
+                .Message => $"{profileName} sent you a message.",             
                 MailType
                 .NewEntryForPost => $"{profileName} added a new entry to your post",
                 _ => ""
             };
 
-            string body = type switch
+            string body = mailEvent.Type switch
             {
                 MailType
-                .EntryLike => $"{additionalInfo} entry <br/><a href='https://example.com/entry/{additionalId}'>View Entry</a>",
+                .EntryLike => $"{mailEvent.AdditionalInfo} entry <br/><a href='https://example.com/entry/{mailEvent.AdditionalId}'>View Entry</a>",
                 MailType
-                .PostLike => $"{additionalInfo} post <br/><a href='https://example.com/post/{additionalId}'>View Post</a>",
+                .PostLike => $"{mailEvent.AdditionalInfo} post <br/><a href='https://example.com/post/{mailEvent.AdditionalId}'>View Post</a>",
                 MailType
-                .CreatingEntry => $"{additionalInfo} entry <br/><a href='https://example.com/entry/{additionalId}'>View Entry</a>",
+                .CreatingEntry => $"{mailEvent.AdditionalInfo} entry <br/><a href='https://example.com/entry/{mailEvent.AdditionalId}'>View Entry</a>",
                 MailType
-                .CreatingPost => $"{additionalInfo} post <br/><a href='https://example.com/post/{additionalId}'>View Post</a>",
+                .CreatingPost => $"{mailEvent.AdditionalInfo} post <br/><a href='https://example.com/post/{mailEvent.AdditionalId}'>View Post</a>",
                 MailType
-                .GainedFollower => $"{additionalInfo} user <br/><a href='https://example.com/post/{additionalId}'>View Follower</a>",
+                .GainedFollower => $"{mailEvent.AdditionalInfo} user <br/><a href='https://example.com/post/{mailEvent.AdditionalId}'>View Follower</a>",
                 MailType
-                .Message => $"{additionalInfo} user <br/><a href='https://example.com/post/{additionalId}'>View Message</a>",
+                .Message => $"{mailEvent.AdditionalInfo} user <br/><a href='https://example.com/post/{mailEvent.AdditionalId}'>View Message</a>",
                 MailType
-                .BotActivity => $"{additionalInfo} bot <br/><a href='https://example.com/post/{additionalId}'>View Bot</a>",
-                MailType
-                .NewEntryForPost => $"{additionalInfo} entry <br/><a href='https://example.com/post/{additionalId}'>View Entry</a>",
+                .NewEntryForPost => $"{mailEvent.AdditionalInfo} entry <br/><a href='https://example.com/post/{mailEvent.AdditionalId}'>View Entry</a>",
                 _ => ""
             };
 

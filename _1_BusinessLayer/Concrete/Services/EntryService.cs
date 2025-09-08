@@ -34,7 +34,7 @@ namespace _1_BusinessLayer.Concrete.Services
             var post = await _postRepository.GetByIdAsync(postId);
             if (post == null) return IdentityResult.Failed(new NotFoundError("Post not found"));
             var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null) return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            if (user == null) return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
             var entry = createEntryDto.CreateEntryDto_To_Entry(userId);
             var follows = await _followRepository.GetWithCustomSearchAsync(query => query.Where(follow => follow.UserFollowedId == userId).AsNoTracking());
             var toUserIds = follows.Select(follow => follow.UserFollowerId).ToList();
@@ -69,7 +69,7 @@ namespace _1_BusinessLayer.Concrete.Services
             var entry = await _entryRepository.GetByIdAsync(entryId);
             if (entry == null) return IdentityResult.Failed(new NotFoundError("Entry not found"));
             var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null) return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            if (user == null) return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
             var post = await _postRepository.GetByIdAsync(entry.PostId);
             if (post == null) return IdentityResult.Failed(new NotFoundError("Post not found"));
             if (entry.OwnerUserId == user.Id)

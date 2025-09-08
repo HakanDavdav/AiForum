@@ -26,8 +26,8 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
 
 
-        public int? OwnerUserId {  get; set; } // It creates dead notifications for users with no followers when they create a post or entry. But it is not a problem.
-        public User? OwnerUser { get; set; } // It creates dead notifications for users with no followers when they create a post or entry. But it is not a problem.
+        public int? OwnerUserId {  get; set; } 
+        public User? OwnerUser { get; set; } 
 
     }
 }

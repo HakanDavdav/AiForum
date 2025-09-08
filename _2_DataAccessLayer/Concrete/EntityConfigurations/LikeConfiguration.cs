@@ -23,22 +23,22 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
             builder.HasOne(like => like.Post)
                 .WithMany(post => post.Likes)
                 .HasForeignKey(like => like.PostId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasOne(like => like.Entry)
                 .WithMany(entry => entry.Likes)
                 .HasForeignKey(like => like.EntryId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasOne(like => like.OwnerUser)
                 .WithMany(user => user.Likes)
                 .HasForeignKey(like => like.OwnerUserId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasOne(like => like.OwnerBot)
                 .WithMany(bot => bot.Likes)
                 .HasForeignKey(like => like.OwnerBotId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
 
         }

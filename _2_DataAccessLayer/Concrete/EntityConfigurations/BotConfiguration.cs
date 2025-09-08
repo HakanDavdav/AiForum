@@ -15,7 +15,7 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
         public void Configure(EntityTypeBuilder<Bot> builder)
         {
 
-            builder.HasKey(bot => bot.Id);  // Set the primary key for the OwnerBot entity
+            builder.HasKey(bot => bot.Id);  // Set the primary key for the ParentBot entity
 
             builder.HasIndex(bot => bot.BotProfileName).IsUnique();  // Create a unique index on BotProfileName to ensure no duplicates
 
@@ -64,37 +64,42 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
             builder.HasMany(bot => bot.Posts)
                 .WithOne(post => post.OwnerBot)
                 .HasForeignKey(post => post.OwnerBotId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasMany(bot => bot.Entries)
                 .WithOne(entry => entry.OwnerBot)
                 .HasForeignKey(entry => entry.OwnerBotId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasMany(bot => bot.Likes)
                 .WithOne(like => like.OwnerBot)
                 .HasForeignKey(like => like.OwnerBotId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasMany(bot => bot.SentNotifications)
                 .WithOne(notification => notification.FromBot)
                 .HasForeignKey(notification => notification.FromBotId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.HasMany(bot => bot.ChildBots)
+                .WithOne(childBot => childBot.ParentBot)
+                .HasForeignKey(childBot => childBot.ParentBotId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasMany(bot => bot.Followers)
                 .WithOne(following => following.BotFollowed)
                 .HasForeignKey(following => following.BotFollowedId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasMany(bot => bot.Followed)
                 .WithOne(following => following.BotFollower)
                 .HasForeignKey (following => following.BotFollowerId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasMany(bot => bot.Activities)
                 .WithOne(activity => activity.OwnerBot)
                 .HasForeignKey(activity => activity.OwnerBotId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
           
         }
     }

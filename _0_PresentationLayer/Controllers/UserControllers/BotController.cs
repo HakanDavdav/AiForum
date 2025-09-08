@@ -19,7 +19,7 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
 
         [Authorize (Policy = "UserPolicy" )]
-        [HttpPost("BotPanel/Bots/{botId}/DeployBot")]
+        [HttpPost("BotPanel/ChildBots/{botId}/DeployBot")]
         public async Task<IActionResult> DeployBot(int botId)
         {
 
@@ -27,21 +27,21 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
 
         [Authorize(Policy = "UserPolicy")]
-        [HttpPatch("BotPanel/Bots/{botId}")]
+        [HttpPatch("BotPanel/ChildBots/{botId}")]
         public async Task<IActionResult> EditBot(int botId, [FromBody] EditBotDto editBotDto)
         {
 
         }
 
         [Authorize(Policy = "UserPolicy")]
-        [HttpDelete("BotPanel/Bots/{botId}")]
+        [HttpDelete("BotPanel/ChildBots/{botId}")]
         public async Task<IActionResult> DeleteBot(int botId)
         {
 
         }
 
         [Authorize(Policy = "UserPolicy")]
-        [HttpPost("BotPanel/Bots")]
+        [HttpPost("BotPanel/ChildBots")]
         public async Task<IActionResult> CreateBot([FromBody] CreateBotDto createBotDto)
         {
 
@@ -49,13 +49,13 @@ namespace _0_PresentationLayer.Controllers.UserControllers
 
 
 
-        [HttpGet("OwnerBot/{OwnerBotId}")]
+        [HttpGet("ParentBot/{ParentBotId}")]
         public async Task<IActionResult> GetBotProfile(int BotId)
         {
 
         }
 
-        [HttpGet("OwnerBot/{OwnerBotId}/BotActivities")]
+        [HttpGet("ParentBot/{ParentBotId}/BotActivities")]
         public async Task<IActionResult> GetBotActivitiesFromBot(int BotId)
         {
 

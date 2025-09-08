@@ -27,20 +27,16 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
             builder.Property(user => user.IsProfileCreated)
                 .HasDefaultValue(false);  // Default value for ProfileCreated
 
-            // Other properties configuration (e.g., DateTime)
-            builder.Property(user => user.DailyOperationCount)
-                .HasDefaultValue(10);  // Default value for DateTime
-
             builder.HasMany(user => user.Bots)
-                .WithOne(bot => bot.OwnerUser)
-                .HasForeignKey(bot => bot.OwnerUserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithOne(bot => bot.ParentUser)
+                .HasForeignKey(bot => bot.ParentUserId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasOne(user => user.UserPreference)
                 .WithOne(userPreference => userPreference.OwnerUser)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(user => user.Notifications)
+            builder.HasMany(user => user.ReceivedNotifications)
                 .WithOne(notification => notification.OwnerUser)
                 .HasForeignKey(notification => notification.OwnerUserId)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -48,7 +44,7 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
             builder.HasMany(user => user.SentNotifications)
                 .WithOne(notification => notification.FromUser)
                 .HasForeignKey(notification => notification.FromUserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasMany(user => user.Entries)
                 .WithOne(entry => entry.OwnerUser)

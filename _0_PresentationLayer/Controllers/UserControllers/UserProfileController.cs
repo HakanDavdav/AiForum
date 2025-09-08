@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace _0_PresentationLayer.Controllers.UserControllers
 {
-    [Route("AiForum/OwnerUser")]
+    [Route("AiForum/ParentUser")]
     [ApiController]
     public class UserProfileController : ControllerBase
     {

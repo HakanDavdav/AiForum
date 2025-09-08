@@ -47,12 +47,13 @@ namespace _1_BusinessLayer.Concrete.Services
                             likerUser.Likes.Add(like);
                             entry.Likes.Add(like);
                             likerUser.LikeCount += 1;
-                            entryOwnerUser.Notifications.Add(new Notification
+                            entryOwnerUser.ReceivedNotifications.Add(new Notification
                             {
                                 NotificationType = NotificationType.EntryLike,
                                 AdditionalId = entry.EntryId,
                                 AdditionalInfo = entry.Context.Substring(0, 10) + "...",
                                 FromUserId = likerUser.Id,
+                                OwnerUserId = entryOwnerUser.Id,
                                 DateTime = DateTime.UtcNow,
                                 IsRead = false
                             });
@@ -76,10 +77,11 @@ namespace _1_BusinessLayer.Concrete.Services
                             entry.LikeCount += 1;
                             entryOwnerBot.Activities.Add(new BotActivity
                             {
-                                BotActivityType = BotActivityType.BotLikedEntry,
+                                BotActivityType = BotActivityType.BotEntryLiked,
                                 AdditionalId = entry.EntryId,
-                                AdditionalInfo = entry.Context.Substring(0, 10) + "...",
-                                FromUserId = likerUser.Id,
+                                AdditionalInfo = likerUser.ProfileName,
+                                OwnerBotId = entryOwnerBot.Id,
+                                
                                 IsRead = false,
                                 DateTime = DateTime.UtcNow
                             });
@@ -119,12 +121,13 @@ namespace _1_BusinessLayer.Concrete.Services
                             post.Likes.Add(like);
                             likerUser.LikeCount += 1;
                             post.LikeCount += 1;
-                            postOwnerUser.Notifications.Add(new Notification
+                            postOwnerUser.ReceivedNotifications.Add(new Notification
                             {
                                 NotificationType = NotificationType.PostLike,
                                 AdditionalId = post.PostId,
                                 AdditionalInfo = post.Title,
                                 FromUserId = likerUser.Id,
+                                OwnerUserId = postOwnerUser.Id,
                                 DateTime = DateTime.UtcNow,
                                 IsRead = false
                             });
@@ -150,8 +153,8 @@ namespace _1_BusinessLayer.Concrete.Services
                             {
                                 BotActivityType = BotActivityType.BotLikedPost,
                                 AdditionalId = post.PostId,
-                                FromUserId = likerUser.Id,
-                                AdditionalInfo = post.Title,
+                                RelatedUserId = postOwnerBot.ParentUserId.Value,
+                                AdditionalInfo = likerUser.ProfileName,
                                 IsRead = false,
                                 DateTime = DateTime.UtcNow
                             });

@@ -28,7 +28,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in DeleteAsync for OwnerBotId {OwnerBotId}", t.Id);
+                _logger.LogError(ex, "Error in DeleteAsync for ParentBotId {ParentBotId}", t.Id);
                 throw;
             }
         }
@@ -42,7 +42,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in GetByIdAsync with OwnerBotId {OwnerBotId}", id);
+                _logger.LogError(ex, "Error in GetByIdAsync with ParentBotId {ParentBotId}", id);
                 throw;
             }
         }
@@ -57,7 +57,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in ManuallyInsertAsync for OwnerBotId {OwnerBotId}", t.Id);
+                _logger.LogError(ex, "Error in ManuallyInsertAsync for ParentBotId {ParentBotId}", t.Id);
                 throw;
             }
         }
@@ -71,7 +71,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in UpdateAsync for OwnerBotId {OwnerBotId}", t.Id);
+                _logger.LogError(ex, "Error in UpdateAsync for ParentBotId {ParentBotId}", t.Id);
                 throw;
             }
         }
@@ -110,10 +110,10 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                     PostCount = bot.PostCount,
                     LikeCount = bot.LikeCount,
                     Mode = bot.Mode,
-                    OwnerUser = bot.OwnerUser,
-                    OwnerUserId = bot.OwnerUserId,
-                    OwnerBot = bot.OwnerBot,
-                    OwnerBotId = bot.OwnerBotId,
+                    ParentUser = bot.ParentUser,
+                    ParentUserId = bot.ParentUserId,
+                    ParentBot = bot.ParentBot,
+                    ParentBotId = bot.ParentBotId,
                 }).FirstOrDefaultAsync();
             return bot;
         }

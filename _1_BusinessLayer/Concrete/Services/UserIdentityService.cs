@@ -39,7 +39,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 Console.WriteLine(user.TwoFactorEnabled);
                 return twoFactorResult;
             }
-            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
         }
 
         public override async Task<IdentityResult> DisableTwoFactorAuthentication(int userId)
@@ -50,7 +50,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 var twoFactorResult = await _userManager.SetTwoFactorEnabledAsync(user, false);
                 return twoFactorResult;
             }
-            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
         }
 
         public override async Task<IdentityResult> ConfirmChangeEmailToken(int userId, string newEmail, string changeEmailToken)
@@ -61,7 +61,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 var changeEmailResult = await _userManager.ChangeEmailAsync(user, newEmail, changeEmailToken);
                 return changeEmailResult;
             }
-            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
         }
         public override async Task<IdentityResult> ConfirmEmailConfirmationToken(string emailConfirmationToken, string EmailOrUsernameOrPassword)
         {
@@ -76,7 +76,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 }
                 return IdentityResult.Failed(new UnexpectedError("Email is already confirmed"));
             }
-            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
 
         }
 
@@ -94,9 +94,9 @@ namespace _1_BusinessLayer.Concrete.Services
                     }
                     return IdentityResult.Failed(new UnauthorizedError("Invalid token"));
                 }
-                return IdentityResult.Failed(new NotFoundError("OwnerUser phone number not found"));
+                return IdentityResult.Failed(new NotFoundError("ParentUser phone number not found"));
             }
-            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
         }
 
 
@@ -109,7 +109,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 var passwordResetResult = await _userManager.ResetPasswordAsync(user, resetPasswordToken, newPassword);
                 return passwordResetResult;
             }
-            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
         }
 
         public override async Task<IdentityResult> ChangeUsername(int userId, string oldUsername, string newUsername)
@@ -125,7 +125,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 }
                 return IdentityResult.Failed(new UnauthorizedError("Wrong username"));
             }
-            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
         }
 
         public override async Task<IdentityResult> ChangePassword(int userId, string oldPassword, string newPassword)
@@ -136,7 +136,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 var changePasswordResult = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
                 return changePasswordResult;
             }
-            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
         }
 
         public override async Task<IdentityResult> SetUnconfirmedPhoneNumber(int userId, string newPhoneNumber)
@@ -148,7 +148,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 await _userRepository.SaveChangesAsync();
                 return IdentityResult.Success;
             }
-            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
         }
 
 
@@ -167,7 +167,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 }
                 return twoFactorSignInResult.ToIdentityResult();
             }
-            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
         }
 
         public override async Task<IdentityResult> LoginDefault(UserLoginDto userLoginDto)
@@ -188,7 +188,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 await _generalSender.GeneralAuthenticationSend(user, MailType.ConfirmEmail, null, null, null, null);
                 return IdentityResult.Failed(new UnauthorizedError("Account is not confirmed. Your confirmation code has sent"));
             }
-            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
         }
 
         public override async Task<IdentityResult> Logout()
@@ -222,7 +222,7 @@ namespace _1_BusinessLayer.Concrete.Services
                         return IdentityResult.Failed(new NotFoundError("Invalid provider"));
                 }
             }
-            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
         }
 
         public override async Task<IdentityResult> Register(UserRegisterDto userRegisterDto)

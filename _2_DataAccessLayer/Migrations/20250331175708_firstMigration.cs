@@ -178,7 +178,7 @@ namespace _2_DataAccessLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Bots",
+                name: "ChildBots",
                 columns: table => new
                 {
                     BotId = table.Column<int>(type: "int", nullable: false)
@@ -251,8 +251,8 @@ namespace _2_DataAccessLayer.Migrations
                     table.ForeignKey(
                         name: "FK_Activities_Bots_BotId",
                         column: x => x.BotId,
-                        principalTable: "Bots",
-                        principalColumn: "OwnerBotId");
+                        principalTable: "ChildBots",
+                        principalColumn: "ParentBotId");
                 });
 
             migrationBuilder.CreateTable(
@@ -283,13 +283,13 @@ namespace _2_DataAccessLayer.Migrations
                     table.ForeignKey(
                         name: "FK_Follows_Bots_BotFollowedId",
                         column: x => x.BotFollowedId,
-                        principalTable: "Bots",
-                        principalColumn: "OwnerBotId");
+                        principalTable: "ChildBots",
+                        principalColumn: "ParentBotId");
                     table.ForeignKey(
                         name: "FK_Follows_Bots_BotFollowerId",
                         column: x => x.BotFollowerId,
-                        principalTable: "Bots",
-                        principalColumn: "OwnerBotId");
+                        principalTable: "ChildBots",
+                        principalColumn: "ParentBotId");
                 });
 
             migrationBuilder.CreateTable(
@@ -323,8 +323,8 @@ namespace _2_DataAccessLayer.Migrations
                     table.ForeignKey(
                         name: "FK_Notifications_Bots_FromBotId",
                         column: x => x.FromBotId,
-                        principalTable: "Bots",
-                        principalColumn: "OwnerBotId");
+                        principalTable: "ChildBots",
+                        principalColumn: "ParentBotId");
                 });
 
             migrationBuilder.CreateTable(
@@ -351,8 +351,8 @@ namespace _2_DataAccessLayer.Migrations
                     table.ForeignKey(
                         name: "FK_Posts_Bots_BotId",
                         column: x => x.BotId,
-                        principalTable: "Bots",
-                        principalColumn: "OwnerBotId");
+                        principalTable: "ChildBots",
+                        principalColumn: "ParentBotId");
                 });
 
             migrationBuilder.CreateTable(
@@ -378,8 +378,8 @@ namespace _2_DataAccessLayer.Migrations
                     table.ForeignKey(
                         name: "FK_Entries_Bots_BotId",
                         column: x => x.BotId,
-                        principalTable: "Bots",
-                        principalColumn: "OwnerBotId");
+                        principalTable: "ChildBots",
+                        principalColumn: "ParentBotId");
                     table.ForeignKey(
                         name: "FK_Entries_Posts_PostId",
                         column: x => x.PostId,
@@ -410,8 +410,8 @@ namespace _2_DataAccessLayer.Migrations
                     table.ForeignKey(
                         name: "FK_Likes_Bots_BotId",
                         column: x => x.BotId,
-                        principalTable: "Bots",
-                        principalColumn: "OwnerBotId");
+                        principalTable: "ChildBots",
+                        principalColumn: "ParentBotId");
                     table.ForeignKey(
                         name: "FK_Likes_Entries_EntryId",
                         column: x => x.EntryId,
@@ -427,12 +427,12 @@ namespace _2_DataAccessLayer.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Activities_BotId",
                 table: "Activities",
-                column: "OwnerBotId");
+                column: "ParentBotId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Activities_UserId",
                 table: "Activities",
-                column: "OwnerUserId");
+                column: "ParentUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -449,12 +449,12 @@ namespace _2_DataAccessLayer.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
                 table: "AspNetUserClaims",
-                column: "OwnerUserId");
+                column: "ParentUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserLogins_UserId",
                 table: "AspNetUserLogins",
-                column: "OwnerUserId");
+                column: "ParentUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserRoles_RoleId",
@@ -482,19 +482,19 @@ namespace _2_DataAccessLayer.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bots_BotProfileName",
-                table: "Bots",
+                table: "ChildBots",
                 column: "BotProfileName",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bots_UserId",
-                table: "Bots",
-                column: "OwnerUserId");
+                table: "ChildBots",
+                column: "ParentUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Entries_BotId",
                 table: "Entries",
-                column: "OwnerBotId");
+                column: "ParentBotId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Entries_PostId",
@@ -504,7 +504,7 @@ namespace _2_DataAccessLayer.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Entries_UserId",
                 table: "Entries",
-                column: "OwnerUserId");
+                column: "ParentUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Follows_BotFollowedId",
@@ -529,7 +529,7 @@ namespace _2_DataAccessLayer.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Likes_BotId",
                 table: "Likes",
-                column: "OwnerBotId");
+                column: "ParentBotId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Likes_EntryId",
@@ -544,7 +544,7 @@ namespace _2_DataAccessLayer.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Likes_UserId",
                 table: "Likes",
-                column: "OwnerUserId");
+                column: "ParentUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notifications_FromBotId",
@@ -559,22 +559,22 @@ namespace _2_DataAccessLayer.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Notifications_UserId",
                 table: "SocialNotificationPreference",
-                column: "OwnerUserId");
+                column: "ParentUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_BotId",
                 table: "Posts",
-                column: "OwnerBotId");
+                column: "ParentBotId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_UserId",
                 table: "Posts",
-                column: "OwnerUserId");
+                column: "ParentUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserPreferences_UserId",
                 table: "UserPreferences",
-                column: "OwnerUserId",
+                column: "ParentUserId",
                 unique: true);
         }
 
@@ -624,7 +624,7 @@ namespace _2_DataAccessLayer.Migrations
                 name: "Posts");
 
             migrationBuilder.DropTable(
-                name: "Bots");
+                name: "ChildBots");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

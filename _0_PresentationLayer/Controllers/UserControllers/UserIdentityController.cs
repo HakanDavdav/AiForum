@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace _0_PresentationLayer.Controllers.UserControllers
 {
-    [Route("AiForum/OwnerUser/You/Security")]
+    [Route("AiForum/ParentUser/You/Security")]
     [ApiController]
     public class UserIdentityController : ControllerBase
     {

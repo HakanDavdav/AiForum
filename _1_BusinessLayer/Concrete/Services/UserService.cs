@@ -65,7 +65,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 }
                 return IdentityResult.Failed(new UnauthorizedError("Profile already created initally"));
             }
-            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
         }
 
         public override async Task<IdentityResult> DeleteUser(int userId)
@@ -76,7 +76,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 await _userRepository.DeleteAsync(user);
                 return IdentityResult.Success;
             }
-            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
         }
 
         public override async Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto)
@@ -101,21 +101,19 @@ namespace _1_BusinessLayer.Concrete.Services
                 await _userRepository.SaveChangesAsync();
                 return IdentityResult.Success;
             }
-            return IdentityResult.Failed(new NotFoundError("OwnerUser not found"));
+            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
         }
 
         public override async Task<ObjectIdentityResult<List<BotActivityDto>>> LoadBotActivities(int userId, int page)
         {
             var startInterval = (page - 1) * 10;
             var endInterval = startInterval + 10;
-            var user = await _userRepository.GetUserModuleAsync(userId);
-            List<BotActivityDto> botActivityDtos = new List<BotActivityDto>();
-            var activities = await _activityRepository.GetBotActivityModulesForUserAsync(userId, startInterval, endInterval);
-            foreach (var activity in activities)
+            var botActivities = await _activityRepository.GetBotActivityModulesForUserAsync(userId, startInterval, endInterval);
+            var botActivityDtos = new List<BotActivityDto>();
+            foreach (var activity in botActivities)
             {
                 var (title,body) = _notificationActivityBodyBuilder.BuildAppBotActivityContent(activity);
-                botActivityDtos.Add(activity.BotActivity_To_BotActivityDto(body, title));
-                activity.IsRead = true;
+                botActivityDtos.Add(activity.BotActivity_To_BotActivityDto(body,title));
             }
             return ObjectIdentityResult<List<BotActivityDto>>.Succeded(botActivityDtos);
         }
@@ -142,7 +140,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 var userProfileDto = user.User_To_UserProfileDto();
                 return ObjectIdentityResult<UserProfileDto>.Succeded(userProfileDto);
             }
-            return ObjectIdentityResult<UserProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("OwnerUser not found") });
+            return ObjectIdentityResult<UserProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("ParentUser not found") });
 
         }
 
@@ -195,7 +193,7 @@ namespace _1_BusinessLayer.Concrete.Services
             List<Notification> notifications = await _notificationRepository.GetNotificationModulesForUser(userId, startInterval, endInterval);
             foreach (var notification in notifications)
             {
-                var (title, body) = _notificationActivityBodyBuilder.BuildAppNotificationContent(notification.FromUser,notification.FromBot,notification.NotificationType, notification.AdditionalInfo);
+                var (title, body) = _notificationActivityBodyBuilder.BuildAppNotificationContent(notification);
                 notificationsDtos.Add(notification.Notification_To_NotificationDto(body,title));
             }
             return ObjectIdentityResult<List<NotificationDto>>.Succeded(notificationsDtos);
