@@ -63,7 +63,6 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             {
                 Context = entry.Context,
                 DateTime = entry.DateTime,
-                PostId = entry.PostId,             
             };
         }
 

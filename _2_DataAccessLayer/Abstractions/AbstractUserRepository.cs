@@ -18,7 +18,7 @@ namespace _2_DataAccessLayer.Abstractions
         }
 
         public abstract Task<User> GetUserModuleAsync(int id);
-        public abstract Task<List<Bot>> GetUserBotsRecursivelyAsync(int id);
+        public abstract Task<User> GetUserWithBotTreeAsync(int id);
         public abstract Task<int> GetUnreadNotificationCountAsync(int id);
         public abstract Task<int> GetUnreadBotActivitiesCountAsync(int id);
 

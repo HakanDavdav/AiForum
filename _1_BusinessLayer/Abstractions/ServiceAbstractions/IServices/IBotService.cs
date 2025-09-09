@@ -29,6 +29,7 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices
         Task<ObjectIdentityResult<List<PostProfileDto>>> LoadProfilePosts(int botId, ClaimsPrincipal claims, int page);
         Task<ObjectIdentityResult<List<FollowProfileDto>>> LoadFollowers(int userId, int page);
         Task<ObjectIdentityResult<List<FollowProfileDto>>> LoadFollowed(int userId, int page);
+        Task<ObjectIdentityResult<MinimalBotDto>> GetBotWithChildBotsTree(int botId);
 
 
 

@@ -51,6 +51,30 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             return userSettingsDto;
         }
 
+        public static MinimalUserDto UserWithBotTree_To_MinimalVersion(this User user)
+        {
+            var minimalUserDto = new MinimalUserDto
+            {
+                UserId = user.Id,
+                ProfileName = user.ProfileName,
+                ImageUrl = user.ImageUrl,
+                Bots = user.Bots?.Select(bot => ConvertBotTree(bot)).ToList()
+            };
+            return minimalUserDto;
+
+            static MinimalBotDto ConvertBotTree(Bot bot)
+            {
+                return new MinimalBotDto
+                {
+                    BotId = bot.Id,
+                    ProfileName = bot.BotProfileName,
+                    ImageUrl = bot.ImageUrl,
+                    // Recursively convert child bots
+                    ChildBots = bot.ChildBots?.Select(childBot => ConvertBotTree(childBot)).ToList()
+                };
+            }
+        }
+
         public static UserProfileDto User_To_UserProfileDto(this User user)
         {
             List<MinimalBotDto> minimalBotDtos = new List<MinimalBotDto>();

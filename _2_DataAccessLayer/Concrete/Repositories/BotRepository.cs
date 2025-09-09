@@ -124,5 +124,38 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             _context.Bots.AddRange(bots);
             await _context.SaveChangesAsync();
         }
+
+        public override async Task<Bot> GetBotWithChildBotTree(int id)
+        {
+            var parentBot = await _context.Bots
+                             .Where(u => u.Id == id)
+                             .Include(u => u.ChildBots)
+                             .FirstOrDefaultAsync();
+
+            if (parentBot == null)
+                throw new InvalidOperationException($"Bot with id {id} not found.");
+
+
+            foreach (var bot in parentBot.ChildBots)
+            {
+                await CollectBotsTreeAsync(bot);
+            }
+
+            return parentBot;
+
+            async Task CollectBotsTreeAsync(Bot bot)
+            {
+
+                // Properly await loading child bots
+                await _context.Entry(bot)
+                              .Collection(b => b.ChildBots)
+                              .LoadAsync();
+
+                foreach (var childBot in bot.ChildBots)
+                {
+                    await CollectBotsTreeAsync(childBot);
+                }
+            }
+        }
     }
 }

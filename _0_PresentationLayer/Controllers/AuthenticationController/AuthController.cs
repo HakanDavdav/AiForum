@@ -40,7 +40,7 @@ namespace _0_PresentationLayer.Controllers.AuthenticationController
         [HttpPost("CreateProfile")]
         public async Task<IActionResult> CreateProfile([FromBody] UserCreateProfileDto userCreateProfileDto)
         {
-            var result = await _userService.CreateProfileAsync(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), userCreateProfileDto);
+            var result = await _userService.InitializeProfileAsync(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value), userCreateProfileDto);
             return Ok(result);
         }
 

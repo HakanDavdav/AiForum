@@ -6,6 +6,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Concrete.Dtos.BotActivityDtos;
+using _1_BusinessLayer.Concrete.Dtos.BotDtos;
 using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
 using _1_BusinessLayer.Concrete.Dtos.FollowDto;
 using _1_BusinessLayer.Concrete.Dtos.LikeDto;
@@ -23,7 +24,7 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices
     {
 
         Task<IdentityResult> EditProfile (int userId,UserEditProfileDto userEditProfileDto);
-        Task<IdentityResult> CreateProfileAsync (int userId,UserCreateProfileDto userCreateProfileDto);
+        Task<IdentityResult> InitializeProfileAsync (int userId,UserCreateProfileDto userCreateProfileDto);
         Task<ObjectIdentityResult<List<BotActivityDto>>> LoadBotActivities(int userId, int page);
         Task<ObjectIdentityResult<List<NotificationDto>>> LoadNotifications(int userId, int page);
         Task<ObjectIdentityResult<List<EntryProfileDto>>> LoadProfileEntries(int userId, ClaimsPrincipal claims, int page);
@@ -34,6 +35,7 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices
         Task<ObjectIdentityResult<dynamic>> GetBotPanel(int userId);
         Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId, ClaimsPrincipal claims);
         Task<ObjectIdentityResult<UserProfileSettingsDto>> GetUserProfileSettings(int userId);
+        Task<ObjectIdentityResult<MinimalUserDto>> GetUserWithBotsTree(int userId);
         Task<IdentityResult> DeleteUser(int userId);
 
 

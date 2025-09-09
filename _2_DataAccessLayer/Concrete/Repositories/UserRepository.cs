@@ -128,7 +128,8 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                         BotGrade = bot.BotGrade,
                         BotProfileName = bot.BotProfileName,
                         Mode = bot.Mode
-                    }).ToList()
+                    }).ToList(),
+                    UserPreference = user.UserPreference,         
                 })
                 .FirstOrDefaultAsync(); // Tek bir kullanıcı çekiyoruz
             return user;
@@ -142,7 +143,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public override async Task<List<Bot>> GetUserBotsRecursivelyAsync(int id)
+        public override async Task<User> GetUserWithBotTreeAsync(int id)
         {
             var user = await _context.Users
                              .Where(u => u.Id == id)
@@ -150,21 +151,19 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                              .FirstOrDefaultAsync();
 
             if (user == null)
-                return new List<Bot>();
+                throw new InvalidOperationException($"User with id {id} not found.");
 
             var botList = new List<Bot>();
 
             foreach (var bot in user.Bots)
             {
-                await CollectBotsTreeAsync(bot, botList);
+                await CollectBotsTreeAsync(bot);
             }
 
-            return botList;
+            return user;
 
-            async Task CollectBotsTreeAsync(Bot bot, List<Bot> collectedBots)
+            async Task CollectBotsTreeAsync(Bot bot)
             {
-                collectedBots.Add(bot);
-
                 // Properly await loading child bots
                 await _context.Entry(bot)
                               .Collection(b => b.ChildBots)
@@ -172,7 +171,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
 
                 foreach (var childBot in bot.ChildBots)
                 {
-                    await CollectBotsTreeAsync(childBot, collectedBots);
+                    await CollectBotsTreeAsync(childBot);
                 }
             }
         }

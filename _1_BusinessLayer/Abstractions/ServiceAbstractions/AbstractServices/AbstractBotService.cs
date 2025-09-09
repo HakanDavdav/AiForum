@@ -55,6 +55,7 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
         public abstract Task<IdentityResult> DeployBot(int userId, int botId);
         public abstract Task<IdentityResult> EditBot(int userId, EditBotDto editBotDto);
         public abstract Task<ObjectIdentityResult<BotProfileDto>> GetBotProfile(int botId, ClaimsPrincipal claims);
+        public abstract Task<ObjectIdentityResult<MinimalBotDto>> GetBotWithChildBotsTree(int botId);
         public abstract Task<ObjectIdentityResult<List<BotActivityDto>>> LoadBotActivities(int botId, int page);
         public abstract Task<ObjectIdentityResult<List<MinimalLikeDto>>> LoadBotLikes(int botId, int page);
         public abstract Task<ObjectIdentityResult<List<FollowProfileDto>>> LoadFollowed(int userId, int page);

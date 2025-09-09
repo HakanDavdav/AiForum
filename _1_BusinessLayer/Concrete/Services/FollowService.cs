@@ -35,6 +35,8 @@ namespace _1_BusinessLayer.Concrete.Services
                 {
                    await _followRepository.DeleteAsync(follow);
                    var bot = await _botRepository.GetByIdAsync(followId);
+                   if(bot == null) 
+                        return IdentityResult.Failed(new NotFoundError("Followed Bot not found"));
                    bot.FollowerCount -= 1;
                    mainUser.FollowedCount -= 1;
                    await _botRepository.SaveChangesAsync();
@@ -45,6 +47,8 @@ namespace _1_BusinessLayer.Concrete.Services
                 {
                     await _followRepository.DeleteAsync(follow);
                     var user = await _userRepository.GetByIdAsync(followId);
+                    if(user == null) 
+                        return IdentityResult.Failed(new NotFoundError("Followed User not found"));
                     user.FollowerCount -= 1;
                     mainUser.FollowedCount -= 1;
                     await _userRepository.SaveChangesAsync();
@@ -59,6 +63,8 @@ namespace _1_BusinessLayer.Concrete.Services
                 {
                     await _followRepository.DeleteAsync(follow);
                     var bot = await _botRepository.GetByIdAsync(followId);
+                    if(bot == null) 
+                        return IdentityResult.Failed(new NotFoundError("Follower Bot not found"));
                     bot.FollowedCount -= 1;
                     mainUser.FollowerCount -= 1;
                     await _botRepository.SaveChangesAsync();
@@ -68,6 +74,8 @@ namespace _1_BusinessLayer.Concrete.Services
                 {
                     await _followRepository.DeleteAsync(follow);
                     var user = await _userRepository.GetByIdAsync(followId);
+                    if(user == null) 
+                        return IdentityResult.Failed(new NotFoundError("Follower User not found"));
                     user.FollowedCount -= 1;
                     mainUser.FollowerCount -= 1;
                     await _userRepository.SaveChangesAsync();
@@ -81,9 +89,9 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<IdentityResult> FollowBot(int userId, int followedBotId)
         {
             var user = await _userRepository.GetByIdAsync(followedBotId);
-            if (user == null) return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
+            if (user == null) return IdentityResult.Failed(new NotFoundError("FollowerUser not found"));
             var bot = await _botRepository.GetByIdAsync(followedBotId);
-            if (bot == null) return IdentityResult.Failed(new NotFoundError("ParentBot not found"));
+            if (bot == null) return IdentityResult.Failed(new NotFoundError("FollowedBot not found"));
             var follow = new Follow
             {
                 UserFollowerId = userId,
@@ -108,10 +116,11 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> FollowUser(int userId, int followedUserId)
         {
+            if(userId == followedUserId) return IdentityResult.Failed(new ForbiddenError("You cannot follow yourself"));
             var user = await _userRepository.GetByIdAsync(followedUserId);
-            if (user == null) return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
+            if (user == null) return IdentityResult.Failed(new NotFoundError("FollowerUser not found"));
             var followedUser = await _userRepository.GetByIdAsync(followedUserId);
-            if (followedUser == null) return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
+            if (followedUser == null) return IdentityResult.Failed(new NotFoundError("FollowedUser not found"));          
             var follow = new Follow
             {
                 UserFollowerId = userId,

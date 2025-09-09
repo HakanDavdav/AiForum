@@ -25,9 +25,9 @@ namespace _1_BusinessLayer.Concrete.Services
 {
     public class BotService : AbstractBotService
     {
-        public BotService(AbstractBotRepository botRepository, BotDeployManager botManager, AbstractUserRepository userRepository, 
+        public BotService(AbstractBotRepository botRepository, BotDeployManager botManager, AbstractUserRepository userRepository,
             AbstractPostRepository postRepository, AbstractEntryRepository entryRepository, AbstractLikeRepository likeRepository,
-            AbstractActivityRepository activityRepository, AbstractFollowRepository followRepository, NotificationActivityBodyBuilder notificationActivityBodyBuilder) 
+            AbstractActivityRepository activityRepository, AbstractFollowRepository followRepository, NotificationActivityBodyBuilder notificationActivityBodyBuilder)
             : base(botRepository, botManager, userRepository, postRepository, entryRepository, likeRepository, activityRepository, followRepository, notificationActivityBodyBuilder)
         {
         }
@@ -35,31 +35,24 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<IdentityResult> CreateBot(int userId, CreateBotDto createBotDto)
         {
             var user = await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(bot => bot.Id == userId).Include(bot => bot.Bots));
-            if (user != null)
-            {
-                if (user.Bots.Count <= 4)
-                {
-                    var bot = createBotDto.CreateBotDto_To_Bot(userId);
-                    user.Bots.Add(bot);
-                    await _userRepository.SaveChangesAsync();
-                    return IdentityResult.Success;
-                }
-                return IdentityResult.Failed(new ForbiddenError("ParentBot limit reached"));
-            }
-            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
+            if (user == null) return IdentityResult.Failed(new NotFoundError("User not found"));
+            if (user.Bots.Count > 4) return IdentityResult.Failed(new ForbiddenError("Personal bot limit reached"));
+            var bot = createBotDto.CreateBotDto_To_Bot(userId);
+            user.Bots.Add(bot);
+            await _userRepository.SaveChangesAsync();
+            return IdentityResult.Success;
+
         }
 
         public override async Task<IdentityResult> DeleteBot(int userId, int botId)
         {
             var user = await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(bot => bot.Id == userId).Include(bot => bot.Bots));
-            if (user != null)
-            {
-                var bot = user.Bots.FirstOrDefault(bot => bot.Id == botId);
-                user.Bots.Remove(bot);
-                await _userRepository.SaveChangesAsync();
-                return IdentityResult.Failed(new NotFoundError("This user does not have any type of that bot "));
-            }
-            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
+            if (user == null) return IdentityResult.Failed(new NotFoundError("User not found"));
+            var bot = user.Bots.FirstOrDefault(bot => bot.Id == botId);
+            if (bot == null) return IdentityResult.Failed(new NotFoundError("This user does not have any type of that bot "));
+            user.Bots.Remove(bot);
+            await _userRepository.SaveChangesAsync();
+            return IdentityResult.Success;
         }
 
         public override async Task<IdentityResult> DeployBot(int userId, int botId)
@@ -67,39 +60,20 @@ namespace _1_BusinessLayer.Concrete.Services
             throw new NotImplementedException();
         }
 
-        public override async Task<IdentityResult> EditBot(int userId, EditBotDto editBotDto)
-        {
-            var user = await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.Id == userId).Include(user => user.Bots));
-            var bot = user.Bots.FirstOrDefault(bot => bot.Id == editBotDto.BotId);
-            if (user != null)
-            {
-                if (bot != null)
-                {
-                    bot = editBotDto.Update___EditBotDto_To_Bot(bot);
-                    await _userRepository.SaveChangesAsync();
-                    return IdentityResult.Success;
-                }
-                return IdentityResult.Failed(new NotFoundError("This user does not have any type of that bot "));
-            }
-            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
-        }
 
         public override async Task<ObjectIdentityResult<BotProfileDto>> GetBotProfile(int botId, ClaimsPrincipal claims)
         {
             var startInterval = 0;
             var endInterval = claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10;
             var bot = await _botRepository.GetBotModuleAsync(botId);
+            if (bot == null) return ObjectIdentityResult<BotProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("ParentBot not found") });
             bot.Entries = await _entryRepository.GetEntryModulesForBotAsync(botId, startInterval, endInterval);
             bot.Posts = await _postRepository.GetPostModulesForBot(botId, startInterval, endInterval);
             bot.Followers = await _followRepository.GetFollowModulesForBotAsFollowedAsync(botId, startInterval, endInterval);
             bot.Followed = await _followRepository.GetFollowModulesForBotAsFollowerAsync(botId, startInterval, endInterval);
             bot.Activities = await _activityRepository.GetBotActivityModulesForBotAsync(botId, startInterval, endInterval);
-            if (bot != null)
-            {
-                var botProfileDto = bot.Bot_To_BotProfileDto(_notificationActivityBodyBuilder);
-                return ObjectIdentityResult<BotProfileDto>.Succeded(botProfileDto);
-            }
-            return ObjectIdentityResult<BotProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("ParentBot not found") });
+            var botProfileDto = bot.Bot_To_BotProfileDto(_notificationActivityBodyBuilder);
+            return ObjectIdentityResult<BotProfileDto>.Succeded(botProfileDto);
 
         }
 
@@ -167,7 +141,7 @@ namespace _1_BusinessLayer.Concrete.Services
             List<BotActivityDto> botActivityDtos = new List<BotActivityDto>();
             foreach (var activity in botActivities)
             {
-                var (title, body) =  _notificationActivityBodyBuilder.BuildAppBotActivityContent(activity);
+                var (title, body) = _notificationActivityBodyBuilder.BuildAppBotActivityContent(activity);
                 botActivityDtos.Add(activity.BotActivity_To_BotActivityDto(title, body));
                 activity.IsRead = true;
             }
@@ -185,6 +159,14 @@ namespace _1_BusinessLayer.Concrete.Services
                 minimalLikeDtos.Add(like.Like_To_MinimalLikeDto());
             }
             return ObjectIdentityResult<List<MinimalLikeDto>>.Succeded(minimalLikeDtos);
+        }
+
+        public override async Task<ObjectIdentityResult<MinimalBotDto>> GetBotWithChildBotsTree(int botId)
+        {
+            var bot = await _botRepository.GetBotWithChildBotTree(botId);
+            if (bot == null) return ObjectIdentityResult<MinimalBotDto>.Failed(null, new IdentityError[] { new NotFoundError("Bot not found") });
+            var minimalBotDto = bot.BotWithBotTree_To_MinimalVersion();
+            return ObjectIdentityResult<MinimalBotDto>.Succeded(minimalBotDto);
         }
     }
 

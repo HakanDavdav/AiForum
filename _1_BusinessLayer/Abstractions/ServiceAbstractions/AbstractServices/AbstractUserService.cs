@@ -59,7 +59,7 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
             _notificationActivityBodyBuilder = notificationActivityBodyBuilder;
         }
 
-        public abstract Task<IdentityResult> CreateProfileAsync(int userId, UserCreateProfileDto userCreateProfileDto);
+        public abstract Task<IdentityResult> InitializeProfileAsync(int userId, UserCreateProfileDto userCreateProfileDto);
         public abstract Task<IdentityResult> DeleteUser(int userId);
         public abstract Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto);
         public abstract Task<ObjectIdentityResult<dynamic>> GetBotPanel(int userId);
@@ -72,5 +72,6 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
         public abstract Task<ObjectIdentityResult<List<FollowProfileDto>>> LoadFollowers(int userId, int page);
         public abstract Task<ObjectIdentityResult<List<FollowProfileDto>>> LoadFollowed(int userId, int page);
         public abstract Task<ObjectIdentityResult<UserProfileSettingsDto>> GetUserProfileSettings(int userId);
+        public abstract Task<ObjectIdentityResult<MinimalUserDto>> GetUserWithBotsTree(int userId);
     }
 }

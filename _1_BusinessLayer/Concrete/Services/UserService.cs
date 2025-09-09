@@ -31,77 +31,74 @@ namespace _1_BusinessLayer.Concrete.Services
     public class UserService : AbstractUserService
     {
         public UserService(AbstractUserRepository userRepository, AbstractNotificationRepository notificationRepository, AbstractActivityRepository activityRepository,
-            AbstractBotRepository botRepository, AbstractUserPreferenceRepository preferenceRepository, AbstractEntryRepository entryRepository, 
-            AbstractPostRepository postRepository, AbstractLikeRepository likeRepository, AbstractFollowRepository followRepository, 
+            AbstractBotRepository botRepository, AbstractUserPreferenceRepository preferenceRepository, AbstractEntryRepository entryRepository,
+            AbstractPostRepository postRepository, AbstractLikeRepository likeRepository, AbstractFollowRepository followRepository,
             UserManager<User> userManager, SignInManager<User> signInManager, NotificationActivityBodyBuilder notificationActivityBodyBuilder) :
-            base(userRepository, notificationRepository, activityRepository, botRepository, preferenceRepository, 
+            base(userRepository, notificationRepository, activityRepository, botRepository, preferenceRepository,
                 entryRepository, postRepository, likeRepository, followRepository, userManager, signInManager, notificationActivityBodyBuilder)
         {
         }
 
-        public override async Task<IdentityResult> CreateProfileAsync(int userId, UserCreateProfileDto userCreateProfileDto)
-        {           
+        public override async Task<IdentityResult> InitializeProfileAsync(int userId, UserCreateProfileDto userCreateProfileDto)
+        {
             var user = await _userRepository.GetByIdAsync(userId);
-            if (user != null)
-            {
-                if (user.IsProfileCreated == false)
-                {
-                    user = userCreateProfileDto.Update___UserCreateProfileDto_To_User(user);
-                    user.IsProfileCreated = true;
-                    var removeResult = await _userManager.RemoveFromRoleAsync(user, "TempUser");
-                    if (!removeResult.Succeeded)
-                        return removeResult;
-
-                    var addResult = await _userManager.AddToRoleAsync(user, "StandardUser");
-                    if (!addResult.Succeeded)
-                        return addResult;
-
-                    var stampResult = await _userManager.UpdateSecurityStampAsync(user);
-                    if (!stampResult.Succeeded)
-                        return stampResult;
-                    await _signInManager.RefreshSignInAsync(user);
-                    await _userRepository.SaveChangesAsync();
-                    return IdentityResult.Success;
-                }
+            if (user == null) return
+                    IdentityResult.Failed(new NotFoundError("User not found"));
+            if (user.IsProfileCreated == true)
                 return IdentityResult.Failed(new UnauthorizedError("Profile already created initally"));
-            }
-            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
+
+            user = userCreateProfileDto.Update___UserCreateProfileDto_To_User(user);
+            user.IsProfileCreated = true;
+            var removeResult = await _userManager.RemoveFromRoleAsync(user, "TempUser");
+            if (!removeResult.Succeeded)
+                return removeResult;
+
+            var addResult = await _userManager.AddToRoleAsync(user, "StandardUser");
+            if (!addResult.Succeeded)
+                return addResult;
+
+            var stampResult = await _userManager.UpdateSecurityStampAsync(user);
+            if (!stampResult.Succeeded)
+                return stampResult;
+            await _signInManager.RefreshSignInAsync(user);
+            await _userRepository.SaveChangesAsync();
+            return IdentityResult.Success;
+
         }
 
         public override async Task<IdentityResult> DeleteUser(int userId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
-            if (user != null)
-            {
-                await _userRepository.DeleteAsync(user);
-                return IdentityResult.Success;
-            }
-            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
+            if (user == null) 
+                return IdentityResult.Failed(new NotFoundError("User not found"));
+            await _userRepository.DeleteAsync(user);
+            return IdentityResult.Success;
+
         }
 
         public override async Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto)
         {
+            //Due to the need of updating relational entities and need of cross id validation we need to include them here with custom repo method instead of using module methods.
             var user = await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.Id == userId).Include(user => user.UserPreference).Include(user => user.Bots));
-            if (user != null)
+            if (user == null) 
+                return IdentityResult.Failed(new NotFoundError("User not found"));
+            user = userEditProfileDto.Update___UserEditProfileDto_To_User(user);
+            var oldClaims = await _userManager.GetClaimsAsync(user);
+            foreach (var claim in oldClaims)
             {
-                user = userEditProfileDto.Update___UserEditProfileDto_To_User(user);
-                var oldClaims = await _userManager.GetClaimsAsync(user);
-                foreach (var claim in oldClaims)
-                {
-                    await _userManager.RemoveClaimAsync(user, claim);
-                }
-                var claims = new List<Claim>
+                await _userManager.RemoveClaimAsync(user, claim);
+            }
+            var claims = new List<Claim>
                   {
                      new Claim("Theme",user.UserPreference.Theme),
                      new Claim("PostPerPage", user.UserPreference.PostPerPage.ToString()),
                      new Claim("EntryPerPage", user.UserPreference.EntryPerPage.ToString())
                   };
-                await _userManager.AddClaimsAsync(user, claims);
-                await _signInManager.RefreshSignInAsync(user);
-                await _userRepository.SaveChangesAsync();
-                return IdentityResult.Success;
-            }
-            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
+            await _userManager.AddClaimsAsync(user, claims);
+            await _signInManager.RefreshSignInAsync(user);
+            await _userRepository.SaveChangesAsync();
+            return IdentityResult.Success;
+
         }
 
         public override async Task<ObjectIdentityResult<List<BotActivityDto>>> LoadBotActivities(int userId, int page)
@@ -112,8 +109,8 @@ namespace _1_BusinessLayer.Concrete.Services
             var botActivityDtos = new List<BotActivityDto>();
             foreach (var activity in botActivities)
             {
-                var (title,body) = _notificationActivityBodyBuilder.BuildAppBotActivityContent(activity);
-                botActivityDtos.Add(activity.BotActivity_To_BotActivityDto(body,title));
+                var (title, body) = _notificationActivityBodyBuilder.BuildAppBotActivityContent(activity);
+                botActivityDtos.Add(activity.BotActivity_To_BotActivityDto(body, title));
             }
             return ObjectIdentityResult<List<BotActivityDto>>.Succeded(botActivityDtos);
         }
@@ -127,20 +124,17 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId, ClaimsPrincipal claims)
         {
-            var startInterval = 0 ;
+            var startInterval = 0;
             var endInterval = claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10;
             var user = await _userRepository.GetUserModuleAsync(userId);
+            if (user == null)
+                return ObjectIdentityResult<UserProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("User not found") });
             user.Posts = await _postRepository.GetPostModulesForUser(userId, startInterval, endInterval);
             user.Entries = await _entryRepository.GetEntryModulesForUserAsync(userId, startInterval, endInterval);
             user.Followers = await _followRepository.GetFollowModulesForUserAsFollowedAsync(userId, startInterval, endInterval);
             user.Followed = await _followRepository.GetFollowModulesForUserAsFollowerAsync(userId, startInterval, endInterval);
-
-            if (user != null)
-            {
-                var userProfileDto = user.User_To_UserProfileDto();
-                return ObjectIdentityResult<UserProfileDto>.Succeded(userProfileDto);
-            }
-            return ObjectIdentityResult<UserProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("ParentUser not found") });
+            var userProfileDto = user.User_To_UserProfileDto();
+            return ObjectIdentityResult<UserProfileDto>.Succeded(userProfileDto);
 
         }
 
@@ -148,7 +142,7 @@ namespace _1_BusinessLayer.Concrete.Services
         {
             var startInterval = (page - 1) * (claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10);
             var endInterval = startInterval + (claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10);
-            var entries = await _entryRepository.GetEntryModulesForUserAsync(userId,startInterval,endInterval);
+            var entries = await _entryRepository.GetEntryModulesForUserAsync(userId, startInterval, endInterval);
             List<EntryProfileDto> entryProfileDtos = new List<EntryProfileDto>();
             foreach (var entry in entries)
             {
@@ -161,7 +155,7 @@ namespace _1_BusinessLayer.Concrete.Services
         {
             var startInterval = (page - 1) * (claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10);
             var endInterval = startInterval + (claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10);
-            var posts =  await _postRepository.GetPostModulesForUser(userId, startInterval, endInterval);
+            var posts = await _postRepository.GetPostModulesForUser(userId, startInterval, endInterval);
             List<PostProfileDto> postProfileDtos = new List<PostProfileDto>();
             foreach (var post in posts)
             {
@@ -194,7 +188,7 @@ namespace _1_BusinessLayer.Concrete.Services
             foreach (var notification in notifications)
             {
                 var (title, body) = _notificationActivityBodyBuilder.BuildAppNotificationContent(notification);
-                notificationsDtos.Add(notification.Notification_To_NotificationDto(body,title));
+                notificationsDtos.Add(notification.Notification_To_NotificationDto(body, title));
             }
             return ObjectIdentityResult<List<NotificationDto>>.Succeded(notificationsDtos);
         }
@@ -228,9 +222,16 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<ObjectIdentityResult<UserProfileSettingsDto>> GetUserProfileSettings(int userId)
         {
-            var user =  await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.Id == userId).Include(user => user.UserPreference).Include(user => user.Bots));
+            var user = await _userRepository.GetUserModuleAsync(userId);
             var userProfileSettingsDto = user.User_To_UserProfileSettingsDto();
             return ObjectIdentityResult<UserProfileSettingsDto>.Succeded(userProfileSettingsDto);
+        }
+
+        public override async Task<ObjectIdentityResult<MinimalUserDto>> GetUserWithBotsTree(int userId)
+        {
+            var user = await _userRepository.GetUserWithBotTreeAsync(userId);
+            var minimalUserDto = user.UserWithBotTree_To_MinimalVersion();
+            return ObjectIdentityResult<MinimalUserDto>.Succeded(minimalUserDto);
         }
     }
 }

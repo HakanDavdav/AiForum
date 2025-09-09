@@ -57,7 +57,6 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
 
         public async Task<IdentityResult> SendSocialMailAsync(User? FromUser, Bot? FromBot, User toUser, MailEvent mailEvent)
         {
-            if (toUser.EmailConfirmed == false) return IdentityResult.Failed(new UnauthorizedError("Email not confirmed"));
             var (body, subject) = _mailBodyBuilder.BuildSocialMailContent(FromUser, FromBot, mailEvent);
             SmtpClient smtpClient = null;
             try

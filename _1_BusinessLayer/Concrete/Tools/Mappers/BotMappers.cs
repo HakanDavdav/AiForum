@@ -96,6 +96,23 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             };
         }
 
+        public static MinimalBotDto BotWithBotTree_To_MinimalVersion(this Bot bot)
+        {
+           return ConvertBotTree(bot);
+
+            static MinimalBotDto ConvertBotTree(Bot bot)
+            {
+                return new MinimalBotDto
+                {
+                    BotId = bot.Id,
+                    ProfileName = bot.BotProfileName,
+                    ImageUrl = bot.ImageUrl,
+                    // Recursively convert child bots
+                    ChildBots = bot.ChildBots?.Select(childBot => ConvertBotTree(childBot)).ToList()
+                };
+            }
+        }
+
         public static Bot CreateBotDto_To_Bot(this CreateBotDto createBotDto, int userId)
         {
             return new Bot

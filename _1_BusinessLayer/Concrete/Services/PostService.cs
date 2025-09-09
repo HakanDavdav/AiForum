@@ -28,11 +28,11 @@ namespace _1_BusinessLayer.Concrete.Services
 {
     public class PostService : AbstractPostService
     {
-        public PostService(AbstractPostRepository postRepository, AbstractUserRepository userRepository, 
-            AbstractEntryRepository entryRepository, AbstractLikeRepository likeRepository, 
-            AbstractFollowRepository followRepository, MailEventFactory mailEventFactory, 
-            NotificationEventFactory notificationEventFactory, QueueSender queueSender, 
-            AbstractNotificationRepository notificationRepository) 
+        public PostService(AbstractPostRepository postRepository, AbstractUserRepository userRepository,
+            AbstractEntryRepository entryRepository, AbstractLikeRepository likeRepository,
+            AbstractFollowRepository followRepository, MailEventFactory mailEventFactory,
+            NotificationEventFactory notificationEventFactory, QueueSender queueSender,
+            AbstractNotificationRepository notificationRepository)
             : base(postRepository, userRepository, entryRepository, likeRepository, followRepository, mailEventFactory, notificationEventFactory, queueSender, notificationRepository)
         {
         }
@@ -40,79 +40,74 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<IdentityResult> CreatePost(int userId, CreatePostDto createPostDto)
         {
             var user = await _userRepository.GetByIdAsync(userId);
-            if (user != null)
+            if (user == null)
+                return IdentityResult.Failed(new NotFoundError("User not found"));
+            var post = createPostDto.CreatePostDto_To_Post();
+            user.Posts.Add(post);
+            user.PostCount += 1;
+            var follows = await _followRepository.GetWithCustomSearchAsync(query => query.Where(follow => follow.UserFollowedId == userId).AsNoTracking());
+            var toUserIds = follows.Select(follow => follow.UserFollowerId).ToList();
+            var mailEvents = _mailEventFactory.CreateMailEvents(user, null, toUserIds, MailType.CreatingPost, post.Title, post.PostId);
+            var notificationEvents = _notificationEventFactory.CreateNotificationEvents(user, null, toUserIds, NotificationType.CreatingPost, post.Title, post.PostId);
+            var notifications = new List<Notification>();
+            foreach (var toUserId in toUserIds)
             {
-                var post = createPostDto.CreatePostDto_To_Post();
-                user.Posts.Add(post);
-                user.PostCount += 1;
-                var follows = await _followRepository.GetWithCustomSearchAsync(query => query.Where(follow => follow.UserFollowedId == userId).AsNoTracking());
-                var toUserIds = follows.Select(follow => follow.UserFollowerId).ToList();
-                var mailEvents = _mailEventFactory.CreateMailEvents(user, null, toUserIds, MailType.CreatingPost, post.Title, post.PostId);
-                var notificationEvents = _notificationEventFactory.CreateNotificationEvents(user, null, toUserIds, NotificationType.CreatingPost, post.Title, post.PostId);
-                var notifications = new List<Notification>();
-                foreach (var toUserId in toUserIds)
+                notifications.Add(new Notification
                 {
-                    notifications.Add(new Notification
-                    {
-                        FromUserId = userId,
-                        OwnerUserId = toUserId,
-                        NotificationType = NotificationType.CreatingPost,
-                        AdditionalId = post.PostId,
-                        AdditionalInfo = post.Title,
-                        IsRead = false,
-                        DateTime = DateTime.UtcNow,
-                    });
-                }
-                await _notificationRepository.ManuallyInsertRangeAsync(notifications);
-                await _postRepository.SaveChangesAsync();
-                await _queueSender.MailQueueSendAsync(mailEvents);
-                await _queueSender.NotificationQueueSendAsync(notificationEvents);
-                return IdentityResult.Success;
+                    FromUserId = userId,
+                    OwnerUserId = toUserId,
+                    NotificationType = NotificationType.CreatingPost,
+                    AdditionalId = post.PostId,
+                    AdditionalInfo = post.Title,
+                    IsRead = false,
+                    DateTime = DateTime.UtcNow,
+                });
             }
-            return IdentityResult.Failed(new NotFoundError("Sender User not found"));
+            await _notificationRepository.ManuallyInsertRangeAsync(notifications);
+            await _postRepository.SaveChangesAsync();
+            await _queueSender.MailQueueSendAsync(mailEvents);
+            await _queueSender.NotificationQueueSendAsync(notificationEvents);
+            return IdentityResult.Success;
+
         }
 
         public override async Task<IdentityResult> DeletePost(int userId, int postId)
         {
             var user = await _userRepository.GetByIdAsync(postId);
-            if (user != null)
-            {
-                var post = await _postRepository.GetByIdAsync(postId);
-                if (post != null)
-                {
-                    if (post.OwnerUserId == userId)
-                    {
-                        await _postRepository.DeleteAsync(post);
-                        user.PostCount -= 1;
-                        await _postRepository.SaveChangesAsync();
-                        return IdentityResult.Success;
-                    }
-                    return IdentityResult.Failed(new UnauthorizedError("ParentUser does not have that kind of post:)"));
-                }
+            if (user == null)
+                return IdentityResult.Failed(new NotFoundError("User not found"));
+            var post = await _postRepository.GetByIdAsync(postId);
+            if (post == null)
                 return IdentityResult.Failed(new NotFoundError("Post not found"));
-            }
-            return IdentityResult.Failed(new NotFoundError("Post not found"));
+
+            if (post.OwnerUserId != userId)
+                return IdentityResult.Failed(new UnauthorizedError("User does not have that kind of post:)"));
+
+            await _postRepository.DeleteAsync(post);
+            user.PostCount -= 1;
+            await _postRepository.SaveChangesAsync();
+            return IdentityResult.Success;
+
+
         }
 
         public override async Task<IdentityResult> EditPost(int userId, EditPostDto editPostDto)
         {
             var user = await _userRepository.GetByIdAsync(userId);
-            if (user != null)
-            {
-                var post = await _postRepository.GetByIdAsync(userId);
-                if (post != null)
-                {
-                    if (post.OwnerUserId == userId)
-                    {
-                        post = editPostDto.Update___EditPostDto_To_Post(post);
-                        await _postRepository.SaveChangesAsync();
-                        return IdentityResult.Success;
-                    }
-                    return IdentityResult.Failed(new UnauthorizedError("ParentUser does not have that kind of post:)"));
-                }
+            if (user == null)
+                return IdentityResult.Failed(new NotFoundError("User not found"));
+
+            var post = await _postRepository.GetByIdAsync(userId);
+            if (post == null)
                 return IdentityResult.Failed(new NotFoundError("Post not found"));
-            }
-            return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
+
+            if (post.OwnerUserId != userId)
+                return IdentityResult.Failed(new UnauthorizedError("User does not have that kind of post:)"));
+
+            post = editPostDto.Update___EditPostDto_To_Post(post);
+            await _postRepository.SaveChangesAsync();
+            return IdentityResult.Success;
+
         }
 
         public override async Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(DateTime date, ClaimsPrincipal claims)
@@ -136,13 +131,11 @@ namespace _1_BusinessLayer.Concrete.Services
             var startInterval = 0;
             var endInterval = claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10;
             var post = await _postRepository.GetPostModuleAsync(postId);
-            if (post != null)
-            {
-                post.Entries = await _entryRepository.GetEntryModulesForPostAsync(postId, startInterval, endInterval);
-                var postDto = post.Post_To_PostDto();
-                return ObjectIdentityResult<PostDto>.Succeded(postDto);
-            }
-            return ObjectIdentityResult<PostDto>.Failed(null, new IdentityError[] { new NotFoundError("Post not found") });
+            if (post == null)
+                return ObjectIdentityResult<PostDto>.Failed(null, new IdentityError[] { new NotFoundError("Post not found") });
+            post.Entries = await _entryRepository.GetEntryModulesForPostAsync(postId, startInterval, endInterval);
+            var postDto = post.Post_To_PostDto();
+            return ObjectIdentityResult<PostDto>.Succeded(postDto);
 
         }
 

@@ -16,6 +16,8 @@ namespace _2_DataAccessLayer.Abstractions
         {
         }
         public abstract Task<Bot> GetBotModuleAsync(int id);
+        public abstract Task<Bot> GetBotWithChildBotTree(int id);
+
 
     }
 }

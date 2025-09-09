@@ -39,62 +39,63 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
         public async Task<IdentityResult> GeneralAuthenticationSend(User user, MailType? mailType, SmsType? smsType, string? newPhoneNumber, string? newEmail, string? newPassword)
         {
             var token = string.Empty;
-            if (mailType != null)
-            {
-                switch (mailType)
+            var result = null as IdentityResult;
+            switch (mailType)
                 {
                     case MailType.ChangeEmail:
+                        if (newEmail == null) return IdentityResult.Failed(new NotFoundError("New email is null"));
                         token = await _tokenFactory.CreateChangeEmailTokenAsync(user, newEmail);
-                        await _mailSender.SendAuthenticationMailAsync(user, token, mailType);
+                        result = await _mailSender.SendAuthenticationMailAsync(user, token, mailType);
                         break;
 
                     case MailType.ConfirmEmail:
                         token = await _tokenFactory.CreateMailConfirmationTokenAsync(user);
-                        await _mailSender.SendAuthenticationMailAsync(user, token, mailType);
+                        result = await _mailSender.SendAuthenticationMailAsync(user, token, mailType);
                         break;
 
                     case MailType.ResetPassword:
                         token = await _tokenFactory.CreatePasswordResetTokenAsync(user);
-                        await _mailSender.SendAuthenticationMailAsync(user, token, mailType);
+                        result = await _mailSender.SendAuthenticationMailAsync(user, token, mailType);
                         break;
 
                     case MailType.TwoFactor:
                         token = await _tokenFactory.CreateTwoFactorTokenAsync(user, "Email");
-                        await _mailSender.SendAuthenticationMailAsync(user, token, mailType);
+                        result = await _mailSender.SendAuthenticationMailAsync(user, token, mailType);
                         break;
 
                     default:
-                        return IdentityResult.Failed(new IdentityError { Description = "Invalid mail type." });
+                        return IdentityResult.Failed(new UnexpectedError("Unexcepted mail type"));
                 }
-            }
-            else if (smsType != null)
-            {
+            
                 switch (smsType)
                 {
                     case SmsType.ConfirmPhoneNumber:
+                        if (newPhoneNumber == null) return IdentityResult.Failed(new NotFoundError("New phone number is null"));
                         token = await _tokenFactory.CreateConfirmPhoneNumberTokenAsync(user, newPhoneNumber);
-                        await _smsSender.SendAuthenticationSms(user, token, smsType);
+                        result = await _smsSender.SendAuthenticationSms(user, token, smsType);
                         break;
 
                     case SmsType.TwoFactor:
                         token = await _tokenFactory.CreateTwoFactorTokenAsync(user, "Phone");
-                        await _smsSender.SendAuthenticationSms(user, token, smsType);
+                        result = await _smsSender.SendAuthenticationSms(user, token, smsType);
                         break;
 
                     case SmsType.ChangePhoneNumber:
+                        if (user.PhoneNumber == null) return IdentityResult.Failed(new NotFoundError("Current phone number is null"));
                         token = await _tokenFactory.CreateConfirmPhoneNumberTokenAsync(user, user.PhoneNumber);
-                        await _smsSender.SendAuthenticationSms(user, token, smsType);
+                        result = await _smsSender.SendAuthenticationSms(user, token, smsType);
                         break;
 
                     case SmsType.ResetPassword:
                         token = await _tokenFactory.CreatePasswordResetTokenAsync(user);
-                        await _smsSender.SendAuthenticationSms(user, token, smsType);
+                        result = await _smsSender.SendAuthenticationSms(user, token, smsType);
                         break;
 
                     default:
-                        return IdentityResult.Failed(new IdentityError { Description = "Invalid SMS type." });
+                        return IdentityResult.Failed(new UnexpectedError("Unexpected sms type"));
                 }
-            }
+            if (result != null && !result.Succeeded) return IdentityResult.Failed
+                            (result.Errors.Concat(new[] { new UnexpectedError("Message sending failed") }).ToArray());
             return IdentityResult.Success;
         }
 
@@ -104,17 +105,21 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
             object fromUserOrBot = null;
             if (mailEvent != null)
             {
-                if(!mailEvent.SenderUserId.HasValue && !mailEvent.SenderBotId.HasValue) throw new Exception();
-                if(!mailEvent.ReceiverUserId.HasValue) return IdentityResult.Failed(new NotFoundError("User does not have any followers"));
+                if(!mailEvent.SenderUserId.HasValue && !mailEvent.SenderBotId.HasValue) return IdentityResult.Failed(new NotFoundError("Sender not found from event"));
+                if (!mailEvent.ReceiverUserId.HasValue) return IdentityResult.Failed(new NotFoundError("User does not have any followers"));
                 if (mailEvent.SenderUserId.HasValue) fromUserOrBot = await _userRepository.GetByIdAsync(mailEvent.SenderUserId);
                 if (mailEvent.SenderBotId.HasValue) fromUserOrBot = await _botRepository.GetByIdAsync(mailEvent.SenderBotId);
-                receiverUser = await _userRepository.GetByIdAsync(mailEvent.ReceiverUserId);
+                receiverUser = await _userRepository.GetUserModuleAsync(mailEvent.ReceiverUserId.Value);
                 if (receiverUser == null) return IdentityResult.Failed(new NotFoundError("Receiver user been deleted or changed"));
+                if (receiverUser.Email == null) return IdentityResult.Failed(new NotFoundError("Receiver user does not have an email"));
+                if (!receiverUser.EmailConfirmed) return IdentityResult.Failed(new ForbiddenError("Receiver user email not confirmed"));
+                if (receiverUser.UserPreference.SocialEmailPreference == false) return IdentityResult.Failed(new ForbiddenError("Receiver user does not want to receive social emails"));
                 if (fromUserOrBot != null )
                 {
                     var result = await _mailSender.SendSocialMailAsync(fromUserOrBot as User, fromUserOrBot as Bot, receiverUser, mailEvent);
-                    if (!result.Succeeded) return result;
-                    return IdentityResult.Success;
+                    if (!result.Succeeded) return IdentityResult.Failed
+                            (result.Errors.Concat(new[] { new UnexpectedError("Mail sending failed") }).ToArray());
+
                 }
                 return IdentityResult.Failed(new NotFoundError("Sender not found"));
 
@@ -122,17 +127,20 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
             }
             if (notificationEvent != null)
             {
-                if (!notificationEvent.SenderUserId.HasValue && !notificationEvent.SenderBotId.HasValue) throw new Exception();
+                if (!notificationEvent.SenderUserId.HasValue && !notificationEvent.SenderBotId.HasValue) return IdentityResult.Failed(new NotFoundError("Sender not found from event"));
                 if (!notificationEvent.ReceiverUserId.HasValue) return IdentityResult.Failed(new NotFoundError("User does not have any followers"));
                 if (notificationEvent.SenderUserId.HasValue) fromUserOrBot = await _userRepository.GetByIdAsync(notificationEvent.SenderUserId);
                 if (notificationEvent.SenderBotId.HasValue) fromUserOrBot = await _botRepository.GetByIdAsync(notificationEvent.SenderBotId);
-                receiverUser = await _userRepository.GetByIdAsync(notificationEvent.ReceiverUserId);
+                receiverUser = await _userRepository.GetUserModuleAsync(notificationEvent.ReceiverUserId.Value);
                 if (receiverUser == null) return IdentityResult.Failed(new NotFoundError("Receiver user been deleted or changed"));
+                if (!receiverUser.EmailConfirmed) return IdentityResult.Failed(new ForbiddenError("Receiver user email not confirmed"));
+                if (receiverUser.UserPreference.SocialNotificationPreference == false) return IdentityResult.Failed(new ForbiddenError("Receiver user does not want to receive push notifications"));
                 if (fromUserOrBot != null)
                 {
                     var result = await _notificationSender.SendSocialNotificationAsync(fromUserOrBot as User, fromUserOrBot as Bot, receiverUser, notificationEvent);
-                    if (!result.Succeeded) return result;
-                    return IdentityResult.Success;
+                    if (!result.Succeeded) return IdentityResult.Failed
+                            (result.Errors.Concat(new[] { new UnexpectedError("Notification sending failed") }).ToArray());
+
                 }
                 return IdentityResult.Failed(new NotFoundError("Sender not found"));
             }
