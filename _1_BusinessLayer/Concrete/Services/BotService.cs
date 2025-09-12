@@ -18,6 +18,7 @@ using _1_BusinessLayer.Concrete.Tools.Managers.BotManagers;
 using _1_BusinessLayer.Concrete.Tools.Mappers;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
+using _2_DataAccessLayer.Concrete.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -46,13 +47,15 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> DeleteBot(int userId, int botId)
         {
-            var user = await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(bot => bot.Id == userId).Include(bot => bot.Bots));
-            if (user == null) return IdentityResult.Failed(new NotFoundError("User not found"));
-            var bot = user.Bots.FirstOrDefault(bot => bot.Id == botId);
-            if (bot == null) return IdentityResult.Failed(new NotFoundError("This user does not have any type of that bot "));
-            user.Bots.Remove(bot);
-            await _userRepository.SaveChangesAsync();
+            var bot = await _botRepository.GetBySpecificPropertySingularAsync(q => q.Where(b => b.Id == botId && b.ParentUserId == userId).Include(b => b.ParentUser));
+            if (bot == null)
+                return IdentityResult.Failed(new NotFoundError("Bot not found or owner is not you"));
+            if(bot.ParentUser == null) 
+                return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
+            await _botRepository.DeleteAsync(bot);
+            await _botRepository.SaveChangesAsync();
             return IdentityResult.Success;
+
         }
 
         public override async Task<IdentityResult> DeployBot(int userId, int botId)

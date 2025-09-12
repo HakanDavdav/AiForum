@@ -18,5 +18,7 @@ namespace _2_DataAccessLayer.Abstractions.Generic
         public Task UpdateAsync(T t);
         public Task<T> GetByIdAsync(int? id);
         public Task<T> GetBySpecificPropertySingularAsync(Func<IQueryable<T>, IQueryable<T>> queryModifier);
+        public Task StartTransactionAsync();
+        public Task CommitTransaction();
     }
 }

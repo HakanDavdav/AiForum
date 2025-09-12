@@ -19,6 +19,7 @@ using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete;
 using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete.Enums;
+using _2_DataAccessLayer.Concrete.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using static _2_DataAccessLayer.Concrete.Enums.MailTypes;
@@ -28,31 +29,38 @@ namespace _1_BusinessLayer.Concrete.Services
 {
     public class PostService : AbstractPostService
     {
-        public PostService(AbstractPostRepository postRepository, AbstractUserRepository userRepository,
-            AbstractEntryRepository entryRepository, AbstractLikeRepository likeRepository,
-            AbstractFollowRepository followRepository, MailEventFactory mailEventFactory,
-            NotificationEventFactory notificationEventFactory, QueueSender queueSender,
-            AbstractNotificationRepository notificationRepository)
-            : base(postRepository, userRepository, entryRepository, likeRepository, followRepository, mailEventFactory, notificationEventFactory, queueSender, notificationRepository)
+        public PostService(AbstractPostRepository postRepository, AbstractUserRepository userRepository, 
+            AbstractEntryRepository entryRepository, AbstractLikeRepository likeRepository, 
+            AbstractFollowRepository followRepository, MailEventFactory mailEventFactory, 
+            NotificationEventFactory notificationEventFactory, QueueSender queueSender, 
+            AbstractNotificationRepository notificationRepository, UnitOfWork unitOfWork) 
+            : base(postRepository, userRepository, entryRepository, likeRepository, followRepository, 
+                  mailEventFactory, notificationEventFactory, queueSender, notificationRepository, unitOfWork)
         {
         }
 
         public override async Task<IdentityResult> CreatePost(int userId, CreatePostDto createPostDto)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null)
-                return IdentityResult.Failed(new NotFoundError("User not found"));
-            var post = createPostDto.CreatePostDto_To_Post();
-            user.Posts.Add(post);
-            user.PostCount += 1;
-            var follows = await _followRepository.GetWithCustomSearchAsync(query => query.Where(follow => follow.UserFollowedId == userId).AsNoTracking());
-            var toUserIds = follows.Select(follow => follow.UserFollowerId).ToList();
-            var mailEvents = _mailEventFactory.CreateMailEvents(user, null, toUserIds, MailType.CreatingPost, post.Title, post.PostId);
-            var notificationEvents = _notificationEventFactory.CreateNotificationEvents(user, null, toUserIds, NotificationType.CreatingPost, post.Title, post.PostId);
-            var notifications = new List<Notification>();
-            foreach (var toUserId in toUserIds)
+            // Using WHERE IN avoids duplicating user data in the database result set with some big tables.
+            // Using multiple Savechanges() due to protect modularity of delete and manual insert-range methods in repository layer.
+            // Cannot use delete operation with ef entity references directly due to need of including bloated related entities to server.
+            // Using transaction due to multiple Savechanges() in a single process.
+            await _unitOfWork.BeginTransactionAsync();
+
+            try
             {
-                notifications.Add(new Notification
+                var user = await _userRepository.GetByIdAsync(userId);
+                if (user == null)
+                    return IdentityResult.Failed(new NotFoundError("User not found"));
+
+                var post = createPostDto.CreatePostDto_To_Post();
+                user.Posts.Add(post);
+                user.PostCount += 1;
+
+                var follows = await _followRepository
+                    .GetWithCustomSearchAsync(q => q.Where(f => f.UserFollowedId == userId).AsNoTracking());
+                var toUserIds = follows.Select(f => f.UserFollowerId).ToList();
+                var notifications = toUserIds.Select(toUserId => new Notification
                 {
                     FromUserId = userId,
                     OwnerUserId = toUserId,
@@ -61,50 +69,68 @@ namespace _1_BusinessLayer.Concrete.Services
                     AdditionalInfo = post.Title,
                     IsRead = false,
                     DateTime = DateTime.UtcNow,
-                });
+                }).ToList();
+
+                await _notificationRepository.ManuallyInsertRangeAsync(notifications);
+                await _postRepository.SaveChangesAsync();
+                await _unitOfWork.CommitTransactionAsync();
+
+                // Commit sonrası queue 
+                var mailEvents = _mailEventFactory.CreateMailEvents(user, null, toUserIds, MailType.CreatingPost, post.Title, post.PostId);
+                var notificationEvents = _notificationEventFactory.CreateNotificationEvents(user, null, toUserIds, NotificationType.CreatingPost, post.Title, post.PostId);
+
+                await _queueSender.MailQueueSendAsync(mailEvents);
+                await _queueSender.NotificationQueueSendAsync(notificationEvents);
+
+                return IdentityResult.Success;
             }
-            await _notificationRepository.ManuallyInsertRangeAsync(notifications);
-            await _postRepository.SaveChangesAsync();
-            await _queueSender.MailQueueSendAsync(mailEvents);
-            await _queueSender.NotificationQueueSendAsync(notificationEvents);
-            return IdentityResult.Success;
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
 
         }
 
         public override async Task<IdentityResult> DeletePost(int userId, int postId)
         {
-            var user = await _userRepository.GetByIdAsync(postId);
-            if (user == null)
-                return IdentityResult.Failed(new NotFoundError("User not found"));
-            var post = await _postRepository.GetByIdAsync(postId);
-            if (post == null)
-                return IdentityResult.Failed(new NotFoundError("Post not found"));
+            // Using multiple Savechanges() due to protect modularity of delete and manual insert-range methods in repository layer.
+            // Cannot use delete operation with ef entity references directly due to need of including bloated related entities to server.
+            // Using transaction due to multiple Savechanges() in a single process.
+            await _unitOfWork.BeginTransactionAsync();
 
-            if (post.OwnerUserId != userId)
-                return IdentityResult.Failed(new UnauthorizedError("User does not have that kind of post:)"));
-
-            await _postRepository.DeleteAsync(post);
-            user.PostCount -= 1;
-            await _postRepository.SaveChangesAsync();
-            return IdentityResult.Success;
-
+            try
+            {
+                var post = await _postRepository.GetBySpecificPropertySingularAsync
+            (q => q.Where(p => p.PostId == postId && p.OwnerUserId == userId).Include(p => p.OwnerUser));
+                if (post == null)
+                    return IdentityResult.Failed(new NotFoundError("Post not found or owner is not you"));
+                if (post.OwnerUser == null)
+                    return IdentityResult.Failed(new NotFoundError("Owner user not found"));
+                await _postRepository.StartTransactionAsync();
+                post.OwnerUser.PostCount -= 1;
+                await _postRepository.DeleteAsync(post);
+                await _postRepository.SaveChangesAsync();
+                await _unitOfWork.CommitTransactionAsync();
+                return IdentityResult.Success;
+            }
+            catch 
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
 
         }
 
         public override async Task<IdentityResult> EditPost(int userId, EditPostDto editPostDto)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null)
-                return IdentityResult.Failed(new NotFoundError("User not found"));
-
-            var post = await _postRepository.GetByIdAsync(userId);
+            var post = await _postRepository.GetBySpecificPropertySingularAsync
+                (q => q.Where(p => p.PostId == editPostDto.PostId && p.OwnerUserId == userId).Include(p => p.OwnerUser));
             if (post == null)
-                return IdentityResult.Failed(new NotFoundError("Post not found"));
-
-            if (post.OwnerUserId != userId)
-                return IdentityResult.Failed(new UnauthorizedError("User does not have that kind of post:)"));
-
-            post = editPostDto.Update___EditPostDto_To_Post(post);
+                return IdentityResult.Failed(new NotFoundError("Post not found or owner is not you"));
+            if (post.OwnerUser == null)
+                return IdentityResult.Failed(new NotFoundError("Owner user not found"));
+            editPostDto.Update___EditPostDto_To_Post(post);
             await _postRepository.SaveChangesAsync();
             return IdentityResult.Success;
 

@@ -76,9 +76,9 @@ namespace _1_BusinessLayer.Concrete.Services
 
         }
 
+        //cannot use for deletion of bots.
         public override async Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto)
         {
-            //Due to the need of updating relational entities and need of cross id validation we need to include them here with custom repo method instead of using module methods.
             var user = await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.Id == userId).Include(user => user.UserPreference).Include(user => user.Bots));
             if (user == null) 
                 return IdentityResult.Failed(new NotFoundError("User not found"));

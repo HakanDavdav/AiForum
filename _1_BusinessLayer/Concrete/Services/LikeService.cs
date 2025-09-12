@@ -10,6 +10,7 @@ using _1_BusinessLayer.Concrete.Tools.MessageBackgroundService;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete.Enums;
+using _2_DataAccessLayer.Concrete.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -21,33 +22,33 @@ namespace _1_BusinessLayer.Concrete.Services
 {
     public class LikeService : AbstractLikeService
     {
-        public LikeService(AbstractLikeRepository likeRepository, AbstractUserRepository userRepository, AbstractPostRepository postRepository, AbstractEntryRepository entryRepository, MailEventFactory mailEventFactory, AbstractNotificationRepository notificationRepository, NotificationEventFactory notificationEventFactory, QueueSender queueSender, AbstractFollowRepository followRepository, AbstractBotRepository botRepository) : base(likeRepository, userRepository, postRepository, entryRepository, mailEventFactory, notificationRepository, notificationEventFactory, queueSender, followRepository, botRepository)
+        public LikeService(AbstractLikeRepository likeRepository, AbstractUserRepository userRepository, AbstractPostRepository postRepository,
+            AbstractEntryRepository entryRepository, MailEventFactory mailEventFactory, AbstractNotificationRepository notificationRepository,
+            NotificationEventFactory notificationEventFactory, QueueSender queueSender, AbstractFollowRepository followRepository, 
+            AbstractBotRepository botRepository, UnitOfWork unitOfWork) 
+            : base(likeRepository, userRepository, postRepository, entryRepository, 
+                  mailEventFactory, notificationRepository, notificationEventFactory, queueSender, followRepository, botRepository, unitOfWork)
         {
         }
 
         public override async Task<IdentityResult> LikeEntry(int entryId, int userId)
         {
             object entryOwner = null;
-            var entry = await _entryRepository.GetByIdAsync(userId);
+            var entry = await _entryRepository.GetBySpecificPropertySingularAsync
+                (q => q.Where(e => e.EntryId == entryId).Include(e => e.OwnerUser).Include(e => e.OwnerBot).Include(e => e.Likes));
             if (entry == null)
                 return IdentityResult.Failed(new NotFoundError("User not found"));
-            {
-                if (entry.OwnerUserId.HasValue)
-                    entryOwner = await _userRepository.GetByIdAsync(userId);
-
-                else if (entry.OwnerBotId.HasValue)
-                    entryOwner = await _botRepository.GetByIdAsync(userId);
-            }
+            if (entry.OwnerUser == null && entry.OwnerBot == null)
+                return IdentityResult.Failed(new NotFoundError("Entry Owner not found"));
+            if (entry.OwnerUser != null)
+                entryOwner = entry.OwnerUser;
+            if (entry.OwnerBot != null)
+                entryOwner = entry.OwnerBot;
 
             var likerUser = await _userRepository.GetByIdAsync(userId);
 
-
-            if (entryOwner == null)
-                return IdentityResult.Failed(new NotFoundError("Entry Owner not found"));
-
             if (likerUser == null)
                 return IdentityResult.Failed(new NotFoundError("Liker user not found"));
-
 
             {
                 if (entryOwner is User entryOwnerUser)
@@ -114,23 +115,21 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<IdentityResult> LikePost(int postId, int userId)
         {
             object postOwner = null;
-            var post = await _postRepository.GetByIdAsync(userId);
+            var post = await _postRepository.GetBySpecificPropertySingularAsync
+                (q => q.Where(p => p.PostId == postId).Include(p => p.OwnerUser).Include(p => p.OwnerBot).Include(p => p.Likes));
             if (post == null)
                 return IdentityResult.Failed(new NotFoundError("Post not found"));
-
-            {
-                if (post.OwnerBotId.HasValue)
-                    postOwner = await _botRepository.GetByIdAsync(userId);
-
-                else if (post.OwnerUserId.HasValue)
-                    postOwner = await _userRepository.GetByIdAsync(userId);
-            }
-            var likerUser = await _userRepository.GetByIdAsync(userId);
-
-            if (postOwner == null)
+            if (post.OwnerUser == null && post.OwnerBot == null)
                 return IdentityResult.Failed(new NotFoundError("Post Owner not found"));
+            if (post.OwnerUser != null)
+                postOwner = post.OwnerUser;
+            if (post.OwnerBot != null)
+                postOwner = post.OwnerBot;
+
+            var likerUser = await _userRepository.GetByIdAsync(userId);
             if (likerUser == null)
                 return IdentityResult.Failed(new NotFoundError("Liker user not found"));
+
             {
                 if (postOwner is User postOwnerUser)
                 {
@@ -196,40 +195,64 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> UnlikeEntry(int userId, int likeId)
         {
-            //Due to the need of updating relational entities and need of cross id validation we need to include them here with custom repo method instead of using module methods.
-            var like = await _likeRepository.GetBySpecificPropertySingularAsync(q => q.Where(l => l.LikeId == likeId).Include(l => l.Entry).Include(l => l.OwnerUser));
-            if (like == null)
-                return IdentityResult.Failed(new NotFoundError("Like not found"));
-            if (like.Entry == null)
-                return IdentityResult.Failed(new NotFoundError("Entry not found"));
-            if (like.OwnerUser == null)
-                return IdentityResult.Failed(new NotFoundError("User not found"));
+            // Using multiple Savechanges() due to protect modularity of delete and manual insert-range methods in repository layer.
+            // Cannot use delete operation with ef entity references directly due to need of including bloated related entities to server.
+            // Using transaction due to multiple Savechanges() in a single process.
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var like = await _likeRepository.GetBySpecificPropertySingularAsync(q => q.Where(l => l.LikeId == likeId && l.OwnerUserId == userId).Include(l => l.Entry).Include(l => l.OwnerUser));
+                if (like == null)
+                    return IdentityResult.Failed(new NotFoundError("Like not found or owner is not you"));
+                if (like.Entry == null)
+                    return IdentityResult.Failed(new NotFoundError("Entry not found"));
+                if (like.OwnerUser == null)
+                    return IdentityResult.Failed(new NotFoundError("Like owner User not found"));
 
-            await _likeRepository.DeleteAsync(like);
-            like.Entry.LikeCount--;
-            like.OwnerUser.LikeCount--;
-            await _likeRepository.SaveChangesAsync();
-            return IdentityResult.Success;
+
+                like.Entry.LikeCount--;
+                like.OwnerUser.LikeCount--;
+                await _likeRepository.DeleteAsync(like);
+                await _likeRepository.SaveChangesAsync();
+                await _unitOfWork.CommitTransactionAsync();
+                return IdentityResult.Success;
+            }
+            catch (Exception)
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
 
         public override async Task<IdentityResult> UnlikePost(int userId, int likeId)
         {
-            //Due to the need of updating relational entities and need of cross id validation we need to include them here with custom repo method instead of using module methods.
-            var like = await _likeRepository.GetBySpecificPropertySingularAsync(q => q.Where(l => l.LikeId == likeId).Include(l => l.Post).Include(l => l.OwnerUser));
-            if (like == null)
-                return IdentityResult.Failed(new NotFoundError("Like not found"));
-            if (like.Post == null)
-                return IdentityResult.Failed(new NotFoundError("Post not found"));
-            if (like.OwnerUser == null)
-                return IdentityResult.Failed(new UnauthorizedError("Like owner user not found"));
-            var user = await _userRepository.GetByIdAsync(userId);
+            // Using multiple Savechanges() due to protect modularity of delete and manual insert methods in repository layer.
+            // Using transaction due to multiple Savechanges() in a single process.
+            await _unitOfWork.BeginTransactionAsync();
 
-            await _likeRepository.DeleteAsync(like);
-            like.Post.LikeCount--;
-            like.OwnerUser.LikeCount--;
-            await _likeRepository.SaveChangesAsync();
-            return IdentityResult.Success;
+            try
+            {
+                var like = await _likeRepository.GetBySpecificPropertySingularAsync(q => q.Where(l => l.LikeId == likeId && l.OwnerUserId == userId).Include(l => l.Post).Include(l => l.OwnerUser));
+                if (like == null)
+                    return IdentityResult.Failed(new NotFoundError("Like not found or owner is not you"));
+                if (like.Post == null)
+                    return IdentityResult.Failed(new NotFoundError("Post not found"));
+                if (like.OwnerUser == null)
+                    return IdentityResult.Failed(new UnauthorizedError("Like owner user not found"));
+                var user = await _userRepository.GetByIdAsync(userId);
+
+                like.Post.LikeCount--;
+                like.OwnerUser.LikeCount--;
+                await _likeRepository.DeleteAsync(like);
+                await _likeRepository.SaveChangesAsync();
+                return IdentityResult.Success;
+            }
+            catch (Exception)
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
     }
 
-    }
+}

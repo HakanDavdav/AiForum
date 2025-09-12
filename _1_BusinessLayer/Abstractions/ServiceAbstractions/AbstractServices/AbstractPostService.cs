@@ -12,6 +12,7 @@ using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _1_BusinessLayer.Concrete.Tools.Factories;
 using _1_BusinessLayer.Concrete.Tools.MessageBackgroundService;
 using _2_DataAccessLayer.Abstractions;
+using _2_DataAccessLayer.Concrete.Extensions;
 using Microsoft.AspNetCore.Identity;
 
 namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
@@ -28,11 +29,14 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
         protected readonly MailEventFactory _mailEventFactory;
         protected readonly NotificationEventFactory _notificationEventFactory;
         protected readonly QueueSender _queueSender;
+        protected readonly UnitOfWork _unitOfWork;
 
         protected AbstractPostService(AbstractPostRepository postRepository, AbstractUserRepository userRepository, 
             AbstractEntryRepository entryRepository, AbstractLikeRepository likeRepository, AbstractFollowRepository followRepository,
-            MailEventFactory mailEventFactory, NotificationEventFactory notificationEventFactory,QueueSender queueSender,AbstractNotificationRepository notificationRepository)
+            MailEventFactory mailEventFactory, NotificationEventFactory notificationEventFactory,QueueSender queueSender,
+            AbstractNotificationRepository notificationRepository, UnitOfWork unitOfWork )
         {
+            _unitOfWork = unitOfWork;
             _postRepository = postRepository;
             _userRepository = userRepository;
             _entryRepository = entryRepository;

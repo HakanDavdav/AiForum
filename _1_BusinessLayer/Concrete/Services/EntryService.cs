@@ -14,6 +14,7 @@ using _1_BusinessLayer.Concrete.Tools.Mappers;
 using _1_BusinessLayer.Concrete.Tools.MessageBackgroundService;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
+using _2_DataAccessLayer.Concrete.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using static _2_DataAccessLayer.Concrete.Enums.MailTypes;
@@ -23,94 +24,123 @@ namespace _1_BusinessLayer.Concrete.Services
 {
     public class EntryService : AbstractEntryService
     {
-        public EntryService(AbstractEntryRepository entryRepository, AbstractUserRepository userRepository, AbstractLikeRepository likeRepository,
-            AbstractPostRepository postRepository, AbstractFollowRepository followRepository, MailEventFactory mailEventFactory,
-            NotificationEventFactory notificationEventFactory, QueueSender queueSender, AbstractNotificationRepository notificationRepository)
-            : base(entryRepository, userRepository, likeRepository, postRepository, followRepository, mailEventFactory, notificationEventFactory, queueSender, notificationRepository)
+        public EntryService(AbstractEntryRepository entryRepository, AbstractUserRepository userRepository, AbstractLikeRepository likeRepository, AbstractPostRepository postRepository, AbstractFollowRepository followRepository, MailEventFactory mailEventFactory, NotificationEventFactory notificationEventFactory, QueueSender queueSender, AbstractNotificationRepository notificationRepository, UnitOfWork unitOfWork) : base(entryRepository, userRepository, likeRepository, postRepository, followRepository, mailEventFactory, notificationEventFactory, queueSender, notificationRepository, unitOfWork)
         {
         }
 
         public override async Task<IdentityResult> CreateEntryAsync(int userId, int postId, CreateEntryDto createEntryDto)
         {
-            var post = await _postRepository.GetBySpecificPropertySingularAsync(q => q.Where(p => p.PostId == postId).Include(p => p.OwnerUser));
-            if (post == null) return IdentityResult.Failed(new NotFoundError("Post not found"));
-            var entryCreatorUser = await _userRepository.GetByIdAsync(userId);
-            if (entryCreatorUser == null) return IdentityResult.Failed(new NotFoundError("User not found"));
-            var entry = createEntryDto.CreateEntryDto_To_Entry();
-            var follows = await _followRepository.GetWithCustomSearchAsync(query => query.Where(follow => follow.UserFollowedId == userId).AsNoTracking());
-            var toUserIds = follows.Select(follow => follow.UserFollowerId).ToList();
-            var creatorUserFollowerNotifications = new List<Notification>();
-            var postOwnerNotification = new Notification
+            // Using multiple Savechanges() due to protect modularity of delete and manual insert-range methods in repository layer.
+            // Using transaction due to multiple Savechanges() in a single process.
+            await _unitOfWork.BeginTransactionAsync();
+
+            try
             {
-                FromUserId = userId,
-                OwnerUserId = post.OwnerUserId,
-                NotificationType = NotificationType.NewEntryForPost,
-                AdditionalInfo = entry.Context,
-                AdditionalId = entry.EntryId,
-                IsRead = false,
-                DateTime = DateTime.UtcNow,
-            };
-            foreach (var toUserId in toUserIds)
-            {
-                creatorUserFollowerNotifications.Add(new Notification
+                var post = await _postRepository.GetBySpecificPropertySingularAsync(q => q.Where(p => p.PostId == postId).Include(p => p.OwnerUser));
+                if (post == null) return IdentityResult.Failed(new NotFoundError("Post not found"));
+                var entryCreatorUser = await _userRepository.GetByIdAsync(userId);
+                if (entryCreatorUser == null) return IdentityResult.Failed(new NotFoundError("User not found"));
+                var entry = createEntryDto.CreateEntryDto_To_Entry();
+                var follows = await _followRepository.GetWithCustomSearchAsync(query => query.Where(follow => follow.UserFollowedId == userId).AsNoTracking());
+                var toUserIds = follows.Select(follow => follow.UserFollowerId).ToList();
+                var creatorUserFollowerNotifications = new List<Notification>();
+                var postOwnerNotification = new Notification
                 {
                     FromUserId = userId,
-                    OwnerUserId = toUserId,
-                    NotificationType = NotificationType.CreatingEntry,
+                    OwnerUserId = post.OwnerUserId,
+                    NotificationType = NotificationType.NewEntryForPost,
                     AdditionalInfo = entry.Context,
                     AdditionalId = entry.EntryId,
                     IsRead = false,
                     DateTime = DateTime.UtcNow,
-                });
+                };
+                foreach (var toUserId in toUserIds)
+                {
+                    creatorUserFollowerNotifications.Add(new Notification
+                    {
+                        FromUserId = userId,
+                        OwnerUserId = toUserId,
+                        NotificationType = NotificationType.CreatingEntry,
+                        AdditionalInfo = entry.Context,
+                        AdditionalId = entry.EntryId,
+                        IsRead = false,
+                        DateTime = DateTime.UtcNow,
+                    });
+                }
+                if (post.OwnerUser != null) post.OwnerUser.ReceivedNotifications.Add(postOwnerNotification);
+                await _notificationRepository.ManuallyInsertRangeAsync(creatorUserFollowerNotifications);
+                post.Entries.Add(entry);
+                entryCreatorUser.Entries.Add(entry);
+                post.EntryCount += 1;
+                entryCreatorUser.EntryCount += 1;
+                await _entryRepository.SaveChangesAsync();
+                await _unitOfWork.CommitTransactionAsync();
+
+                var followersMailEvents = _mailEventFactory.CreateMailEvents(entryCreatorUser, null, toUserIds, MailType.CreatingEntry, entry.Context, entry.EntryId);
+                var followersNotificationEvents = _notificationEventFactory.CreateNotificationEvents(entryCreatorUser, null, toUserIds, NotificationType.CreatingEntry, entry.Context, entry.EntryId);
+                var postOwnerMailEvent = _mailEventFactory.CreateMailEvents(entryCreatorUser, null, new List<int?> { post.OwnerUserId }, MailType.NewEntryForPost, entry.Context, entry.EntryId);
+                var postOwnerNotificationEvent = _notificationEventFactory.CreateNotificationEvents(entryCreatorUser, null, new List<int?> { post.OwnerUserId }, NotificationType.NewEntryForPost, entry.Context, entry.EntryId);
+                var mailEvents = new List<MailEvent>();
+                var notificationEvents = new List<NotificationEvent>();
+                mailEvents.AddRange(followersMailEvents);
+                mailEvents.AddRange(postOwnerMailEvent);
+                notificationEvents.AddRange(followersNotificationEvents);
+                notificationEvents.AddRange(postOwnerNotificationEvent);
+                await _queueSender.MailQueueSendAsync(mailEvents);
+                await _queueSender.NotificationQueueSendAsync(notificationEvents);
+                return IdentityResult.Success;
             }
-            //insert entry and creatorUserFollowerNotifications in a single transaction
-            await _notificationRepository.ManuallyInsertRangeAsync(creatorUserFollowerNotifications);
-            await _notificationRepository.ManuallyInsertAsync(postOwnerNotification);
-            post.Entries.Add(entry);
-            entryCreatorUser.Entries.Add(entry);
-            post.EntryCount += 1;
-            entryCreatorUser.EntryCount += 1;
-            await _entryRepository.SaveChangesAsync();
-            var followersMailEvents = _mailEventFactory.CreateMailEvents(entryCreatorUser, null, toUserIds, MailType.CreatingEntry, entry.Context, entry.EntryId);
-            var followersNotificationEvents = _notificationEventFactory.CreateNotificationEvents(entryCreatorUser, null, toUserIds, NotificationType.CreatingEntry, entry.Context, entry.EntryId);
-            var postOwnerMailEvent = _mailEventFactory.CreateMailEvents(entryCreatorUser, null, new List<int?> { post.OwnerUserId }, MailType.NewEntryForPost, entry.Context, entry.EntryId);
-            var postOwnerNotificationEvent = _notificationEventFactory.CreateNotificationEvents(entryCreatorUser, null, new List<int?> { post.OwnerUserId }, NotificationType.NewEntryForPost, entry.Context, entry.EntryId);
-            var mailEvents = new List<MailEvent>();
-            var notificationEvents = new List<NotificationEvent>();
-            mailEvents.AddRange(followersMailEvents);
-            mailEvents.AddRange(postOwnerMailEvent);
-            notificationEvents.AddRange(followersNotificationEvents);
-            notificationEvents.AddRange(postOwnerNotificationEvent);
-            await _queueSender.MailQueueSendAsync(mailEvents);
-            await _queueSender.NotificationQueueSendAsync(notificationEvents);
-            return IdentityResult.Success;
+            catch (Exception)
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
+
+
+           
         }
 
         public override async Task<IdentityResult> DeleteEntryAsync(int userId, int entryId)
         {
-            var entry = await _entryRepository.GetBySpecificPropertySingularAsync(q => q.Where(e => e.EntryId == entryId).Include(e => e.OwnerUser).Include(e => e.Post));
-            if (entry == null)
-                return IdentityResult.Failed(new NotFoundError("Entry not found"));
-            if (entry.OwnerUser == null)
-                return IdentityResult.Failed(new NotFoundError("Owner User not found"));
-            if (entry.Post == null)
-                return IdentityResult.Failed(new NotFoundError("Post not found"));
+            // Using multiple Savechanges() due to protect modularity of delete and manual insert-range methods in repository layer.
+            // Cannot use delete operation with ef entity references directly due to need of including bloated related entities to server.
+            // Using transaction due to multiple Savechanges() in a single process.
+            await _unitOfWork.BeginTransactionAsync();
 
-            await _entryRepository.DeleteAsync(entry);
-            entry.OwnerUser.EntryCount--;
-            entry.Post.EntryCount--;
-            await _entryRepository.SaveChangesAsync();
-            return IdentityResult.Success;
+            try
+            {
+                var entry = await _entryRepository.GetBySpecificPropertySingularAsync
+            (q => q.Where(e => e.EntryId == entryId && e.OwnerUserId == userId).Include(e => e.OwnerUser).Include(e => e.Post));
+                if (entry == null)
+                    return IdentityResult.Failed(new NotFoundError("Entry not found or owner is not you"));
+                if (entry.OwnerUser == null)
+                    return IdentityResult.Failed(new NotFoundError("Owner User not found"));
+                if (entry.Post == null)
+                    return IdentityResult.Failed(new NotFoundError("Post not found"));
+
+
+                entry.OwnerUser.EntryCount--;
+                entry.Post.EntryCount--;
+                await _entryRepository.DeleteAsync(entry);
+                await _entryRepository.SaveChangesAsync();
+                await _unitOfWork.CommitTransactionAsync();
+                return IdentityResult.Success;
+            }
+            catch (Exception)
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
 
         }
 
         public override async Task<IdentityResult> EditEntryAsync(int userId, EditEntryDto editEntryDto)
         {
-            var entry = await _entryRepository.GetByIdAsync(editEntryDto.EntryId);
+            var entry = await _entryRepository.GetBySpecificPropertySingularAsync(q => q.Where(e => e.EntryId == editEntryDto.EntryId && e.OwnerUserId == userId).Include(e => e.OwnerUser));
             if (entry == null)
-                return IdentityResult.Failed(new NotFoundError("Entry not found"));
-            if (entry.OwnerUserId != userId)
-                return IdentityResult.Failed(new UnauthorizedError("You cannot edit another entryCreatorUser's entry"));
+                return IdentityResult.Failed(new NotFoundError("Entry not found or owner is not you"));
+            if (entry.OwnerUserId == null)
+                return IdentityResult.Failed(new UnauthorizedError("Entry owner is not found"));
 
             entry = editEntryDto.Update___EditEntryDto_To_Entry(entry);
             await _entryRepository.SaveChangesAsync();

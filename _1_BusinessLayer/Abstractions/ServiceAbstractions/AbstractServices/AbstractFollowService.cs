@@ -7,6 +7,7 @@ using _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices;
 using _1_BusinessLayer.Concrete.Tools.Factories;
 using _1_BusinessLayer.Concrete.Tools.MessageBackgroundService;
 using _2_DataAccessLayer.Abstractions;
+using _2_DataAccessLayer.Concrete.Extensions;
 using Microsoft.AspNetCore.Identity;
 
 namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
@@ -19,9 +20,11 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
         protected readonly MailEventFactory _mailEventFactory;
         protected readonly NotificationEventFactory _notificationEventFactory;
         protected readonly QueueSender _queueSender;
+        protected readonly UnitOfWork _unitOfWork;
+
 
         public AbstractFollowService(AbstractFollowRepository followRepository, AbstractUserRepository userRepository, AbstractBotRepository botRepository,
-            MailEventFactory mailEventFactory, NotificationEventFactory notificationEventFactory, QueueSender queueSender)
+            MailEventFactory mailEventFactory, NotificationEventFactory notificationEventFactory, QueueSender queueSender, UnitOfWork unitOfWork)
         {
             _followRepository = followRepository;
             _userRepository = userRepository;
@@ -29,6 +32,7 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
             _mailEventFactory = mailEventFactory;
             _notificationEventFactory = notificationEventFactory;
             _queueSender = queueSender;
+            _unitOfWork = unitOfWork;
 
         }
 

@@ -9,7 +9,9 @@ using _1_BusinessLayer.Concrete.Tools.Factories;
 using _1_BusinessLayer.Concrete.Tools.MessageBackgroundService;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
+using _2_DataAccessLayer.Concrete.Extensions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using static _2_DataAccessLayer.Concrete.Enums.BotActivityTypes;
 using static _2_DataAccessLayer.Concrete.Enums.MailTypes;
 using static _2_DataAccessLayer.Concrete.Enums.NotificationTypes;
@@ -19,76 +21,76 @@ namespace _1_BusinessLayer.Concrete.Services
     public class FollowService : AbstractFollowService
     {
         public FollowService(AbstractFollowRepository followRepository, AbstractUserRepository userRepository, AbstractBotRepository botRepository, 
-            MailEventFactory mailEventFactory, NotificationEventFactory notificationEventFactory, QueueSender queueSender) 
-            : base(followRepository, userRepository, botRepository, mailEventFactory, notificationEventFactory, queueSender)
+            MailEventFactory mailEventFactory, NotificationEventFactory notificationEventFactory, QueueSender queueSender, UnitOfWork unitOfWork) 
+            : base(followRepository, userRepository, botRepository, mailEventFactory, notificationEventFactory, queueSender,unitOfWork)
         {
         }
 
         public override async Task<IdentityResult> DeleteFollow(int userId, int followId)
         {
-            var follow = await _followRepository.GetByIdAsync(followId);
-            if (follow == null) return IdentityResult.Failed(new NotFoundError("Follow not found"));
-            if (follow.UserFollowerId != null && follow.UserFollowerId == userId)
-            {
-                var mainUser = await _userRepository.GetByIdAsync(followId);
-                if (follow.BotFollowedId != null)
-                {
-                   await _followRepository.DeleteAsync(follow);
-                   var bot = await _botRepository.GetByIdAsync(followId);
-                   if(bot == null) 
-                        return IdentityResult.Failed(new NotFoundError("Followed Bot not found"));
-                   bot.FollowerCount -= 1;
-                   mainUser.FollowedCount -= 1;
-                   await _botRepository.SaveChangesAsync();
-                   return IdentityResult.Success;
+            // Using multiple Savechanges() due to protect modularity of delete and manual insert-range methods in repository layer.
+            // Cannot use delete operation with ef entity references directly due to need of including bloated related entities to server.
+            // Using transaction due to multiple Savechanges() in a single process.
+            await _unitOfWork.BeginTransactionAsync();
 
-                }
-                else if (follow.UserFollowedId != null)
-                {
-                    await _followRepository.DeleteAsync(follow);
-                    var user = await _userRepository.GetByIdAsync(followId);
-                    if(user == null) 
-                        return IdentityResult.Failed(new NotFoundError("Followed User not found"));
-                    user.FollowerCount -= 1;
-                    mainUser.FollowedCount -= 1;
-                    await _userRepository.SaveChangesAsync();
-                    return IdentityResult.Success;
-                }
-                return IdentityResult.Failed(new UnexpectedError("Invalid Follow object"));
-            }
-            else if (follow.UserFollowedId != null && follow.UserFollowedId == userId)
+            try
             {
-                var mainUser = await _userRepository.GetByIdAsync(followId);
-                if(follow.BotFollowerId != null)
+                var follow = await _followRepository.GetBySpecificPropertySingularAsync(
+                    q => q.Where(f => f.FollowId == followId)
+                          .Include(f => f.UserFollowed)
+                          .Include(f => f.BotFollowed)
+                          .Include(f => f.BotFollower)
+                          .Include(f => f.UserFollower));
+
+                if (follow == null)
+                    return IdentityResult.Failed(new NotFoundError("Follow not found"));
+                if (userId != follow.UserFollowerId && userId != follow.UserFollowedId)
+                    return IdentityResult.Failed(new ForbiddenError("You are not allowed to delete this follow"));
+
+                // Güncellemeleri ve silmeyi transaction içinde yap
+                if (follow.UserFollowerId == userId && follow.UserFollower != null)
                 {
-                    await _followRepository.DeleteAsync(follow);
-                    var bot = await _botRepository.GetByIdAsync(followId);
-                    if(bot == null) 
-                        return IdentityResult.Failed(new NotFoundError("Follower Bot not found"));
-                    bot.FollowedCount -= 1;
-                    mainUser.FollowerCount -= 1;
-                    await _botRepository.SaveChangesAsync();
-                    return IdentityResult.Success;
+                    if (follow.BotFollowed != null)
+                    {
+                        follow.BotFollowed.FollowerCount -= 1;
+                        follow.UserFollower.FollowedCount -= 1;
+                    }
+                    else if (follow.UserFollowed != null)
+                    {
+                        follow.UserFollowed.FollowerCount -= 1;
+                        follow.UserFollower.FollowedCount -= 1;
+                    }
                 }
-                else if(follow.UserFollowerId != null)
+                else if (follow.UserFollowedId == userId && follow.UserFollowed != null)
                 {
-                    await _followRepository.DeleteAsync(follow);
-                    var user = await _userRepository.GetByIdAsync(followId);
-                    if(user == null) 
-                        return IdentityResult.Failed(new NotFoundError("Follower User not found"));
-                    user.FollowedCount -= 1;
-                    mainUser.FollowerCount -= 1;
-                    await _userRepository.SaveChangesAsync();
-                    return IdentityResult.Success;
+                    if (follow.BotFollower != null)
+                    {
+                        follow.BotFollower.FollowedCount -= 1;
+                        follow.UserFollowed.FollowerCount -= 1;
+                    }
+                    else if (follow.UserFollower != null)
+                    {
+                        follow.UserFollower.FollowedCount -= 1;
+                        follow.UserFollowed.FollowerCount -= 1;
+                    }
                 }
-                return IdentityResult.Failed(new UnexpectedError("Invalid Follow object"));
+
+                await _followRepository.DeleteAsync(follow);
+                await _followRepository.SaveChangesAsync();
+                await _unitOfWork.CommitTransactionAsync();
+                return IdentityResult.Success;
             }
-            return IdentityResult.Failed(new UnexpectedError("Invalid Follow object"));
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
+
 
         public override async Task<IdentityResult> FollowBot(int userId, int followedBotId)
         {
-            var user = await _userRepository.GetByIdAsync(followedBotId);
+            var user = await _userRepository.GetByIdAsync(userId);
             if (user == null) return IdentityResult.Failed(new NotFoundError("FollowerUser not found"));
             var bot = await _botRepository.GetByIdAsync(followedBotId);
             if (bot == null) return IdentityResult.Failed(new NotFoundError("FollowedBot not found"));
@@ -117,7 +119,7 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<IdentityResult> FollowUser(int userId, int followedUserId)
         {
             if(userId == followedUserId) return IdentityResult.Failed(new ForbiddenError("You cannot follow yourself"));
-            var user = await _userRepository.GetByIdAsync(followedUserId);
+            var user = await _userRepository.GetByIdAsync(userId);
             if (user == null) return IdentityResult.Failed(new NotFoundError("FollowerUser not found"));
             var followedUser = await _userRepository.GetByIdAsync(followedUserId);
             if (followedUser == null) return IdentityResult.Failed(new NotFoundError("FollowedUser not found"));          
@@ -130,7 +132,7 @@ namespace _1_BusinessLayer.Concrete.Services
             followedUser.Followers.Add(follow);
             user.FollowedCount += 1;
             followedUser.FollowerCount += 1;
-            followedUser.ReceivedNotifications.Add(new Notification
+            var notification = new Notification
             {
                 FromUserId = userId,
                 OwnerUserId = followedUserId,
@@ -139,7 +141,9 @@ namespace _1_BusinessLayer.Concrete.Services
                 AdditionalInfo = user.ProfileName,
                 IsRead = false,
                 DateTime = DateTime.UtcNow,
-            });
+            };
+            user.SentNotifications.Add(notification);
+            followedUser.ReceivedNotifications.Add(notification);
             await _followRepository.SaveChangesAsync();
             var notificationEvents = _notificationEventFactory.CreateNotificationEvents(user, null, new List<int?>{ followedUserId }, NotificationType.GainedFollower, user.ProfileName, userId);
             var mailEvents = _mailEventFactory.CreateMailEvents(user, null, new List<int?> { followedUserId }, MailType.GainedFollower, user.ProfileName, userId);
