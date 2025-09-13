@@ -11,11 +11,12 @@ using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
 using _1_BusinessLayer.Concrete.Dtos.FollowDto;
 using _1_BusinessLayer.Concrete.Dtos.LikeDto;
 using _1_BusinessLayer.Concrete.Dtos.PostDtos;
+using _1_BusinessLayer.Concrete.Tools.Algorithms;
 using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
+using _1_BusinessLayer.Concrete.Tools.Extensions.Mappers;
 using _1_BusinessLayer.Concrete.Tools.Managers.BotManagers;
-using _1_BusinessLayer.Concrete.Tools.Mappers;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete.Repositories;
@@ -171,6 +172,8 @@ namespace _1_BusinessLayer.Concrete.Services
             var minimalBotDto = bot.BotWithBotTree_To_MinimalVersion();
             return ObjectIdentityResult<MinimalBotDto>.Succeded(minimalBotDto);
         }
+
+
     }
 
 }

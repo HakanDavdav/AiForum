@@ -9,29 +9,35 @@ using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Concrete.Repositories
 {
-    public class UserPreferenceRepository : AbstractUserPreferenceRepository
+    public class TrendingPostRepository : AbstractTrendingPostRepository
     {
-        public UserPreferenceRepository(ApplicationDbContext context, ILogger<UserPreference> logger) : base(context, logger)
+        public TrendingPostRepository(ApplicationDbContext context, ILogger<TrendingPost> logger) : base(context, logger)
         {
         }
 
 
-        public override async Task<List<UserPreference>> GetWithCustomSearchAsync(Func<IQueryable<UserPreference>, IQueryable<UserPreference>> queryModifier)
+
+        public override async Task<List<TrendingPost>> GetWithCustomSearchAsync(Func<IQueryable<TrendingPost>, IQueryable<TrendingPost>> queryModifier)
         {
-            IQueryable<UserPreference> query = _context.UserPreferences;
+            IQueryable<TrendingPost> query = _context.TrendingPosts;
             if (queryModifier != null)
                 query = queryModifier(query);
             return await query.ToListAsync();
         }
 
-        public override async Task<UserPreference> GetBySpecificPropertySingularAsync(Func<IQueryable<UserPreference>, IQueryable<UserPreference>> queryModifier)
+        public override async Task<TrendingPost> GetBySpecificPropertySingularAsync(Func<IQueryable<TrendingPost>, IQueryable<TrendingPost>> queryModifier)
         {
-            IQueryable<UserPreference> query = _context.UserPreferences;
+            IQueryable<TrendingPost> query = _context.TrendingPosts;
             if (queryModifier != null)
                 query = queryModifier(query);
 #pragma warning disable CS8603 // Possible null reference return.
             return await query.FirstOrDefaultAsync();
 #pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        public override Task DeleteOldest(int count)
+        {
+            throw new NotImplementedException();
         }
     }
 }

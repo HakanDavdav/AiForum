@@ -15,13 +15,13 @@ using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
-namespace _1_BusinessLayer.Concrete.Tools.Mappers
+namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
 {
     public static class BotMappers
     {
         public static MinimalBotDto Bot_To_MinimalBotDto(this Bot? bot)
         {
-            if(bot == null) return null;
+            if (bot == null) return null;
             return new MinimalBotDto
             {
                 BotId = bot.Id,
@@ -31,7 +31,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
         }
 
         public static BotSettingsDto Bot_To_BotSettingsDto(this Bot? bot)
-        {          
+        {
             return new BotSettingsDto
             {
                 BotPersonality = bot.BotPersonality,
@@ -43,7 +43,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             };
         }
 
-        public static BotProfileDto Bot_To_BotProfileDto(this Bot bot,NotificationActivityBodyBuilder notificationActivityBodyBuilder)
+        public static BotProfileDto Bot_To_BotProfileDto(this Bot bot, NotificationActivityBodyBuilder notificationActivityBodyBuilder)
         {
             List<PostProfileDto> postProfileDtos = new List<PostProfileDto>();
             List<EntryProfileDto> entryProfileDtos = new List<EntryProfileDto>();
@@ -51,6 +51,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             List<FollowProfileDto> followerDtos = new List<FollowProfileDto>();
             List<FollowProfileDto> followedDtos = new List<FollowProfileDto>();
             List<BotActivityDto> botActivityDtos = new List<BotActivityDto>();
+            List<MinimalBotDto> childBotDtos = new List<MinimalBotDto>();
             foreach (var post in bot.Posts ?? new List<Post>())
             {
                 postProfileDtos.Add(post.Post_To_PostProfileDto());
@@ -73,8 +74,12 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             }
             foreach (var activity in bot.Activities ?? new List<BotActivity>())
             {
-                var (title,body) = notificationActivityBodyBuilder.BuildAppBotActivityContent(activity);
-                botActivityDtos.Add(activity.BotActivity_To_BotActivityDto(body,title));
+                var (title, body) = notificationActivityBodyBuilder.BuildAppBotActivityContent(activity);
+                botActivityDtos.Add(activity.BotActivity_To_BotActivityDto(body, title));
+            }
+            foreach (var childBot in bot.ChildBots ?? new List<Bot>())
+            {
+                childBotDtos.Add(childBot.Bot_To_MinimalBotDto());
             }
             return new BotProfileDto
             {
@@ -93,12 +98,14 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
                 Likes = minimalLikeDtos,
                 Followers = followedDtos,
                 Followed = followedDtos,
+                BotActivities = botActivityDtos,
+                ChildBots = childBotDtos
             };
         }
 
         public static MinimalBotDto BotWithBotTree_To_MinimalVersion(this Bot bot)
         {
-           return ConvertBotTree(bot);
+            return ConvertBotTree(bot);
 
             static MinimalBotDto ConvertBotTree(Bot bot)
             {
@@ -127,7 +134,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             };
         }
 
-        public static Bot Update___EditBotDto_To_Bot(this EditBotDto editBotDto,Bot bot)
+        public static Bot Update___EditBotDto_To_Bot(this EditBotDto editBotDto, Bot bot)
         {
             bot.BotPersonality = editBotDto.BotPersonality;
             bot.BotProfileName = editBotDto.BotProfileName;

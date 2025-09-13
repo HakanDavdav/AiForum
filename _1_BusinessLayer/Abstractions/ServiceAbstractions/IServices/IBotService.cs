@@ -20,7 +20,6 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices
     {
         Task<IdentityResult> DeleteBot(int userId, int botId);
         Task<IdentityResult> CreateBot(int userId, CreateBotDto createBotDto);
-        Task<IdentityResult> EditBot(int userId, EditBotDto editBotDto);
         Task<IdentityResult> DeployBot(int userId, int botId);
         Task<ObjectIdentityResult<BotProfileDto>> GetBotProfile(int botId, ClaimsPrincipal claims);
         Task<ObjectIdentityResult<List<BotActivityDto>>> LoadBotActivities(int botId, int page);
@@ -30,6 +29,7 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices
         Task<ObjectIdentityResult<List<FollowProfileDto>>> LoadFollowers(int userId, int page);
         Task<ObjectIdentityResult<List<FollowProfileDto>>> LoadFollowed(int userId, int page);
         Task<ObjectIdentityResult<MinimalBotDto>> GetBotWithChildBotsTree(int botId);
+
 
 
 

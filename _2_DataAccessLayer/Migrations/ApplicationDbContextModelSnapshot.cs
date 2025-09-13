@@ -342,7 +342,7 @@ namespace _2_DataAccessLayer.Migrations
                     b.ToTable("Likes");
                 });
 
-            modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.News", b =>
+            modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.TrendingPost", b =>
                 {
                     b.Property<int>("TrendingPostId")
                         .ValueGeneratedOnAdd()
@@ -355,7 +355,7 @@ namespace _2_DataAccessLayer.Migrations
 
                     b.HasKey("TrendingPostId");
 
-                    b.ToTable("News");
+                    b.ToTable("TrendingPost");
                 });
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.Notification", b =>

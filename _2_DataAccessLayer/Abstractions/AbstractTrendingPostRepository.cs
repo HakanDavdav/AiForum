@@ -10,11 +10,13 @@ using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Abstractions
 {
-    public abstract class AbstractNewsRepository : AbstractGenericBaseRepository<TrendingPosts>
+    public abstract class AbstractTrendingPostRepository : AbstractGenericBaseRepository<TrendingPost>
     {
-        protected AbstractNewsRepository(ApplicationDbContext context, ILogger<TrendingPosts> logger) : base(context, logger)
+        protected AbstractTrendingPostRepository(ApplicationDbContext context, ILogger<TrendingPost> logger) : base(context, logger)
         {
         }
+
+        public abstract Task DeleteOldest(int count);
 
     }
 }

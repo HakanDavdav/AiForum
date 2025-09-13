@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices;
+using _1_BusinessLayer.Concrete.Tools.BackgroundServices.MessageBackgroundService;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.Factories;
-using _1_BusinessLayer.Concrete.Tools.MessageBackgroundService;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete.Enums;
@@ -61,6 +61,7 @@ namespace _1_BusinessLayer.Concrete.Services
                     likerUser.Likes.Add(like);
                     entry.Likes.Add(like);
                     likerUser.LikeCount += 1;
+                    entry.LikeCount += 1;
                     var notification = new Notification
                     {
                         NotificationType = NotificationType.EntryLike,
@@ -196,7 +197,7 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<IdentityResult> UnlikeEntry(int userId, int likeId)
         {
             // Using multiple Savechanges() due to protect modularity of delete and manual insert-range methods in repository layer.
-            // Cannot use delete operation with ef entity references directly due to need of including bloated related entities to server.
+            // Cannot use delete operation with ef entity references directly due to need of including bloated related entities to server and nullable keys.
             // Using transaction due to multiple Savechanges() in a single process.
             await _unitOfWork.BeginTransactionAsync();
             try

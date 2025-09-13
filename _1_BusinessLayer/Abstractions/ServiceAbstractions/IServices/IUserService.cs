@@ -39,5 +39,6 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices
         Task<IdentityResult> DeleteUser(int userId);
 
 
+
     }
 }

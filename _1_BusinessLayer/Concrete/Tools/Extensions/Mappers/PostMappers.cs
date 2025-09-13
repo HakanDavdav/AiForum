@@ -8,7 +8,7 @@ using _1_BusinessLayer.Concrete.Dtos.LikeDto;
 using _1_BusinessLayer.Concrete.Dtos.PostDtos;
 using _2_DataAccessLayer.Concrete.Entities;
 
-namespace _1_BusinessLayer.Concrete.Tools.Mappers
+namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
 {
     public static class PostMappers
     {
@@ -47,6 +47,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
                 LikeCount = post.LikeCount,
                 Bot = minimalBot,
                 User = minimalUser,
+
             };
         }
 
@@ -91,7 +92,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
         }
 
 
-        public static Post Update___EditPostDto_To_Post(this EditPostDto editPostDto,Post post)
+        public static Post Update___EditPostDto_To_Post(this EditPostDto editPostDto, Post post)
         {
             post.Context = editPostDto.Context;
             post.Title = editPostDto.Title;

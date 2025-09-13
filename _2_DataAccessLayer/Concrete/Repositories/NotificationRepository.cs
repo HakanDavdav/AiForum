@@ -15,66 +15,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
         }
 
-        public override async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
-        public override async Task DeleteAsync(Notification t)
-        {
-            try
-            {
-                _context.Notifications.Remove(t);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in DeleteAsync for NotificationId {NotificationId}", t.NotificationId);
-                throw;
-            }
-        }
-
-
-        public override async Task<Notification> GetByIdAsync(int? id)
-        {
-            try
-            {
-                if (id == null) return null;
-                return await _context.Notifications.FirstOrDefaultAsync(n => n.NotificationId == id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetByIdAsync with NotificationId {NotificationId}", id);
-                throw;
-            }
-        }
-
-        public override async Task ManuallyInsertAsync(Notification t)
-        {
-            try
-            {
-                await _context.Notifications.AddAsync(t);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in ManuallyInsertAsync for NotificationId {NotificationId}", t.NotificationId);
-                throw;
-            }
-        }
-
-        public override async Task UpdateAsync(Notification t)
-        {
-            try
-            {
-                _context.Notifications.Update(t);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in UpdateAsync for NotificationId {NotificationId}", t.NotificationId);
-                throw;
-            }
-        }
 
         public override async Task<List<Notification>> GetWithCustomSearchAsync(Func<IQueryable<Notification>, IQueryable<Notification>> queryModifier)
         {
@@ -116,10 +56,5 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             return notifications.ToListAsync();
         }
 
-        public override async Task ManuallyInsertRangeAsync(List<Notification> notifications)
-        {
-            _context.Notifications.AddRange(notifications);
-            await _context.SaveChangesAsync();
-        }
     }
 }

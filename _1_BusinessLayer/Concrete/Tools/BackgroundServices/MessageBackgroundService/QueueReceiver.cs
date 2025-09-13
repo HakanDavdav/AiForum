@@ -10,13 +10,13 @@ using _2_DataAccessLayer.Abstractions;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace _1_BusinessLayer.Concrete.Tools.MessageBackgroundService
+namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.MessageBackgroundService
 {
     public class NotificationConsumer : AsyncDefaultBasicConsumer
     {
         private readonly Func<MailEvent?, NotificationEvent?, Task> _handleMessage;
 
-        public NotificationConsumer(IChannel channel, Func<MailEvent?,NotificationEvent? , Task> handleMessage)
+        public NotificationConsumer(IChannel channel, Func<MailEvent?, NotificationEvent?, Task> handleMessage)
             : base(channel)
         {
             _handleMessage = handleMessage;
@@ -36,14 +36,14 @@ namespace _1_BusinessLayer.Concrete.Tools.MessageBackgroundService
             var notificationEvent = System.Text.Json.JsonSerializer.Deserialize<NotificationEvent>(notification);
             if (notificationEvent != null)
             {
-                await _handleMessage(null,notificationEvent);
+                await _handleMessage(null, notificationEvent);
             }
             await Channel.BasicAckAsync(deliveryTag, false, cancellationToken);
         }
     }
     public class MailConsumer : AsyncDefaultBasicConsumer
     {
-        private readonly Func<MailEvent?,NotificationEvent?, Task> _handleMail;
+        private readonly Func<MailEvent?, NotificationEvent?, Task> _handleMail;
 
         public MailConsumer(IChannel channel, Func<MailEvent?, NotificationEvent?, Task> handleMail)
             : base(channel)
@@ -65,7 +65,7 @@ namespace _1_BusinessLayer.Concrete.Tools.MessageBackgroundService
             var mailEvent = System.Text.Json.JsonSerializer.Deserialize<MailEvent>(mail);
             if (mailEvent != null)
             {
-                await _handleMail(mailEvent,null);
+                await _handleMail(mailEvent, null);
             }
             await Channel.BasicAckAsync(deliveryTag, false, cancellationToken);
         }

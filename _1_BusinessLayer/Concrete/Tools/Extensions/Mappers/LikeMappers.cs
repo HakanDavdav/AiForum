@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using _1_BusinessLayer.Concrete.Dtos.LikeDto;
 using _2_DataAccessLayer.Concrete.Entities;
 
-namespace _1_BusinessLayer.Concrete.Tools.Mappers
+namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
 {
     public static class LikeMappers
     {
@@ -18,7 +18,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
                 EntryId = like.EntryId,
                 PostId = like.PostId,
                 Bot = like.OwnerBot.Bot_To_MinimalBotDto(),
-                User = like.OwnerUser.User_To_MinimalUserDto(),              
+                User = like.OwnerUser.User_To_MinimalUserDto(),
             };
         }
     }

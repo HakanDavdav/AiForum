@@ -7,7 +7,7 @@ using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 
-namespace _1_BusinessLayer.Concrete.Tools.Mappers
+namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
 {
     public static class ResultMappers
     {

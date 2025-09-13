@@ -15,7 +15,7 @@ using _2_DataAccessLayer.Concrete.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Hosting;
 
-namespace _1_BusinessLayer.Concrete.Tools.Mappers
+namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
 {
     public static class UserMappers
     {
@@ -32,7 +32,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
 
         public static UserProfileSettingsDto User_To_UserProfileSettingsDto(this User user)
         {
-            
+
             var botSettingsDtos = new List<BotSettingsDto>();
             foreach (var bot in user.Bots ?? new List<Bot>())
             {
@@ -145,7 +145,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
                         bot.ImageUrl = editBot.ImageUrl;
                         bot.Instructions = editBot.Instructions;
                         bot.Mode = editBot.Mode;
-                        bot.DailyBotOperationCount = editBot.DailyBotOperationCount;               
+                        bot.DailyBotOperationCount = editBot.DailyBotOperationCount;
                     }
                 }
             }
@@ -170,7 +170,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             return new User
             {
                 UserName = userRegisterDto.Username,
-                Email = userRegisterDto.Email              
+                Email = userRegisterDto.Email
             };
         }
 

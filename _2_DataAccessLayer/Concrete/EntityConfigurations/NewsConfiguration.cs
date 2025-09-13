@@ -9,9 +9,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace _2_DataAccessLayer.Concrete.EntityConfigurations
 {
-    public class NewsConfiguration : IEntityTypeConfiguration<TrendingPosts>
+    public class NewsConfiguration : IEntityTypeConfiguration<TrendingPost>
     {
-        public void Configure(EntityTypeBuilder<TrendingPosts> builder)
+        public void Configure(EntityTypeBuilder<TrendingPost> builder)
         {
             // Configuring the primary key
             builder.HasKey(news => news.TrendingPostId);

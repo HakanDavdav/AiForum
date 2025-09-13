@@ -15,84 +15,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
         }
 
-        public override async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
-        public override async Task DeleteAsync(Like t)
-        {
-            try
-            {
-                _context.Likes.Remove(t);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in DeleteAsync for LikeId {LikeId}", t.LikeId);
-                throw;
-            }
-        }
-
-        public override async Task<Like> GetByIdAsync(int? id)
-        {
-            try
-            {
-                if (id == null) return null;
-                return await _context.Likes.FirstOrDefaultAsync(like => like.LikeId == id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetByIdAsync with LikeId {LikeId}", id);
-                throw;
-            }
-        }
-
-        public override async Task ManuallyInsertAsync(Like t)
-        {
-            try
-            {
-                await _context.Likes.AddAsync(t);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in ManuallyInsertAsync for LikeId {LikeId}", t.LikeId);
-                throw;
-            }
-        }
-
-        public override async Task UpdateAsync(Like t)
-        {
-            try
-            {
-                _context.Likes.Update(t);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in UpdateAsync for LikeId {LikeId}", t.LikeId);
-                throw;
-            }
-        }
-
-        public override async Task<List<Like>> GetWithCustomSearchAsync(Func<IQueryable<Like>, IQueryable<Like>> queryModifier)
-        {
-            IQueryable<Like> query = _context.Likes;
-            if (queryModifier != null)
-                query = queryModifier(query);
-            return await query.ToListAsync();
-        }
-
-        public override async Task<Like> GetBySpecificPropertySingularAsync(Func<IQueryable<Like>, IQueryable<Like>> queryModifier)
-        {
-            IQueryable<Like> query = _context.Likes;
-            if (queryModifier != null)
-                query = queryModifier(query);
-#pragma warning disable CS8603 // Possible null reference return.
-            return await query.FirstOrDefaultAsync();
-#pragma warning restore CS8603 // Possible null reference return.
-        }
-
         public override async Task<List<Like>> GetLikeModulesForUser(int userId, int startInterval, int endInterval)
         {
             var likes = await _context.Likes
@@ -177,10 +99,5 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             return likes;
         }
 
-        public override async Task ManuallyInsertRangeAsync(List<Like> likes)
-        {
-            _context.Likes.AddRange(likes);
-            await _context.SaveChangesAsync();
-        }
     }
 }

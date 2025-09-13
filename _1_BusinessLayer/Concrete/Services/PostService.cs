@@ -10,11 +10,12 @@ using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
 using _1_BusinessLayer.Concrete.Dtos.LikeDto;
 using _1_BusinessLayer.Concrete.Dtos.NotificationDtos;
 using _1_BusinessLayer.Concrete.Dtos.PostDtos;
+using _1_BusinessLayer.Concrete.Tools.Algorithms;
+using _1_BusinessLayer.Concrete.Tools.BackgroundServices.MessageBackgroundService;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
+using _1_BusinessLayer.Concrete.Tools.Extensions.Mappers;
 using _1_BusinessLayer.Concrete.Tools.Factories;
-using _1_BusinessLayer.Concrete.Tools.Mappers;
-using _1_BusinessLayer.Concrete.Tools.MessageBackgroundService;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete;
 using _2_DataAccessLayer.Concrete.Entities;
@@ -43,7 +44,7 @@ namespace _1_BusinessLayer.Concrete.Services
         {
             // Using WHERE IN avoids duplicating user data in the database result set with some big tables.
             // Using multiple Savechanges() due to protect modularity of delete and manual insert-range methods in repository layer.
-            // Cannot use delete operation with ef entity references directly due to need of including bloated related entities to server.
+            // Cannot use delete operation with ef entity references directly due to need of including bloated related entities to server and nullable keys.
             // Using transaction due to multiple Savechanges() in a single process.
             await _unitOfWork.BeginTransactionAsync();
 
@@ -75,7 +76,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 await _postRepository.SaveChangesAsync();
                 await _unitOfWork.CommitTransactionAsync();
 
-                // Commit sonrası queue 
+                // Queue after commit
                 var mailEvents = _mailEventFactory.CreateMailEvents(user, null, toUserIds, MailType.CreatingPost, post.Title, post.PostId);
                 var notificationEvents = _notificationEventFactory.CreateNotificationEvents(user, null, toUserIds, NotificationType.CreatingPost, post.Title, post.PostId);
 
@@ -95,7 +96,7 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<IdentityResult> DeletePost(int userId, int postId)
         {
             // Using multiple Savechanges() due to protect modularity of delete and manual insert-range methods in repository layer.
-            // Cannot use delete operation with ef entity references directly due to need of including bloated related entities to server.
+            // Cannot use delete operation with ef entity references directly due to need of including bloated related entities to server and nullable keys.
             // Using transaction due to multiple Savechanges() in a single process.
             await _unitOfWork.BeginTransactionAsync();
 
@@ -136,21 +137,6 @@ namespace _1_BusinessLayer.Concrete.Services
 
         }
 
-        public override async Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(DateTime date, ClaimsPrincipal claims)
-        {
-            var postCount = claims.FindFirst("PostPerPage") != null ? int.Parse(claims.FindFirst("PostPerPage").Value) : 30;
-            List<MinimalPostDto> minimalPostDtos = new List<MinimalPostDto>();
-            List<Post> posts = await _postRepository.GetWithCustomSearchAsync(q =>
-                q.Where(p => p.DateTime.Date == date.Date)
-                .OrderByDescending(p => p.Likes)
-                .Take(postCount)
-                 );
-            foreach (var post in posts)
-            {
-                minimalPostDtos.Add(post.Post_To_MinimalPostDto());
-            }
-            return ObjectIdentityResult<List<MinimalPostDto>>.Succeded(minimalPostDtos);
-        }
 
         public override async Task<ObjectIdentityResult<PostDto>> GetPostAsync(int postId, ClaimsPrincipal claims)
         {
@@ -196,5 +182,6 @@ namespace _1_BusinessLayer.Concrete.Services
             }
             return ObjectIdentityResult<List<MinimalLikeDto>>.Succeded(minimalLikeDtos);
         }
+
     }
 }

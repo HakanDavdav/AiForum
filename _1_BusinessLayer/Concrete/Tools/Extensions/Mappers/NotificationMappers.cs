@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using _1_BusinessLayer.Concrete.Dtos.NotificationDtos;
 using _2_DataAccessLayer.Concrete.Entities;
 
-namespace _1_BusinessLayer.Concrete.Tools.Mappers
+namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
 {
     public static class NotificationMappers
     {
-        public static NotificationDto Notification_To_NotificationDto(this Notification notification,string notificationContext, string notificationTitle)
+        public static NotificationDto Notification_To_NotificationDto(this Notification notification, string notificationContext, string notificationTitle)
         {
             return new NotificationDto()
             {

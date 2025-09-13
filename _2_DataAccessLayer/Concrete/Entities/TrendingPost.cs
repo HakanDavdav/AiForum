@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace _2_DataAccessLayer.Concrete.Entities
 {
-    public class TrendingPosts
+    public class TrendingPost
     {
         public int TrendingPostId;
-        public Post Post;
         public int PostId;
-        public int DateTime; 
+        public double HotScore;
+        public string PostTitle;
+        public int EntryCount;
 
     }
 }

@@ -53,7 +53,6 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
         public abstract Task<IdentityResult> CreateBot(int userId, CreateBotDto createBotDto);
         public abstract Task<IdentityResult> DeleteBot(int userId, int botId);
         public abstract Task<IdentityResult> DeployBot(int userId, int botId);
-        public abstract Task<IdentityResult> EditBot(int userId, EditBotDto editBotDto);
         public abstract Task<ObjectIdentityResult<BotProfileDto>> GetBotProfile(int botId, ClaimsPrincipal claims);
         public abstract Task<ObjectIdentityResult<MinimalBotDto>> GetBotWithChildBotsTree(int botId);
         public abstract Task<ObjectIdentityResult<List<BotActivityDto>>> LoadBotActivities(int botId, int page);

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using _1_BusinessLayer.Concrete.Dtos.FollowDto;
 using _2_DataAccessLayer.Concrete.Entities;
 
-namespace _1_BusinessLayer.Concrete.Tools.Mappers
+namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
 {
     public static class FollowMappers
     {
-       public static FollowProfileDto Follow_To_FollowProfileDto(this Follow follow)
+        public static FollowProfileDto Follow_To_FollowProfileDto(this Follow follow)
         {
             var minimalFollowedUser = follow.UserFollowed.User_To_MinimalUserDto();
             var minimalFollowedBot = follow.BotFollowed.Bot_To_MinimalBotDto();

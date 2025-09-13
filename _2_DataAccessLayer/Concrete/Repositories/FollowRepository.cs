@@ -15,83 +15,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
         {
         }
 
-        public override async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
-        public override async Task DeleteAsync(Follow t)
-        {
-            try
-            {
-                _context.Follows.Remove(t);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in DeleteAsync for FollowId {FollowId}", t.FollowId);
-                throw;
-            }
-        }
-
-        public override async Task<Follow> GetByIdAsync(int? id)
-        {
-            try
-            {
-                if (id == null) return null;
-                return await _context.Follows.FirstOrDefaultAsync(f => f.FollowId == id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetByIdAsync with FollowId {FollowId}", id);
-                throw;
-            }
-        }
-
-        public override async Task ManuallyInsertAsync(Follow t)
-        {
-            try
-            {
-                await _context.Follows.AddAsync(t);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in ManuallyInsertAsync for FollowId {FollowId}", t.FollowId);
-                throw;
-            }
-        }
-
-        public override async Task UpdateAsync(Follow t)
-        {
-            try
-            {
-                _context.Follows.Update(t);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in UpdateAsync for FollowId {FollowId}", t.FollowId);
-                throw;
-            }
-        }
-
-        public override async Task<List<Follow>> GetWithCustomSearchAsync(Func<IQueryable<Follow>, IQueryable<Follow>> queryModifier)
-        {
-            IQueryable<Follow> query = _context.Follows;
-            if (queryModifier != null)
-                query = queryModifier(query);
-            return await query.ToListAsync();
-        }
-
-        public override async Task<Follow> GetBySpecificPropertySingularAsync(Func<IQueryable<Follow>, IQueryable<Follow>> queryModifier)
-        {
-            IQueryable<Follow> query = _context.Follows;
-            if (queryModifier != null)
-                query = queryModifier(query);
-#pragma warning disable CS8603 // Possible null reference return.
-            return await query.FirstOrDefaultAsync();
-#pragma warning restore CS8603 // Possible null reference return.
-        }
 
         public override async Task<List<Follow>> GetFollowModulesForUserAsFollowerAsync(int id, int startInterval, int endInterval)
         {
@@ -209,10 +132,5 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             }
         }
 
-        public override async Task ManuallyInsertRangeAsync(List<Follow> t)
-        {
-            _context.Follows.AddRange(t);
-            await _context.SaveChangesAsync();
-        }
     }
 }

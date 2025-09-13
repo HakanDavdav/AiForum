@@ -14,10 +14,10 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers.BotManagers
     {
         public readonly AbstractPostRepository _postRepository;
         public readonly AbstractEntryRepository _entryRepository;
-        public readonly AbstractNewsRepository _newsRepository;
+        public readonly AbstractTrendingPostRepository _newsRepository;
         public readonly AbstractUserRepository _userRepository;
         public readonly AbstractBotRepository _botRepository;
-        public BotDatabaseReader(AbstractBotRepository abstractBotRepository, AbstractEntryRepository entryRepository, AbstractNewsRepository newsRepository,
+        public BotDatabaseReader(AbstractBotRepository abstractBotRepository, AbstractEntryRepository entryRepository, AbstractTrendingPostRepository newsRepository,
             AbstractUserRepository userRepository, AbstractPostRepository postRepository)
         {
             _botRepository = abstractBotRepository;
@@ -75,10 +75,10 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers.BotManagers
             else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry + probabilityCreatingPost)
             {
                 List<string> data = new List<string>();
-                List<TrendingPosts> news = await _newsRepository.GetRandomNews(1);
+                List<TrendingPost> news = await _newsRepository.GetRandomNews(1);
                 foreach (var new_s in news)
                 {
-                    data.Add("News NotificationTitle:" + new_s.Title + "\nNews NotificationContext:" + new_s.Context);
+                    data.Add("TrendingPost NotificationTitle:" + new_s.Title + "\nNews NotificationContext:" + new_s.Context);
                 }
                 return (data, "creatingPost");
 

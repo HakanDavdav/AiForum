@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using _2_DataAccessLayer.Concrete;
 using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Abstractions.Generic
@@ -21,14 +22,51 @@ namespace _2_DataAccessLayer.Abstractions.Generic
             _logger = logger;
         }
 
-        public abstract Task DeleteAsync(T t);
-        public abstract Task<List<T>> GetWithCustomSearchAsync(Func<IQueryable<T>, IQueryable<T>> queryModifier);
-        public abstract Task<T> GetByIdAsync(int? id);
-        public abstract Task ManuallyInsertAsync(T t);
-        public abstract Task UpdateAsync(T t);
-        public abstract Task<T> GetBySpecificPropertySingularAsync(Func<IQueryable<T>, IQueryable<T>> queryModifier);
-        public abstract Task SaveChangesAsync();
-        public abstract Task ManuallyInsertRangeAsync(List<T> t);
+        public virtual async Task DeleteAsync(T t)
+        {
+            _context.Set<T>().Remove(t);
+            await _context.SaveChangesAsync();
+        }
+        public virtual async Task<List<T>> GetWithCustomSearchAsync(Func<IQueryable<T>, IQueryable<T>> queryModifier)
+        {
+            IQueryable<T> query = _context.Set<T>();
+            if (queryModifier != null)
+                query = queryModifier(query);
+            return await query.ToListAsync();
+        }
+        public virtual async Task<T> GetByIdAsync(int? id)
+        {
+            if (id == null) return null;
+            return await _context.Set<T>().FindAsync(id);
+        }
+        public virtual async Task ManuallyInsertAsync(T t)
+        {
+            _context.Set<T>().Add(t);
+            await _context.SaveChangesAsync();
+        }
+        public virtual async Task UpdateAsync(T t)
+        {
+            _context.Set<T>().Update(t);
+            await _context.SaveChangesAsync();
+        }
+        public virtual async Task<T> GetBySpecificPropertySingularAsync(Func<IQueryable<T>, IQueryable<T>> queryModifier)
+        {
+            IQueryable<T> query = _context.Set<T>();
+            if (queryModifier != null)
+                query = queryModifier(query);
+#pragma warning disable CS8603 // Possible null reference return.
+            return await query.FirstOrDefaultAsync();
+#pragma warning restore CS8603 // Possible null reference return.
+        }
+        public virtual async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+        public virtual async Task ManuallyInsertRangeAsync(List<T> t)
+        {
+            await _context.Set<T>().AddRangeAsync(t);
+            await _context.SaveChangesAsync();
+        }
         public virtual async Task StartTransactionAsync()
         {
             await _context.Database.BeginTransactionAsync();
@@ -37,6 +75,10 @@ namespace _2_DataAccessLayer.Abstractions.Generic
         public virtual async Task CommitTransaction()
         {
             await _context.Database.CommitTransactionAsync();
+        }
+        public virtual async Task RollbackTransactionAsync()
+        {
+            await _context.Database.RollbackTransactionAsync();
         }
     }
 }

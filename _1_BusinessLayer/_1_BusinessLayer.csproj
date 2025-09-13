@@ -54,4 +54,9 @@
     <ProjectReference Include="..\_2_DataAccessLayer\_2_DataAccessLayer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Concrete\Tools\BackgroundServices\BotBackgroundService\" />
+    <Folder Include="Concrete\Tools\BackgroundServices\DatabaseMaintananceBackgroundService\" />
+  </ItemGroup>
+
 </Project>

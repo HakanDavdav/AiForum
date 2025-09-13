@@ -59,7 +59,7 @@ namespace _2_DataAccessLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "News",
+                name: "TrendingPost",
                 columns: table => new
                 {
                     NewsId = table.Column<int>(type: "int", nullable: false)
@@ -606,7 +606,7 @@ namespace _2_DataAccessLayer.Migrations
                 name: "Likes");
 
             migrationBuilder.DropTable(
-                name: "News");
+                name: "TrendingPost");
 
             migrationBuilder.DropTable(
                 name: "SocialNotificationPreference");

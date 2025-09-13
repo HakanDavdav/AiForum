@@ -30,7 +30,7 @@ builder.Services.AddScoped<AbstractBotRepository, BotRepository>();
 builder.Services.AddScoped<AbstractNotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<AbstractUserPreferenceRepository, UserPreferenceRepository>();
 builder.Services.AddScoped<AbstractActivityRepository, BotActivityRepository>();
-builder.Services.AddScoped<AbstractNewsRepository, NewsRepository>();
+builder.Services.AddScoped<AbstractTrendingPostRepository, TrendingPostRepository>();
 
 //autowiring of IdentityTools
 builder.Services.AddScoped<SignInManager<User>>();

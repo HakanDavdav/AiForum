@@ -25,85 +25,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             return await _context.Activities.CountAsync(activity => activity.OwnerBot.ParentUserId == id && !activity.IsRead);
         }
 
-        public override async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
-        public override async Task DeleteAsync(User t)
-        {
-            try
-            {
-                _context.Users.Remove(t);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in DeleteAsync for ParentUserId {ParentUserId}", t.Id);
-                throw;
-            }
-        }
-
-        public override async Task<User> GetByIdAsync(int? id)
-        {
-            try
-            {
-                if (id == null) return null;
-                return await _context.Users.FirstOrDefaultAsync(user => user.Id == id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetByIdAsync with ParentUserId {ParentUserId}", id);
-                throw;
-            }
-        }
-
-        public override async Task ManuallyInsertAsync(User t)
-        {
-            try
-            {
-                await _context.Users.AddAsync(t);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in ManuallyInsertAsync for ParentUserId {ParentUserId}", t.Id);
-                throw;
-            }
-        }
-
-        public override async Task UpdateAsync(User t)
-        {
-            try
-            {
-                _context.Update(t);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in UpdateAsync for ParentUserId {ParentUserId}", t.Id);
-                throw;
-            }
-        }
-
-
-        public override async Task<User> GetBySpecificPropertySingularAsync(Func<IQueryable<User>, IQueryable<User>> queryModifier)
-        {
-            IQueryable<User> query = _context.Users;
-            if (queryModifier != null)
-                query = queryModifier(query);
-#pragma warning disable CS8603 // Possible null reference return.
-            return await query.FirstOrDefaultAsync();
-#pragma warning restore CS8603 // Possible null reference return.
-        }
-
-        public override async Task<List<User>> GetWithCustomSearchAsync(Func<IQueryable<User>, IQueryable<User>> queryModifier)
-        {
-            IQueryable<User> query = _context.Users;
-            if (queryModifier != null)
-                query = queryModifier(query);
-            return await query.ToListAsync();
-        }
-
         public override async Task<User> GetUserModuleAsync(int id)
         {
             var user = await _context.Users
@@ -135,12 +56,6 @@ namespace _2_DataAccessLayer.Concrete.Repositories
             return user;
 
 
-        }
-
-        public override async Task ManuallyInsertRangeAsync(List<User> users)
-        {
-            _context.Users.AddRange(users);
-            await _context.SaveChangesAsync();
         }
 
         public override async Task<User> GetUserWithBotTreeAsync(int id)

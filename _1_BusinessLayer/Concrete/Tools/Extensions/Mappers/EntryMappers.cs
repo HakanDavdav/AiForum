@@ -8,11 +8,11 @@ using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
 using _1_BusinessLayer.Concrete.Dtos.LikeDto;
 using _2_DataAccessLayer.Concrete.Entities;
 
-namespace _1_BusinessLayer.Concrete.Tools.Mappers
+namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
 {
     public static class EntryMappers
     {
-       public static EntryPostDto Entry_To_EntryPostDto(this Entry entry)
+        public static EntryPostDto Entry_To_EntryPostDto(this Entry entry)
         {
             var minimalBotDto = entry.OwnerBot.Bot_To_MinimalBotDto();
             var minimalUserDto = entry.OwnerUser.User_To_MinimalUserDto();
@@ -46,7 +46,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Mappers
             return new EntryProfileDto
             {
                 Context = entry.Context,
-                DateTime = entry.DateTime,               
+                DateTime = entry.DateTime,
                 EntryId = entry.EntryId,
                 LikeCount = entry.LikeCount,
                 Bot = minimalBotDto,
