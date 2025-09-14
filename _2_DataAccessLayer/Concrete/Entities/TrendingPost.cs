@@ -13,6 +13,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public double HotScore;
         public string PostTitle;
         public int EntryCount;
+        public DateTime DateTime;
 
     }
 }

@@ -1,26 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
+using System.Text;
 using System.Threading.Tasks;
-using _2_DataAccessLayer.Abstractions;
+using _2_DataAccessLayer.Abstractions.Generic;
+using _2_DataAccessLayer.Abstractions.Interfaces;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace _2_DataAccessLayer.Concrete.Repositories
+namespace _2_DataAccessLayer.Concrete.Queries
 {
-    public class BotActivityRepository : AbstractActivityRepository
+    public class BotActivityQueries : AbstractBotActivityQueryHandler
     {
-        public BotActivityRepository(ApplicationDbContext context, ILogger<BotActivity> logger) : base(context, logger)
+        public BotActivityQueries(ILogger<BotActivity> logger, AbstractGenericBaseCommandHandler repository) : base(logger, repository)
         {
         }
 
         public override Task<List<BotActivity>> GetBotActivityModulesForBotAsync(int botId, int startInterval, int endInterval)
         {
-            var BotActivities = _context.Activities.Where(activity => activity.OwnerBotId == botId).Skip(startInterval).Take(endInterval - startInterval).Select(
+            try
+            {
+                var BotActivities = _repository.Export<BotActivity>().Where(activity => activity.OwnerBotId == botId)
+            .Skip(startInterval).Take(endInterval - startInterval).Select(
                 activity => new BotActivity
                 {
+                    
                     ActivityId = activity.ActivityId,
                     OwnerBotId = activity.OwnerBotId,
                     BotActivityType = activity.BotActivityType,
@@ -29,8 +34,15 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                     DateTime = activity.DateTime,
                     OwnerBot = activity.OwnerBot,
                 });
-            return BotActivities.ToListAsync();
+                return BotActivities.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
+
 
         public override async Task<List<BotActivity>> GetBotActivityModulesForUserAsync(int id, int startInterval, int endInterval)
         {
@@ -64,7 +76,7 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 }
             }
 
-            var botIds = botList.Select(bot =>bot.Id).ToList();
+            var botIds = botList.Select(bot => bot.Id).ToList();
             var BotActivities = _context.Activities.
                 Where(activity => activity.OwnerBotId != null && botIds.Contains(activity.OwnerBotId.Value)).Skip(startInterval).Take(endInterval - startInterval).Select(
                 activity => new BotActivity
@@ -79,6 +91,5 @@ namespace _2_DataAccessLayer.Concrete.Repositories
                 });
             return await BotActivities.ToListAsync();
         }
-
     }
 }
