@@ -15,6 +15,8 @@ using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _1_BusinessLayer.Concrete.Tools.Managers.BotManagers;
 using _2_DataAccessLayer.Abstractions;
+using _2_DataAccessLayer.Abstractions.Generic;
+using _2_DataAccessLayer.Abstractions.Interfaces;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -23,30 +25,38 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
 {
     public abstract class AbstractBotService : IBotService
     {
-        protected readonly AbstractBotRepository _botRepository;
-        protected readonly AbstractUserRepository _userRepository;
-        protected readonly AbstractPostRepository _postRepository;
-        protected readonly AbstractEntryRepository _entryRepository;
-        protected readonly AbstractLikeRepository _likeRepository;
-        protected readonly AbstractActivityRepository _activityRepository;
-        protected readonly AbstractFollowRepository _followRepository;
+        protected readonly AbstractBotQueryHandler _botQueryHandler;
+        protected readonly AbstractBotActivityQueryHandler _botActivityQueryHandler;
+        protected readonly AbstractEntryQueryHandler _entryQueryHandler;
+        protected readonly AbstractPostQueryHandler _postQueryHandler;
+        protected readonly AbstractLikeQueryHandler _likeQueryHandler;
+        protected readonly AbstractFollowQueryHandler _followQueryHandler;
+        protected readonly AbstractUserQueryHandler _userQueryHandler;
+        protected readonly AbstractGenericCommandHandler _genericCommandHandler;
         protected readonly BotDeployManager _botDeployManager;
         protected readonly NotificationActivityBodyBuilder _notificationActivityBodyBuilder;
 
-        protected AbstractBotService(AbstractBotRepository botRepository, BotDeployManager botDeployManager, AbstractUserRepository userRepository,
-            AbstractPostRepository postRepository,AbstractEntryRepository entryRepository,AbstractLikeRepository likeRepository,
-            AbstractActivityRepository activityRepository, 
-            AbstractFollowRepository followRepository, NotificationActivityBodyBuilder notificationActivityBodyBuilder)
+        protected AbstractBotService(
+            AbstractBotQueryHandler botQueryHandler,
+            AbstractBotActivityQueryHandler botActivityQueryHandler,
+            AbstractEntryQueryHandler entryQueryHandler,
+            AbstractPostQueryHandler postQueryHandler,
+            AbstractLikeQueryHandler likeQueryHandler,
+            AbstractFollowQueryHandler followQueryHandler,
+            AbstractUserQueryHandler userQueryHandler,
+            AbstractGenericCommandHandler commandHandler,
+            BotDeployManager botDeployManager,
+            NotificationActivityBodyBuilder notificationActivityBodyBuilder)
         {
-            _botRepository = botRepository;
+            _botQueryHandler = botQueryHandler;
+            _botActivityQueryHandler = botActivityQueryHandler;
+            _entryQueryHandler = entryQueryHandler;
+            _postQueryHandler = postQueryHandler;
+            _likeQueryHandler = likeQueryHandler;
+            _followQueryHandler = followQueryHandler;
+            _userQueryHandler = userQueryHandler;
+            _genericCommandHandler = commandHandler;
             _botDeployManager = botDeployManager;
-            _userRepository = userRepository;
-            _postRepository = postRepository;
-            _entryRepository = entryRepository;
-            _likeRepository = likeRepository;
-            _activityRepository = activityRepository;
-            _followRepository = followRepository;
-            _activityRepository = activityRepository;
             _notificationActivityBodyBuilder = notificationActivityBodyBuilder;
         }
 

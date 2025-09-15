@@ -12,9 +12,9 @@ namespace _2_DataAccessLayer.Abstractions.Generic
     {
 
         protected readonly ILogger<T> _logger;
-        protected readonly AbstractGenericBaseCommandHandler _repository;
+        protected readonly AbstractGenericCommandHandler _repository;
 
-        protected AbstractGenericBaseQueryHandler(ILogger<T> logger, AbstractGenericBaseCommandHandler repository)
+        protected AbstractGenericBaseQueryHandler(ILogger<T> logger, AbstractGenericCommandHandler repository)
         {
             _repository = repository;
             _logger = logger;

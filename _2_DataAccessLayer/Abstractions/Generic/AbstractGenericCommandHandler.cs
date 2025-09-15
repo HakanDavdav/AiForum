@@ -11,10 +11,10 @@ using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Abstractions.Generic
 {
-    public abstract class AbstractGenericBaseCommandHandler
+    public abstract class AbstractGenericCommandHandler
     {
         protected readonly ApplicationDbContext _context;
-        protected AbstractGenericBaseCommandHandler(ApplicationDbContext context)
+        protected AbstractGenericCommandHandler(ApplicationDbContext context)
         {
             _context = context;
         }

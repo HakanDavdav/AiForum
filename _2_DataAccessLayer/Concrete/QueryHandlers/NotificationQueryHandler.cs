@@ -11,9 +11,9 @@ using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Concrete.Queries
 {
-    public class NotificationQueries : AbstractNotificationQueryHandler
+    public class NotificationQueryHandler : AbstractNotificationQueryHandler
     {
-        public NotificationQueries(ILogger<Notification> logger, AbstractGenericBaseCommandHandler repository) : base(logger, repository)
+        public NotificationQueryHandler(ILogger<Notification> logger, AbstractGenericCommandHandler repository) : base(logger, repository)
         {
         }
 

@@ -18,8 +18,9 @@ using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _1_BusinessLayer.Concrete.Tools.Extensions.Mappers;
 using _1_BusinessLayer.Concrete.Tools.Managers.BotManagers;
 using _2_DataAccessLayer.Abstractions;
+using _2_DataAccessLayer.Abstractions.Generic;
+using _2_DataAccessLayer.Abstractions.Interfaces;
 using _2_DataAccessLayer.Concrete.Entities;
-using _2_DataAccessLayer.Concrete.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,10 +28,7 @@ namespace _1_BusinessLayer.Concrete.Services
 {
     public class BotService : AbstractBotService
     {
-        public BotService(AbstractBotRepository botRepository, BotDeployManager botManager, AbstractUserRepository userRepository,
-            AbstractPostRepository postRepository, AbstractEntryRepository entryRepository, AbstractLikeRepository likeRepository,
-            AbstractActivityRepository activityRepository, AbstractFollowRepository followRepository, NotificationActivityBodyBuilder notificationActivityBodyBuilder)
-            : base(botRepository, botManager, userRepository, postRepository, entryRepository, likeRepository, activityRepository, followRepository, notificationActivityBodyBuilder)
+        public BotService(AbstractBotQueryHandler botQueryHandler, AbstractBotActivityQueryHandler botActivityQueryHandler, AbstractEntryQueryHandler entryQueryHandler, AbstractPostQueryHandler postQueryHandler, AbstractLikeQueryHandler likeQueryHandler, AbstractFollowQueryHandler followQueryHandler, AbstractUserQueryHandler userQueryHandler, AbstractGenericCommandHandler commandHandler, BotDeployManager botDeployManager, NotificationActivityBodyBuilder notificationActivityBodyBuilder) : base(botQueryHandler, botActivityQueryHandler, entryQueryHandler, postQueryHandler, likeQueryHandler, followQueryHandler, userQueryHandler, commandHandler, botDeployManager, notificationActivityBodyBuilder)
         {
         }
 

@@ -6,7 +6,7 @@ namespace _2_DataAccessLayer.Abstractions.Interfaces
 {
     public abstract class AbstractFollowQueryHandler : AbstractGenericBaseQueryHandler<Follow> 
     {
-        protected AbstractFollowQueryHandler(ILogger<Follow> logger, AbstractGenericBaseCommandHandler repository) : base(logger, repository)
+        protected AbstractFollowQueryHandler(ILogger<Follow> logger, AbstractGenericCommandHandler repository) : base(logger, repository)
         {
         }
 

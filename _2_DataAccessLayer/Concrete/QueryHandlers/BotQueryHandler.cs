@@ -11,9 +11,9 @@ using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Concrete.Queries
 {
-    public class BotQueries : AbstractBotQueryHandler
+    public class BotQueryHandler : AbstractBotQueryHandler
     {
-        public BotQueries(ILogger<Bot> logger, AbstractGenericBaseCommandHandler repository) : base(logger, repository)
+        public BotQueryHandler(ILogger<Bot> logger, AbstractGenericCommandHandler repository) : base(logger, repository)
         {
         }
 
@@ -52,7 +52,7 @@ namespace _2_DataAccessLayer.Concrete.Queries
 
         public override async Task<Bot> GetBotWithChildBotTreeAsync(int id)
         {
-            var parentBot = await _repository.Export()
+            var parentBot = await _repository.Export<Bot>()  
                              .Where(u => u.Id == id)
                              .Include(u => u.ChildBots)
                              .FirstOrDefaultAsync();

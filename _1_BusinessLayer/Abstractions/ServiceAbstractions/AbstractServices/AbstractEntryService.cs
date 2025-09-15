@@ -10,6 +10,8 @@ using _1_BusinessLayer.Concrete.Tools.BackgroundServices.MessageBackgroundServic
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _1_BusinessLayer.Concrete.Tools.Factories;
 using _2_DataAccessLayer.Abstractions;
+using _2_DataAccessLayer.Abstractions.Generic;
+using _2_DataAccessLayer.Abstractions.Interfaces;
 using _2_DataAccessLayer.Concrete.Extensions;
 using Microsoft.AspNetCore.Identity;
 
@@ -17,34 +19,33 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
 {
     public abstract class AbstractEntryService : IEntryService
     {
-        protected readonly AbstractEntryRepository _entryRepository;
-        protected readonly AbstractUserRepository _userRepository;
-        protected readonly AbstractLikeRepository _likeRepository;
-        protected readonly AbstractPostRepository _postRepository;
-        protected readonly AbstractFollowRepository _followRepository;
-        protected readonly AbstractNotificationRepository _notificationRepository;
+        protected readonly AbstractEntryQueryHandler _entryQueryHandler;
+        protected readonly AbstractUserQueryHandler _userQueryHandler;
+        protected readonly AbstractLikeQueryHandler _likeQueryHandler;
+        protected readonly AbstractPostQueryHandler _postQueryHandler;
+        protected readonly AbstractFollowQueryHandler _followQueryHandler;
+        protected readonly AbstractNotificationQueryHandler _notificationQueryHandler;
+        protected readonly AbstractGenericCommandHandler _genericCommandHandler;
         protected readonly MailEventFactory _mailEventFactory;
         protected readonly NotificationEventFactory _notificationEventFactory;
         protected readonly QueueSender _queueSender;
         protected readonly UnitOfWork _unitOfWork;
 
 
-        protected AbstractEntryService(AbstractEntryRepository entryRepository, AbstractUserRepository userRepository,
-            AbstractLikeRepository likeRepository, AbstractPostRepository postRepository,AbstractFollowRepository followRepository,
-            MailEventFactory mailEventFactory, NotificationEventFactory notificationEventFactory, QueueSender queueSender, 
-            AbstractNotificationRepository notificationRepository,UnitOfWork unitOfWork)
+        protected AbstractEntryService(AbstractLikeQueryHandler likeQueryHandler,AbstractEntryQueryHandler entryQueryHandler,AbstractPostQueryHandler postQueryHandler,
+            AbstractFollowQueryHandler followQueryHandler,AbstractUserQueryHandler userQueryHandler,AbstractNotificationQueryHandler abstractNotificationQueryHandler,
+            MailEventFactory mailEventFactory, QueueSender queueSender, UnitOfWork unitOfWork, NotificationEventFactory notificationEventFactory,AbstractGenericCommandHandler genericCommandHandler)
         {
-            _entryRepository = entryRepository;
-            _userRepository = userRepository;
-            _likeRepository = likeRepository;
-            _postRepository = postRepository;
-            _followRepository = followRepository;
-            _notificationRepository = notificationRepository;
-            _notificationEventFactory = notificationEventFactory;
+            _entryQueryHandler = entryQueryHandler;
+            _userQueryHandler = userQueryHandler;
+            _likeQueryHandler = likeQueryHandler;
+            _postQueryHandler = postQueryHandler;
+            _followQueryHandler = followQueryHandler;
+            _notificationQueryHandler = abstractNotificationQueryHandler;
             _mailEventFactory = mailEventFactory;
             _queueSender = queueSender;
             _unitOfWork = unitOfWork;
-
+            _notificationEventFactory = notificationEventFactory;
         }
 
         public abstract Task<IdentityResult> CreateEntryAsync(int userId, int postId, CreateEntryDto createEntryDto);

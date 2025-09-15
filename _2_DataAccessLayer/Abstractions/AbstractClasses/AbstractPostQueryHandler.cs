@@ -6,7 +6,7 @@ namespace _2_DataAccessLayer.Abstractions.Interfaces
 {
     public abstract class AbstractPostQueryHandler : AbstractGenericBaseQueryHandler<Post> 
     {
-        protected AbstractPostQueryHandler(ILogger<Post> logger, AbstractGenericBaseCommandHandler repository) : base(logger, repository)
+        protected AbstractPostQueryHandler(ILogger<Post> logger, AbstractGenericCommandHandler repository) : base(logger, repository)
         {
         }
 

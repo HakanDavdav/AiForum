@@ -11,9 +11,9 @@ using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Concrete.Queries
 {
-    public class PostQueries : AbstractPostQueryHandler
+    public class PostQueryHandler : AbstractPostQueryHandler
     {
-        public PostQueries(ILogger<Post> logger, AbstractGenericBaseCommandHandler  repository) : base(logger, repository)
+        public PostQueryHandler(ILogger<Post> logger, AbstractGenericCommandHandler  repository) : base(logger, repository)
         {
         }
 

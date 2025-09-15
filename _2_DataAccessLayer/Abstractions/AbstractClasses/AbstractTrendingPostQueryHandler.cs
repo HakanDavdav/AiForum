@@ -11,7 +11,7 @@ namespace _2_DataAccessLayer.Abstractions.AbstractClasses
 {
     public class AbstractTrendingPostQueryHandler : AbstractGenericBaseQueryHandler<TrendingPost>
     {
-        public AbstractTrendingPostQueryHandler(ILogger<TrendingPost> logger, AbstractGenericBaseCommandHandler repository) : base(logger, repository)
+        public AbstractTrendingPostQueryHandler(ILogger<TrendingPost> logger, AbstractGenericCommandHandler repository) : base(logger, repository)
         {
         }
     }

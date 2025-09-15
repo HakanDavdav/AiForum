@@ -6,7 +6,7 @@ namespace _2_DataAccessLayer.Abstractions.Interfaces
 {
     public abstract class AbstractNotificationQueryHandler : AbstractGenericBaseQueryHandler<Notification> 
     {
-        protected AbstractNotificationQueryHandler(ILogger<Notification> logger, AbstractGenericBaseCommandHandler repository) : base(logger, repository)
+        protected AbstractNotificationQueryHandler(ILogger<Notification> logger, AbstractGenericCommandHandler repository) : base(logger, repository)
         {
         }
 

@@ -27,7 +27,7 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
 {
     public abstract class AbstractUserService : IUserService
     {
-        protected readonly AbstractGenericBaseCommandHandler _commandHandler;
+        protected readonly AbstractGenericCommandHandler _commandHandler;
         protected readonly AbstractBotActivityQueryHandler _botActivityQueryHandler;
         protected readonly AbstractNotificationQueryHandler _notificationQueryHandler;
         protected readonly AbstractEntryQueryHandler _entryQueryHandler;
@@ -38,7 +38,7 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
         protected readonly SignInManager<User> _signInManager;
         protected readonly NotificationActivityBodyBuilder _notificationActivityBodyBuilder;
 
-        protected AbstractUserService(AbstractGenericBaseCommandHandler genericBaseCommandHandler, AbstractBotActivityQueryHandler botActivityQueryHandler,
+        protected AbstractUserService(AbstractGenericCommandHandler genericBaseCommandHandler, AbstractBotActivityQueryHandler botActivityQueryHandler,
             AbstractNotificationQueryHandler notificationQueryHandler, AbstractEntryQueryHandler entryQueryHandler, AbstractPostQueryHandler postQueryHandler,
             AbstractFollowQueryHandler followQueryHandler)
         {

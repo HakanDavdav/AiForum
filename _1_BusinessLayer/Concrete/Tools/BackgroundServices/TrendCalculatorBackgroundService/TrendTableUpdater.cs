@@ -15,10 +15,10 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.TrendCalculatorBack
 {
     public class TrendTableUpdater : BackgroundService
     {
-        private readonly AbstractGenericBaseCommandHandler _genericCommandHandler;
+        private readonly AbstractGenericCommandHandler _genericCommandHandler;
         private readonly AbstractPostQueryHandler _postQueryHandler;
         private readonly AbstractTrendingPostQueryHandler _trendingPostQueryHandler;
-        public TrendTableUpdater(AbstractGenericBaseCommandHandler repository, AbstractPostQueryHandler postQueryHandler, AbstractTrendingPostQueryHandler _tr)
+        public TrendTableUpdater(AbstractGenericCommandHandler repository, AbstractPostQueryHandler postQueryHandler, AbstractTrendingPostQueryHandler _tr)
         {
             _postQueryHandler = postQueryHandler;
         }

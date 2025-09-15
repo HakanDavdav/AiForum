@@ -11,9 +11,9 @@ using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Concrete.Queries
 {
-    public class LikeQueries : AbstractLikeQueryHandler
+    public class LikeQueryHandler : AbstractLikeQueryHandler
     {
-        public LikeQueries(ILogger<Like> logger, AbstractGenericBaseCommandHandler repository) : base(logger, repository)
+        public LikeQueryHandler(ILogger<Like> logger, AbstractGenericCommandHandler repository) : base(logger, repository)
         {
         }
 

@@ -6,7 +6,7 @@ namespace _2_DataAccessLayer.Abstractions.Interfaces
 {
     public abstract class AbstractBotQueryHandler : AbstractGenericBaseQueryHandler<Bot>
     {
-        protected AbstractBotQueryHandler(ILogger<Bot> logger, AbstractGenericBaseCommandHandler repository) : base(logger, repository)
+        protected AbstractBotQueryHandler(ILogger<Bot> logger, AbstractGenericCommandHandler repository) : base(logger, repository)
         {
         }
 

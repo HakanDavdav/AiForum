@@ -7,7 +7,7 @@ using _2_DataAccessLayer.Abstractions.Generic;
 
 namespace _2_DataAccessLayer.Concrete.Repository
 {
-    public class GenericCommandHandler<T> : AbstractGenericBaseCommandHandler 
+    public class GenericCommandHandler<T> : AbstractGenericCommandHandler 
     {
         public GenericCommandHandler(ApplicationDbContext context) : base(context)
         {

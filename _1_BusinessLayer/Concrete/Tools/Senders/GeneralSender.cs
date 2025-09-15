@@ -26,11 +26,11 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
         SmsSender _smsSender;
         NotificationSender _notificationSender;
         TokenFactory _tokenFactory;
-        AbstractGenericBaseCommandHandler _repository;
+        AbstractGenericCommandHandler _repository;
         AbstractUserQueryHandler _userQueryHandler;
         AbstractBotQueryHandler _botQueryHandler;
         public GeneralSender(MailSender mailSender, SmsSender smsSender, NotificationSender sender, 
-            TokenFactory tokenFactory, AbstractGenericBaseCommandHandler repository, AbstractUserQueryHandler userQueryHandler, AbstractBotQueryHandler botQueryHandler)
+            TokenFactory tokenFactory, AbstractGenericCommandHandler repository, AbstractUserQueryHandler userQueryHandler, AbstractBotQueryHandler botQueryHandler)
         {
             _mailSender = mailSender;
             _smsSender = smsSender;

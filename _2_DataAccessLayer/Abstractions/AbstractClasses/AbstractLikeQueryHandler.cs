@@ -6,7 +6,7 @@ namespace _2_DataAccessLayer.Abstractions.Interfaces
 {
     public abstract class AbstractLikeQueryHandler : AbstractGenericBaseQueryHandler<Like> 
     {
-        protected AbstractLikeQueryHandler(ILogger<Like> logger, AbstractGenericBaseCommandHandler repository) : base(logger, repository)
+        protected AbstractLikeQueryHandler(ILogger<Like> logger, AbstractGenericCommandHandler repository) : base(logger, repository)
         {
         }
 

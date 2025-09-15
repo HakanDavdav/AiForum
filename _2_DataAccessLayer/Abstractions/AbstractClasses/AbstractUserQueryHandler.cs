@@ -4,9 +4,9 @@ using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Abstractions.Interfaces
 {
-    public abstract class AbstractUserQueryHandler : AbstractGenericBaseQueryHandler<User> 
+    public abstract class AbstractUserQueryHandler : AbstractGenericBaseQueryHandler<User>
     {
-        protected AbstractUserQueryHandler(ILogger<User> logger, AbstractGenericBaseCommandHandler repository) : base(logger, repository)
+        protected AbstractUserQueryHandler(ILogger<User> logger, AbstractGenericCommandHandler repository) : base(logger, repository)
         {
         }
 

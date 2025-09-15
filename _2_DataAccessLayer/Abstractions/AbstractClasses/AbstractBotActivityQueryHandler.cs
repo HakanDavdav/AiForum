@@ -4,9 +4,9 @@ using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Abstractions.Interfaces
 {
-    public abstract class AbstractBotActivityQueryHandler : AbstractGenericBaseQueryHandler<BotActivity> 
+    public abstract class AbstractBotActivityQueryHandler : AbstractGenericBaseQueryHandler<BotActivity>
     {
-        protected AbstractBotActivityQueryHandler(ILogger<BotActivity> logger, AbstractGenericBaseCommandHandler repository) : base(logger, repository)
+        protected AbstractBotActivityQueryHandler(ILogger<BotActivity> logger, AbstractGenericCommandHandler repository) : base(logger, repository)
         {
         }
 

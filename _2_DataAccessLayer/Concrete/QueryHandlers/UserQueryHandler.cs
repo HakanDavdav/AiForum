@@ -11,15 +11,15 @@ using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Concrete.Queries
 {
-    public class UserQueries : AbstractUserQueryHandler
+    public class UserQueryHandler : AbstractUserQueryHandler
     {
-        public UserQueries(ILogger<User> logger, AbstractGenericBaseCommandHandler repository) : base(logger, repository)
+        public UserQueryHandler(ILogger<User> logger, AbstractGenericCommandHandler repository) : base(logger, repository)
         {
         }
 
         public override async Task<User> GetUserWithBotTreeAsync(int id)
         {
-            var user = await .Users
+            var user = await  _repository.Export<User>()
                              .Where(u => u.Id == id)
                              .Include(u => u.Bots)
                              .FirstOrDefaultAsync();

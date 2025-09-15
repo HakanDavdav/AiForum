@@ -13,7 +13,7 @@ namespace _2_DataAccessLayer.Concrete.Queries
 {
     public class FollowQueries : AbstractFollowQueryHandler
     {
-        public FollowQueries(ILogger<Follow> logger, AbstractGenericBaseCommandHandler repository) : base(logger, repository)
+        public FollowQueries(ILogger<Follow> logger, AbstractGenericCommandHandler repository) : base(logger, repository)
         {
         }
 

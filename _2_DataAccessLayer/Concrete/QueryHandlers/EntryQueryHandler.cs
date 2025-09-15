@@ -11,9 +11,9 @@ using Microsoft.Extensions.Logging;
 
 namespace _2_DataAccessLayer.Concrete.Queries
 {
-    public class EntryQueries : AbstractEntryQueryHandler
+    public class EntryQueryHandler : AbstractEntryQueryHandler
     {
-        public EntryQueries(ILogger<Entry> logger, AbstractGenericBaseCommandHandler repository) : base(logger, repository)
+        public EntryQueryHandler(ILogger<Entry> logger, AbstractGenericCommandHandler repository) : base(logger, repository)
         {
         }
 
