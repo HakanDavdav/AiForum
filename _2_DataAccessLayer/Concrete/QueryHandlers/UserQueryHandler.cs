@@ -19,7 +19,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
 
         public override async Task<User> GetUserWithBotTreeAsync(int id)
         {
-            var user = await  _repository.Export<User>()
+            var user = await  _commandHandler.Export<User>()
                              .Where(u => u.Id == id)
                              .Include(u => u.Bots)
                              .FirstOrDefaultAsync();
@@ -53,7 +53,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
 
         public override async Task<User> GetUserModuleAsync(int id)
         {
-            var user = await _repository.Export<User>()
+            var user = await _commandHandler.Export<User>()
                 .Where(user => user.Id == id)
                 .Select(user => new User
                 {
@@ -74,7 +74,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
                         ImageUrl = bot.ImageUrl,
                         BotGrade = bot.BotGrade,
                         BotProfileName = bot.BotProfileName,
-                        Mode = bot.Mode
+                        BotMode = bot.BotMode
                     }).ToList(),
                     UserPreference = user.UserPreference,
                 })

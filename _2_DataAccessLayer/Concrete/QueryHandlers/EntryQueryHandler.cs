@@ -21,7 +21,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
         {
             try
             {
-                var entry = await _repository.Export<Entry>().Where(entry => entry.EntryId == id).Select(
+                var entry = await _commandHandler.Export<Entry>().Where(entry => entry.EntryId == id).Select(
             entry => new Entry
             {
                 EntryId = entry.EntryId,
@@ -60,7 +60,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
 
             try
             {
-                return await _repository.Export<Entry>()
+                return await _commandHandler.Export<Entry>()
             .Where(entry => entry.OwnerBotId == id)
             .OrderByDescending(entry => entry.DateTime)
             .Skip(startInterval)
@@ -104,7 +104,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
 
             try
             {
-                return await _repository.Export<Entry>()
+                return await _commandHandler.Export<Entry>()
             .Where(entry => entry.PostId == id)
             .OrderByDescending(entry => entry.DateTime)
             .Skip(startInterval)
@@ -149,7 +149,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
 
             try
             {
-                return await _repository.Export<Entry>()
+                return await _commandHandler.Export<Entry>()
             .Where(entry => entry.OwnerUserId == id)
             .OrderByDescending(entry => entry.DateTime)
             .Skip(startInterval)

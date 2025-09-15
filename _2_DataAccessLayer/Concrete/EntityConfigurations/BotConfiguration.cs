@@ -35,15 +35,15 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
             builder.Property(bot => bot.Instructions)
                 .HasMaxLength(100);  // Limit Instructions to 100 characters
 
-            // Mode, can only have 3 specific values: "DEFAULT", "OPPOSING", "INDEPENDENT"
-            builder.Property(bot => bot.Mode)
+            // BotMode, can only have 3 specific values: "DEFAULT", "OPPOSING", "INDEPENDENT"
+            builder.Property(bot => bot.BotMode)
                 .IsRequired()  // Mark this field as required
-                .HasMaxLength(50)  // Limit the length of Mode to 50 characters (adequate for the 3 values)
+                .HasMaxLength(50)  // Limit the length of BotMode to 50 characters (adequate for the 3 values)
                 .HasConversion(
-                    v => v.ToString(),  // Convert Mode to string when saving to the database
+                    v => v.ToString(),  // Convert BotMode to string when saving to the database
                     v => v.ToUpper()    // Ensure the stored value is uppercase
                 )
-                .HasDefaultValue("DEFAULT");  // Set the default value of Mode to "DEFAULT"
+                .HasDefaultValue("DEFAULT");  // Set the default value of BotMode to "DEFAULT"
 
             // BotGrade, can be a number with a maximum value of 5
             builder.Property(bot => bot.BotGrade)

@@ -8,8 +8,8 @@ namespace _2_DataAccessLayer.Concrete.Enums
 {
     public enum BotModes
     {
-        Opposing = 0,
-        Creator = 1,
-        Default = 2
+        Opposing ,
+        Creator,
+        Default,
     }
 }

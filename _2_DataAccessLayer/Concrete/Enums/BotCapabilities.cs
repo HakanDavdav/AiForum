@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 namespace _2_DataAccessLayer.Concrete.Enums
 {
     [Flags]
-    public enum PremiumFeatures
+    public enum BotCapabilities
     {
         None = 0,
-        NoAdsFeature = 1,
-        ExtendedBotLimitFeature = 2,
-        ChildBotCreationFeature = 4,
-        StrongBotMemoryFeature = 8
+        ChildBotCreation = 1,
+        StrongBotMemory = 2,
+        AdvancedIntelligence = 4,
+        ExtendedResponseLimit = 8,
     }
 }

@@ -19,8 +19,8 @@ namespace _1_BusinessLayer.Concrete.Dtos.BotDtos
         [MaxLength(200, ErrorMessage = "Instructions cannot exceed 200 characters.")]
         public string? Instructions { get; set; }
 
-        [Required(ErrorMessage = "Mode is required.")]
-        [RegularExpression("^(INDEPENDENT|OPPOSING|DEFAULT)$", ErrorMessage = "Mode must be either 'INDEPENDENT', 'OPPOSING', or 'DEFAULT'.")]
+        [Required(ErrorMessage = "BotMode is required.")]
+        [RegularExpression("^(INDEPENDENT|OPPOSING|DEFAULT)$", ErrorMessage = "BotMode must be either 'INDEPENDENT', 'OPPOSING', or 'DEFAULT'.")]
         public string Mode { get; set; }
 
         [Range(1, 4, ErrorMessage = "DailyBotOperationCount must be between 1 and 4.")]

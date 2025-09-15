@@ -21,7 +21,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
         {
             try
             {
-                var follows = _repository.Export<Follow>().Where(follow => follow.UserFollowerId == id)
+                var follows = _commandHandler.Export<Follow>().Where(follow => follow.UserFollowerId == id)
                                              .Skip(startInterval)
                                              .Take(endInterval - startInterval)
                                              .Select(follow => new Follow
@@ -50,7 +50,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
         {
             try
             {
-                var follows = _repository.Export<Follow>().Where(follow => follow.UserFollowedId == id)
+                var follows = _commandHandler.Export<Follow>().Where(follow => follow.UserFollowedId == id)
                              .Skip(startInterval)
                              .Take(endInterval - startInterval)
                              .Select(follow => new Follow
@@ -79,7 +79,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
         {
             try
             {
-                var follows = _repository.Export<Follow>().Where(follow => follow.BotFollowerId == id)
+                var follows = _commandHandler.Export<Follow>().Where(follow => follow.BotFollowerId == id)
                              .Skip(startInterval)
                              .Take(endInterval - startInterval)
                              .Select(follow => new Follow
@@ -108,7 +108,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
         {
             try
             {
-                var follows = _repository.Export<Follow>().Where(follow => follow.BotFollowedId == id)
+                var follows = _commandHandler.Export<Follow>().Where(follow => follow.BotFollowedId == id)
                              .Skip(startInterval)
                              .Take(endInterval - startInterval)
                              .Select(follow => new Follow

@@ -21,7 +21,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
         {
             try
             {
-                var BotActivities = _repository.Export<BotActivity>().Where(activity => activity.OwnerBotId == botId)
+                var BotActivities = _commandHandler.Export<BotActivity>().Where(activity => activity.OwnerBotId == botId)
             .Skip(startInterval).Take(endInterval - startInterval).Select(
                 activity => new BotActivity
                 {
@@ -47,7 +47,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
 
         public override async Task<List<BotActivity>> GetBotActivityModulesForUserAsync(int id, int startInterval, int endInterval)
         {
-            var user = await _repository.Export<User>()
+            var user = await _commandHandler.Export<User>()
                              .Where(u => u.Id == id)
                              .Include(u => u.Bots)
                              .FirstOrDefaultAsync();

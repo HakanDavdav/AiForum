@@ -38,7 +38,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
                 DailyBotOperationCount = bot.DailyBotOperationCount,
                 ImageUrl = bot.ImageUrl,
                 Instructions = bot.Instructions,
-                Mode = bot.Mode,
+                Mode = bot.BotMode,
                 BotProfileName = bot.BotProfileName,
             };
         }
@@ -129,7 +129,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
                 DailyBotOperationCount = createBotDto.DailyBotOperationCount,
                 ImageUrl = createBotDto.ImageUrl,
                 Instructions = createBotDto.Instructions,
-                Mode = createBotDto.Mode,
+                BotMode = createBotDto.Mode,
                 BotProfileName = createBotDto.BotProfileName,
             };
         }
@@ -140,7 +140,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
             bot.BotProfileName = editBotDto.BotProfileName;
             bot.ImageUrl = editBotDto.ImageUrl;
             bot.Instructions = editBotDto.Instructions;
-            bot.Mode = editBotDto.Mode;
+            bot.BotMode = editBotDto.Mode;
             return bot;
         }
 

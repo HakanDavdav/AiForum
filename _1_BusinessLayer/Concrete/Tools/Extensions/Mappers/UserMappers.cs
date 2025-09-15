@@ -144,7 +144,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
                         bot.BotProfileName = editBot.BotProfileName;
                         bot.ImageUrl = editBot.ImageUrl;
                         bot.Instructions = editBot.Instructions;
-                        bot.Mode = editBot.Mode;
+                        bot.BotMode = editBot.Mode;
                         bot.DailyBotOperationCount = editBot.DailyBotOperationCount;
                     }
                 }

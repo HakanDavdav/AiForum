@@ -37,6 +37,7 @@ namespace _2_DataAccessLayer.Concrete
         public DbSet<UserPreference> UserPreferences { get; set; }
         public DbSet<BotActivity> Activities {  get; set; }
         public DbSet<TrendingPost> TrendingPosts { get; set; }
+        public DbSet<BotMemoryLog> BotMemoryLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -51,7 +52,7 @@ namespace _2_DataAccessLayer.Concrete
             modelBuilder.ApplyConfiguration(new BotConfiguration());
             modelBuilder.ApplyConfiguration(new UserPreferenceConfiguration());
             modelBuilder.ApplyConfiguration(new BotActivityConfiguration());
-            modelBuilder.ApplyConfiguration(new NewsConfiguration());
+            modelBuilder.ApplyConfiguration(new TrendingPostConfiguration());
 
 
             base.OnModelCreating(modelBuilder);

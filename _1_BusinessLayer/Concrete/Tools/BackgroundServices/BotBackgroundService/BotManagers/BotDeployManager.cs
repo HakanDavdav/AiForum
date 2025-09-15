@@ -8,7 +8,6 @@ using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
-using _1_BusinessLayer.Concrete.Tools.Managers.BotManagers;
 
 namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers
 {
@@ -26,73 +25,13 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             _botDatabaseWriter = botDatabaseWriter;
             _botResponseParser = botResponseParser;
         }
-        public async Task<ObjectIdentityResult<Notification>> BotDoActionAsync(Bot bot)
+        public async Task<IdentityResult> BotDoDailyOperationsAsync(Bot bot)
         {
-            if (bot.DailyOperationCheck == false)
-            {
-                if (bot.Mode == "OPPOSİNG")
-                {
-                    var probabilitySet = new ProbabilitySet()
-                    {
-                        probabilityCreatingEntry = 0.1,
-                        probabilityCreatingOpposingEntry = 0.60,
-                        probabilityCreatingPost = 0.05,
-                        probabilityUserFollowing = 0.05,
-                        probabilityBotFollowing = 0.05,
-                        probabilityLikePost = 0.075,
-                        probabilityLikeEntry = 0.075
-                    };
-                    var (data, dataResponseType) = await _botDatabaseReader.GetModelDataAsync(probabilitySet);
-                    var (aiResponse, aiResponseType) = await _botApiCaller.CreateResponse(bot, data, dataResponseType);
-                    var (requiredId, filteredAiResponse, parseResponseType) = await _botResponseParser.Parse(aiResponse, aiResponseType);
-                    var notification = await _botDatabaseWriter.WriteOnDatabase(bot, requiredId, filteredAiResponse, parseResponseType);
-                    return ObjectIdentityResult<Notification>.Succeded(notification);
-                }
-                else if (bot.Mode == "INDEPENDENT")
-                {
-                    var probabilitySet = new ProbabilitySet()
-                    {
-                        probabilityCreatingEntry = 0.1,
-                        probabilityCreatingOpposingEntry = 0.60,
-                        probabilityCreatingPost = 0.05,
-                        probabilityUserFollowing = 0.05,
-                        probabilityBotFollowing = 0.05,
-                        probabilityLikePost = 0.075,
-                        probabilityLikeEntry = 0.075
-                    };
-                    var (data, dataResponseType) = await _botDatabaseReader.GetModelDataAsync(probabilitySet);
-                    var (aiResponse, aiResponseType) = await _botApiCaller.CreateResponse(bot, data, dataResponseType);
-                    var (requiredId, filteredAiResponse, parseResponseType) = await _botResponseParser.Parse(aiResponse, aiResponseType);
-                    var notification = await _botDatabaseWriter.WriteOnDatabase(bot, requiredId, filteredAiResponse, parseResponseType);
-                    return ObjectIdentityResult<Notification>.Succeded(notification);
-                }
-                else if (bot.Mode == "DEFAULT")
-                {
-                    var probabilitySet = new ProbabilitySet()
-                    {
-                        probabilityCreatingEntry = 0.1,
-                        probabilityCreatingOpposingEntry = 0.60,
-                        probabilityCreatingPost = 0.05,
-                        probabilityUserFollowing = 0.05,
-                        probabilityBotFollowing = 0.05,
-                        probabilityLikePost = 0.075,
-                        probabilityLikeEntry = 0.075
-                    };
-                    var (data, dataResponseType) = await _botDatabaseReader.GetModelDataAsync(probabilitySet);
-                    var (aiResponse, aiResponseType) = await _botApiCaller.CreateResponse(bot, data, dataResponseType);
-                    var (requiredId, filteredAiResponse, parseResponseType) = await _botResponseParser.Parse(aiResponse, aiResponseType);
-                    var notification = await _botDatabaseWriter.WriteOnDatabase(bot, requiredId, filteredAiResponse, parseResponseType);
-                    return ObjectIdentityResult<Notification>.Succeded(notification);
-                }
-                else
-                {
-                    throw new InvalidBotModeException();
-                }
-            }
-            else
-            {
-                return ObjectIdentityResult<Notification>.Failed(null, new IdentityError[] { new UnauthorizedError("Daily limit has reached!!") });
-            }
+            if(bot == null)
+                return IdentityResult.Failed(new NotFoundError("Bot not found"));
+            if(bot.DailyOperationCheck == true)
+                return IdentityResult.Failed(new ForbiddenError("Bot has already done daily operations today"));
+            var data = await _botDatabaseReader.GetModelDataAsync(bot);
 
 
         }

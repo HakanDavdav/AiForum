@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _2_DataAccessLayer.Concrete.Enums;
 using Microsoft.AspNetCore.Identity;
 
 namespace _2_DataAccessLayer.Concrete.Entities
@@ -17,6 +18,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public string? Bio { get; set; }
         public bool IsProfileCreated { get; set; }
         public DateTime DateTime { get; set; } 
+        public PremiumFeatures PremiumFeatures { get; set; }
         public int LikeCount { get; set; }
         public int EntryCount { get; set; }
         public int PostCount { get; set; }

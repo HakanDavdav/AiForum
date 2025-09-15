@@ -21,7 +21,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
         {
             try
             {
-                var notifications = _repository.Export<Notification>()
+                var notifications = _commandHandler.Export<Notification>()
             .Where(notification => notification.OwnerUserId == id)
             .OrderByDescending(notification => notification.DateTime)
             .Skip(startInterval)

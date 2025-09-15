@@ -21,7 +21,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
         {
             try
             {
-                return await _repository.Export<Post>()
+                return await _commandHandler.Export<Post>()
                     .Where(post => post.OwnerUserId == id)
                     .OrderByDescending(post => post.DateTime)
                     .Skip(startInterval)
@@ -62,7 +62,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
         {
             try
             {
-                return await _repository.Export<Post>()
+                return await _commandHandler.Export<Post>()
                     .Where(post => post.OwnerBotId == id)
                     .OrderByDescending(post => post.DateTime)
                     .Skip(startInterval)
@@ -102,7 +102,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
         public override async Task<Post> GetPostModuleAsync(int id)
         {
 #pragma warning disable CS8603 // Possible null reference return.
-            return await _repository.Export<Post>()
+            return await _commandHandler.Export<Post>()
                 .Where(post => post.PostId == id)
                 .Select(post => new Post
                 {

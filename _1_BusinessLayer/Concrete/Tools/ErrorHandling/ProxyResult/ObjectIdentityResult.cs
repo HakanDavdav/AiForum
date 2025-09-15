@@ -9,9 +9,9 @@ namespace _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult
 {
     public class ObjectIdentityResult<T> : IdentityResult
     {
-        T? Data;
+        public T? Data;
         public new IEnumerable<IdentityError> Errors => ObjectIdentityErrors.AsEnumerable();
-        private IdentityError[] ObjectIdentityErrors;
+        public IdentityError[] ObjectIdentityErrors;
 
         public static ObjectIdentityResult<T> Succeded(T data)
         {

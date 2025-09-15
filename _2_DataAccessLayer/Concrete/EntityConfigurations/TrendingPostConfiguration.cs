@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace _2_DataAccessLayer.Concrete.EntityConfigurations
 {
-    public class NewsConfiguration : IEntityTypeConfiguration<TrendingPost>
+    public class TrendingPostConfiguration : IEntityTypeConfiguration<TrendingPost>
     {
         public void Configure(EntityTypeBuilder<TrendingPost> builder)
         {

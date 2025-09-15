@@ -7,7 +7,6 @@ using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Abstractions.AbstractClasses;
 using _2_DataAccessLayer.Abstractions.Generic;
 using _2_DataAccessLayer.Concrete.Entities;
-using _2_DataAccessLayer.Concrete.Repository;
 using Microsoft.Extensions.Hosting;
 
 namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.TrendCalculatorBackgroundService

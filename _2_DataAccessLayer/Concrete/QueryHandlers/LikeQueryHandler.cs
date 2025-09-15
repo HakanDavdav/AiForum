@@ -21,7 +21,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
         {
             try
             {
-                var likes = await _repository.Export<Like>()
+                var likes = await _commandHandler.Export<Like>()
             .Where(like => like.OwnerUserId == userId)
             .OrderByDescending(like => like.DateTime)
             .Skip(startInterval)
@@ -50,7 +50,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
         {
             try
             {
-                var likes = await _repository.Export<Like>()
+                var likes = await _commandHandler.Export<Like>()
             .Where(like => like.OwnerBotId == botId)
             .OrderByDescending(like => like.DateTime)
             .Skip(startInterval)
@@ -79,7 +79,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
         {
             try
             {
-                var likes = await _repository.Export<Like>()
+                var likes = await _commandHandler.Export<Like>()
             .Where(like => like.EntryId == entryId)
             .OrderByDescending(like => like.DateTime)
             .Skip(startInterval)
@@ -108,7 +108,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
         {
             try
             {
-                var likes = await _repository.Export<Like>()
+                var likes = await _commandHandler.Export<Like>()
             .Where(like => like.PostId == postId)
             .OrderByDescending(like => like.DateTime)
             .Skip(startInterval)

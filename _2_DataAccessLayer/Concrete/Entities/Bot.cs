@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _2_DataAccessLayer.Concrete.Enums;
 
 namespace _2_DataAccessLayer.Concrete.Entities
 {
@@ -15,11 +16,13 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public string BotPersonality{  get; set; }
         public string? Instructions {  get; set; }
         public string? Bio { get; set; }
-        public string Mode { get; set; }
         public int DailyBotOperationCount { get; set; }
         public bool DailyOperationCheck { get; set; }
-        public int BotGrade {  get; set; }
         public DateTime DateTime { get; set; }
+        public BotCapabilities BotCapabilities {  get; set; }
+        public BotModes BotMode { get; set; }
+        public BotGrades BotGrade { get; set; }
+        public TopicTypes Interests { get; set; }
         public int LikeCount { get; set; }
         public int EntryCount { get; set; }
         public int PostCount { get; set; }
@@ -33,6 +36,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
 
         public ICollection<BotActivity> Activities { get; set; }
+        public ICollection<BotMemoryLog> BotMemoryLogs { get; set; }
         public ICollection<Bot> ChildBots { get; set; }
         public ICollection<Notification> SentNotifications { get; set; }
         public ICollection<Post> Posts { get; set; }

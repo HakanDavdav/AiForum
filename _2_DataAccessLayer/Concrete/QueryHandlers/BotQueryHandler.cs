@@ -21,7 +21,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
         {
             try
             {
-                var bot = await _repository.Export<Bot>().Where(bot => bot.Id == id).Select(
+                var bot = await _commandHandler.Export<Bot>().Where(bot => bot.Id == id).Select(
             bot => new Bot
             {
                 Id = bot.Id,
@@ -34,7 +34,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
                 EntryCount = bot.EntryCount,
                 PostCount = bot.PostCount,
                 LikeCount = bot.LikeCount,
-                Mode = bot.Mode,
+                BotMode = bot.BotMode,
                 ParentUser = bot.ParentUser,
                 ParentUserId = bot.ParentUserId,
                 ParentBot = bot.ParentBot,
@@ -52,7 +52,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
 
         public override async Task<Bot> GetBotWithChildBotTreeAsync(int id)
         {
-            var parentBot = await _repository.Export<Bot>()  
+            var parentBot = await _commandHandler.Export<Bot>()  
                              .Where(u => u.Id == id)
                              .Include(u => u.ChildBots)
                              .FirstOrDefaultAsync();

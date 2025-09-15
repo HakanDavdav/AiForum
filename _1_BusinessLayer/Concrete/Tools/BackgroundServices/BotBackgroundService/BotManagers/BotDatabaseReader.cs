@@ -1,158 +1,158 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
+using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _2_DataAccessLayer.Abstractions;
+using _2_DataAccessLayer.Abstractions.AbstractClasses;
+using _2_DataAccessLayer.Abstractions.Generic;
 using _2_DataAccessLayer.Concrete.Entities;
+using _2_DataAccessLayer.Concrete.Enums;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using static _2_DataAccessLayer.Concrete.Enums.BotActivityTypes;
 
 
 namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers
 {
     public class BotDatabaseReader
     {
-        public readonly AbstractPostRepository _postRepository;
-        public readonly AbstractEntryRepository _entryRepository;
-        public readonly AbstractTrendingPostRepository _newsRepository;
-        public readonly AbstractUserRepository _userRepository;
-        public readonly AbstractBotRepository _botRepository;
-        public BotDatabaseReader(AbstractBotRepository abstractBotRepository, AbstractEntryRepository entryRepository, AbstractTrendingPostRepository newsRepository,
-            AbstractUserRepository userRepository, AbstractPostRepository postRepository)
+        public readonly AbstractPostQueryHandler _postQueryHandler;
+        public readonly AbstractEntryQueryHandler _entryQueryHandler;
+        public readonly AbstractTrendingPostQueryHandler _newsQueryHandler;
+        public readonly AbstractUserQueryHandler _userQueryHandler;
+        public readonly AbstractBotQueryHandler _botQueryHandler;
+        public readonly AbstractBotMemoryLogHandler _botMemoryLogQueryHandler;
+        public readonly AbstractGenericCommandHandler _commandHandler;
+
+        public BotDatabaseReader(
+            AbstractBotQueryHandler botQueryHandler,
+            AbstractEntryQueryHandler entryQueryHandler,
+            AbstractTrendingPostQueryHandler newsQueryHandler,
+            AbstractUserQueryHandler userQueryHandler,
+            AbstractPostQueryHandler postQueryHandler,
+            AbstractBotMemoryLogHandler botMemoryLogQueryHandler,
+            AbstractGenericCommandHandler commandHandler)
         {
-            _botRepository = abstractBotRepository;
-            _entryRepository = entryRepository;
-            _newsRepository = newsRepository;
-            _userRepository = userRepository;
-            _postRepository = postRepository;
+            _botQueryHandler = botQueryHandler;
+            _entryQueryHandler = entryQueryHandler;
+            _newsQueryHandler = newsQueryHandler;
+            _userQueryHandler = userQueryHandler;
+            _postQueryHandler = postQueryHandler;
+            _commandHandler = commandHandler;
+            _botMemoryLogQueryHandler = botMemoryLogQueryHandler;
         }
 
-        public async Task<(List<string> Data, string dataResponseType)> GetModelDataAsync(ProbabilitySet probabilitySet)
+        public async Task<ObjectIdentityResult<BotActivityType>> DetermineOperation(ProbabilitySet probabilitySet)
         {
-            Random random = new Random();
-            double ActionPossibility = random.NextDouble(); // 0 ile 1 arasında rastgele sayı üretir
+            var activityProbabilities = probabilitySet.GetAllActivityProbabilities();
+            if (activityProbabilities == null || activityProbabilities.Count == 0)
+                return ObjectIdentityResult<BotActivityType>.Failed(default, new[] { new UnexpectedError("No activity probabilities defined") });
 
-            double probabilityCreatingEntry = probabilitySet.probabilityCreatingEntry;
-            double probabilityCreatingOpposingEntry = probabilitySet.probabilityCreatingOpposingEntry;
-            double probabilityCreatingPost = probabilitySet.probabilityCreatingPost;
-            double probabilityUserFollowing = probabilitySet.probabilityUserFollowing;
-            double probabilityBotFollowing = probabilitySet.probabilityBotFollowing;
-            double probabilityLikePost = probabilitySet.probabilityLikePost;
-            double probabilityLikeEntry = probabilitySet.probabilityLikeEntry;
-
-
-            if (ActionPossibility < probabilityCreatingEntry)
+            // Weighted random selection
+            var total = activityProbabilities.Values.Sum();
+            var rand = new Random();
+            var pick = rand.NextDouble() * (double)total;
+            double cumulative = 0;
+            BotActivityType? selectedType = null;
+            foreach (var kvp in activityProbabilities)
             {
-                List<string> data = new List<string>();
-                List<Post> posts = await _postRepository.GetRandomPosts(1);
-                foreach (var post in posts)
+                cumulative += (double)kvp.Value;
+                if (pick <= cumulative)
                 {
-                    data.Add("Post Id:" + post.PostId + "\nPost NotificationTitle:" + post.Title + "\nPost NotificationContext:" + post.Context);
+                    selectedType = kvp.Key;
+                    break;
                 }
-                return (data, "creatingEntry");
-
             }
-            else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry)
+            if(selectedType == null)
+                return ObjectIdentityResult<BotActivityType>.Failed(default, new[] { new UnexpectedError("Failed to determine activity type") });
+            return ObjectIdentityResult<BotActivityType>.Succeded(selectedType.Value);
+        }
+
+        public async Task<ObjectIdentityResult<ExpandoObject>> ReadData(BotActivityType activityType,BotCapabilities botCapabilities)
+        {
+            var random = new Random();
+            if (activityType == BotActivityType.BotLikedEntry) 
             {
-                List<string> data = new List<string>();
-                StringBuilder stringBuilder = new StringBuilder();
-                List<Post> posts = await _postRepository.GetRandomPosts(1);
-                foreach (var post in posts)
+                if (botCapabilities.HasFlag(BotCapabilities.AdvancedIntelligence))
                 {
-                    List<Entry> entries = await _entryRepository.GetRandomEntriesByPostId(post.PostId, 3);
-                    stringBuilder.Append("Post Id:" + post.PostId + "\nPost NotificationTitle:" + post.Title + "\nPost NotificationContext" + post.Context);
-                    foreach (var entry in entries)
-                    {
-                        stringBuilder.AppendLine("Entry NotificationContext:" + entry.Context);
-                    }
-                    data.Add(stringBuilder.ToString());
-                    stringBuilder.Clear();
-                }
-                return (data, "creatingOpposingEntry");
 
+                }
+                if (botCapabilities.HasFlag(BotCapabilities.StrongBotMemory))
+                {
+
+                }
+                else
+                {
+
+                }
+
+            
             }
 
-            else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry + probabilityCreatingPost)
+            if(activityType == BotActivityType.BotLikedPost) 
             {
-                List<string> data = new List<string>();
-                List<TrendingPost> news = await _newsRepository.GetRandomNews(1);
-                foreach (var new_s in news)
+                dynamic obj = new ExpandoObject();
+                if (botCapabilities == BotCapabilities.None)
                 {
-                    data.Add("TrendingPost NotificationTitle:" + new_s.Title + "\nNews NotificationContext:" + new_s.Context);
-                }
-                return (data, "creatingPost");
 
-            }
-            else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry + probabilityCreatingPost + probabilityUserFollowing)
-            {
-                List<string> data = new List<string>();
-                StringBuilder stringBuilder = new StringBuilder();
-                List<User> users = await _userRepository.GetRandomUsers(1);
-                foreach (var user in users)
-                {
-                    stringBuilder.Append("ParentUser Id:" + user.Id);
-                    List<Entry> entries = await _entryRepository.GetRandomEntriesByUserId(user.Id, 3);
-                    foreach (var entry in entries)
-                    {
-                        stringBuilder.AppendLine("Post NotificationTitle:" + (await _postRepository.GetByEntryId(entry.EntryId)).Title
-                                                 + "Post NotificationContext" + (await _postRepository.GetByEntryId(entry.EntryId)).Context);
-                        stringBuilder.AppendLine("Entry NotificationContext:" + entry.Context);
-                    }
-                    data.Add(stringBuilder.ToString());
-                    stringBuilder.Clear();
+                    var postCount = await _newsQueryHandler.ExportDirectlyAsync().CountAsync();
+                    var randomNumber = random.Next(0, postCount);
+                    var post = await _newsQueryHandler.GetWithCustomSearchAsync(q => q.Skip(randomNumber).Take(1));
+                    obj.Posts = post;
+                    obj.AdvancedIntelligence = false;
+                    obj.StrongBotMemory = false;
                 }
-                return (data, "creatingUserFollowing");
+                if (botCapabilities.HasFlag(BotCapabilities.AdvancedIntelligence))
+                {
+                    var postCount = await _postQueryHandler.ExportDirectlyAsync().CountAsync();
+                    var randomNumber = random.Next(0, postCount);
+                    var posts = await _postQueryHandler.GetWithCustomSearchAsync(q => q.Skip(randomNumber).Take(10));
+                    obj.Posts = posts;
+                    obj.AdvancedIntelligence = true;
+                }
+                if (botCapabilities.HasFlag(BotCapabilities.StrongBotMemory))
+                {
+                    var botMemoryLogs = await _botMemoryLogQueryHandler.GetWithCustomSearchAsync(q => q.OrderBy(b => b.DateTime).Take(4));
+                    obj.BotMemoryLogs = botMemoryLogs;
+                    obj.StrongBotMemory = true;
+
+                }
+                return ObjectIdentityResult<ExpandoObject>.Succeded(obj);
+            }
+
+            if(activityType == BotActivityType.BotStartedFollow) 
+            { 
+                var botCount = await _botQueryHandler.ExportDirectlyAsync().CountAsync();
+                var randomNumber = random.Next(0, botCount);
+                var bots = await _botQueryHandler.GetWithCustomSearchAsync(q => q.Skip(randomNumber).Take(3));
+            }
+
+            if (activityType == BotActivityType.BotCreatedEntry)
+            {
+                if (botCapabilities.HasFlag(BotCapabilities.AdvancedIntelligence))
+                {
+                    var postCount = await _postQueryHandler.ExportDirectlyAsync().CountAsync();
+                    var randomNumber = random.Next(0, postCount);
+                    var posts = await _postQueryHandler.GetWithCustomSearchAsync(q => q.Skip(randomNumber).Take(10));
+                    return ObjectIdentityResult<Object>.Succeded(posts);
+                }
+                else
+                {
+                    var postCount = await _newsQueryHandler.ExportDirectlyAsync().CountAsync();
+                    var randomNumber = random.Next(0, postCount);
+                    var post = await _newsQueryHandler.GetWithCustomSearchAsync(q => q.Skip(randomNumber).Take(1));
+                    return ObjectIdentityResult<Object>.Succeded(post);
+                }
+            }
 
 
-            }
-            else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry + probabilityCreatingPost + probabilityUserFollowing + probabilityBotFollowing)
-            {
-                List<string> data = new List<string>();
-                StringBuilder stringBuilder = new StringBuilder();
-                List<Bot> bots = await _botRepository.GetRandomBots(1);
-                foreach (var bot in bots)
-                {
-                    stringBuilder.Append("ParentBot Id:" + bot.Id);
-                    List<Entry> entries = await _entryRepository.GetRandomEntriesByBotId(bot.Id, 3);
-                    foreach (var entry in entries)
-                    {
-                        stringBuilder.AppendLine("Post NotificationTitle:" + (await _postRepository.GetByEntryId(entry.EntryId)).Title
-                                                + "Post NotificationContext" + (await _postRepository.GetByEntryId(entry.EntryId)).Context);
-                        stringBuilder.AppendLine("Entry NotificationContext:" + entry.Context);
-                    }
-                    data.Add(stringBuilder.ToString());
-                    stringBuilder.Clear();
-                }
-                return (data, "creatingBotFollowing");
+            if(activityType == BotActivityType.BotCreatedPost) { }
 
-            }
-            else if (ActionPossibility < probabilityCreatingEntry + probabilityCreatingOpposingEntry + probabilityCreatingPost + probabilityUserFollowing + probabilityBotFollowing + probabilityLikePost)
-            {
-                List<string> data = new List<string>();
-                List<Post> posts = await _postRepository.GetRandomPosts(3);
-                foreach (var post in posts)
-                {
-                    data.Add("Post Id:" + post.PostId + "\nPost NotificationTitle:" + post.Title + "\nPost NotificationContext:" + post.Context);
-                }
-                return (data, "likePost");
-            }
-            else
-            {
-                List<string> data = new List<string>();
-                StringBuilder stringBuilder = new StringBuilder();
-                List<Post> posts = await _postRepository.GetRandomPosts(1);
-                foreach (var post in posts)
-                {
-                    stringBuilder.Append("Post NotificationTitle:" + post.Title + "\nPost NotificationContext:" + post.Context);
-                    List<Entry> entries = await _entryRepository.GetRandomEntriesByPostId(post.PostId, 3);
-                    foreach (var entry in entries)
-                    {
-                        stringBuilder.AppendLine("Entry Id:" + entry.EntryId + "\nEntry NotificationContext:" + entry.Context);
-                    }
-                    data.Add(stringBuilder.ToString());
-                }
-                return (data, "likeEntry");
-            }
+            if(activityType == BotActivityType.BotCreatedOpposingEntry) { }
         }
     }
 }

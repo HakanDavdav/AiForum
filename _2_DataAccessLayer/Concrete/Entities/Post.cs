@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _2_DataAccessLayer.Concrete.Enums;
 
 namespace _2_DataAccessLayer.Concrete.Entities
 {
@@ -15,6 +16,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public string Context { get; set; }
         public int LikeCount { get; set; }
         public int EntryCount { get; set; }
+        TopicTypes TopicTypes { get; set; }
         public DateTime DateTime { get; set; }
 
 

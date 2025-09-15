@@ -14,11 +14,12 @@ using _1_BusinessLayer.Concrete.Dtos.LikeDto;
 using _1_BusinessLayer.Concrete.Dtos.NotificationDtos;
 using _1_BusinessLayer.Concrete.Dtos.PostDtos;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
-using _1_BusinessLayer.Concrete.Tools.Algorithms;
 using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _1_BusinessLayer.Concrete.Tools.Extensions.Mappers;
+using _2_DataAccessLayer.Abstractions.AbstractClasses;
+using _2_DataAccessLayer.Abstractions.Generic;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -30,23 +31,28 @@ namespace _1_BusinessLayer.Concrete.Services
     public class UserService : AbstractUserService
     {
         public UserService(
-            AbstractGenericCommandHandler commandHandler,
+            AbstractGenericCommandHandler genericBaseCommandHandler,
             AbstractBotActivityQueryHandler botActivityQueryHandler,
             AbstractNotificationQueryHandler notificationQueryHandler,
             AbstractEntryQueryHandler entryQueryHandler,
             AbstractPostQueryHandler postQueryHandler,
             AbstractFollowQueryHandler followQueryHandler,
             AbstractLikeQueryHandler likeQueryHandler,
+            AbstractUserQueryHandler userQueryHandler,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             NotificationActivityBodyBuilder notificationActivityBodyBuilder)
-            : base(commandHandler, botActivityQueryHandler, notificationQueryHandler, entryQueryHandler, postQueryHandler, followQueryHandler, likeQueryHandler, userManager, signInManager, notificationActivityBodyBuilder)
+            : base(genericBaseCommandHandler, botActivityQueryHandler,
+                  notificationQueryHandler, entryQueryHandler,
+                  postQueryHandler, followQueryHandler,
+                  likeQueryHandler, userQueryHandler,
+                  userManager, signInManager, notificationActivityBodyBuilder)
         {
         }
 
         public override async Task<IdentityResult> InitializeProfileAsync(int userId, UserCreateProfileDto userCreateProfileDto)
         {
-            var user = await _entryQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
+            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
             if (user == null) return IdentityResult.Failed(new NotFoundError("User not found"));
             if (user.IsProfileCreated == true)
                 return IdentityResult.Failed(new UnauthorizedError("Profile already created initally"));
@@ -71,7 +77,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> DeleteUser(int userId)
         {
-            var user = await _entryQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
+            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
             if (user == null)
                 return IdentityResult.Failed(new NotFoundError("User not found"));
             await _commandHandler.DeleteAsync<User>(user);
@@ -81,7 +87,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto)
         {
-            var user = await _entryQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId).Include(u => u.UserPreference).Include(u => u.Bots));
+            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId).Include(u => u.UserPreference).Include(u => u.Bots));
             if (user == null)
                 return IdentityResult.Failed(new NotFoundError("User not found"));
             user = userEditProfileDto.Update___UserEditProfileDto_To_User(user);
@@ -125,7 +131,7 @@ namespace _1_BusinessLayer.Concrete.Services
         {
             var startInterval = 0;
             var endInterval = claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10;
-            var user = await _entryQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
+            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
             if (user == null)
                 return ObjectIdentityResult<UserProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("User not found") });
             user.Posts = await _postQueryHandler.GetPostModulesForUserAsync(userId, startInterval, endInterval);

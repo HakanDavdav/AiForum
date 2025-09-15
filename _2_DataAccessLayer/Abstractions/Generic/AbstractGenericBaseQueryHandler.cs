@@ -12,17 +12,22 @@ namespace _2_DataAccessLayer.Abstractions.Generic
     {
 
         protected readonly ILogger<T> _logger;
-        protected readonly AbstractGenericCommandHandler _repository;
+        protected readonly AbstractGenericCommandHandler _commandHandler;
 
         protected AbstractGenericBaseQueryHandler(ILogger<T> logger, AbstractGenericCommandHandler repository)
         {
-            _repository = repository;
+            _commandHandler = repository;
             _logger = logger;
+        }
+
+        public virtual IQueryable<T> ExportDirectlyAsync()
+        {
+            return _commandHandler.Export<T>();
         }
 
         public virtual async Task<List<T>> GetWithCustomSearchAsync(Func<IQueryable<T>, IQueryable<T>> queryModifier)
         {
-            var query = _repository.Export<T>();
+            var query = _commandHandler.Export<T>();
             if (queryModifier != null)
                 query = queryModifier(query);
             return await query.ToListAsync();
@@ -31,7 +36,7 @@ namespace _2_DataAccessLayer.Abstractions.Generic
 
         public virtual async Task<T> GetBySpecificPropertySingularAsync(Func<IQueryable<T>, IQueryable<T>> queryModifier)
         {
-            var query = _repository.Export<T>();
+            var query = _commandHandler.Export<T>();
             if (queryModifier != null)
                 query = queryModifier(query);
 #pragma warning disable CS8603 // Possible null reference return.
