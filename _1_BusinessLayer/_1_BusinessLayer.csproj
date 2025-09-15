@@ -55,7 +55,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Concrete\Tools\BackgroundServices\BotBackgroundService\" />
     <Folder Include="Concrete\Tools\BackgroundServices\DatabaseMaintananceBackgroundService\" />
   </ItemGroup>
 

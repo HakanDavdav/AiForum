@@ -19,9 +19,7 @@ using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _1_BusinessLayer.Concrete.Tools.Extensions.Mappers;
-using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
-using _2_DataAccessLayer.Concrete.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -31,20 +29,25 @@ namespace _1_BusinessLayer.Concrete.Services
 {
     public class UserService : AbstractUserService
     {
-        public UserService(AbstractUserRepository userRepository, AbstractNotificationRepository notificationRepository, AbstractActivityRepository activityRepository,
-            AbstractBotRepository botRepository, AbstractUserPreferenceRepository preferenceRepository, AbstractEntryRepository entryRepository,
-            AbstractPostRepository postRepository, AbstractLikeRepository likeRepository, AbstractFollowRepository followRepository,
-            UserManager<User> userManager, SignInManager<User> signInManager, NotificationActivityBodyBuilder notificationActivityBodyBuilder) :
-            base(userRepository, notificationRepository, activityRepository, botRepository, preferenceRepository,
-                entryRepository, postRepository, likeRepository, followRepository, userManager, signInManager, notificationActivityBodyBuilder)
+        public UserService(
+            AbstractGenericCommandHandler commandHandler,
+            AbstractBotActivityQueryHandler botActivityQueryHandler,
+            AbstractNotificationQueryHandler notificationQueryHandler,
+            AbstractEntryQueryHandler entryQueryHandler,
+            AbstractPostQueryHandler postQueryHandler,
+            AbstractFollowQueryHandler followQueryHandler,
+            AbstractLikeQueryHandler likeQueryHandler,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            NotificationActivityBodyBuilder notificationActivityBodyBuilder)
+            : base(commandHandler, botActivityQueryHandler, notificationQueryHandler, entryQueryHandler, postQueryHandler, followQueryHandler, likeQueryHandler, userManager, signInManager, notificationActivityBodyBuilder)
         {
         }
 
         public override async Task<IdentityResult> InitializeProfileAsync(int userId, UserCreateProfileDto userCreateProfileDto)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null) return
-                    IdentityResult.Failed(new NotFoundError("User not found"));
+            var user = await _entryQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
+            if (user == null) return IdentityResult.Failed(new NotFoundError("User not found"));
             if (user.IsProfileCreated == true)
                 return IdentityResult.Failed(new UnauthorizedError("Profile already created initally"));
 
@@ -62,25 +65,23 @@ namespace _1_BusinessLayer.Concrete.Services
             if (!stampResult.Succeeded)
                 return stampResult;
             await _signInManager.RefreshSignInAsync(user);
-            await _userRepository.SaveChangesAsync();
+            await _commandHandler.SaveChangesAsync();
             return IdentityResult.Success;
-
         }
 
         public override async Task<IdentityResult> DeleteUser(int userId)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _entryQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
             if (user == null)
                 return IdentityResult.Failed(new NotFoundError("User not found"));
-            await _userRepository.DeleteAsync(user);
+            await _commandHandler.DeleteAsync<User>(user);
+            await _commandHandler.SaveChangesAsync();
             return IdentityResult.Success;
-
         }
 
-        //cannot use for deletion of bots.
         public override async Task<IdentityResult> EditProfile(int userId, UserEditProfileDto userEditProfileDto)
         {
-            var user = await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(user => user.Id == userId).Include(user => user.UserPreference).Include(user => user.Bots));
+            var user = await _entryQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId).Include(u => u.UserPreference).Include(u => u.Bots));
             if (user == null)
                 return IdentityResult.Failed(new NotFoundError("User not found"));
             user = userEditProfileDto.Update___UserEditProfileDto_To_User(user);
@@ -97,16 +98,15 @@ namespace _1_BusinessLayer.Concrete.Services
                   };
             await _userManager.AddClaimsAsync(user, claims);
             await _signInManager.RefreshSignInAsync(user);
-            await _userRepository.SaveChangesAsync();
+            await _commandHandler.SaveChangesAsync();
             return IdentityResult.Success;
-
         }
 
         public override async Task<ObjectIdentityResult<List<BotActivityDto>>> LoadBotActivities(int userId, int page)
         {
             var startInterval = (page - 1) * 10;
             var endInterval = startInterval + 10;
-            var botActivities = await _activityRepository.GetBotActivityModulesForUserAsync(userId, startInterval, endInterval);
+            var botActivities = await _botActivityQueryHandler.GetBotActivityModulesForUserAsync(userId, startInterval, endInterval);
             var botActivityDtos = new List<BotActivityDto>();
             foreach (var activity in botActivities)
             {
@@ -119,31 +119,28 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<ObjectIdentityResult<dynamic>> GetBotPanel(int userId)
         {
             throw new NotImplementedException();
-
         }
-
 
         public override async Task<ObjectIdentityResult<UserProfileDto>> GetUserProfile(int userId, ClaimsPrincipal claims)
         {
             var startInterval = 0;
             var endInterval = claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10;
-            var user = await _userRepository.GetUserModuleAsync(userId);
+            var user = await _entryQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
             if (user == null)
                 return ObjectIdentityResult<UserProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("User not found") });
-            user.Posts = await _postRepository.GetPostModulesForUser(userId, startInterval, endInterval);
-            user.Entries = await _entryRepository.GetEntryModulesForUserAsync(userId, startInterval, endInterval);
-            user.Followers = await _followRepository.GetFollowModulesForUserAsFollowedAsync(userId, startInterval, endInterval);
-            user.Followed = await _followRepository.GetFollowModulesForUserAsFollowerAsync(userId, startInterval, endInterval);
+            user.Posts = await _postQueryHandler.GetPostModulesForUserAsync(userId, startInterval, endInterval);
+            user.Entries = await _entryQueryHandler.GetEntryModulesForUserAsync(userId, startInterval, endInterval);
+            user.Followers = await _followQueryHandler.GetFollowModulesForUserAsFollowedAsync(userId, startInterval, endInterval);
+            user.Followed = await _followQueryHandler.GetFollowModulesForUserAsFollowerAsync(userId, startInterval, endInterval);
             var userProfileDto = user.User_To_UserProfileDto();
             return ObjectIdentityResult<UserProfileDto>.Succeded(userProfileDto);
-
         }
 
         public override async Task<ObjectIdentityResult<List<EntryProfileDto>>> LoadProfileEntries(int userId, ClaimsPrincipal claims, int page)
         {
             var startInterval = (page - 1) * (claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10);
             var endInterval = startInterval + (claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10);
-            var entries = await _entryRepository.GetEntryModulesForUserAsync(userId, startInterval, endInterval);
+            var entries = await _entryQueryHandler.GetEntryModulesForUserAsync(userId, startInterval, endInterval);
             List<EntryProfileDto> entryProfileDtos = new List<EntryProfileDto>();
             foreach (var entry in entries)
             {
@@ -156,21 +153,20 @@ namespace _1_BusinessLayer.Concrete.Services
         {
             var startInterval = (page - 1) * (claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10);
             var endInterval = startInterval + (claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10);
-            var posts = await _postRepository.GetPostModulesForUser(userId, startInterval, endInterval);
+            var posts = await _postQueryHandler.GetPostModulesForUserAsync(userId, startInterval, endInterval);
             List<PostProfileDto> postProfileDtos = new List<PostProfileDto>();
             foreach (var post in posts)
             {
                 postProfileDtos.Add(post.Post_To_PostProfileDto());
             }
             return ObjectIdentityResult<List<PostProfileDto>>.Succeded(postProfileDtos);
-
         }
 
         public override async Task<ObjectIdentityResult<List<MinimalLikeDto>>> LoadProfileLikes(int userId, int page)
         {
             var startInterval = (page - 1) * 10;
             var endInterval = startInterval + 10;
-            var likes = await _likeRepository.GetLikeModulesForUser(userId, startInterval, endInterval);
+            var likes = await _likeQueryHandler.GetLikeModulesForUserAsync(userId, startInterval, endInterval);
             List<MinimalLikeDto> minimalLikeDtos = new List<MinimalLikeDto>();
             foreach (var like in likes)
             {
@@ -183,9 +179,8 @@ namespace _1_BusinessLayer.Concrete.Services
         {
             var startInterval = (page - 1) * 10;
             var endInterval = startInterval + 10;
-            var user = await _userRepository.GetByIdAsync(endInterval);
             List<NotificationDto> notificationsDtos = new List<NotificationDto>();
-            List<Notification> notifications = await _notificationRepository.GetNotificationModulesForUser(userId, startInterval, endInterval);
+            List<Notification> notifications = await _notificationQueryHandler.GetNotificationModulesForUserAsync(userId, startInterval, endInterval);
             foreach (var notification in notifications)
             {
                 var (title, body) = _notificationActivityBodyBuilder.BuildAppNotificationContent(notification);
@@ -199,13 +194,12 @@ namespace _1_BusinessLayer.Concrete.Services
             var startInterval = (page - 1) * 10;
             var endInterval = startInterval + 10;
             List<FollowProfileDto> followProfileDtos = new List<FollowProfileDto>();
-            var followers = await _followRepository.GetFollowModulesForUserAsFollowedAsync(userId, startInterval, endInterval);
+            var followers = await _followQueryHandler.GetFollowModulesForUserAsFollowedAsync(userId, startInterval, endInterval);
             foreach (var follow in followers)
             {
                 followProfileDtos.Add(follow.Follow_To_FollowProfileDto());
             }
             return ObjectIdentityResult<List<FollowProfileDto>>.Succeded(followProfileDtos);
-
         }
 
         public override async Task<ObjectIdentityResult<List<FollowProfileDto>>> LoadFollowed(int userId, int page)
@@ -213,7 +207,7 @@ namespace _1_BusinessLayer.Concrete.Services
             var startInterval = (page - 1) * 10;
             var endInterval = startInterval + 10;
             List<FollowProfileDto> followProfileDtos = new List<FollowProfileDto>();
-            var followers = await _followRepository.GetFollowModulesForUserAsFollowerAsync(userId, startInterval, endInterval);
+            var followers = await _followQueryHandler.GetFollowModulesForUserAsFollowerAsync(userId, startInterval, endInterval);
             foreach (var follow in followers)
             {
                 followProfileDtos.Add(follow.Follow_To_FollowProfileDto());
@@ -223,17 +217,16 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<ObjectIdentityResult<UserProfileSettingsDto>> GetUserProfileSettings(int userId)
         {
-            var user = await _userRepository.GetUserModuleAsync(userId);
+            var user = await _entryQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
             var userProfileSettingsDto = user.User_To_UserProfileSettingsDto();
             return ObjectIdentityResult<UserProfileSettingsDto>.Succeded(userProfileSettingsDto);
         }
 
         public override async Task<ObjectIdentityResult<MinimalUserDto>> GetUserWithBotsTree(int userId)
         {
-            var user = await _userRepository.GetUserWithBotTreeAsync(userId);
+            var user = await _entryQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
             var minimalUserDto = user.UserWithBotTree_To_MinimalVersion();
             return ObjectIdentityResult<MinimalUserDto>.Succeded(minimalUserDto);
         }
-
     }
 }

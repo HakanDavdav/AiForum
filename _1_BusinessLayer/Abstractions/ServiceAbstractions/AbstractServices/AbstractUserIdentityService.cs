@@ -10,29 +10,33 @@ using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete.Enums;
 using Microsoft.AspNetCore.Identity;
+using _2_DataAccessLayer.Abstractions.AbstractClasses;
+using _2_DataAccessLayer.Abstractions.Generic;
 
 
 namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
 {
     public abstract class AbstractUserIdentityService : IUserIdentityService
     {
-        protected readonly AbstractUserRepository _userRepository;
-        protected readonly AbstractUserPreferenceRepository _userPreferenceRepository;
+        protected readonly AbstractUserQueryHandler _userQueryHandler;
         protected readonly GeneralSender _generalSender;
         protected readonly UserManager<User> _userManager;
         protected readonly SignInManager<User> _signInManager;
+        protected readonly AbstractGenericCommandHandler _genericCommandHandler;
 
 
-        protected AbstractUserIdentityService( AbstractUserRepository userRepository,
-            UserManager<User> userManager, SignInManager<User> signInManager, AbstractUserPreferenceRepository userPreferenceRepository,
-            GeneralSender generalSender)
+        protected AbstractUserIdentityService(
+            AbstractUserQueryHandler userQueryHandler,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            GeneralSender generalSender,
+            AbstractGenericCommandHandler genericCommandHandler)
         {
-            _userRepository = userRepository;
+            _userQueryHandler = userQueryHandler;
             _userManager = userManager;
             _signInManager = signInManager;
-            _userPreferenceRepository = userPreferenceRepository;
             _generalSender = generalSender;
-
+            _genericCommandHandler = genericCommandHandler;
         }
 
         public abstract Task<IdentityResult> ActivateTwoFactorAuthentication(int userId);

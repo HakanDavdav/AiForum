@@ -7,7 +7,7 @@ using _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices;
 using _1_BusinessLayer.Concrete.Tools.BackgroundServices.MessageBackgroundService;
 using _1_BusinessLayer.Concrete.Tools.Factories;
 using _2_DataAccessLayer.Abstractions;
-using _2_DataAccessLayer.Abstractions.Interfaces;
+using _2_DataAccessLayer.Abstractions.AbstractClasses;
 using _2_DataAccessLayer.Concrete.Extensions;
 using Microsoft.AspNetCore.Identity;
 
@@ -32,14 +32,13 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
             QueueSender queueSender,
             UnitOfWork unitOfWork)
         {
-            _followQueryHandler = followQueryHandler ?? throw new ArgumentNullException(nameof(followQueryHandler));
-            _userQueryHandler = userQueryHandler ?? throw new ArgumentNullException(nameof(userQueryHandler));
-            _botQueryHandler = botQueryHandler ?? throw new ArgumentNullException(nameof(botQueryHandler));
-            _mailEventFactory = mailEventFactory ?? throw new ArgumentNullException(nameof(mailEventFactory));
-            _notificationEventFactory = notificationEventFactory ?? throw new ArgumentNullException(nameof(notificationEventFactory));
-            _queueSender = queueSender ?? throw new ArgumentNullException(nameof(queueSender));
-            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-            // execute query handlers to ensure they are not null
+            _followQueryHandler = followQueryHandler;
+            _userQueryHandler = userQueryHandler;
+            _botQueryHandler = botQueryHandler;
+            _mailEventFactory = mailEventFactory;
+            _notificationEventFactory = notificationEventFactory;
+            _queueSender = queueSender;
+            _unitOfWork = unitOfWork;
         }
 
         public abstract Task<IdentityResult> DeleteFollow(int userId, int followId);

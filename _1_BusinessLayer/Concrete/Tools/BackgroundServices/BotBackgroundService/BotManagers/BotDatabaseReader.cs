@@ -8,7 +8,7 @@ using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace _1_BusinessLayer.Concrete.Tools.Managers.BotManagers
+namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers
 {
     public class BotDatabaseReader
     {

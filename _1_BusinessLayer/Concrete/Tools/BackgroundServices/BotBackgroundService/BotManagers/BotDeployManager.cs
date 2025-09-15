@@ -7,10 +7,10 @@ using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
-using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Exceptions;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
+using _1_BusinessLayer.Concrete.Tools.Managers.BotManagers;
 
-namespace _1_BusinessLayer.Concrete.Tools.Managers.BotManagers
+namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers
 {
     public class BotDeployManager
     {

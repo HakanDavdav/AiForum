@@ -18,7 +18,7 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices
         Task<ObjectIdentityResult<List<MinimalBotDto>>> SearchBotsByProfileNameAsync(string query, int maxCandidates);
         Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(DateTime date, ClaimsPrincipal claims);
         Task<ObjectIdentityResult<List<MinimalPostDto>>> GetTrendingPosts(ClaimsPrincipal claims);
-        Task<ObjectIdentityResult<List<MinimalPostDto>>> FilterPosts(string query, string OrderType , DateTime? startDate, DateTime? endDate);
+        Task<ObjectIdentityResult<List<MinimalPostDto>>> FilterPosts(string query, string OrderType, DateTime? startDate, DateTime? endDate, ClaimsPrincipal claims);
 
 
 

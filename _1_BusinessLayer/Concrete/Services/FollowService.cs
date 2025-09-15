@@ -15,27 +15,35 @@ using Microsoft.EntityFrameworkCore;
 using static _2_DataAccessLayer.Concrete.Enums.BotActivityTypes;
 using static _2_DataAccessLayer.Concrete.Enums.MailTypes;
 using static _2_DataAccessLayer.Concrete.Enums.NotificationTypes;
+using _2_DataAccessLayer.Abstractions.AbstractClasses;
+using _2_DataAccessLayer.Abstractions.Generic;
 
 namespace _1_BusinessLayer.Concrete.Services
 {
     public class FollowService : AbstractFollowService
     {
-        public FollowService(AbstractFollowRepository followRepository, AbstractUserRepository userRepository, AbstractBotRepository botRepository, 
-            MailEventFactory mailEventFactory, NotificationEventFactory notificationEventFactory, QueueSender queueSender, UnitOfWork unitOfWork) 
-            : base(followRepository, userRepository, botRepository, mailEventFactory, notificationEventFactory, queueSender,unitOfWork)
+        private readonly AbstractGenericCommandHandler _genericCommandHandler;
+
+        public FollowService(
+            AbstractFollowQueryHandler followQueryHandler,
+            AbstractUserQueryHandler userQueryHandler,
+            AbstractBotQueryHandler botQueryHandler,
+            MailEventFactory mailEventFactory,
+            NotificationEventFactory notificationEventFactory,
+            QueueSender queueSender,
+            UnitOfWork unitOfWork,
+            AbstractGenericCommandHandler genericCommandHandler)
+            : base(followQueryHandler, userQueryHandler, botQueryHandler, mailEventFactory, notificationEventFactory, queueSender, unitOfWork)
         {
+            _genericCommandHandler = genericCommandHandler;
         }
 
         public override async Task<IdentityResult> DeleteFollow(int userId, int followId)
         {
-            // Using multiple Savechanges() due to protect modularity of delete and manual insert-range methods in repository layer.
-            // Cannot use delete operation with ef entity references directly due to need of including bloated related entities to server and nullable keys.
-            // Using transaction due to multiple Savechanges() in a single process.
             await _unitOfWork.BeginTransactionAsync();
-
             try
             {
-                var follow = await _followRepository.GetBySpecificPropertySingularAsync(
+                var follow = await _followQueryHandler.GetBySpecificPropertySingularAsync(
                     q => q.Where(f => f.FollowId == followId)
                           .Include(f => f.UserFollowed)
                           .Include(f => f.BotFollowed)
@@ -47,7 +55,6 @@ namespace _1_BusinessLayer.Concrete.Services
                 if (userId != follow.UserFollowerId && userId != follow.UserFollowedId)
                     return IdentityResult.Failed(new ForbiddenError("You are not allowed to delete this follow"));
 
-                // Güncellemeleri ve silmeyi transaction içinde yap
                 if (follow.UserFollowerId == userId && follow.UserFollower != null)
                 {
                     if (follow.BotFollowed != null)
@@ -75,8 +82,8 @@ namespace _1_BusinessLayer.Concrete.Services
                     }
                 }
 
-                await _followRepository.DeleteAsync(follow);
-                await _followRepository.SaveChangesAsync();
+                await _genericCommandHandler.DeleteAsync<Follow>(follow);
+                await _genericCommandHandler.SaveChangesAsync();
                 await _unitOfWork.CommitTransactionAsync();
                 return IdentityResult.Success;
             }
@@ -87,12 +94,11 @@ namespace _1_BusinessLayer.Concrete.Services
             }
         }
 
-
         public override async Task<IdentityResult> FollowBot(int userId, int followedBotId)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
             if (user == null) return IdentityResult.Failed(new NotFoundError("FollowerUser not found"));
-            var bot = await _botRepository.GetByIdAsync(followedBotId);
+            var bot = await _botQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(b => b.Id == followedBotId));
             if (bot == null) return IdentityResult.Failed(new NotFoundError("FollowedBot not found"));
             var follow = new Follow
             {
@@ -112,16 +118,16 @@ namespace _1_BusinessLayer.Concrete.Services
                 IsRead = false,
                 DateTime = DateTime.UtcNow,
             });
-            await _followRepository.SaveChangesAsync();
+            await _genericCommandHandler.SaveChangesAsync();
             return IdentityResult.Success;
         }
 
         public override async Task<IdentityResult> FollowUser(int userId, int followedUserId)
         {
             if(userId == followedUserId) return IdentityResult.Failed(new ForbiddenError("You cannot follow yourself"));
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
             if (user == null) return IdentityResult.Failed(new NotFoundError("FollowerUser not found"));
-            var followedUser = await _userRepository.GetByIdAsync(followedUserId);
+            var followedUser = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == followedUserId));
             if (followedUser == null) return IdentityResult.Failed(new NotFoundError("FollowedUser not found"));          
             var follow = new Follow
             {
@@ -144,7 +150,7 @@ namespace _1_BusinessLayer.Concrete.Services
             };
             user.SentNotifications.Add(notification);
             followedUser.ReceivedNotifications.Add(notification);
-            await _followRepository.SaveChangesAsync();
+            await _genericCommandHandler.SaveChangesAsync();
             var notificationEvents = _notificationEventFactory.CreateNotificationEvents(user, null, new List<int?>{ followedUserId }, NotificationType.GainedFollower, user.ProfileName, userId);
             var mailEvents = _mailEventFactory.CreateMailEvents(user, null, new List<int?> { followedUserId }, MailType.GainedFollower, user.ProfileName, userId);
             await _queueSender.MailQueueSendAsync(mailEvents);

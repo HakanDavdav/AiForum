@@ -9,47 +9,58 @@ using _1_BusinessLayer.Concrete.Tools.Factories;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Extensions;
 using Microsoft.AspNetCore.Identity;
+using _2_DataAccessLayer.Abstractions.AbstractClasses; // For query handlers
+using _2_DataAccessLayer.Abstractions.Generic; // For AbstractGenericCommandHandler
 
 namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
 {
     public abstract class AbstractLikeService : ILikeService
     {
-        protected readonly AbstractNotificationRepository _notificationRepository;
-        protected readonly AbstractEntryRepository _entryRepository;
-        protected readonly AbstractPostRepository _postRepository;
-        protected readonly AbstractUserRepository _userRepository;
-        protected readonly AbstractBotRepository _botRepository;
-        protected readonly AbstractFollowRepository _followRepository;
-        protected readonly AbstractLikeRepository _likeRepository;
+        protected readonly AbstractNotificationQueryHandler _notificationQueryHandler;
+        protected readonly AbstractEntryQueryHandler _entryQueryHandler;
+        protected readonly AbstractPostQueryHandler _postQueryHandler;
+        protected readonly AbstractUserQueryHandler _userQueryHandler;
+        protected readonly AbstractBotQueryHandler _botQueryHandler;
+        protected readonly AbstractFollowQueryHandler _followQueryHandler;
+        protected readonly AbstractLikeQueryHandler _likeQueryHandler;
+        protected readonly AbstractGenericCommandHandler _genericCommandHandler;
         protected readonly MailEventFactory _mailEventFactory;
         protected readonly NotificationEventFactory _notificationEventFactory;
         protected readonly QueueSender _queueSender;
         protected readonly UnitOfWork _unitOfWork;
 
-
-        protected AbstractLikeService(AbstractLikeRepository likeRepository,AbstractUserRepository userRepository,
-            AbstractPostRepository postRepository,AbstractEntryRepository entryRepository,MailEventFactory mailEventFactory, AbstractNotificationRepository notificationRepository,
-            NotificationEventFactory notificationEventFactory, QueueSender queueSender, AbstractFollowRepository followRepository, AbstractBotRepository botRepository, UnitOfWork unitOfWork) 
+        protected AbstractLikeService(
+            AbstractNotificationQueryHandler notificationQueryHandler,
+            AbstractEntryQueryHandler entryQueryHandler,
+            AbstractPostQueryHandler postQueryHandler,
+            AbstractUserQueryHandler userQueryHandler,
+            AbstractBotQueryHandler botQueryHandler,
+            AbstractFollowQueryHandler followQueryHandler,
+            AbstractLikeQueryHandler likeQueryHandler,
+            AbstractGenericCommandHandler genericCommandHandler,
+            MailEventFactory mailEventFactory,
+            NotificationEventFactory notificationEventFactory,
+            QueueSender queueSender,
+            UnitOfWork unitOfWork
+        )
         {
-            _unitOfWork = unitOfWork;
-            _notificationRepository = notificationRepository;
-            _likeRepository = likeRepository;
-            _userRepository = userRepository;
-            _postRepository = postRepository;
-            _entryRepository = entryRepository;
-            _followRepository = followRepository;
-            _botRepository = botRepository;
-            _notificationEventFactory = notificationEventFactory;
+            _notificationQueryHandler = notificationQueryHandler;
+            _entryQueryHandler = entryQueryHandler;
+            _postQueryHandler = postQueryHandler;
+            _userQueryHandler = userQueryHandler;
+            _botQueryHandler = botQueryHandler;
+            _followQueryHandler = followQueryHandler;
+            _likeQueryHandler = likeQueryHandler;
+            _genericCommandHandler = genericCommandHandler;
             _mailEventFactory = mailEventFactory;
+            _notificationEventFactory = notificationEventFactory;
             _queueSender = queueSender;
-
+            _unitOfWork = unitOfWork;
         }
 
         public abstract Task<IdentityResult> LikeEntry(int entryId,int userId);
         public abstract Task<IdentityResult> LikePost(int postId,int userId);
         public abstract Task<IdentityResult> UnlikeEntry(int userId, int likeId);
         public abstract Task<IdentityResult> UnlikePost(int userId, int likeId);
-
-
     }
 }

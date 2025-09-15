@@ -10,8 +10,8 @@ using _1_BusinessLayer.Concrete.Tools.BackgroundServices.MessageBackgroundServic
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _1_BusinessLayer.Concrete.Tools.Factories;
 using _2_DataAccessLayer.Abstractions;
+using _2_DataAccessLayer.Abstractions.AbstractClasses;
 using _2_DataAccessLayer.Abstractions.Generic;
-using _2_DataAccessLayer.Abstractions.Interfaces;
 using _2_DataAccessLayer.Concrete.Extensions;
 using Microsoft.AspNetCore.Identity;
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _1_BusinessLayer.Concrete.Tools.Algorithms
+namespace _1_BusinessLayer.Concrete.Tools.Extensions
 {
     public static class StringExtensions
     {

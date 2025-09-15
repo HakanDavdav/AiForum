@@ -24,11 +24,7 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.IServices
         Task<IdentityResult> DeletePost(int userId,int postId);
         //Self-Preference check
         Task<ObjectIdentityResult<List<MinimalPostDto>>> GetTrendingPosts(int postCount);
-        //Self-Preference check
-        Task<ObjectIdentityResult<List<MinimalPostDto>>> GetMostLikedPosts(DateTime date, ClaimsPrincipal claims);
         Task<ObjectIdentityResult<PostDto>> GetPostAsync(int postId, ClaimsPrincipal claims);
         Task<ObjectIdentityResult<List<MinimalLikeDto>>> LoadPostLikes (int postId, int page);
-
-
     }
 }

@@ -7,7 +7,7 @@ using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace _1_BusinessLayer.Concrete.Tools.Managers.BotManagers
+namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers
 {
     public class BotDatabaseWriter
     {

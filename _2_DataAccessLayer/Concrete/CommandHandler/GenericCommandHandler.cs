@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions.Generic;
 
-namespace _2_DataAccessLayer.Concrete.Repository
+namespace _2_DataAccessLayer.Concrete.CommandHandler
 {
     public class GenericCommandHandler<T> : AbstractGenericCommandHandler 
     {

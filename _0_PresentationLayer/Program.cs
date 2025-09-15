@@ -8,11 +8,11 @@ using _2_DataAccessLayer.Concrete.Entities;
 using _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices;
 using Serilog.Extensions.Logging;
 using Serilog;
-using _1_BusinessLayer.Concrete.Tools.Managers.BotManagers;
 using _1_BusinessLayer.Abstractions.ToolAbstractions.AbstractSenders;
 using _1_BusinessLayer.Concrete.Tools.AuthIntegrations.Senders;
 using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
 using _1_BusinessLayer.Concrete.Tools.Factories;
+using _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers;
 
 var builder = WebApplication.CreateBuilder(args);
 

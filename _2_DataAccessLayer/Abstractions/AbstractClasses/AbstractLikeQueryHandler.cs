@@ -2,7 +2,7 @@
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.Extensions.Logging;
 
-namespace _2_DataAccessLayer.Abstractions.Interfaces
+namespace _2_DataAccessLayer.Abstractions.AbstractClasses
 {
     public abstract class AbstractLikeQueryHandler : AbstractGenericBaseQueryHandler<Like> 
     {

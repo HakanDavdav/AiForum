@@ -13,6 +13,8 @@ using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _1_BusinessLayer.Concrete.Tools.Extensions.Mappers;
 using _1_BusinessLayer.Concrete.Tools.Factories;
 using _2_DataAccessLayer.Abstractions;
+using _2_DataAccessLayer.Abstractions.AbstractClasses;
+using _2_DataAccessLayer.Abstractions.Generic;
 using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete.Extensions;
 using Microsoft.AspNetCore.Identity;
@@ -24,23 +26,17 @@ namespace _1_BusinessLayer.Concrete.Services
 {
     public class EntryService : AbstractEntryService
     {
-        public EntryService(AbstractEntryRepository entryRepository, AbstractUserRepository userRepository, AbstractLikeRepository likeRepository, AbstractPostRepository postRepository, AbstractFollowRepository followRepository, MailEventFactory mailEventFactory, NotificationEventFactory notificationEventFactory, QueueSender queueSender, AbstractNotificationRepository notificationRepository, UnitOfWork unitOfWork) : base(entryRepository, userRepository, likeRepository, postRepository, followRepository, mailEventFactory, notificationEventFactory, queueSender, notificationRepository, unitOfWork)
+        public EntryService(AbstractLikeQueryHandler likeQueryHandler, AbstractEntryQueryHandler entryQueryHandler, AbstractPostQueryHandler postQueryHandler, AbstractFollowQueryHandler followQueryHandler, AbstractUserQueryHandler userQueryHandler, AbstractNotificationQueryHandler abstractNotificationQueryHandler, MailEventFactory mailEventFactory, QueueSender queueSender, UnitOfWork unitOfWork, NotificationEventFactory notificationEventFactory, AbstractGenericCommandHandler genericCommandHandler) : base(likeQueryHandler, entryQueryHandler, postQueryHandler, followQueryHandler, userQueryHandler, abstractNotificationQueryHandler, mailEventFactory, queueSender, unitOfWork, notificationEventFactory, genericCommandHandler)
         {
         }
 
         public override async Task<IdentityResult> CreateEntryAsync(int userId, int postId, CreateEntryDto createEntryDto)
         {
-            // Using WHERE IN avoids duplicating user data in the database result set with some big tables.
-            // Using multiple Savechanges() due to protect modularity of delete and manual insert-range methods in repository layer.
-            // Cannot use delete operation with ef entity references directly due to need of including bloated related entities to server and nullable keys.
-            // Using transaction due to multiple Savechanges() in a single process.
             await _unitOfWork.BeginTransactionAsync();
-
             try
             {
                 object postOwner = null;
-
-                var post = await _postRepository.GetBySpecificPropertySingularAsync(q => q.Where(p => p.PostId == postId).Include(p => p.OwnerUser).Include(p => p.OwnerBot));
+                var post = await _postQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(p => p.PostId == postId).Include(p => p.OwnerUser).Include(p => p.OwnerBot));
                 if (post == null) 
                     return IdentityResult.Failed(new NotFoundError("Post not found"));
                 if (post.OwnerUser == null && post.OwnerBot == null)
@@ -49,11 +45,11 @@ namespace _1_BusinessLayer.Concrete.Services
                     postOwner = post.OwnerUser;
                 if (post.OwnerBot != null)
                     postOwner = post.OwnerBot;
-                var entryCreatorUser = await _userRepository.GetByIdAsync(userId);
+                var entryCreatorUser = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
                 if (entryCreatorUser == null) 
                     return IdentityResult.Failed(new NotFoundError("User not found"));
                 var entry = createEntryDto.CreateEntryDto_To_Entry();
-                var follows = await _followRepository.GetWithCustomSearchAsync(query => query.Where(follow => follow.UserFollowedId == userId).AsNoTracking());
+                var follows = await _followQueryHandler.GetWithCustomSearchAsync(query => query.Where(follow => follow.UserFollowedId == userId).AsNoTracking());
                 var toUserIds = follows.Select(follow => follow.UserFollowerId).ToList();
                 var creatorUserFollowerNotifications = new List<Notification>();
                 var mailEvents = new List<MailEvent>();
@@ -72,12 +68,12 @@ namespace _1_BusinessLayer.Concrete.Services
                         DateTime = DateTime.UtcNow,
                     });
                 }
-                await _notificationRepository.ManuallyInsertRangeAsync(creatorUserFollowerNotifications);
+                await _genericCommandHandler.ManuallyInsertRangeAsync<Notification>(creatorUserFollowerNotifications);
                 post.Entries.Add(entry);
                 entryCreatorUser.Entries.Add(entry);
                 post.EntryCount += 1;
                 entryCreatorUser.EntryCount += 1;
-                await _entryRepository.SaveChangesAsync();
+                await _genericCommandHandler.SaveChangesAsync();
                 await _unitOfWork.CommitTransactionAsync();
 
                 if (postOwner is User postOwnerUser)
@@ -94,7 +90,7 @@ namespace _1_BusinessLayer.Concrete.Services
                     };
                     postOwnerUser.ReceivedNotifications.Add(postOwnerNotification);
                     entryCreatorUser.SentNotifications.Add(postOwnerNotification);
-                    await _notificationRepository.SaveChangesAsync();
+                    await _genericCommandHandler.SaveChangesAsync();
                     mailEvents.AddRange(_mailEventFactory.CreateMailEvents(entryCreatorUser, null, new List<int?> { post.OwnerUserId }, MailType.NewEntryForPost, entry.Context, entry.EntryId));
                     notificationEvents.AddRange(_notificationEventFactory.CreateNotificationEvents(entryCreatorUser, null, new List<int?> { post.OwnerUserId }, NotificationType.NewEntryForPost, entry.Context, entry.EntryId));
                 }
@@ -110,22 +106,14 @@ namespace _1_BusinessLayer.Concrete.Services
                 await _unitOfWork.RollbackTransactionAsync();
                 throw;
             }
-
-
-           
         }
 
         public override async Task<IdentityResult> DeleteEntryAsync(int userId, int entryId)
         {
-            // Using multiple Savechanges() due to protect modularity of delete and manual insert-range methods in repository layer.
-            // Cannot use delete operation with ef entity references directly due to need of including bloated related entities to server.
-            // Using transaction due to multiple Savechanges() in a single process.
             await _unitOfWork.BeginTransactionAsync();
-
             try
             {
-                var entry = await _entryRepository.GetBySpecificPropertySingularAsync
-            (q => q.Where(e => e.EntryId == entryId && e.OwnerUserId == userId).Include(e => e.OwnerUser).Include(e => e.Post));
+                var entry = await _entryQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(e => e.EntryId == entryId && e.OwnerUserId == userId).Include(e => e.OwnerUser).Include(e => e.Post));
                 if (entry == null)
                     return IdentityResult.Failed(new NotFoundError("Entry not found or owner is not you"));
                 if (entry.OwnerUser == null)
@@ -133,11 +121,10 @@ namespace _1_BusinessLayer.Concrete.Services
                 if (entry.Post == null)
                     return IdentityResult.Failed(new NotFoundError("Post not found"));
 
-
                 entry.OwnerUser.EntryCount--;
                 entry.Post.EntryCount--;
-                await _entryRepository.DeleteAsync(entry);
-                await _entryRepository.SaveChangesAsync();
+                await _genericCommandHandler.DeleteAsync<Entry>(entry);
+                await _genericCommandHandler.SaveChangesAsync();
                 await _unitOfWork.CommitTransactionAsync();
                 return IdentityResult.Success;
             }
@@ -146,26 +133,24 @@ namespace _1_BusinessLayer.Concrete.Services
                 await _unitOfWork.RollbackTransactionAsync();
                 throw;
             }
-
         }
 
         public override async Task<IdentityResult> EditEntryAsync(int userId, EditEntryDto editEntryDto)
         {
-            var entry = await _entryRepository.GetBySpecificPropertySingularAsync
-                (q => q.Where(e => e.EntryId == editEntryDto.EntryId && e.OwnerUserId == userId).Include(e => e.OwnerUser));
+            var entry = await _entryQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(e => e.EntryId == editEntryDto.EntryId && e.OwnerUserId == userId).Include(e => e.OwnerUser));
             if (entry == null)
                 return IdentityResult.Failed(new NotFoundError("Entry not found or owner is not you"));
             if (entry.OwnerUserId == null)
                 return IdentityResult.Failed(new UnauthorizedError("Entry owner is not found"));
 
             entry = editEntryDto.Update___EditEntryDto_To_Entry(entry);
-            await _entryRepository.SaveChangesAsync();
+            await _genericCommandHandler.SaveChangesAsync();
             return IdentityResult.Success;
         }
 
         public override async Task<ObjectIdentityResult<EntryProfileDto>> GetEntryAsync(int entryId)
         {
-            var entry = await _entryRepository.GetEntryModuleAsync(entryId);
+            var entry = await _entryQueryHandler.GetEntryModuleAsync(entryId);
             if (entry == null)
                 return ObjectIdentityResult<EntryProfileDto>.Failed(null, new[] { new NotFoundError("Entry not found") });
 
@@ -173,12 +158,11 @@ namespace _1_BusinessLayer.Concrete.Services
             return ObjectIdentityResult<EntryProfileDto>.Succeded(entryProfileDto);
         }
 
-
         public override async Task<ObjectIdentityResult<List<MinimalLikeDto>>> LoadEntryLikes(int entryId, int page)
         {
             var startInterval = (page - 1) * 10;
             var endInterval = startInterval + 10;
-            var likes = await _likeRepository.GetLikeModulesForEntry(entryId, startInterval, endInterval);
+            var likes = await _likeQueryHandler.GetLikeModulesForEntryAsync(entryId, startInterval, endInterval);
             List<MinimalLikeDto> minimalLikeDtos = new List<MinimalLikeDto>();
             foreach (var like in likes)
             {

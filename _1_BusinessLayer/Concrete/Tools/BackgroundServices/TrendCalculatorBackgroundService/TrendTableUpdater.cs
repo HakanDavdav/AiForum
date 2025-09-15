@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Abstractions.AbstractClasses;
 using _2_DataAccessLayer.Abstractions.Generic;
-using _2_DataAccessLayer.Abstractions.Interfaces;
 using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete.Repository;
 using Microsoft.Extensions.Hosting;

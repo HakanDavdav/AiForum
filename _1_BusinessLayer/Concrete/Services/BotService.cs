@@ -11,15 +11,14 @@ using _1_BusinessLayer.Concrete.Dtos.EntryDtos;
 using _1_BusinessLayer.Concrete.Dtos.FollowDto;
 using _1_BusinessLayer.Concrete.Dtos.LikeDto;
 using _1_BusinessLayer.Concrete.Dtos.PostDtos;
-using _1_BusinessLayer.Concrete.Tools.Algorithms;
+using _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers;
 using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _1_BusinessLayer.Concrete.Tools.Extensions.Mappers;
-using _1_BusinessLayer.Concrete.Tools.Managers.BotManagers;
 using _2_DataAccessLayer.Abstractions;
+using _2_DataAccessLayer.Abstractions.AbstractClasses;
 using _2_DataAccessLayer.Abstractions.Generic;
-using _2_DataAccessLayer.Abstractions.Interfaces;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -34,25 +33,25 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> CreateBot(int userId, CreateBotDto createBotDto)
         {
-            var user = await _userRepository.GetBySpecificPropertySingularAsync(query => query.Where(bot => bot.Id == userId).Include(bot => bot.Bots));
+            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(query => query.Where(bot => bot.Id == userId).Include(bot => bot.Bots));
             if (user == null) return IdentityResult.Failed(new NotFoundError("User not found"));
             if (user.Bots.Count > 4) return IdentityResult.Failed(new ForbiddenError("Personal bot limit reached"));
             var bot = createBotDto.CreateBotDto_To_Bot(userId);
             user.Bots.Add(bot);
-            await _userRepository.SaveChangesAsync();
+            await _genericCommandHandler.SaveChangesAsync();
             return IdentityResult.Success;
 
         }
 
         public override async Task<IdentityResult> DeleteBot(int userId, int botId)
         {
-            var bot = await _botRepository.GetBySpecificPropertySingularAsync(q => q.Where(b => b.Id == botId && b.ParentUserId == userId).Include(b => b.ParentUser));
+            var bot = await _botQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(b => b.Id == botId && b.ParentUserId == userId).Include(b => b.ParentUser));
             if (bot == null)
                 return IdentityResult.Failed(new NotFoundError("Bot not found or owner is not you"));
             if(bot.ParentUser == null) 
                 return IdentityResult.Failed(new NotFoundError("ParentUser not found"));
-            await _botRepository.DeleteAsync(bot);
-            await _botRepository.SaveChangesAsync();
+            await _genericCommandHandler.DeleteAsync<Bot>(bot);
+            await _genericCommandHandler.SaveChangesAsync();
             return IdentityResult.Success;
 
         }
@@ -67,13 +66,13 @@ namespace _1_BusinessLayer.Concrete.Services
         {
             var startInterval = 0;
             var endInterval = claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10;
-            var bot = await _botRepository.GetBotModuleAsync(botId);
+            var bot = await _botQueryHandler.GetBotModuleAsync(botId);
             if (bot == null) return ObjectIdentityResult<BotProfileDto>.Failed(null, new IdentityError[] { new NotFoundError("ParentBot not found") });
-            bot.Entries = await _entryRepository.GetEntryModulesForBotAsync(botId, startInterval, endInterval);
-            bot.Posts = await _postRepository.GetPostModulesForBot(botId, startInterval, endInterval);
-            bot.Followers = await _followRepository.GetFollowModulesForBotAsFollowedAsync(botId, startInterval, endInterval);
-            bot.Followed = await _followRepository.GetFollowModulesForBotAsFollowerAsync(botId, startInterval, endInterval);
-            bot.Activities = await _activityRepository.GetBotActivityModulesForBotAsync(botId, startInterval, endInterval);
+            bot.Entries = await _entryQueryHandler.GetEntryModulesForBotAsync(botId, startInterval, endInterval);
+            bot.Posts = await _postQueryHandler.GetPostModulesForBotAsync(botId, startInterval, endInterval);
+            bot.Followers = await _followQueryHandler.GetFollowModulesForBotAsFollowedAsync(botId, startInterval, endInterval);
+            bot.Followed = await _followQueryHandler.GetFollowModulesForBotAsFollowerAsync(botId, startInterval, endInterval);
+            bot.Activities = await _botActivityQueryHandler.GetBotActivityModulesForBotAsync(botId, startInterval, endInterval);
             var botProfileDto = bot.Bot_To_BotProfileDto(_notificationActivityBodyBuilder);
             return ObjectIdentityResult<BotProfileDto>.Succeded(botProfileDto);
 
@@ -83,7 +82,7 @@ namespace _1_BusinessLayer.Concrete.Services
         {
             var startInterval = (page - 1) * (claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10);
             var endInterval = startInterval + (claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10);
-            var entries = await _entryRepository.GetEntryModulesForBotAsync(botId, startInterval, endInterval);
+            var entries = await _entryQueryHandler.GetEntryModulesForBotAsync(botId, startInterval, endInterval);
             var entryProfileDtos = new List<EntryProfileDto>();
             foreach (var entry in entries)
             {
@@ -97,7 +96,7 @@ namespace _1_BusinessLayer.Concrete.Services
         {
             var startInterval = (page - 1) * (claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10);
             var endInterval = startInterval + (claims.FindFirst("EntryPerPage") != null ? int.Parse(claims.FindFirst("EntryPerPage").Value) : 10);
-            var posts = await _postRepository.GetPostModulesForBot(botId, startInterval, endInterval);
+            var posts = await _postQueryHandler.GetPostModulesForBotAsync(botId, startInterval, endInterval);
             var postProfileDtos = new List<PostProfileDto>();
             foreach (var post in posts)
             {
@@ -112,7 +111,7 @@ namespace _1_BusinessLayer.Concrete.Services
         {
             var startInterval = (page - 1) * 10;
             var endInterval = startInterval + 10;
-            var follows = await _followRepository.GetFollowModulesForBotAsFollowerAsync(botId, startInterval, endInterval);
+            var follows = await _followQueryHandler.GetFollowModulesForBotAsFollowerAsync(botId, startInterval, endInterval);
             List<FollowProfileDto> followProfileDtos = new List<FollowProfileDto>();
             foreach (var follow in follows)
             {
@@ -126,7 +125,7 @@ namespace _1_BusinessLayer.Concrete.Services
         {
             var startInterval = (page - 1) * 10;
             var endInterval = startInterval + 10;
-            var follows = await _followRepository.GetFollowModulesForBotAsFollowedAsync(botId, startInterval, endInterval);
+            var follows = await _followQueryHandler.GetFollowModulesForBotAsFollowedAsync(botId, startInterval, endInterval);
             List<FollowProfileDto> followProfileDtos = new List<FollowProfileDto>();
             foreach (var follow in follows)
             {
@@ -139,7 +138,7 @@ namespace _1_BusinessLayer.Concrete.Services
         {
             var startInterval = (page - 1) * 10;
             var endInterval = startInterval + 10;
-            var botActivities = await _activityRepository.GetBotActivityModulesForBotAsync(botId, startInterval, endInterval);
+            var botActivities = await _botActivityQueryHandler.GetBotActivityModulesForBotAsync(botId, startInterval, endInterval);
             List<BotActivityDto> botActivityDtos = new List<BotActivityDto>();
             foreach (var activity in botActivities)
             {
@@ -147,6 +146,7 @@ namespace _1_BusinessLayer.Concrete.Services
                 botActivityDtos.Add(activity.BotActivity_To_BotActivityDto(title, body));
                 activity.IsRead = true;
             }
+            await _genericCommandHandler.SaveChangesAsync();
             return ObjectIdentityResult<List<BotActivityDto>>.Succeded(botActivityDtos);
         }
 
@@ -154,7 +154,7 @@ namespace _1_BusinessLayer.Concrete.Services
         {
             var startInterval = (page - 1) * 10;
             var endInterval = startInterval + 10;
-            var botLikes = await _likeRepository.GetLikeModulesForBot(botId, startInterval, endInterval);
+            var botLikes = await _likeQueryHandler.GetLikeModulesForBotAsync(botId, startInterval, endInterval);
             List<MinimalLikeDto> minimalLikeDtos = new List<MinimalLikeDto>();
             foreach (var like in botLikes)
             {
@@ -165,7 +165,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<ObjectIdentityResult<MinimalBotDto>> GetBotWithChildBotsTree(int botId)
         {
-            var bot = await _botRepository.GetBotWithChildBotTree(botId);
+            var bot = await _botQueryHandler.GetBotWithChildBotTreeAsync(botId);
             if (bot == null) return ObjectIdentityResult<MinimalBotDto>.Failed(null, new IdentityError[] { new NotFoundError("Bot not found") });
             var minimalBotDto = bot.BotWithBotTree_To_MinimalVersion();
             return ObjectIdentityResult<MinimalBotDto>.Succeded(minimalBotDto);
