@@ -17,13 +17,15 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
         protected BotApiCaller _botApiCaller;
         protected BotDatabaseWriter _botDatabaseWriter;
         protected BotResponseParser _botResponseParser;
+        protected ProbabilitySet _probabilitySet;
         public BotDeployManager(BotDatabaseReader botDatabaseReader, BotApiCaller botApiCaller,
-            BotDatabaseWriter botDatabaseWriter, BotResponseParser botResponseParser)
+            BotDatabaseWriter botDatabaseWriter, BotResponseParser botResponseParser, ProbabilitySet probabilitySet)
         {
             _botDatabaseReader = botDatabaseReader;
             _botApiCaller = botApiCaller;
             _botDatabaseWriter = botDatabaseWriter;
             _botResponseParser = botResponseParser;
+            _probabilitySet = probabilitySet;
         }
         public async Task<IdentityResult> BotDoDailyOperationsAsync(Bot bot)
         {
@@ -31,7 +33,24 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                 return IdentityResult.Failed(new NotFoundError("Bot not found"));
             if(bot.DailyOperationCheck == true)
                 return IdentityResult.Failed(new ForbiddenError("Bot has already done daily operations today"));
-            var data = await _botDatabaseReader.GetModelDataAsync(bot);
+            
+            var activityProbabilityResult = _probabilitySet.ConfigureActivityProbabilities(bot);
+            if (activityProbabilityResult.Succeeded == false)
+                return IdentityResult.Failed(activityProbabilityResult.Errors.ToArray());
+
+            var topicProbabilityResult = _probabilitySet.ConfigureTopicProbabilities(bot);
+            if (topicProbabilityResult.Succeeded == false)
+                return IdentityResult.Failed(topicProbabilityResult.Errors.ToArray());
+
+            var selectedActivityResult = await _probabilitySet.DetermineOperation();
+            if (selectedActivityResult.Succeeded == false)
+                return IdentityResult.Failed(selectedActivityResult.Errors.ToArray());
+
+            var databaseDataResult = await _botDatabaseReader.ReadContextData(selectedActivityResult.Data, bot);
+            if (databaseDataResult.Succeeded == false)
+                return IdentityResult.Failed(databaseDataResult.Errors.ToArray());
+
+
 
 
         }

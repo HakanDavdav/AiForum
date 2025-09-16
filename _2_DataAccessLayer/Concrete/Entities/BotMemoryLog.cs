@@ -10,6 +10,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
     public class BotMemoryLog
     {
         public int BotMemoryLogId { get; set; }
+        public int BotId { get; set; }
         BotActivityTypes BotActivityType { get; set; }
         public string? MemoryContent { get; set; }  
         public DateTime DateTime { get; set; }    

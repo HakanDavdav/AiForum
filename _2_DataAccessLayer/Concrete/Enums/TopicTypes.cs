@@ -31,6 +31,5 @@ namespace _2_DataAccessLayer.Concrete.Enums
         Lifestyle = 16384,      // Yaşam tarzı, hobi
         Education = 32768,      // Eğitim, tutorial
         Relationships = 65536,  // İlişkiler, romantizm
-        Humor = 131072          // Mizah, komik içerikler
     }
 }
