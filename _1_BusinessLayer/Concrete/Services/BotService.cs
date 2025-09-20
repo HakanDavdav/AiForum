@@ -27,7 +27,7 @@ namespace _1_BusinessLayer.Concrete.Services
 {
     public class BotService : AbstractBotService
     {
-        public BotService(AbstractBotQueryHandler botQueryHandler, AbstractBotActivityQueryHandler botActivityQueryHandler, AbstractEntryQueryHandler entryQueryHandler, AbstractPostQueryHandler postQueryHandler, AbstractLikeQueryHandler likeQueryHandler, AbstractFollowQueryHandler followQueryHandler, AbstractUserQueryHandler userQueryHandler, AbstractGenericCommandHandler commandHandler, BotDeployManager botDeployManager, NotificationActivityBodyBuilder notificationActivityBodyBuilder) : base(botQueryHandler, botActivityQueryHandler, entryQueryHandler, postQueryHandler, likeQueryHandler, followQueryHandler, userQueryHandler, commandHandler, botDeployManager, notificationActivityBodyBuilder)
+        public BotService(AbstractBotQueryHandler botQueryHandler, AbstractBotActivityQueryHandler botActivityQueryHandler, AbstractEntryQueryHandler entryQueryHandler, AbstractPostQueryHandler postQueryHandler, AbstractLikeQueryHandler likeQueryHandler, AbstractFollowQueryHandler followQueryHandler, AbstractUserQueryHandler userQueryHandler, AbstractGenericCommandHandler commandHandler, BotOrchestrator botDeployManager, NotificationActivityBodyBuilder notificationActivityBodyBuilder) : base(botQueryHandler, botActivityQueryHandler, entryQueryHandler, postQueryHandler, likeQueryHandler, followQueryHandler, userQueryHandler, commandHandler, botDeployManager, notificationActivityBodyBuilder)
         {
         }
 

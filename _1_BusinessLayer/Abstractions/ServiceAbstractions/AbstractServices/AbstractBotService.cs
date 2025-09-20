@@ -33,7 +33,7 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
         protected readonly AbstractFollowQueryHandler _followQueryHandler;
         protected readonly AbstractUserQueryHandler _userQueryHandler;
         protected readonly AbstractGenericCommandHandler _genericCommandHandler;
-        protected readonly BotDeployManager _botDeployManager;
+        protected readonly BotOrchestrator _botDeployManager;
         protected readonly NotificationActivityBodyBuilder _notificationActivityBodyBuilder;
 
         protected AbstractBotService(
@@ -45,7 +45,7 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
             AbstractFollowQueryHandler followQueryHandler,
             AbstractUserQueryHandler userQueryHandler,
             AbstractGenericCommandHandler commandHandler,
-            BotDeployManager botDeployManager,
+            BotOrchestrator botDeployManager,
             NotificationActivityBodyBuilder notificationActivityBodyBuilder)
         {
             _botQueryHandler = botQueryHandler;

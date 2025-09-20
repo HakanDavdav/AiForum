@@ -41,7 +41,7 @@ builder.Services.AddScoped<MailBodyBuilder>();
 builder.Services.AddScoped<BotApiCaller>();
 builder.Services.AddScoped<BotDatabaseReader>();
 builder.Services.AddScoped<BotDatabaseWriter>();
-builder.Services.AddScoped<BotDeployManager>();
+builder.Services.AddScoped<BotOrchestrator>();
 builder.Services.AddScoped<BotResponseParser>();
 builder.Services.AddScoped<ProbabilitySet>();
 

@@ -11,14 +11,14 @@ using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 
 namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers
 {
-    public class BotDeployManager
+    public class BotOrchestrator
     {
         protected BotDatabaseReader _botDatabaseReader;
         protected BotApiCaller _botApiCaller;
         protected BotDatabaseWriter _botDatabaseWriter;
         protected BotResponseParser _botResponseParser;
         protected ProbabilitySet _probabilitySet;
-        public BotDeployManager(BotDatabaseReader botDatabaseReader, BotApiCaller botApiCaller,
+        public BotOrchestrator(BotDatabaseReader botDatabaseReader, BotApiCaller botApiCaller,
             BotDatabaseWriter botDatabaseWriter, BotResponseParser botResponseParser, ProbabilitySet probabilitySet)
         {
             _botDatabaseReader = botDatabaseReader;
@@ -49,6 +49,8 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             var databaseDataResult = await _botDatabaseReader.ReadContextData(selectedActivityResult.Data, bot);
             if (databaseDataResult.Succeeded == false)
                 return IdentityResult.Failed(databaseDataResult.Errors.ToArray());
+
+            var apiCallResult = await _botApiCaller.
 
 
 

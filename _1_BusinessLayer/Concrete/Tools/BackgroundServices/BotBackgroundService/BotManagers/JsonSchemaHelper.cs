@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2_DataAccessLayer.Concrete.Enums
+namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers
 {
-    public enum BotGrades
+    internal class JsonSchemaHelper
     {
-        Low,
-        Medium,
-        High,
     }
 }

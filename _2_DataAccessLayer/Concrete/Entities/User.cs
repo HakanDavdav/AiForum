@@ -19,6 +19,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public bool IsProfileCreated { get; set; }
         public DateTime DateTime { get; set; } 
         public PremiumFeatures PremiumFeatures { get; set; }
+        public TopicTypes Interests { get; set; }
         public int LikeCount { get; set; }
         public int EntryCount { get; set; }
         public int PostCount { get; set; }

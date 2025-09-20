@@ -97,7 +97,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             int takeCount = bot.BotCapabilities.HasFlag(BotCapabilities.AdvancedIntelligence) ? 10 : 1;
             var entryCount = await _entryQueryHandler.ExportDirectlyAsync().CountAsync();
             var randomNumber = random.Next(0, entryCount);
-            var entries = await _entryQueryHandler.GetWithCustomSearchAsync(q => q.Skip(randomNumber).Take(takeCount));
+            var entries = await _entryQueryHandler.GetWithCustomSearchAsync(q => q.Skip(randomNumber).Take(takeCount).Include(e => e.Post));
             databaseData.Entries = entries;
             databaseData.ActivityType = activityType;
             return databaseData;

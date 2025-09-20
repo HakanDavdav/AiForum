@@ -27,13 +27,15 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
         }
         public async Task<ObjectIdentityResult<string>> BotActivityContentSelectorApiCallAsync(DatabaseDataDto databaseData, Bot bot) //Consider interests
         {
-            var options = new RestClientOptions("https://api.twitter.com/1.1")
+            var options = new RestClientOptions("https://generativelanguage.googleapis.com")
             {
-                Authenticator = new HttpBasicAuthenticator("username", "password")
+                Authenticator = new HttpBasicAuthenticator("username", "password"),
+                a
             };
             var client = new RestClient(options);
-            var request = new RestRequest("/statuses/user_timeline.json", Method.Get);
-            var response = await client.GetAsync(request);
+            var request = new RestRequest("/v1beta/models/gemini-2.5-flash:generateContent", Method.Post).AddBody("xz");
+            var response = await client.patc
+            return ObjectIdentityResult<string>.Succeded(response.ToString());
         }
     }
 }
