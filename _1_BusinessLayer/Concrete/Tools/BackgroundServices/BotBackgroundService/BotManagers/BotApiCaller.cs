@@ -10,32 +10,58 @@ using _2_DataAccessLayer.Concrete.Enums;
 using Microsoft.AspNetCore.Identity;
 using RestSharp;
 using RestSharp.Authenticators;
+using static _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers.Requests.BotRequestBodyBuilder;
 
 namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers
 {
     public class BotApiCaller
     {
         protected readonly string apiKey = "YOUR_GOOGLE_API_KEY";
-        protected readonly string apiUrl = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?alt=sse&key={{apiKey}}";
+        private readonly RestClient client;
 
-        public BotApiCaller() { }
 
-       
-        public ObjectIdentityResult<string> TopicPreferenceApiCallAsync(Bot bot)
-        {
-            var options
-        }
-        public async Task<ObjectIdentityResult<string>> BotActivityContentSelectorApiCallAsync(DatabaseDataDto databaseData, Bot bot) //Consider interests
+        public BotApiCaller()
         {
             var options = new RestClientOptions("https://generativelanguage.googleapis.com")
             {
-                Authenticator = new HttpBasicAuthenticator("username", "password"),
-                a
+                MaxTimeout = 10000
+            };
+            client = new RestClient(options); // Kalıcı client
+        }
+
+        public async Task<IdentityResult> MakeApiCallAsync(string body)
+        {
+            var options = new RestClientOptions("https://localhost:5000")
+            {
+                BaseUrl = new Uri("https://generativelanguage.googleapis.com"),
+
             };
             var client = new RestClient(options);
-            var request = new RestRequest("/v1beta/models/gemini-2.5-flash:generateContent", Method.Post).AddBody("xz");
-            var response = await client.patc
-            return ObjectIdentityResult<string>.Succeded(response.ToString());
+            var request = new RestRequest("v1beta/models/gemini-1.5-flash:streamGenerateContent", Method.Post)
+                .AddHeader("Content-Type", "application/json")
+                .AddHeader("x-goog-api-key", $"{apiKey}")
+                .AddStringBody(body, DataFormat.Json);
+
+            var response = await client.ExecuteAsync(request);
+            if (response.IsSuccessful)
+            {
+                Console.WriteLine("API Response:");
+                Console.WriteLine(response.Content);
+                return IdentityResult.Success;
+            }
+            else
+            {
+                Console.WriteLine("API Error:");
+                Console.WriteLine(response.Content);
+                return IdentityResult.Failed(new IdentityError
+                {
+                    Description = $"API call failed with status {response.StatusCode}"
+                });
+            }
         }
+
+
+
+
     }
 }

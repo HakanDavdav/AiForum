@@ -8,6 +8,7 @@ using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
+using _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers.Requests;
 
 namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers
 {
@@ -18,14 +19,16 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
         protected BotDatabaseWriter _botDatabaseWriter;
         protected BotResponseParser _botResponseParser;
         protected ProbabilitySet _probabilitySet;
+        protected BotRequestBodyBuilder _botRequestBodyBuilder;
         public BotOrchestrator(BotDatabaseReader botDatabaseReader, BotApiCaller botApiCaller,
-            BotDatabaseWriter botDatabaseWriter, BotResponseParser botResponseParser, ProbabilitySet probabilitySet)
+            BotDatabaseWriter botDatabaseWriter, BotResponseParser botResponseParser, ProbabilitySet probabilitySet, BotRequestBodyBuilder botRequestBodyBuilder)
         {
             _botDatabaseReader = botDatabaseReader;
             _botApiCaller = botApiCaller;
             _botDatabaseWriter = botDatabaseWriter;
             _botResponseParser = botResponseParser;
             _probabilitySet = probabilitySet;
+            _botRequestBodyBuilder = botRequestBodyBuilder;
         }
         public async Task<IdentityResult> BotDoDailyOperationsAsync(Bot bot)
         {
@@ -50,7 +53,13 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             if (databaseDataResult.Succeeded == false)
                 return IdentityResult.Failed(databaseDataResult.Errors.ToArray());
 
-            var apiCallResult = await _botApiCaller.
+            var botRequestBodyResult = _botRequestBodyBuilder.BuildBotRequest(bot,databaseDataResult.Data!);
+                if (botRequestBodyResult.Succeeded == false)
+                return IdentityResult.Failed(botRequestBodyResult.Errors.ToArray());
+
+            var botApiCallResult = await _botApiCaller.MakeApiCallAsync(botRequestBodyResult.Data!);
+            if (botApiCallResult.Succeeded == false)
+                return IdentityResult.Failed(botApiCallResult.Errors.ToArray());
 
 
 
