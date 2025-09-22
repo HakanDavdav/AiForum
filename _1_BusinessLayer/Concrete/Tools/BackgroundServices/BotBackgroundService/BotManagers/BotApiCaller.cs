@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
@@ -10,7 +11,7 @@ using _2_DataAccessLayer.Concrete.Enums;
 using Microsoft.AspNetCore.Identity;
 using RestSharp;
 using RestSharp.Authenticators;
-using static _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers.Requests.BotRequestBodyBuilder;
+using static _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers.BotRequestBuilder;
 
 namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers
 {
@@ -29,12 +30,18 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             client = new RestClient(options); // Kalıcı client
         }
 
-        public async Task<IdentityResult> MakeApiCallAsync(string body)
+        public async Task<IdentityResult> MakeApiCallAsync(string body, Type entityType)
         {
+            // Check if entityType is a class in the Entities namespace
+            var validNamespace = "_2_DataAccessLayer.Concrete.Entities";
+            if (entityType.Namespace != validNamespace)
+            {
+                return IdentityResult.Failed(new UnexpectedError($"Type {entityType.Name} is not a valid entity type in {validNamespace}."));
+            }
+
             var options = new RestClientOptions("https://localhost:5000")
             {
                 BaseUrl = new Uri("https://generativelanguage.googleapis.com"),
-
             };
             var client = new RestClient(options);
             var request = new RestRequest("v1beta/models/gemini-1.5-flash:streamGenerateContent", Method.Post)

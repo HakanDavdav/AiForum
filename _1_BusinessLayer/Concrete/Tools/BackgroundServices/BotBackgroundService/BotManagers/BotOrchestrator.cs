@@ -8,7 +8,6 @@ using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
 using Microsoft.AspNetCore.Identity;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
-using _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers.Requests;
 
 namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers
 {
@@ -19,9 +18,9 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
         protected BotDatabaseWriter _botDatabaseWriter;
         protected BotResponseParser _botResponseParser;
         protected ProbabilitySet _probabilitySet;
-        protected BotRequestBodyBuilder _botRequestBodyBuilder;
+        protected BotRequestBuilder _botRequestBodyBuilder;
         public BotOrchestrator(BotDatabaseReader botDatabaseReader, BotApiCaller botApiCaller,
-            BotDatabaseWriter botDatabaseWriter, BotResponseParser botResponseParser, ProbabilitySet probabilitySet, BotRequestBodyBuilder botRequestBodyBuilder)
+            BotDatabaseWriter botDatabaseWriter, BotResponseParser botResponseParser, ProbabilitySet probabilitySet, BotRequestBuilder botRequestBodyBuilder)
         {
             _botDatabaseReader = botDatabaseReader;
             _botApiCaller = botApiCaller;

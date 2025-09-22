@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers.Requests;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _2_DataAccessLayer.Concrete.Entities;
@@ -14,114 +15,42 @@ using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Schema.Generation;
 using static _2_DataAccessLayer.Concrete.Enums.BotActivityTypes;
 
-namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers.Requests
+namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers
 {
-    public enum HarmCategory
+
+    public class BotRequestBuilder
     {
-        Violence,
-        HateSpeech,
-        SelfHarm
-    }
 
-    public enum HarmBlockThreshold
-    {
-        Low,
-        Medium,
-        High
-    }
-    public class BotRequestBodyBuilder
-    {
-        public record Part([property: JsonProperty("text")] string Text);
-        public record SystemInstruction([property: JsonProperty("parts")] List<Part?> parts);
-        public record Content([property: JsonProperty("parts")] List<Part?> parts);
-        public record ResponseSchema(string responseBody);
-        public record SafetySettings([property: JsonProperty("category")]HarmCategory HarmCategory , [property: JsonProperty("threshold")]HarmBlockThreshold HarmBlockThreshold);
-
-        public class GenerationConfig
-        {
-            [JsonProperty("responseJsonSchema")]
-            public ResponseSchema ResponseSchema { get; set; }
-            [JsonProperty("responseMimeType")]
-            public string ResponseMimeType { get; set; } = "application/json";
-            [JsonProperty("maxOutputTokens")]
-            public int TokenCount { get; set; }
-            [JsonProperty("temperature")]
-            public double Temperature { get; set; }
-            [JsonProperty("topP")]
-            public double TopP { get; set; }
-            [JsonProperty("topK")]
-            public double TopK { get; set; }
-            [JsonProperty("safetySetting")]
-            public string SafetySetting { get; set; } = "none";
-
-            public GenerationConfig(ResponseSchema responseSchema, int tokenCount, double temperature, double topP, double topK)
-            {
-                ResponseSchema = responseSchema;
-                TokenCount = tokenCount;
-                Temperature = temperature;
-                TopP = topP;
-                TopK = topK;
-            }
-        }
-
-        public class MainBody
-        {
-            [JsonProperty("systemInstruction")]
-            public SystemInstruction SystemInstruction { get; set; }
-            [JsonProperty("contents")]
-            public List<Content> Contents { get; set; }
-            public GenerationConfig GenerationConfig { get; set; }
-
-            public MainBody(SystemInstruction systemInstruction, List<Content> contents, GenerationConfig generationConfig)
-            {
-                SystemInstruction = systemInstruction;
-                Contents = contents;
-                GenerationConfig = generationConfig;
-            }
-        }
-
-        public MainBody GetMainBody()
-        {
-            return new MainBody(
-                new SystemInstruction(null),
-                new List<Content> { new Content(null) },
-                new GenerationConfig(
-                    new ResponseSchema(null),
-                    tokenCount: 10, //default
-                    temperature: 0.7, //default
-                    topP: 0.9, //default
-                    topK: 2) //default
-            );
-        }
 
         public ObjectIdentityResult<string> BuildBotRequest(Bot bot, DatabaseDataDto databaseDataDto)
         {
-            var mainBody = GetMainBody();
-            AddPostContext_ToRequest(databaseDataDto, mainBody);
-            AddEntryContext_ToRequest(databaseDataDto, mainBody);
-            AddFollowContext_ToRequest(databaseDataDto, mainBody);
-            AddNewsContext_ToRequest(databaseDataDto, mainBody);
-            AddMemoryContext_ToRequest(databaseDataDto, mainBody);
-            var personalityResult = SetPersonalityInstructions_WithRequest(bot, databaseDataDto, mainBody);
+
+            var requestBody = new BotRequestBodyDto();
+            AddPostContext_ToRequest(databaseDataDto, requestBody);
+            AddEntryContext_ToRequest(databaseDataDto, requestBody);
+            AddFollowContext_ToRequest(databaseDataDto, requestBody);
+            AddNewsContext_ToRequest(databaseDataDto, requestBody);
+            AddMemoryContext_ToRequest(databaseDataDto, requestBody);
+            var personalityResult = SetPersonalityInstructions_WithRequest(bot, databaseDataDto, requestBody);
             if(!personalityResult.Succeeded)
                 return ObjectIdentityResult<string>.Failed(null, personalityResult.Errors.ToArray());
-            var operationResult = SetOperationInstructions_WithRequest(databaseDataDto, mainBody);
+            var operationResult = SetOperationInstructions_WithRequest(databaseDataDto, requestBody);
             if (!operationResult.Succeeded)
                 return ObjectIdentityResult<string>.Failed(null, operationResult.Errors.ToArray());
-            var intelligenceResult = ChangeIntelligenceByGrade_WithRequest(bot, mainBody);
+            var intelligenceResult = ChangeIntelligenceByGrade_WithRequest(bot, requestBody);
             if (!intelligenceResult.Succeeded)
                 return ObjectIdentityResult<string>.Failed(null, intelligenceResult.Errors.ToArray());
-            var jsonMainBody = Newtonsoft.Json.JsonConvert.SerializeObject(mainBody);
+            var jsonMainBody = JsonConvert.SerializeObject(requestBody);
             return ObjectIdentityResult<string>.Succeded(jsonMainBody);
 
         }
 
 
-        public MainBody AddPostContext_ToRequest(DatabaseDataDto databaseDataDto, MainBody mainBody)
+        public RequestBody AddPostContext_ToRequest(DatabaseDataDto databaseDataDto, BotRequestBodyDto requestBody)
         {
             if (databaseDataDto.Posts == null || !databaseDataDto.Posts.Any())
             {
-                return mainBody;
+                return requestBody;
             }
             foreach (var post in databaseDataDto.Posts)
             {
@@ -139,13 +68,13 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
 
                 if (partsText.Any())
                 {
-                    mainBody.Contents.Add(new Content(new List<Part> { new Part(string.Join(" | ", partsText)) }));
+                    requestBody.Contents.Add(new Content(new List<Part> { new Part(string.Join(" | ", partsText)) }));
                 }
             }
-            return mainBody;
+            return requestBody;
         }
 
-        public MainBody AddEntryContext_ToRequest(DatabaseDataDto databaseDataDto, MainBody mainBody)
+        public RequestBody AddEntryContext_ToRequest(DatabaseDataDto databaseDataDto, BotRequestBodyDto mainBody)
         {
             if (databaseDataDto.Entries == null || !databaseDataDto.Entries.Any())
             {
@@ -196,7 +125,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
         }
 
 
-        public MainBody AddFollowContext_ToRequest(DatabaseDataDto databaseDataDto, MainBody mainBody)
+        public RequestBody AddFollowContext_ToRequest(DatabaseDataDto databaseDataDto, BotRequestBodyDto mainBody)
         {
             if ((databaseDataDto.Users == null || !databaseDataDto.Users.Any()) && (databaseDataDto.Bots == null || !databaseDataDto.Bots.Any()))
             {
@@ -208,7 +137,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                 {
                     var partText = $"User Id: {user.Id}" +
                                    (!string.IsNullOrEmpty(user.ProfileName) ? $" | Profile Name: {user.ProfileName}" : "") +
-                                   ($" | Interests: {user.Interests}");
+                                   $" | Interests: {user.Interests}";
 
                     mainBody.Contents.Add(new Content(new List<Part> { new Part(partText) }));
                 }
@@ -220,7 +149,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                 {
                     var partText = $"Bot Id: {bot.Id}" +
                                    (!string.IsNullOrEmpty(bot.BotProfileName) ? $" | Bot Profile Name: {bot.BotProfileName}" : "") +
-                                   ($" | Interests: {bot.Interests}");
+                                   $" | Interests: {bot.Interests}";
 
                     mainBody.Contents.Add(new Content(new List<Part> { new Part(partText) }));
                 }
@@ -228,7 +157,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             return mainBody;
         }
 
-        public MainBody AddNewsContext_ToRequest(DatabaseDataDto databaseDataDto, MainBody mainBody)
+        public RequestBody AddNewsContext_ToRequest(DatabaseDataDto databaseDataDto, BotRequestBodyDto mainBody)
         {
             if (databaseDataDto.News == null || !databaseDataDto.News.Any())
             {
@@ -253,7 +182,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             return mainBody;
         }
 
-        public MainBody AddMemoryContext_ToRequest(DatabaseDataDto databaseDataDto, MainBody mainBody)
+        public RequestBody AddMemoryContext_ToRequest(DatabaseDataDto databaseDataDto, BotRequestBodyDto mainBody)
         {
             if (databaseDataDto.BotMemoryLogs == null || !databaseDataDto.BotMemoryLogs.Any())
             {
@@ -281,7 +210,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             return mainBody;
         }
 
-        public ObjectIdentityResult<MainBody> SetOperationInstructions_WithRequest(DatabaseDataDto databaseDataDto, MainBody mainBody)
+        public ObjectIdentityResult<RequestBody> SetOperationInstructions_WithRequest(DatabaseDataDto databaseDataDto, BotRequestBodyDto mainBody)
         {
 
             if (databaseDataDto.ActivityType == BotActivityType.BotCreatedEntry)
@@ -331,13 +260,13 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             }
             else
             {
-                return ObjectIdentityResult<MainBody>.Failed(null, new[] { new UnexpectedError("Activity type is not valid") });
+                return ObjectIdentityResult<RequestBody>.Failed(null, new[] { new UnexpectedError("Activity type is not valid") });
             }
-                return ObjectIdentityResult<MainBody>.Succeded(mainBody);
+                return ObjectIdentityResult<RequestBody>.Succeded(mainBody);
 
         }
 
-        public ObjectIdentityResult<MainBody> SetPersonalityInstructions_WithRequest(Bot bot, DatabaseDataDto databaseDataDto, MainBody mainBody)
+        public ObjectIdentityResult<RequestBody> SetPersonalityInstructions_WithRequest(Bot bot, DatabaseDataDto databaseDataDto, BotRequestBodyDto mainBody)
         {
             mainBody.SystemInstruction.parts.Add(new Part($"Your Personality: {bot.BotPersonality}"));
             if (databaseDataDto.BotMemoryLogs != null)
@@ -345,11 +274,11 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                 mainBody.SystemInstruction.parts.Add(new Part("Consider your memories while performing the operation"));
             }
             mainBody.SystemInstruction.parts.Add(new Part($"{bot.Instructions}"));
-            return ObjectIdentityResult<MainBody>.Succeded(mainBody);
+            return ObjectIdentityResult<RequestBody>.Succeded(mainBody);
         }
 
 
-        public ObjectIdentityResult<MainBody> ChangeIntelligenceByGrade_WithRequest(Bot bot, MainBody mainBody)
+        public ObjectIdentityResult<RequestBody> ChangeIntelligenceByGrade_WithRequest(Bot bot, RequestBody mainBody)
         {
             if (bot.BotGrade == BotGrades.Low)
             {
@@ -376,15 +305,33 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             }
             else
             {
-                return ObjectIdentityResult<MainBody>.Failed(null, new[] { new UnexpectedError("Bot grade is not valid") });
+                return ObjectIdentityResult<RequestBody>.Failed(null, new[] { new UnexpectedError("Bot grade is not valid") });
             }
-            return ObjectIdentityResult<MainBody>.Succeded(mainBody);
+            return ObjectIdentityResult<RequestBody>.Succeded(mainBody);
+        }
+
+        public ObjectIdentityResult<RequestBody> SetSafetySettings(RequestBody mainBody)
+        {
+            mainBody.SafetySettings = new List<SafetySetting>
+            {
+                new SafetySetting(HarmCategory.HARM_CATEGORY_DEROGATORY, HarmBlockThreshold.BLOCK_NONE),
+                new SafetySetting(HarmCategory.HARM_CATEGORY_TOXICITY, HarmBlockThreshold.BLOCK_NONE),
+                new SafetySetting(HarmCategory.HARM_CATEGORY_VIOLENCE, HarmBlockThreshold.BLOCK_NONE),
+                new SafetySetting(HarmCategory.HARM_CATEGORY_SEXUAL, HarmBlockThreshold.BLOCK_NONE),
+                new SafetySetting(HarmCategory.HARM_CATEGORY_MEDICAL, HarmBlockThreshold.BLOCK_NONE),
+                new SafetySetting(HarmCategory.HARM_CATEGORY_DANGEROUS, HarmBlockThreshold.BLOCK_NONE),
+                new SafetySetting(HarmCategory.HARM_CATEGORY_HARASSMENT, HarmBlockThreshold.BLOCK_NONE),
+                new SafetySetting(HarmCategory.HARM_CATEGORY_HATE_SPEECH, HarmBlockThreshold.BLOCK_NONE),
+                new SafetySetting(HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, HarmBlockThreshold.BLOCK_NONE),
+                new SafetySetting(HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, HarmBlockThreshold.BLOCK_NONE)
+            };
+            return ObjectIdentityResult<RequestBody>.Succeded(mainBody);
         }
 
 
 
 
-        public ObjectIdentityResult<MainBody> SetResponseSchema_WithRequest(DatabaseDataDto databaseDataDto, MainBody mainBody)
+        public ObjectIdentityResult<RequestBody> SetResponseSchema_WithRequest(DatabaseDataDto databaseDataDto, RequestBody mainBody)
         {
             JSchemaGenerator jSchemaGenerator = new JSchemaGenerator();
             JSchema jSchema = null;
@@ -403,9 +350,9 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             else if (databaseDataDto.Bots != null && databaseDataDto.Bots.Any() && databaseDataDto.ActivityType == BotActivityType.BotStartedFollow)
                 jSchema = jSchemaGenerator.Generate(typeof(Follow));
             if(jSchema == null)
-                return ObjectIdentityResult<MainBody>.Failed(null, new[] { new UnexpectedError("Not valid type found")} );
+                return ObjectIdentityResult<RequestBody>.Failed(null, new[] { new UnexpectedError("Not valid type found")} );
             mainBody.GenerationConfig.ResponseSchema = new ResponseSchema(jSchema.ToString());
-            return ObjectIdentityResult<MainBody>.Succeded(mainBody);
+            return ObjectIdentityResult<RequestBody>.Succeded(mainBody);
 
         }
 
