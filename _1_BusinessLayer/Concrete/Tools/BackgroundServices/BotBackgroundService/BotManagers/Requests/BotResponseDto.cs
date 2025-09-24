@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers.Requests
 {
-    public class BotResponseDto
+    public class BotResponseDto<T> where T : class
     {
         public enum InBlockReason
         {
@@ -72,109 +70,143 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
         }
 
         [JsonProperty("candidates")]
-        public List<InCandidate>? Candidates { get; set; } = new List<InCandidate>();
+        public List<InCandidate>? Candidates { get; set; } = null;
 
         [JsonProperty("promptFeedback")]
-        public InPromptFeedback? PromptFeedback { get; set; }
+        public InPromptFeedback? PromptFeedback { get; set; } = null;
 
         [JsonProperty("usageMetadata")]
-        public required InUsageMetadata UsageMetadata { get; set; }
+        public InUsageMetadata? UsageMetadata { get; set; } = null;
 
         [JsonProperty("modelVersion")]
-        public required string  ModelVersion { get; set; }
+        public string? ModelVersion { get; set; } = null;
 
         [JsonProperty("responseId")]
-        public required string ResponseId { get; set; }
+        public string? ResponseId { get; set; } = null;
 
         public class InCandidate
         {
             [JsonProperty("content")]
-            public required InContent Content { get; set; }
+            public InContent? Content { get; set; } = null;
 
             [JsonProperty("finishReason")]
-            public InFinishReason FinishReason { get; set; }
+            public InFinishReason? FinishReason { get; set; } = null;
 
             [JsonProperty("safetyRatings")]
-            public List<InSafetyRating> SafetyRatings { get; set; } = new List<InSafetyRating>();
+            public List<InSafetyRating>? SafetyRatings { get; set; } = null;
 
             [JsonProperty("tokenCount")]
-            public int TokenCount { get; set; }
+            public int? TokenCount { get; set; } = null;
 
             [JsonProperty("index")]
-            public int Index { get; set; }
+            public int? Index { get; set; } = null;
         }
 
         public class InContent
         {
             [JsonProperty("parts")]
-            public List<InPart> Parts { get; set; } = new List<InPart>();
+            public List<InPart>? Parts { get; set; } = null;
 
             [JsonProperty("role")]
-            public string? Role { get; set; } // "user" veya "model"
+            public string? Role { get; set; } = null;
         }
 
         public class InPart
         {
             [JsonProperty("text")]
-            public string Text { get; set; }
-            public InPart(string text) { Text = text; }
+            public string? Text { get; set; }
+
+            [JsonProperty("data")]
+            public T? Data { get; set; }
+
+            public InPart() { }
+            public InPart(string? text) { Text = text; }
+            public InPart(T? data) { Data = data; }
         }
 
         public class InSafetyRating
         {
             [JsonProperty("category")]
-            public InHarmCategory Category { get; set; }
+            public InHarmCategory? Category { get; set; } = null;
 
             [JsonProperty("probability")]
-            public InHarmProbability Probability { get; set; }
+            public InHarmProbability? Probability { get; set; } = null;
 
             [JsonProperty("blocked")]
-            public bool Blocked { get; set; }
-
+            public bool? Blocked { get; set; } = null;
         }
 
         public class InPromptFeedback
         {
             [JsonProperty("blockReason")]
-            public InBlockReason? BlockReason { get; set; }
+            public InBlockReason? BlockReason { get; set; } = null;
 
             [JsonProperty("safetyRatings")]
-            public List<InSafetyRating>? SafetyRatings { get; set; } = new List<InSafetyRating>();
+            public List<InSafetyRating>? SafetyRatings { get; set; } = null;
         }
 
         public class InUsageMetadata
         {
             [JsonProperty("promptTokenCount")]
-            public int PromptTokenCount { get; set; }
+            public int? PromptTokenCount { get; set; } = null;
 
             [JsonProperty("cachedContentTokenCount")]
-            public int CachedContentTokenCount { get; set; }
+            public int? CachedContentTokenCount { get; set; } = null;
 
             [JsonProperty("candidatesTokenCount")]
-            public int CandidatesTokenCount { get; set; }
+            public int? CandidatesTokenCount { get; set; } = null;
 
             [JsonProperty("thoughtsTokenCount")]
-            public int ThoughtsTokenCount { get; set; }
+            public int? ThoughtsTokenCount { get; set; } = null;
 
             [JsonProperty("totalTokenCount")]
-            public int TotalTokenCount { get; set; }
+            public int? TotalTokenCount { get; set; } = null;
 
             [JsonProperty("promptTokensDetails")]
-            public List<InModalityTokenCount> PromptTokensDetails { get; set; } = new List<InModalityTokenCount>();
+            public List<InModalityTokenCount>? PromptTokensDetails { get; set; } = null;
 
             [JsonProperty("cacheTokensDetails")]
-            public List<InModalityTokenCount> CacheTokensDetails { get; set; } = new List<InModalityTokenCount>();
+            public List<InModalityTokenCount>? CacheTokensDetails { get; set; } = null;
 
             [JsonProperty("candidatesTokensDetails")]
-            public List<InModalityTokenCount> CandidatesTokensDetails { get; set; } = new List<InModalityTokenCount>();
+            public List<InModalityTokenCount>? CandidatesTokensDetails { get; set; } = null;
         }
         public class InModalityTokenCount
         {
             [JsonProperty("modality")]
-            public InModality Modality { get; set; }
+            public InModality? Modality { get; set; } = null;
 
             [JsonProperty("tokenCount")]
-            public int TokenCount { get; set; }
+            public int? TokenCount { get; set; } = null;
+        }
+
+        // Custom JSON converter to detect missing properties
+        public class MissingPropertyTrackingConverter<TT> : JsonConverter<TT> where TT : class, new()
+        {
+            public HashSet<string> MissingProperties { get; private set; } = new HashSet<string>();
+
+            public override TT? ReadJson(JsonReader reader, Type objectType, TT? existingValue, bool hasExistingValue, JsonSerializer serializer)
+            {
+                JObject jo = JObject.Load(reader);
+                var obj = new TT();
+                var props = typeof(TT).GetProperties();
+                foreach (var prop in props)
+                {
+                    var jsonProp = prop.GetCustomAttributes(typeof(JsonPropertyAttribute), true);
+                    string jsonName = prop.Name;
+                    if (jsonProp.Length > 0)
+                        jsonName = ((JsonPropertyAttribute)jsonProp[0]).PropertyName ?? prop.Name;
+                    if (!jo.ContainsKey(jsonName))
+                        MissingProperties.Add(jsonName);
+                }
+                serializer.Populate(jo.CreateReader(), obj);
+                return obj;
+            }
+
+            public override void WriteJson(JsonWriter writer, TT? value, JsonSerializer serializer)
+            {
+                serializer.Serialize(writer, value);
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers.Requests
 {
@@ -32,70 +33,52 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
         }
 
         [JsonProperty("system_instruction")]
-        public InSystemInstruction? SystemInstruction { get; set; }
+        public InSystemInstruction? SystemInstruction { get; set; } = null;
 
         [JsonProperty("contents")]
-        public required List<InContent>? Contents { get; set; }
+        public List<InContent>? Contents { get; set; } = null;
 
         [JsonProperty("generationConfig")]
-        public InGenerationConfig? GenerationConfig { get; set; }
+        public InGenerationConfig? GenerationConfig { get; set; } = null;
 
         [JsonProperty("safetySettings")]
-        public List<InSafetySetting>? SafetySettings { get; set; }
+        public List<InSafetySetting>? SafetySettings { get; set; } = null;
 
         public class InPart
         {
             [JsonProperty("text")]
-            public string Text { get; set; }
-
-            public InPart(string text)
-            {
-                Text = text;
-            }
+            public string? Text { get; set; }
+            public InPart(string? text) { Text = text; }
         }
 
         public class InSystemInstruction
         {
             [JsonProperty("parts")]
-            public List<InPart> Parts { get; set; }
-
-            public InSystemInstruction(List<InPart> parts)
-            {
-                Parts = parts;
-            }
+            public List<InPart>? Parts { get; set; }
+            public InSystemInstruction(List<InPart>? parts) { Parts = parts; }
         }
 
         public class InContent
         {
             [JsonProperty("parts")]
-            public List<InPart> Parts { get; set; }
-
-            public InContent(List<InPart> parts)
-            {
-                Parts = parts;
-            }
+            public List<InPart>? Parts { get; set; }
+            public InContent(List<InPart>? parts) { Parts = parts; }
         }
 
         public class InResponseSchema
         {
             [JsonProperty("responseBody")]
-            public string ResponseBody { get; set; }
-
-            public InResponseSchema(string responseBody)
-            {
-                ResponseBody = responseBody;
-            }
+            public string? ResponseBody { get; set; }
+            public InResponseSchema(string? responseBody) { ResponseBody = responseBody; }
         }
 
         public class InSafetySetting
         {
             [JsonProperty("category")]
-            public InHarmCategory HarmCategory { get; set; }
-
+            public InHarmCategory? HarmCategory { get; set; }
             [JsonProperty("threshold")]
-            public InHarmBlockThreshold HarmBlockThreshold { get; set; }
-
-            public InSafetySetting(InHarmCategory harmCategory, InHarmBlockThreshold harmBlockThreshold)
+            public InHarmBlockThreshold? HarmBlockThreshold { get; set; }
+            public InSafetySetting(InHarmCategory? harmCategory, InHarmBlockThreshold? harmBlockThreshold)
             {
                 HarmCategory = harmCategory;
                 HarmBlockThreshold = harmBlockThreshold;
@@ -105,34 +88,27 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
         public class InGenerationConfig
         {
             [JsonProperty("responseJsonSchema")]
-            public InResponseSchema ResponseSchema { get; set; }
-
+            public InResponseSchema? ResponseSchema { get; set; }
             [JsonProperty("responseMimeType")]
-            public string ResponseMimeType { get; set; } = "application/json";
-
+            public string? ResponseMimeType { get; set; } = "application/json";
             [JsonProperty("maxOutputTokens")]
-            public int TokenCount { get; set; }
-
+            public int? TokenCount { get; set; }
             [JsonProperty("temperature")]
-            public double Temperature { get; set; }
-
+            public double? Temperature { get; set; }
             [JsonProperty("topP")]
-            public double TopP { get; set; }
-
+            public double? TopP { get; set; }
             [JsonProperty("topK")]
-            public double TopK { get; set; }
-
+            public double? TopK { get; set; }
             [JsonProperty("safetySettings")]
-            public List<InSafetySetting> SafetySetting { get; set; }
-
-            public InGenerationConfig(InResponseSchema responseSchema, int tokenCount, double temperature, double topP, double topK)
+            public List<InSafetySetting>? SafetySetting { get; set; } = null;
+            public InGenerationConfig(InResponseSchema? responseSchema, int? tokenCount, double? temperature, double? topP, double? topK)
             {
                 ResponseSchema = responseSchema;
                 TokenCount = tokenCount;
                 Temperature = temperature;
                 TopP = topP;
                 TopK = topK;
-                SafetySetting = new List<InSafetySetting>();
+                SafetySetting = null;
             }
         }
     }

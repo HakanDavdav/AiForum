@@ -56,7 +56,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                 if (botRequestBodyResult.Succeeded == false)
                 return IdentityResult.Failed(botRequestBodyResult.Errors.ToArray());
 
-            var botApiCallResult = await _botApiCaller.MakeApiCallAsync(botRequestBodyResult.Data!);
+            var botApiCallResult = await _botApiCaller.MakeApiCallAsync(botRequestBodyResult.Data!,databaseDataResult.Data.ReturnObjectType);
             if (botApiCallResult.Succeeded == false)
                 return IdentityResult.Failed(botApiCallResult.Errors.ToArray());
 

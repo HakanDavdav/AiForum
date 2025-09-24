@@ -18,6 +18,6 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
         public List<BotMemoryLog> BotMemoryLogs;
         public List<News> News;
         public BotActivityType ActivityType;
-
+       public Type ReturnObjectType { get; set; }
     }
 }
