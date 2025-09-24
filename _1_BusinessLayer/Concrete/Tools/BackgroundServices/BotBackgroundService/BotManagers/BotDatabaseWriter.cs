@@ -4,79 +4,137 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Abstractions;
+using _2_DataAccessLayer.Abstractions.Generic;
 using _2_DataAccessLayer.Concrete.Entities;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService;
+using _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers.Requests;
+using static _2_DataAccessLayer.Concrete.Enums.BotActivityTypes;
+using Microsoft.AspNetCore.Identity;
 
 namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers
 {
     public class BotDatabaseWriter
     {
-        public AbstractEntryRepository _entryRepository;
-        public AbstractPostRepository _postRepository;
-        public AbstractLikeRepository _likeRepository;
-        public AbstractFollowRepository _followRepository;
-        public AbstractNotificationRepository _notificationRepository;
-        public BotDatabaseWriter(AbstractFollowRepository followRepository, AbstractEntryRepository entryRepository,
-            AbstractLikeRepository likeRepository, AbstractPostRepository postRepository, AbstractNotificationRepository notificationRepository)
-        {
-            _entryRepository = entryRepository;
-            _postRepository = postRepository;
-            _likeRepository = likeRepository;
-            _followRepository = followRepository;
-            _notificationRepository = notificationRepository;
-        }
-        public Task<Notification> WriteOnDatabase(Bot bot, int requiredId, string filteredAiResponse, string parseResponseType)
-        {
-            switch (parseResponseType)
-            {
-                case "creatingEntry":
-                    return WriteEntry(bot, filteredAiResponse, requiredId);
-                case "creatingOpposingEntry":
-                    return WriteOpposingEntry(bot, filteredAiResponse, requiredId);
-                case "creatingPost":
-                    return WriteOpposingEntry(bot, filteredAiResponse, requiredId);
-                case "creatingUserFollowing":
-                    return WriteUserFollow(bot, filteredAiResponse, requiredId);
-                case "creatingBotFollowing":
-                    return WriteBotFollow(bot, filteredAiResponse, requiredId);
-                case "likePost":
-                    return WriteLikePost(bot, filteredAiResponse, requiredId);
-                case "likeEntry":
-                    return WriteLikeEntry(bot, filteredAiResponse, requiredId);
-                default:
+        public AbstractGenericCommandHandler _commandHandler;
 
-                    throw new ArgumentException("Invalid responseType");
+        public BotDatabaseWriter(AbstractGenericCommandHandler commandHandler)
+        {
+            _commandHandler = commandHandler;
+        }
+
+        public Task<Notification> WriteOnDatabase(Bot bot, BotResponseDto botResponse, DatabaseDataDto databaseDataDto)
+        {
+            switch (databaseDataDto.ActivityType)
+            {
+                case BotActivityType.BotCreatedEntry:
+                    return WriteEntry(bot, botResponse);
+                case BotActivityType.BotCreatedOpposingEntry:
+                    return WriteOpposingEntry(bot, botResponse);
+                case BotActivityType.BotCreatedPost:
+                    return WritePost(bot, botResponse);
+                case BotActivityType.BotStartedFollow:
+                    return WriteFollow(bot, botResponse);
+                case BotActivityType.BotLikedPost:
+                    return WriteLikePost(bot, botResponse);
+                case BotActivityType.BotLikedEntry:
+                    return WriteLikeEntry(bot, botResponse);
+                case BotActivityType.BotCreatedChildBot:
+                    return WriteChildBot(bot, botResponse);
+                default:
+                    throw new ArgumentException("Invalid BotActivityType");
             }
         }
 
-        public Task<Notification> WriteEntry(Bot bot, string filteredAiResponse, int requiredID)
+        public async Task<IdentityResult> WriteEntry(Bot bot, BotResponseDto botResponse)
         {
-            throw new NotImplementedException();
-        }
-        public Task<Notification> WriteOpposingEntry(Bot bot, string filteredAiResponse, int requiredID)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<Notification> WritePost(Bot bot, string filteredAiResponse, int requiredID)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<Notification> WriteBotFollow(Bot bot, string filteredAiResponse, int requiredID)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<Notification> WriteUserFollow(Bot bot, string filteredAiResponse, int requiredID)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<Notification> WriteLikePost(Bot bot, string filteredAiResponse, int requiredID)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<Notification> WriteLikeEntry(Bot bot, string filteredAiResponse, int requiredID)
-        {
-            throw new NotImplementedException();
+            foreach (var candidate in botResponse.Candidates)
+            {
+                foreach (var part in candidate.Content.Parts)
+                {
+                    var entry = new Entry
+                    {
+                        Context = part.Data.Context,
+                        PostId = part.Data.postId,
+                        OwnerBotId = bot.Id,
+                        DateTime = DateTime.Now,
+                        LikeCount = 0,
+                    };
+                    bot.Entries.Add(entry);
+                }
+            }
+            await _commandHandler.SaveChangesAsync();
+            return IdentityResult.Success;
 
+        }
+        public async Task<IdentityResult> WriteOpposingEntry(Bot bot, BotResponseDto botResponse)
+        {
+            foreach (var candidate in botResponse.Candidates)
+            {
+                foreach (var part in candidate.Content.Parts)
+                {
+                    var entry = new Entry
+                    {
+                        Context = part.Data.Context,
+                        PostId = part.Data.postId,
+                        OwnerBotId = bot.Id,
+                        DateTime = DateTime.Now,
+                        LikeCount = 0,
+                    };
+                    bot.Entries.Add(entry);
+                }
+            }
+            await _commandHandler.SaveChangesAsync();
+            return IdentityResult.Success;
+        }
+        public async Task<IdentityResult> WritePost(Bot bot, BotResponseDto botResponse)
+        {
+            foreach (var candidate in botResponse.Candidates)
+            {
+                foreach (var part in candidate.Content.Parts)
+                {
+                    var post = new Post
+                    {
+                        Context = part.Data.Context,
+                        OwnerBotId = bot.Id,
+                        Title = part.Data.Title,
+                        DateTime = DateTime.Now,
+                        LikeCount = 0,
+                        EntryCount = 0,
+                       
+                    };
+                    bot.Posts.Add(post);
+
+                }
+                await _commandHandler.SaveChangesAsync();
+                return IdentityResult.Success;
+            }
+        }
+        public async Task<IdentityResult> WriteFollow(Bot bot, BotResponseDto botResponse)
+        {
+            foreach (var candidate in botResponse.Candidates)
+            {
+                foreach (var parts in candidate.Content.Parts)
+                {
+                    var follow = new Follow
+                    {
+                        BotFollowerId = bot.Id,
+                        UserFollowedId = parts.Data.FollowedUserId,
+                        BotFollowedId = parts.Data.FollowedBotId,
+                    };
+                }
+            }
+        }
+        public async Task<IdentityResult> WriteLikePost(Bot bot, BotResponseDto botResponse)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<IdentityResult> WriteLikeEntry(Bot bot, BotResponseDto botResponse)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<IdentityResult> WriteChildBot(Bot bot, BotResponseDto botResponse)
+        {
+            throw new NotImplementedException();
         }
     }
 }

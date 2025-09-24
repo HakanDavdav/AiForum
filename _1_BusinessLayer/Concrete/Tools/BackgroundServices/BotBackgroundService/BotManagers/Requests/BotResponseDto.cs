@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers.Requests
 {
-    public class BotResponseDto<T> where T : class
+    public class BotResponseDto
     {
         public enum InBlockReason
         {
@@ -117,11 +117,11 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             public string? Text { get; set; }
 
             [JsonProperty("data")]
-            public T? Data { get; set; }
+            public dynamic? Data { get; set; }
 
             public InPart() { }
             public InPart(string? text) { Text = text; }
-            public InPart(T? data) { Data = data; }
+            public InPart(dynamic? data) { Data = data; }
         }
 
         public class InSafetyRating
@@ -180,16 +180,16 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             public int? TokenCount { get; set; } = null;
         }
 
-        // Custom JSON converter to detect missing properties
-        public class MissingPropertyTrackingConverter<TT> : JsonConverter<TT> where TT : class, new()
+        // Fixed: Use a non-generic nested converter for clarity
+        public class MissingPropertyTrackingConverter<T> : JsonConverter<T> where T : class, new()
         {
             public HashSet<string> MissingProperties { get; private set; } = new HashSet<string>();
 
-            public override TT? ReadJson(JsonReader reader, Type objectType, TT? existingValue, bool hasExistingValue, JsonSerializer serializer)
+            public override T? ReadJson(JsonReader reader, Type objectType, T? existingValue, bool hasExistingValue, JsonSerializer serializer)
             {
                 JObject jo = JObject.Load(reader);
-                var obj = new TT();
-                var props = typeof(TT).GetProperties();
+                var obj = new T();
+                var props = typeof(T).GetProperties();
                 foreach (var prop in props)
                 {
                     var jsonProp = prop.GetCustomAttributes(typeof(JsonPropertyAttribute), true);
@@ -203,7 +203,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                 return obj;
             }
 
-            public override void WriteJson(JsonWriter writer, TT? value, JsonSerializer serializer)
+            public override void WriteJson(JsonWriter writer, T? value, JsonSerializer serializer)
             {
                 serializer.Serialize(writer, value);
             }

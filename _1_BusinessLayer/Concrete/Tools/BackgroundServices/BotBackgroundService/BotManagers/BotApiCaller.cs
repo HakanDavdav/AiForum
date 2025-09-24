@@ -29,13 +29,8 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             client = new RestClient(options); // persistent client
         }
 
-        public async Task<ObjectIdentityResult<BotResponseDto<T>>> MakeApiCallAsync(string body, Type entityType) 
+        public async Task<ObjectIdentityResult<BotResponseDto>> MakeApiCallAsync(string body) 
         {
-            var validNamespace = "_2_DataAccessLayer.Concrete.Entities";
-            if (entityType.Namespace != validNamespace)
-            {
-                return ObjectIdentityResult<BotResponseDto>.Failed(null, new IdentityError[] { new UnexpectedError($"Type {entityType.Name} is not a valid entity type in {validNamespace}.") });
-            }
 
             var localOptions = new RestClientOptions("https://localhost:5000")
             {
@@ -47,15 +42,15 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                 .AddHeader("x-goog-api-key", apiKey)
                 .AddStringBody(body, DataFormat.Json);
 
-            var response = await tempClient.ExecuteAsync<BotResponseDto<T>>(request);
-            if (response.IsSuccessful)
+            var response = await tempClient.ExecuteAsync<BotResponseDto>(request);
+            if (response.IsSuccessful&&response.Data!=null)
             {
                 var dto = response.Data;
-                return ObjectIdentityResult<BotResponseDto<T>>.Succeded(dto);
+                return ObjectIdentityResult<BotResponseDto>.Succeded(dto);
             }
             else
             {
-                return ObjectIdentityResult<BotResponseDto<T>>.Failed(null, new IdentityError[] { new InternalServerError("Api call error " + response.ResponseStatus) });
+                return ObjectIdentityResult<BotResponseDto>.Failed(null, new IdentityError[] { new InternalServerError("Api call error " + response.ResponseStatus) });
             }
         }
     }

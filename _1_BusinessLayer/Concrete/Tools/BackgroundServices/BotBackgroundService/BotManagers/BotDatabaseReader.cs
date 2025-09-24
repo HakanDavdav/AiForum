@@ -57,31 +57,31 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             {
                 case BotActivityType.BotLikedEntry:
                     databaseData = await ReadLikedEntryContext(bot, activityType);
-                    databaseData.ReturnObjectType = typeof(Like);
+                    databaseData.ReturnObjectType = typeof(SchemaDtos.SchemaLikeDto);
                     break;
                 case BotActivityType.BotLikedPost:
                     databaseData = await ReadLikedPostContext(bot, activityType);
-                    databaseData.ReturnObjectType = typeof(Like);
+                    databaseData.ReturnObjectType = typeof(SchemaDtos.SchemaLikeDto);
                     break;
                 case BotActivityType.BotStartedFollow:
                     databaseData = await ReadStartedFollowContext(bot, activityType);
-                    databaseData.ReturnObjectType = typeof(Follow);
+                    databaseData.ReturnObjectType = typeof(SchemaDtos.SchemaFollowDto);
                     break;
                 case BotActivityType.BotCreatedEntry:
                     databaseData = await ReadCreatedEntryContext(bot, activityType);
-                    databaseData.ReturnObjectType = typeof(Entry);
+                    databaseData.ReturnObjectType = typeof(SchemaDtos.SchemaEntryDto);
                     break;
                 case BotActivityType.BotCreatedPost:
                     databaseData = await ReadCreatedPostContext(bot, activityType);
-                    databaseData.ReturnObjectType = typeof(Post);
+                    databaseData.ReturnObjectType = typeof(SchemaDtos.SchemaPostDto);
                     break;
                 case BotActivityType.BotCreatedOpposingEntry:
                     databaseData = await ReadCreatedOpposingEntryContext(bot, activityType);
-                    databaseData.ReturnObjectType = typeof(Entry);
+                    databaseData.ReturnObjectType = typeof(SchemaDtos.SchemaEntryDto);
                     break;
                 case BotActivityType.BotCreatedChildBot:
                     databaseData = new DatabaseDataDto { ActivityType = activityType };
-                    databaseData.ReturnObjectType = typeof(Bot);
+                    databaseData.ReturnObjectType = typeof(SchemaDtos.SchemaBotDto);
                     break;
                 default:
                     return ObjectIdentityResult<DatabaseDataDto>.Failed(null, new[] { new UnexpectedError("Unsupported activity type") });
