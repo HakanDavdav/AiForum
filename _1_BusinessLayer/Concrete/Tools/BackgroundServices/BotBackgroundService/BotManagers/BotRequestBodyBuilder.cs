@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers.Dtos;
 using _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers.Requests;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
@@ -14,32 +15,35 @@ using static _2_DataAccessLayer.Concrete.Enums.BotActivityTypes;
 
 namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers
 {
-    public class BotRequestBuilder
+    public class BotRequestBodyBuilder
     {
         private void EnsureInitialized(BotRequestBodyDto dto)
         {
-            dto.SystemInstruction ??= new BotRequestBodyDto.InSystemInstruction(new List<BotRequestBodyDto.InPart>());
+            dto.SystemInstruction ??= new BotRequestBodyDto.InSystemInstruction { Parts = new List<BotRequestBodyDto.InPart>() };
             dto.SystemInstruction.Parts ??= new List<BotRequestBodyDto.InPart>();
             dto.Contents ??= new List<BotRequestBodyDto.InContent>();
-            dto.GenerationConfig ??= new BotRequestBodyDto.InGenerationConfig(
-                responseSchema: new BotRequestBodyDto.InResponseSchema(null),
-                tokenCount: null, temperature: null, topP: null, topK: null);
-            dto.GenerationConfig.ResponseSchema ??= new BotRequestBodyDto.InResponseSchema(null);
+            dto.GenerationConfig ??= new BotRequestBodyDto.InGenerationConfig {
+                ResponseSchema = new BotRequestBodyDto.InResponseSchema { ResponseBody = null },
+                TokenCount = null, Temperature = null, TopP = null, TopK = null, SafetySetting = new List<BotRequestBodyDto.InSafetySetting>()
+            };
+            dto.GenerationConfig.ResponseSchema ??= new BotRequestBodyDto.InResponseSchema { ResponseBody = null };
             dto.GenerationConfig.SafetySetting ??= new List<BotRequestBodyDto.InSafetySetting>();
             dto.SafetySettings ??= new List<BotRequestBodyDto.InSafetySetting>();
         }
 
-        public ObjectIdentityResult<string> BuildBotRequest(Bot bot, DatabaseDataDto databaseDataDto)
+        public ObjectIdentityResult<string> BuildRequest(DatabaseDataDto databaseDataDto, Bot bot)
         {
             var body = new BotRequestBodyDto();
+            // Move all initializations to the start
             EnsureInitialized(body);
 
+            // Context and instructions
             AddPostContext_ToRequest(databaseDataDto, body);
             AddEntryContext_ToRequest(databaseDataDto, body);
             AddFollowContext_ToRequest(databaseDataDto, body);
             AddNewsContext_ToRequest(databaseDataDto, body);
             AddMemoryContext_ToRequest(databaseDataDto, body);
-            
+
             var safetyResult = SetSafetySettings(body);
             if(!safetyResult.Succeeded)
                 return ObjectIdentityResult<string>.Failed(null, safetyResult.Errors.ToArray());
@@ -60,8 +64,6 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             if (!intelligenceResult.Succeeded)
                 return ObjectIdentityResult<string>.Failed(null, intelligenceResult.Errors.ToArray());
 
-
-
             var json = JsonConvert.SerializeObject(body);
             return ObjectIdentityResult<string>.Succeded(json);
         }
@@ -77,10 +79,13 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                 if (!string.IsNullOrWhiteSpace(post.Context)) parts.Add($"Post Context: {post.Context}");
                 if (parts.Count > 0)
                 {
-                    body.Contents!.Add(new BotRequestBodyDto.InContent(new List<BotRequestBodyDto.InPart>
+                    body.Contents!.Add(new BotRequestBodyDto.InContent
                     {
-                        new BotRequestBodyDto.InPart(string.Join(" | ", parts))
-                    }));
+                        Parts = new List<BotRequestBodyDto.InPart>
+                        {
+                            new BotRequestBodyDto.InPart { Text = string.Join(" | ", parts) }
+                        }
+                    });
                 }
             }
             return body;
@@ -103,10 +108,13 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                 }
                 if (parts.Count > 0)
                 {
-                    body.Contents!.Add(new BotRequestBodyDto.InContent(new List<BotRequestBodyDto.InPart>
+                    body.Contents!.Add(new BotRequestBodyDto.InContent
                     {
-                        new BotRequestBodyDto.InPart(string.Join(" | ", parts))
-                    }));
+                        Parts = new List<BotRequestBodyDto.InPart>
+                        {
+                            new BotRequestBodyDto.InPart { Text = string.Join(" | ", parts) }
+                        }
+                    });
                 }
             }
             return body;
@@ -124,10 +132,13 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                     var text = $"User Id: {u.Id}" +
                                (!string.IsNullOrWhiteSpace(u.ProfileName) ? $" | Profile Name: {u.ProfileName}" : string.Empty) +
                                $" | Interests: {u.Interests}";
-                    body.Contents!.Add(new BotRequestBodyDto.InContent(new List<BotRequestBodyDto.InPart>
+                    body.Contents!.Add(new BotRequestBodyDto.InContent
                     {
-                        new BotRequestBodyDto.InPart(text)
-                    }));
+                        Parts = new List<BotRequestBodyDto.InPart>
+                        {
+                            new BotRequestBodyDto.InPart { Text = text }
+                        }
+                    });
                 }
             }
             if (databaseDataDto.Bots != null)
@@ -137,10 +148,13 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                     var text = $"Bot Id: {b.Id}" +
                                (!string.IsNullOrWhiteSpace(b.BotProfileName) ? $" | Bot Profile Name: {b.BotProfileName}" : string.Empty) +
                                $" | Interests: {b.Interests}";
-                    body.Contents!.Add(new BotRequestBodyDto.InContent(new List<BotRequestBodyDto.InPart>
+                    body.Contents!.Add(new BotRequestBodyDto.InContent
                     {
-                        new BotRequestBodyDto.InPart(text)
-                    }));
+                        Parts = new List<BotRequestBodyDto.InPart>
+                        {
+                            new BotRequestBodyDto.InPart { Text = text }
+                        }
+                    });
                 }
             }
             return body;
@@ -157,10 +171,13 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                 if (!string.IsNullOrWhiteSpace(news.Content)) parts.Add($"News Context: {news.Content}");
                 if (parts.Count > 0)
                 {
-                    body.Contents!.Add(new BotRequestBodyDto.InContent(new List<BotRequestBodyDto.InPart>
+                    body.Contents!.Add(new BotRequestBodyDto.InContent
                     {
-                        new BotRequestBodyDto.InPart(string.Join(" | ", parts))
-                    }));
+                        Parts = new List<BotRequestBodyDto.InPart>
+                        {
+                            new BotRequestBodyDto.InPart { Text = string.Join(" | ", parts) }
+                        }
+                    });
                 }
             }
             return body;
@@ -177,10 +194,13 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                 parts.Add($"Bot Activity Type: {memory.BotActivityType}");
                 if (parts.Count > 0)
                 {
-                    body.Contents!.Add(new BotRequestBodyDto.InContent(new List<BotRequestBodyDto.InPart>
+                    body.Contents!.Add(new BotRequestBodyDto.InContent
                     {
-                        new BotRequestBodyDto.InPart(string.Join(" | ", parts))
-                    }));
+                        Parts = new List<BotRequestBodyDto.InPart>
+                        {
+                            new BotRequestBodyDto.InPart { Text = string.Join(" | ", parts) }
+                        }
+                    });
                 }
             }
             return body;
@@ -193,41 +213,41 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             switch (databaseDataDto.ActivityType)
             {
                 case BotActivityType.BotCreatedEntry:
-                    parts.Add(new BotRequestBodyDto.InPart("Choose between posts"));
-                    parts.Add(new BotRequestBodyDto.InPart("Consider post topics"));
-                    parts.Add(new BotRequestBodyDto.InPart("Create entry responseBody for that post"));
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Choose between posts" });
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Consider post topics" });
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Create entry responseBody for that post" });
                     break;
                 case BotActivityType.BotCreatedPost:
-                    parts.Add(new BotRequestBodyDto.InPart("Choose between news"));
-                    parts.Add(new BotRequestBodyDto.InPart("Consider news topics"));
-                    parts.Add(new BotRequestBodyDto.InPart("Create post about that news"));
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Choose between news" });
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Consider news topics" });
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Create post about that news" });
                     break;
                 case BotActivityType.BotStartedFollow:
-                    parts.Add(new BotRequestBodyDto.InPart("Choose between profiles"));
-                    parts.Add(new BotRequestBodyDto.InPart("Consider profile interests"));
-                    parts.Add(new BotRequestBodyDto.InPart("Create follow for that profile"));
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Choose between profiles" });
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Consider profile interests" });
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Create follow for that profile" });
                     break;
                 case BotActivityType.BotCreatedOpposingEntry:
-                    parts.Add(new BotRequestBodyDto.InPart("Choose a entry that you disagree most with it's context"));
-                    parts.Add(new BotRequestBodyDto.InPart("Create entry responseBody for that entry"));
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Choose a entry that you disagree most with it's context" });
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Create entry responseBody for that entry" });
                     break;
                 case BotActivityType.BotPostLiked:
-                    parts.Add(new BotRequestBodyDto.InPart("Choose between posts"));
-                    parts.Add(new BotRequestBodyDto.InPart("Consider post topic"));
-                    parts.Add(new BotRequestBodyDto.InPart("Like that post"));
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Choose between posts" });
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Consider post topic" });
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Like that post" });
                     break;
                 case BotActivityType.BotEntryLiked:
-                    parts.Add(new BotRequestBodyDto.InPart("Choose a entry that you agreee most with it's context"));
-                    parts.Add(new BotRequestBodyDto.InPart("Like that entry"));
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Choose a entry that you agreee most with it's context" });
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Like that entry" });
                     break;
                 case BotActivityType.BotCreatedChildBot:
-                    parts.Add(new BotRequestBodyDto.InPart("Create a child bot"));
-                    parts.Add(new BotRequestBodyDto.InPart("Make sure to consider your own interests"));
-                    parts.Add(new BotRequestBodyDto.InPart("Make sure to consider your own personality"));
-                    parts.Add(new BotRequestBodyDto.InPart("Make sure to consider your own intelligence level"));
-                    parts.Add(new BotRequestBodyDto.InPart("Create profile name for that child bot"));
-                    parts.Add(new BotRequestBodyDto.InPart("Create interests for that child bot"));
-                    parts.Add(new BotRequestBodyDto.InPart("Create personality for that child bot"));
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Create a child bot" });
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Make sure to consider your own interests" });
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Make sure to consider your own personality" });
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Make sure to consider your own intelligence level" });
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Create profile name for that child bot" });
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Create interests for that child bot" });
+                    parts.Add(new BotRequestBodyDto.InPart { Text = "Create personality for that child bot" });
                     break;
                 default:
                     return ObjectIdentityResult<BotRequestBodyDto>.Failed(null, new[] { new UnexpectedError("Activity type is not valid") });
@@ -239,12 +259,12 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
         {
             EnsureInitialized(body);
             var parts = body.SystemInstruction!.Parts!;
-            parts.Add(new BotRequestBodyDto.InPart($"Your Personality: {bot.BotPersonality}"));
+            parts.Add(new BotRequestBodyDto.InPart { Text = $"Your Personality: {bot.BotPersonality}" });
             if (databaseDataDto.BotMemoryLogs != null)
             {
-                parts.Add(new BotRequestBodyDto.InPart("Consider your memories while performing the operation"));
+                parts.Add(new BotRequestBodyDto.InPart { Text = "Consider your memories while performing the operation" });
             }
-            parts.Add(new BotRequestBodyDto.InPart($"{bot.Instructions}"));
+            parts.Add(new BotRequestBodyDto.InPart { Text = $"{bot.Instructions}" });
             return ObjectIdentityResult<BotRequestBodyDto>.Succeded(body);
         }
 
@@ -271,16 +291,16 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             EnsureInitialized(body);
             body.SafetySettings = new List<BotRequestBodyDto.InSafetySetting>
             {
-                new BotRequestBodyDto.InSafetySetting(BotRequestBodyDto.InHarmCategory.HARM_CATEGORY_DEROGATORY, BotRequestBodyDto.InHarmBlockThreshold.BLOCK_NONE),
-                new BotRequestBodyDto.InSafetySetting(BotRequestBodyDto.InHarmCategory.HARM_CATEGORY_TOXICITY, BotRequestBodyDto.InHarmBlockThreshold.BLOCK_NONE),
-                new BotRequestBodyDto.InSafetySetting(BotRequestBodyDto.InHarmCategory.HARM_CATEGORY_VIOLENCE, BotRequestBodyDto.InHarmBlockThreshold.BLOCK_NONE),
-                new BotRequestBodyDto.InSafetySetting(BotRequestBodyDto.InHarmCategory.HARM_CATEGORY_SEXUAL, BotRequestBodyDto.InHarmBlockThreshold.BLOCK_NONE),
-                new BotRequestBodyDto.InSafetySetting(BotRequestBodyDto.InHarmCategory.HARM_CATEGORY_MEDICAL, BotRequestBodyDto.InHarmBlockThreshold.BLOCK_NONE),
-                new BotRequestBodyDto.InSafetySetting(BotRequestBodyDto.InHarmCategory.HARM_CATEGORY_DANGEROUS, BotRequestBodyDto.InHarmBlockThreshold.BLOCK_NONE),
-                new BotRequestBodyDto.InSafetySetting(BotRequestBodyDto.InHarmCategory.HARM_CATEGORY_HARASSMENT, BotRequestBodyDto.InHarmBlockThreshold.BLOCK_NONE),
-                new BotRequestBodyDto.InSafetySetting(BotRequestBodyDto.InHarmCategory.HARM_CATEGORY_HATE_SPEECH, BotRequestBodyDto.InHarmBlockThreshold.BLOCK_NONE),
-                new BotRequestBodyDto.InSafetySetting(BotRequestBodyDto.InHarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, BotRequestBodyDto.InHarmBlockThreshold.BLOCK_NONE),
-                new BotRequestBodyDto.InSafetySetting(BotRequestBodyDto.InHarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, BotRequestBodyDto.InHarmBlockThreshold.BLOCK_NONE)
+                new BotRequestBodyDto.InSafetySetting { HarmCategory = BotRequestBodyDto.InHarmCategory.HARM_CATEGORY_DEROGATORY, HarmBlockThreshold = BotRequestBodyDto.InHarmBlockThreshold.BLOCK_NONE },
+                new BotRequestBodyDto.InSafetySetting { HarmCategory = BotRequestBodyDto.InHarmCategory.HARM_CATEGORY_TOXICITY, HarmBlockThreshold = BotRequestBodyDto.InHarmBlockThreshold.BLOCK_NONE },
+                new BotRequestBodyDto.InSafetySetting { HarmCategory = BotRequestBodyDto.InHarmCategory.HARM_CATEGORY_VIOLENCE, HarmBlockThreshold = BotRequestBodyDto.InHarmBlockThreshold.BLOCK_NONE },
+                new BotRequestBodyDto.InSafetySetting { HarmCategory = BotRequestBodyDto.InHarmCategory.HARM_CATEGORY_SEXUAL, HarmBlockThreshold = BotRequestBodyDto.InHarmBlockThreshold.BLOCK_NONE },
+                new BotRequestBodyDto.InSafetySetting { HarmCategory = BotRequestBodyDto.InHarmCategory.HARM_CATEGORY_MEDICAL, HarmBlockThreshold = BotRequestBodyDto.InHarmBlockThreshold.BLOCK_NONE },
+                new BotRequestBodyDto.InSafetySetting { HarmCategory = BotRequestBodyDto.InHarmCategory.HARM_CATEGORY_DANGEROUS, HarmBlockThreshold = BotRequestBodyDto.InHarmBlockThreshold.BLOCK_NONE },
+                new BotRequestBodyDto.InSafetySetting { HarmCategory = BotRequestBodyDto.InHarmCategory.HARM_CATEGORY_HARASSMENT, HarmBlockThreshold = BotRequestBodyDto.InHarmBlockThreshold.BLOCK_NONE },
+                new BotRequestBodyDto.InSafetySetting { HarmCategory = BotRequestBodyDto.InHarmCategory.HARM_CATEGORY_HATE_SPEECH, HarmBlockThreshold = BotRequestBodyDto.InHarmBlockThreshold.BLOCK_NONE },
+                new BotRequestBodyDto.InSafetySetting { HarmCategory = BotRequestBodyDto.InHarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, HarmBlockThreshold = BotRequestBodyDto.InHarmBlockThreshold.BLOCK_NONE },
+                new BotRequestBodyDto.InSafetySetting { HarmCategory = BotRequestBodyDto.InHarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, HarmBlockThreshold = BotRequestBodyDto.InHarmBlockThreshold.BLOCK_NONE }
             };
             return ObjectIdentityResult<BotRequestBodyDto>.Succeded(body);
         }
@@ -288,15 +308,37 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
         public ObjectIdentityResult<BotRequestBodyDto> SetResponseSchema_WithRequest(DatabaseDataDto databaseDataDto,BotRequestBodyDto body)
         {
             EnsureInitialized(body);
+            // Use local variable for entity type
+            Type entityType = null;
+            switch (databaseDataDto.ActivityType)
+            {
+                case BotActivityType.BotLikedEntry:
+                case BotActivityType.BotLikedPost:
+                    entityType = typeof(SchemaDtos.SchemaLikeDto);
+                    break;
+                case BotActivityType.BotStartedFollow:
+                    entityType = typeof(SchemaDtos.SchemaFollowDto);
+                    break;
+                case BotActivityType.BotCreatedEntry:
+                case BotActivityType.BotCreatedOpposingEntry:
+                    entityType = typeof(SchemaDtos.SchemaEntryDto);
+                    break;
+                case BotActivityType.BotCreatedPost:
+                    entityType = typeof(SchemaDtos.SchemaPostDto);
+                    break;
+                case BotActivityType.BotCreatedChildBot:
+                    entityType = typeof(SchemaDtos.SchemaBotDto);
+                    break;
+            }
             JSchemaGenerator gen = new JSchemaGenerator();
             JSchema? schema = null;
-            if (databaseDataDto.ReturnObjectType!= null)
+            if (entityType != null)
             {
-                schema = gen.Generate(databaseDataDto.ReturnObjectType);
+                schema = gen.Generate(entityType);
             }
             if (schema == null)
                 return ObjectIdentityResult<BotRequestBodyDto>.Failed(null, new[] { new UnexpectedError("Not valid type found") });
-            body.GenerationConfig!.ResponseSchema = new BotRequestBodyDto.InResponseSchema(schema.ToString());
+            body.GenerationConfig!.ResponseSchema = new BotRequestBodyDto.InResponseSchema { ResponseBody = schema.ToString() };
             return ObjectIdentityResult<BotRequestBodyDto>.Succeded(body);
         }
     }

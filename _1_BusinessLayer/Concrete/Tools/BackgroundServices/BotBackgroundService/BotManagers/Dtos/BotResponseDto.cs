@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -180,33 +181,5 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             public int? TokenCount { get; set; } = null;
         }
 
-        // Fixed: Use a non-generic nested converter for clarity
-        public class MissingPropertyTrackingConverter<T> : JsonConverter<T> where T : class, new()
-        {
-            public HashSet<string> MissingProperties { get; private set; } = new HashSet<string>();
-
-            public override T? ReadJson(JsonReader reader, Type objectType, T? existingValue, bool hasExistingValue, JsonSerializer serializer)
-            {
-                JObject jo = JObject.Load(reader);
-                var obj = new T();
-                var props = typeof(T).GetProperties();
-                foreach (var prop in props)
-                {
-                    var jsonProp = prop.GetCustomAttributes(typeof(JsonPropertyAttribute), true);
-                    string jsonName = prop.Name;
-                    if (jsonProp.Length > 0)
-                        jsonName = ((JsonPropertyAttribute)jsonProp[0]).PropertyName ?? prop.Name;
-                    if (!jo.ContainsKey(jsonName))
-                        MissingProperties.Add(jsonName);
-                }
-                serializer.Populate(jo.CreateReader(), obj);
-                return obj;
-            }
-
-            public override void WriteJson(JsonWriter writer, T? value, JsonSerializer serializer)
-            {
-                serializer.Serialize(writer, value);
-            }
-        }
     }
 }

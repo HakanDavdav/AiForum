@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers.Dtos;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _2_DataAccessLayer.Concrete.Entities;
@@ -12,23 +15,28 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
     public class ProbabilitySet
     {
         private readonly BotApiCaller _botApiCaller;
-        private readonly BotResponseParser _botResponseParser;
         private Dictionary<BotActivityType, decimal> _activityProbabilities;
         private Dictionary<TopicTypes, decimal> _topicProbabilities;
 
-        public ProbabilitySet(BotApiCaller botApiCaller, BotResponseParser botResponseParser)
+        public ProbabilitySet(BotApiCaller botApiCaller)
         {
             _botApiCaller = botApiCaller;
-            _botResponseParser = botResponseParser;
             _activityProbabilities = new Dictionary<BotActivityType, decimal>();
             _topicProbabilities = new Dictionary<TopicTypes, decimal>();
         }
 
-        public async Task<ObjectIdentityResult<BotActivityType>> DetermineOperation()
+        public async Task<ObjectIdentityResult<DatabaseDataDto>> DetermineOperation(DatabaseDataDto databaseDataDto, Bot bot)
         {
+            var activityResult = ConfigureActivityProbabilities(bot);
+            var topicResult = ConfigureTopicProbabilities(bot);
+            if (!activityResult.Succeeded)
+                return ObjectIdentityResult<DatabaseDataDto>.Failed(databaseDataDto, activityResult.Errors.ToArray());
+            if (!topicResult.Succeeded)
+                return ObjectIdentityResult<DatabaseDataDto>.Failed(databaseDataDto, topicResult.Errors.ToArray());
+
             var activityProbabilities = _activityProbabilities;
             if (activityProbabilities == null || activityProbabilities.Count == 0)
-                return ObjectIdentityResult<BotActivityType>.Failed(default, new[] { new UnexpectedError("No activity probabilities defined") });
+                return ObjectIdentityResult<DatabaseDataDto>.Failed(databaseDataDto, new[] { new UnexpectedError("No activity probabilities defined") });
 
             // Weighted random selection
             var total = activityProbabilities.Values.Sum();
@@ -46,11 +54,13 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                 }
             }
             if (selectedType == null)
-                return ObjectIdentityResult<BotActivityType>.Failed(default, new[] { new UnexpectedError("Failed to determine activity type") });
-            return ObjectIdentityResult<BotActivityType>.Succeded(selectedType.Value);
+                return ObjectIdentityResult<DatabaseDataDto>.Failed(databaseDataDto, new[] { new UnexpectedError("Failed to determine activity type") });
+            databaseDataDto.ActivityType = selectedType.Value;
+            return ObjectIdentityResult<DatabaseDataDto>.Succeded(databaseDataDto);
         }
 
-        public IdentityResult ConfigureActivityProbabilities(Bot bot)
+
+        private IdentityResult ConfigureActivityProbabilities(Bot bot)
         {
             decimal likedEntry = 3m;
             decimal likedPost = 1.5m;
@@ -101,7 +111,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             return IdentityResult.Success;
         }
 
-        public IdentityResult ConfigureTopicProbabilities(Bot bot)
+        private IdentityResult ConfigureTopicProbabilities(Bot bot)
         {
             if (bot.BotCapabilities.HasFlag(BotCapabilities.AdvancedIntelligence))
             {
@@ -117,7 +127,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             }
         }
 
-        public IdentityResult ConfigureProbabilities(Bot bot)
+        private IdentityResult ConfigureProbabilities(Bot bot)
         {
             var activityResult = ConfigureActivityProbabilities(bot);
             var topicResult = ConfigureTopicProbabilities(bot);

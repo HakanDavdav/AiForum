@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Concrete.Enums;
 
-namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService
+namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers.Dtos
 {
     public class SchemaDtos
     {

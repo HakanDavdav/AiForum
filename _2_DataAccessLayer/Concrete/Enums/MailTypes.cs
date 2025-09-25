@@ -16,6 +16,7 @@ namespace _2_DataAccessLayer.Concrete.Enums
             CreatingPost, //AdditionalInfo = Post Title, AdditionalId = PostId,
             GainedFollower, //AdditionalInfo = Follower ProfileName, AdditionalId = Follower UserIdl
             NewEntryForPost,//AdditionalInfo = Entry Context (shortened), AdditionalId = EntryId
+            BotActivity,//Same with B.A
             TwoFactor,
             ResetPassword,
             ConfirmEmail,

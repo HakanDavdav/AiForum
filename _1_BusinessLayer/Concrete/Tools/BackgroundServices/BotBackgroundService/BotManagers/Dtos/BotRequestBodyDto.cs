@@ -48,28 +48,24 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
         {
             [JsonProperty("text")]
             public string? Text { get; set; }
-            public InPart(string? text) { Text = text; }
         }
 
         public class InSystemInstruction
         {
             [JsonProperty("parts")]
             public List<InPart>? Parts { get; set; }
-            public InSystemInstruction(List<InPart>? parts) { Parts = parts; }
         }
 
         public class InContent
         {
             [JsonProperty("parts")]
             public List<InPart>? Parts { get; set; }
-            public InContent(List<InPart>? parts) { Parts = parts; }
         }
 
         public class InResponseSchema
         {
             [JsonProperty("responseBody")]
             public string? ResponseBody { get; set; }
-            public InResponseSchema(string? responseBody) { ResponseBody = responseBody; }
         }
 
         public class InSafetySetting
@@ -78,11 +74,6 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             public InHarmCategory? HarmCategory { get; set; }
             [JsonProperty("threshold")]
             public InHarmBlockThreshold? HarmBlockThreshold { get; set; }
-            public InSafetySetting(InHarmCategory? harmCategory, InHarmBlockThreshold? harmBlockThreshold)
-            {
-                HarmCategory = harmCategory;
-                HarmBlockThreshold = harmBlockThreshold;
-            }
         }
 
         public class InGenerationConfig
@@ -101,15 +92,6 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             public double? TopK { get; set; }
             [JsonProperty("safetySettings")]
             public List<InSafetySetting>? SafetySetting { get; set; } = null;
-            public InGenerationConfig(InResponseSchema? responseSchema, int? tokenCount, double? temperature, double? topP, double? topK)
-            {
-                ResponseSchema = responseSchema;
-                TokenCount = tokenCount;
-                Temperature = temperature;
-                TopP = topP;
-                TopK = topK;
-                SafetySetting = null;
-            }
         }
     }
 }

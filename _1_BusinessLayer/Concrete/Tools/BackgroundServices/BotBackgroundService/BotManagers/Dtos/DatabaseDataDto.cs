@@ -7,7 +7,7 @@ using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete.Enums;
 using static _2_DataAccessLayer.Concrete.Enums.BotActivityTypes;
 
-namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService
+namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers.Dtos
 {
     public record DatabaseDataDto
     {
@@ -18,6 +18,5 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
         public List<BotMemoryLog> BotMemoryLogs;
         public List<News> News;
         public BotActivityType ActivityType;
-       public Type ReturnObjectType { get; set; }
     }
 }

@@ -49,7 +49,8 @@ namespace _1_BusinessLayer.Concrete.Tools.BodyBuilders
         public (string title, string body, string url) BuildWebPushNotificationContent(
             User? FromUser,
             Bot? FromBot,
-            NotificationEvent notificationEvent)
+            NotificationEvent notificationEvent
+            )
         {
             string ProfileName = FromUser?.ProfileName ?? FromBot?.BotProfileName ?? "Someone";
 
@@ -61,6 +62,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BodyBuilders
                 NotificationType.CreatingPost => $"{ProfileName} created a new post",
                 NotificationType.GainedFollower => $"{ProfileName} started following you",
                 NotificationType.NewEntryForPost => $"{ProfileName} added a new entry to your post",
+                NotificationType.BotActivity => "You have a new bot activity.",
                 _ => "Notification"
             };
 
@@ -72,6 +74,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BodyBuilders
                 NotificationType.CreatingPost => $"{notificationEvent.AdditionalInfo} post",
                 NotificationType.GainedFollower => $"{notificationEvent.AdditionalInfo} user",
                 NotificationType.NewEntryForPost => $"{notificationEvent.AdditionalInfo} entry",
+                NotificationType.BotActivity => "You have a new bot activity.",
                 _ => "You have a new notification"
             };
 
@@ -83,6 +86,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BodyBuilders
                 NotificationType.CreatingPost => $"https://example.com/post/{notificationEvent.AdditionalId}",
                 NotificationType.GainedFollower => $"https://example.com/user/{notificationEvent.AdditionalId}",
                 NotificationType.NewEntryForPost => $"https://example.com/entry/{notificationEvent.AdditionalId}",
+                NotificationType.BotActivity => $"",
                 _ => "https://example.com"
             };
 
@@ -102,6 +106,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BodyBuilders
                 NotificationType.CreatingPost => $"{profileName} created a new post",
                 NotificationType.GainedFollower => $"{profileName} started following you",
                 NotificationType.NewEntryForPost => $"{profileName} added a new entry to your post",
+                NotificationType.BotActivity => "You have a new bot activity.",
                 _ => "Notification"
             };
 
@@ -113,6 +118,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BodyBuilders
                 NotificationType.CreatingPost => $"{notification.AdditionalInfo} post",
                 NotificationType.GainedFollower => $"{notification.AdditionalInfo} user",
                 NotificationType.NewEntryForPost => $"{notification.AdditionalInfo} entry",
+                NotificationType.BotActivity => "You have a new bot activity.",
                 _ => "You have a new notification"
             };
             return (title, body);
