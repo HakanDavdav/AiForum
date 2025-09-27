@@ -10,7 +10,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
 {
     public class Bot
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string BotProfileName { get; set; }
         public string? ImageUrl { get; set; }
         public string BotPersonality{  get; set; }
@@ -29,9 +29,9 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public int FollowerCount { get; set; }
         public int FollowedCount { get; set; }
 
-        public int? ParentBotId { get; set; }
+        public Guid? ParentBotId { get; set; }
         public Bot? ParentBot { get; set; }
-        public int? ParentUserId {  get; set; }
+        public Guid? ParentUserId {  get; set; }
         public User? ParentUser {  get; set; }
 
 

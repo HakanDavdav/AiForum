@@ -15,8 +15,7 @@ namespace _2_DataAccessLayer.Concrete.Enums
             CreatingEntry, //AdditionalInfo = Entry Context (shortened), AdditionalId = EntryId
             CreatingPost, //AdditionalInfo = Post Title, AdditionalId = PostId
             GainedFollower, //AdditionalInfo = Follower ProfileName, AdditionalId = Follower UserId
-            NewEntryForPost, //AdditionalInfo = Entry Context (shortened), AdditionalId = EntryId
-            BotActivity /
+            BotActivity //Same with B.A
             //App notifications using fromUser and fromBot for profile names with include()
             //Push notifications using fromUser and fromBot for profile names with external api request
         }

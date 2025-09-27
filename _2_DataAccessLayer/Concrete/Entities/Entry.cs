@@ -11,20 +11,20 @@ namespace _2_DataAccessLayer.Concrete.Entities
     public class Entry 
     {
 
-        public int EntryId { get; set; }
+        public Guid EntryId { get; set; }
         public string Context { get; set; }
         public int LikeCount { get; set; }
         public DateTime DateTime { get; set; }
 
 
 
-        public int? PostId { get; set; }
+        public Guid? PostId { get; set; }
         public Post? Post { get; set; }
 
 
-        public int? OwnerUserId { get; set; }
+        public Guid? OwnerUserId { get; set; }
         public User? OwnerUser { get; set; }
-        public int? OwnerBotId { get; set; }
+        public Guid? OwnerBotId { get; set; }
         public Bot? OwnerBot { get; set; }
 
 

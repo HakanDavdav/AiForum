@@ -8,7 +8,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
 {
     public class UserPreference
     {
-        public int UserPreferenceId {  get; set; }
+        public Guid UserPreferenceId {  get; set; }
 
         public string Theme {  get; set; }
         public int EntryPerPage { get; set; }

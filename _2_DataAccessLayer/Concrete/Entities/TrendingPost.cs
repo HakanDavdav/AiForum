@@ -8,7 +8,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
 {
     public class TrendingPost
     {
-        public int TrendingPostId;
+        public Guid TrendingPostId;
         public int PostId;
         public double HotScore;
         public string PostTitle;

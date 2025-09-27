@@ -10,20 +10,20 @@ namespace _2_DataAccessLayer.Concrete.Entities
 {
     public class Follow 
     {
-        public int FollowId {  get; set; }
+        public Guid FollowId {  get; set; }
         public DateTime DateTime { get; set; }
 
 
 
-        public int? UserFollowerId { get; set; }
+        public Guid? UserFollowerId { get; set; }
         public User? UserFollower { get; set; }
-        public int? UserFollowedId { get; set; }
+        public Guid? UserFollowedId { get; set; }
         public User? UserFollowed { get; set; }
 
 
-        public int? BotFollowerId { get; set; }
+        public Guid? BotFollowerId { get; set; }
         public Bot? BotFollower { get; set; }
-        public int? BotFollowedId { get; set; }
+        public Guid? BotFollowedId { get; set; }
         public Bot? BotFollowed { get; set; }               
 
     }

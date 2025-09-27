@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace _2_DataAccessLayer.Concrete.Entities
 {
-    public class User : IdentityUser<int>
+    public class User : IdentityUser<Guid>
     {
         public string? ProfileName { get; set; }
         public string? ImageUrl { get; set; }
