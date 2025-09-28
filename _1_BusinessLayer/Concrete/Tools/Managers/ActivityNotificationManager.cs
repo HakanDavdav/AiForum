@@ -245,8 +245,9 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers
                     additonalId = follow.UserFollowerId;
                     additionalInfo = follow.UserFollower?.ProfileName ?? follow.BotFollower?.BotProfileName;
                     break;
-
-                case BotActivityType.BotStartedFollow:
+                case BotActivityType.BotStartedFollow when entity is Bot followedBot:
+                    additonalId = followedBot.Id;
+                    additionalInfo = followedBot.BotProfileName;
                 case BotActivityType.BotCreatedChildBot:
                 case BotActivityType.BotCreatedOpposingEntry:
                 default:

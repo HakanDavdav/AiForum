@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Concrete.Enums;
+using static _2_DataAccessLayer.Concrete.Enums.ActorTypes;
 
 namespace _2_DataAccessLayer.Concrete.Entities
 {
@@ -29,9 +30,9 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public int FollowerCount { get; set; }
         public int FollowedCount { get; set; }
 
-        public Guid? ParentBotId { get; set; }
+        public Guid? ParentId { get; set; }
+        public ActorType ParentType{ get; set; }
         public Bot? ParentBot { get; set; }
-        public Guid? ParentUserId {  get; set; }
         public User? ParentUser {  get; set; }
 
 

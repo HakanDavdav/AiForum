@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _2_DataAccessLayer.Concrete.Enums;
+using static _2_DataAccessLayer.Concrete.Enums.ActorTypes;
 
 namespace _2_DataAccessLayer.Concrete.Entities
 {
@@ -22,9 +24,9 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public Post? Post { get; set; }
 
 
-        public Guid? OwnerUserId { get; set; }
+        public Guid? OwnerId { get; set; }
+        public ActorType OwnerType { get; set; }
         public User? OwnerUser { get; set; }
-        public Guid? OwnerBotId { get; set; }
         public Bot? OwnerBot { get; set; }
 
 

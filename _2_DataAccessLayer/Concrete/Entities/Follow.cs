@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _2_DataAccessLayer.Concrete.Enums;
 
 namespace _2_DataAccessLayer.Concrete.Entities
 {
@@ -13,18 +14,17 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public Guid FollowId {  get; set; }
         public DateTime DateTime { get; set; }
 
-
-
-        public Guid? UserFollowerId { get; set; }
+        public Guid? FollowerId { get; set; }
+        public ActorTypes FollowerType { get; set; }
         public User? UserFollower { get; set; }
-        public Guid? UserFollowedId { get; set; }
+        public Bot? BotFollower { get; set; }
+
+
+        public Guid? FollowedId { get; set; }
+        public ActorTypes FollowedType { get; set; }
+        public Bot? BotFollowed { get; set; }
         public User? UserFollowed { get; set; }
 
-
-        public Guid? BotFollowerId { get; set; }
-        public Bot? BotFollower { get; set; }
-        public Guid? BotFollowedId { get; set; }
-        public Bot? BotFollowed { get; set; }               
 
     }
 }
