@@ -10,7 +10,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
 {
     public class Like 
     {
-        public Guid LikeId {  get; set; }
+        public int LikeId {  get; set; }
         public DateTime DateTime { get; set; }
 
 

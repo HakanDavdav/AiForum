@@ -16,7 +16,6 @@ using static _2_DataAccessLayer.Concrete.Enums.NotificationTypes;
 using _1_BusinessLayer.Concrete.Tools.Factories;
 using static _2_DataAccessLayer.Concrete.Enums.MailTypes;
 using _1_BusinessLayer.Concrete.Tools.BackgroundServices.MessageBackgroundService;
-using _2_DataAccessLayer.Abstractions.AbstractClasses;
 
 namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers
 {
@@ -27,20 +26,18 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
         public NotificationEventFactory _notificationEventFactory;
         public MailEventFactory _mailEventFactory;
         public QueueSender _queueSender;
-        public AbstractFollowQueryHandler _followQueryHandler;
 
-        public BotDatabaseWriter(AbstractGenericCommandHandler commandHandler, ILogger<BotDatabaseWriter> logger,
-            NotificationEventFactory notificationEventFactory, MailEventFactory mailEventFactory, QueueSender queueSender, AbstractFollowQueryHandler followQueryHandler)
+        public BotDatabaseWriter(AbstractGenericCommandHandler commandHandler, ILogger<BotDatabaseWriter> logger, 
+            NotificationEventFactory notificationEventFactory, MailEventFactory mailEventFactory,QueueSender queueSender)
         {
             _commandHandler = commandHandler;
             _logger = logger;
             _notificationEventFactory = notificationEventFactory;
-            _mailEventFactory = mailEventFactory;
+            _mailEventFactory = mailEventFactory;   
             _queueSender = queueSender;
-            _followQueryHandler = followQueryHandler;
         }
 
-        public async Task<IdentityResult> WriteOnDatabase(DatabaseDataDto databaseDataDto, Bot bot, BotResponseDto botResponse)
+        public async Task<IdentityResult> WriteOnDatabase(DatabaseDataDto databaseDataDto, Bot bot ,BotResponseDto botResponse)
         {
             if (bot == null)
                 return IdentityResult.Failed(new NotFoundError("Bot is null"));
@@ -94,164 +91,6 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             _logger.LogInformation("[BotDatabaseWriter] {Label} Written Count={Count} Items={Items}", label, arr.Count, string.Join(" | ", arr));
         }
 
-        public async Task CommitDomainChangesAndPublishEventsAsync(Bot bot, DatabaseDataDto databaseDataDto, BotResponseDto botResponse)
-        {
-            var additionalInfo = null as string;
-            var additionalId = null as int?;
-            var notifications = new List<Notification>();
-            switch (databaseDataDto.ActivityType)
-            {
-                case BotActivityType.BotCreatedEntry:
-                    {
-                        additionalInfo = botResponse.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Data?.Content;
-                        additionalId = botResponse.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Data?.EntryId;
-                        var followers = await _followQueryHandler.GetWithCustomSearchAsync(q => q.Where(n => n.BotFollowedId == bot.Id));
-                        var postOwnerNotificationReceiverId = botResponse.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Data?.postId;
-                        var followerNotificationReceiverIds = followers.Select(f => f.UserFollowedId).ToList();
-                        foreach (var followerId in followerNotificationReceiverIds)
-                        {
-                            var notification = new Notification
-                            {
-                                AdditionalId = additionalId,
-                                AdditionalInfo = additionalInfo,
-                                FromBotId = bot.Id,
-                                OwnerUserId = followerId,
-                                NotificationType = NotificationType.CreatingEntry,
-                                DateTime = DateTime.Now,
-                                IsRead = false,
-                            };
-                            notifications.Add(notification);
-                        }
-                        var postOwnerNotification = new Notification
-                        {
-                            AdditionalId = additionalId,
-                            AdditionalInfo = additionalInfo,
-                            FromBotId = bot.Id,
-                            OwnerUserId = postOwnerNotificationReceiverId,
-                            NotificationType = NotificationType.NewEntryForPost,
-                            DateTime = DateTime.Now,
-                            IsRead = false,
-                        };
-                        notifications.Add(postOwnerNotification);
-                        var activity = new BotActivity()
-                        {
-                            IsRead = false,
-                            OwnerBotId = bot.Id,
-                            BotActivityType = databaseDataDto.ActivityType,
-                            AdditionalInfo = additionalInfo,
-                            AdditionalId = additionalId,
-                            DateTime = DateTime.Now,
-                        };
-                        await _commandHandler.ManuallyInsertAsync(activity);
-                        await _commandHandler.ManuallyInsertRangeAsync(notifications);
-                        await _commandHandler.SaveChangesAsync();
-                        break;
-                    }
-                case BotActivityType.BotCreatedOpposingEntry:
-                    {
-                        additionalInfo = botResponse.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Data?.Content;
-                        additionalId = botResponse.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Data?.EntryId;
-                        var followers = await _followQueryHandler.GetWithCustomSearchAsync(q => q.Where(n => n.BotFollowedId == bot.Id));
-                        var postOwnerNotificationReceiverId = botResponse.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Data?.postId;
-                        var followerNotificationReceiverIds = followers.Select(f => f.UserFollowedId).ToList();
-                        foreach (var followerId in followerNotificationReceiverIds)
-                        {
-                            var notification = new Notification
-                            {
-                                AdditionalId = additionalId,
-                                AdditionalInfo = additionalInfo,
-                                FromBotId = bot.Id,
-                                OwnerUserId = followerId,
-                                NotificationType = NotificationType.CreatingEntry,
-                                DateTime = DateTime.Now,
-                                IsRead = false,
-                            };
-                            notifications.Add(notification);
-                        }
-                        var postOwnerNotification = new Notification
-                        {
-                            AdditionalId = additionalId,
-                            AdditionalInfo = additionalInfo,
-                            FromBotId = bot.Id,
-                            OwnerUserId = postOwnerNotificationReceiverId,
-                            NotificationType = NotificationType.NewEntryForPost,
-                            DateTime = DateTime.Now,
-                            IsRead = false,
-                        };
-                        notifications.Add(postOwnerNotification);
-                        var activity = new BotActivity()
-                        {
-                            IsRead = false,
-                            OwnerBotId = bot.Id,
-                            BotActivityType = databaseDataDto.ActivityType,
-                            AdditionalInfo = additionalInfo,
-                            AdditionalId = additionalId,
-                            DateTime = DateTime.Now,
-                        };
-                        await _commandHandler.ManuallyInsertAsync(activity);
-                        await _commandHandler.ManuallyInsertRangeAsync(notifications);
-                        await _commandHandler.SaveChangesAsync();
-                        break;
-                    }
-                case BotActivityType.BotCreatedPost:
-                    additionalInfo = botResponse.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Data?.Title;
-                    additionalId = botResponse.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Data?.Content;
-                    break;
-                case BotActivityType.BotStartedFollow:
-                    additionalInfo = botResponse.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Data?.Content;
-                    additionalId = botResponse.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Data?.EntryId;
-                    break;
-                case BotActivityType.BotLikedPost:
-                    additionalInfo = botResponse.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Data?.Content;
-                    additionalId = botResponse.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Data?.EntryId;
-                    break;
-                case BotActivityType.BotLikedEntry:
-                    additionalInfo = botResponse.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Data?.Content;
-                    additionalId = botResponse.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Data?.EntryId;
-                    break;
-                case BotActivityType.BotCreatedChildBot:
-                    additionalInfo = botResponse.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Data?.Content;
-                    additionalId = botResponse.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Data?.EntryId;
-                    break;
-                default:
-                    break;
-            }
-            if (bot.ParentUserId != null)
-            {
-                var notification = new Notification()
-                {
-                    NotificationType = NotificationType.BotActivity,
-                    AdditionalInfo = additionalInfo,
-                    AdditionalId = additionalId,
-                    FromBotId = bot.Id,
-                    OwnerUserId = bot.ParentUserId,
-                    DateTime = DateTime.Now,
-                    IsRead = false,
-                };
-                await _commandHandler.ManuallyInsertAsync(notification);
-                await _commandHandler.SaveChangesAsync();
-                var notificationEvent = _notificationEventFactory.CreateNotificationEvents(null, bot, new List<int?> { bot.ParentUserId }, NotificationType.BotActivity, additionalInfo, additionalId);
-                var mailEvent = _mailEventFactory.CreateMailEvents(null, bot, new List<int?> { bot.ParentUserId }, MailType.BotActivity, additionalInfo, additionalId);
-                await _queueSender.MailQueueSendAsync(mailEvent);
-                await _queueSender.NotificationQueueSendAsync(notificationEvent);
-            }
-            var botActivity = new BotActivity()
-            {
-                OwnerBotId = bot.Id,
-                BotActivityType = databaseDataDto.ActivityType,
-                AdditionalInfo = additionalInfo,
-                AdditionalId = additionalId,
-                DateTime = DateTime.Now,
-            };
-            await _commandHandler.ManuallyInsertAsync(botActivity);
-
-            
-
-
-        }
-
-
-
         public async Task<IdentityResult> WriteEntry(Bot bot, BotResponseDto botResponse)
         {
             if (!HasUsableParts(botResponse)) return IdentityResult.Success;
@@ -272,6 +111,27 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                     };
                     await _commandHandler.ManuallyInsertAsync(entry);
                     added.Add(entry);
+                    var botActivity = new BotActivity
+                    {
+                        OwnerBotId = bot.Id,
+                        BotActivityType = BotActivityType.BotCreatedEntry,
+                        DateTime = DateTime.Now,
+                        IsRead = false,
+                        AdditionalInfo = entry.Context,
+                        AdditionalId = entry.EntryId
+                    };
+                    var notification = new Notification
+                    {
+                        DateTime = DateTime.Now,
+                        IsRead = false,
+                        OwnerUserId = bot.ParentUserId,
+                        AdditionalId = entry.EntryId,
+                        AdditionalInfo = entry.Context,
+                        NotificationType = NotificationType.BotActivity,
+                        FromBotId = bot.Id
+                    };
+                    await _commandHandler.ManuallyInsertAsync(notification);
+                    await _commandHandler.ManuallyInsertAsync(botActivity);
                     await _commandHandler.SaveChangesAsync();
                     var notificationEvent = _notificationEventFactory.CreateNotificationEvents(null, bot, new List<int?> { bot.ParentUserId }, NotificationType.BotActivity, entry.Context, entry.EntryId);
                     var mailEvent = _mailEventFactory.CreateMailEvents(null, bot, new List<int?> { bot.ParentUserId }, MailType.BotActivity, entry.Context, entry.EntryId);

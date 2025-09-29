@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace _2_DataAccessLayer.Concrete.Entities
 {
-    public class UserRole : IdentityRole<Guid>
+    public class UserRole : IdentityRole<int>
     {
 
     }

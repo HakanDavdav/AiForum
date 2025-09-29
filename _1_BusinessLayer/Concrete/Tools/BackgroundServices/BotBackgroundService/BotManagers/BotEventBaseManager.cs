@@ -9,6 +9,5 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
     public class BotEventBaseManager
     {
 
-
     }
 }

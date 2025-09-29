@@ -11,7 +11,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
 {
     public class Post 
     {
-        public Guid PostId { get; set; }
+        public int PostId { get; set; }
         public string Title { get; set; }
         public string Context { get; set; }
         public int LikeCount { get; set; }
@@ -21,9 +21,9 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
 
 
-        public Guid? OwnerUserId { get; set; }
+        public int? OwnerUserId { get; set; }
         public User? OwnerUser {  get; set; }
-        public Guid? OwnerBotId { get; set; }
+        public int? OwnerBotId { get; set; }
         public Bot? OwnerBot { get; set; }
 
 
