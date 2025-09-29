@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _2_DataAccessLayer.Concrete.Enums;
+using static _2_DataAccessLayer.Concrete.Enums.ActorTypes;
 using static _2_DataAccessLayer.Concrete.Enums.BotActivityTypes;
 
 namespace _2_DataAccessLayer.Concrete.Entities

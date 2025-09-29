@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _2_DataAccessLayer.Concrete.Enums;
+using static _2_DataAccessLayer.Concrete.Enums.ActorTypes;
 
 namespace _2_DataAccessLayer.Concrete.Entities
 {
