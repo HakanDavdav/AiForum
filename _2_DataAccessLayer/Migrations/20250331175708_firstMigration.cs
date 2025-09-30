@@ -88,7 +88,7 @@ namespace _2_DataAccessLayer.Migrations
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
-                        principalColumn: "Id",
+                        principalColumn: "ActorId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -109,7 +109,7 @@ namespace _2_DataAccessLayer.Migrations
                         name: "FK_AspNetUserClaims_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        principalColumn: "ActorId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -129,7 +129,7 @@ namespace _2_DataAccessLayer.Migrations
                         name: "FK_AspNetUserLogins_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        principalColumn: "ActorId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -147,13 +147,13 @@ namespace _2_DataAccessLayer.Migrations
                         name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
-                        principalColumn: "Id",
+                        principalColumn: "ActorId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        principalColumn: "ActorId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -173,7 +173,7 @@ namespace _2_DataAccessLayer.Migrations
                         name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        principalColumn: "ActorId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -202,11 +202,11 @@ namespace _2_DataAccessLayer.Migrations
                         name: "FK_Bots_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "ActorId");
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserPreferences",
+                name: "UserSettings",
                 columns: table => new
                 {
                     UserPreferenceId = table.Column<int>(type: "int", nullable: false)
@@ -225,11 +225,11 @@ namespace _2_DataAccessLayer.Migrations
                         name: "FK_UserPreferences_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "ActorId");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Activities",
+                name: "BotActivities",
                 columns: table => new
                 {
                     ActivityId = table.Column<int>(type: "int", nullable: false)
@@ -247,7 +247,7 @@ namespace _2_DataAccessLayer.Migrations
                         name: "FK_Activities_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "ActorId");
                     table.ForeignKey(
                         name: "FK_Activities_Bots_BotId",
                         column: x => x.BotId,
@@ -274,12 +274,12 @@ namespace _2_DataAccessLayer.Migrations
                         name: "FK_Follows_AspNetUsers_UserFollowedId",
                         column: x => x.UserFollowedId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "ActorId");
                     table.ForeignKey(
                         name: "FK_Follows_AspNetUsers_UserFollowerId",
                         column: x => x.UserFollowerId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "ActorId");
                     table.ForeignKey(
                         name: "FK_Follows_Bots_BotFollowedId",
                         column: x => x.BotFollowedId,
@@ -314,12 +314,12 @@ namespace _2_DataAccessLayer.Migrations
                         name: "FK_Notifications_AspNetUsers_FromUserId",
                         column: x => x.FromUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "ActorId");
                     table.ForeignKey(
                         name: "FK_Notifications_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "ActorId");
                     table.ForeignKey(
                         name: "FK_Notifications_Bots_FromBotId",
                         column: x => x.FromBotId,
@@ -347,7 +347,7 @@ namespace _2_DataAccessLayer.Migrations
                         name: "FK_Posts_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "ActorId");
                     table.ForeignKey(
                         name: "FK_Posts_Bots_BotId",
                         column: x => x.BotId,
@@ -374,7 +374,7 @@ namespace _2_DataAccessLayer.Migrations
                         name: "FK_Entries_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "ActorId");
                     table.ForeignKey(
                         name: "FK_Entries_Bots_BotId",
                         column: x => x.BotId,
@@ -406,7 +406,7 @@ namespace _2_DataAccessLayer.Migrations
                         name: "FK_Likes_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "ActorId");
                     table.ForeignKey(
                         name: "FK_Likes_Bots_BotId",
                         column: x => x.BotId,
@@ -426,12 +426,12 @@ namespace _2_DataAccessLayer.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Activities_BotId",
-                table: "Activities",
+                table: "BotActivities",
                 column: "ParentBotId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Activities_UserId",
-                table: "Activities",
+                table: "BotActivities",
                 column: "ParentUserId");
 
             migrationBuilder.CreateIndex(
@@ -573,7 +573,7 @@ namespace _2_DataAccessLayer.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserPreferences_UserId",
-                table: "UserPreferences",
+                table: "UserSettings",
                 column: "ParentUserId",
                 unique: true);
         }
@@ -582,7 +582,7 @@ namespace _2_DataAccessLayer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Activities");
+                name: "BotActivities");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -612,7 +612,7 @@ namespace _2_DataAccessLayer.Migrations
                 name: "SocialNotificationPreference");
 
             migrationBuilder.DropTable(
-                name: "UserPreferences");
+                name: "UserSettings");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

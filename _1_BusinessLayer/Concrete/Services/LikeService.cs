@@ -9,16 +9,16 @@ using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.Factories;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete.Entities;
-using _2_DataAccessLayer.Concrete.Enums;
 using _2_DataAccessLayer.Concrete.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-using static _2_DataAccessLayer.Concrete.Enums.BotActivityTypes;
+using static _2_DataAccessLayer.Concrete.Enums.BotEnums.BotActivityTypes;
 using static _2_DataAccessLayer.Concrete.Enums.MailTypes;
 using static _2_DataAccessLayer.Concrete.Enums.NotificationTypes;
 using _2_DataAccessLayer.Abstractions.AbstractClasses;
 using _2_DataAccessLayer.Abstractions.Generic;
+using _2_DataAccessLayer.Concrete.Enums.OtherEnums;
 
 namespace _1_BusinessLayer.Concrete.Services
 {
@@ -54,11 +54,11 @@ namespace _1_BusinessLayer.Concrete.Services
             if (entry.OwnerBot != null)
                 entryOwner = entry.OwnerBot;
 
-            var likerUser = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
+            var likerUser = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.ActorId == userId));
             if (likerUser == null)
                 return IdentityResult.Failed(new NotFoundError("Liker user not found"));
 
-            if (entryOwner is User entryOwnerUser)
+            if (entryOwner is Actor entryOwnerUser)
             {
                 var like = new Like
                 {
@@ -75,15 +75,15 @@ namespace _1_BusinessLayer.Concrete.Services
                     AdditionalId = entry.EntryId,
                     AdditionalInfo = entry.Context.Substring(0, 10) + "...",
                     FromUserId = likerUser.Id,
-                    OwnerUserId = entryOwnerUser.Id,
+                    ActorUserOwnerId = entryOwnerUser.ActorId,
                     DateTime = DateTime.UtcNow,
                     IsRead = false
                 };
                 entryOwnerUser.ReceivedNotifications.Add(notification);
                 likerUser.SentNotifications.Add(notification);
                 await _genericCommandHandler.SaveChangesAsync();
-                var notificationEvents = _notificationEventFactory.CreateNotificationEvents(likerUser, null, new List<int?> { entryOwnerUser.Id }, NotificationType.EntryLike, entry.Context, entry.EntryId);
-                var mailEvents = _mailEventFactory.CreateMailEvents(likerUser, null, new List<int?> { entryOwnerUser.Id }, MailType.EntryLike, entry.Context, entry.EntryId);
+                var notificationEvents = _notificationEventFactory.CreateNotificationEvents(likerUser, null, new List<int?> { entryOwnerUser.ActorId }, NotificationType.EntryLike, entry.Context, entry.EntryId);
+                var mailEvents = _mailEventFactory.CreateMailEvents(likerUser, null, new List<int?> { entryOwnerUser.ActorId }, MailType.EntryLike, entry.Context, entry.EntryId);
                 await _queueSender.NotificationQueueSendAsync(notificationEvents);
                 await _queueSender.MailQueueSendAsync(mailEvents);
                 return IdentityResult.Success;
@@ -130,11 +130,11 @@ namespace _1_BusinessLayer.Concrete.Services
             if (post.OwnerBot != null)
                 postOwner = post.OwnerBot;
 
-            var likerUser = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
+            var likerUser = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.ActorId == userId));
             if (likerUser == null)
                 return IdentityResult.Failed(new NotFoundError("Liker user not found"));
 
-            if (postOwner is User postOwnerUser)
+            if (postOwner is Actor postOwnerUser)
             {
                 var like = new Like
                 {
@@ -151,15 +151,15 @@ namespace _1_BusinessLayer.Concrete.Services
                     AdditionalId = post.PostId,
                     AdditionalInfo = post.Title,
                     FromUserId = likerUser.Id,
-                    OwnerUserId = postOwnerUser.Id,
+                    ActorUserOwnerId = postOwnerUser.ActorId,
                     DateTime = DateTime.UtcNow,
                     IsRead = false
                 };
                 postOwnerUser.ReceivedNotifications.Add(notification);
                 likerUser.SentNotifications.Add(notification);
                 await _genericCommandHandler.SaveChangesAsync();
-                var notificationEvents = _notificationEventFactory.CreateNotificationEvents(likerUser, null, new List<int?> { postOwnerUser.Id }, NotificationType.PostLike, post.Title, post.PostId);
-                var mailEvents = _mailEventFactory.CreateMailEvents(likerUser, null, new List<int?> { postOwnerUser.Id }, MailType.PostLike, post.Title, post.PostId);
+                var notificationEvents = _notificationEventFactory.CreateNotificationEvents(likerUser, null, new List<int?> { postOwnerUser.ActorId }, NotificationType.PostLike, post.Title, post.PostId);
+                var mailEvents = _mailEventFactory.CreateMailEvents(likerUser, null, new List<int?> { postOwnerUser.ActorId }, MailType.PostLike, post.Title, post.PostId);
                 await _queueSender.NotificationQueueSendAsync(notificationEvents);
                 await _queueSender.MailQueueSendAsync(mailEvents);
                 return IdentityResult.Success;
@@ -232,7 +232,7 @@ namespace _1_BusinessLayer.Concrete.Services
                     return IdentityResult.Failed(new NotFoundError("Post not found"));
                 if (like.OwnerUser == null)
                     return IdentityResult.Failed(new UnauthorizedError("Like owner user not found"));
-                var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
+                var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.ActorId == userId));
 
                 like.Post.LikeCount--;
                 like.OwnerUser.LikeCount--;

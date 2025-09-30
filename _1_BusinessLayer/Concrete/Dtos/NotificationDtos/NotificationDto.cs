@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using _1_BusinessLayer.Concrete.Dtos.BotDtos;
 using _1_BusinessLayer.Concrete.Dtos.UserDtos;
 using _2_DataAccessLayer.Concrete.Entities;
-using _2_DataAccessLayer.Concrete.Enums;
+using _2_DataAccessLayer.Concrete.Enums.OtherEnums;
 using static _2_DataAccessLayer.Concrete.Enums.NotificationTypes;
 
 namespace _1_BusinessLayer.Concrete.Dtos.NotificationDtos

@@ -56,7 +56,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BodyBuilders
         }
 
 
-        public (string body, string subject) BuildSocialMailContent(User? FromUser, Bot? FromBot, MailEvent mailEvent)
+        public (string body, string subject) BuildSocialMailContent(Actor? FromUser, Bot? FromBot, MailEvent mailEvent)
         {
             string profileName = FromUser?.UserName ?? FromBot?.BotProfileName ?? "";
             string title = mailEvent.Type switch

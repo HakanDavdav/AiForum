@@ -11,7 +11,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Factories
 {
     public class NotificationEventFactory
     {
-        public List<NotificationEvent> CreateNotificationEvents(User? fromUser,Bot? fromBot,List<int?> toUserId,NotificationType type,string additionalInfo,int additionalId)
+        public List<NotificationEvent> CreateNotificationEvents(Actor? fromUser,Bot? fromBot,List<int?> toUserId,NotificationType type,string additionalInfo,int additionalId)
         {
             if (toUserId == null || toUserId.Count == 0)
                 return new List<NotificationEvent>();
@@ -26,7 +26,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Factories
                     ReceiverUserId = toUserId[i],
                     CreatedAt = DateTime.Now,
                     SenderBotId = fromBot.Id,
-                    SenderUserId = fromUser.Id,
+                    SenderUserId = fromUser.ActorId,
                 });
             }
             return notificationEvents;

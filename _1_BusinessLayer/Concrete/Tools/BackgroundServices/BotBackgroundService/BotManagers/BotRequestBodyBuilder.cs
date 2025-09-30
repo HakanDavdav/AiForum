@@ -7,11 +7,11 @@ using _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.Bo
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _2_DataAccessLayer.Concrete.Entities;
-using _2_DataAccessLayer.Concrete.Enums;
+using _2_DataAccessLayer.Concrete.Enums.BotEnums;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Schema.Generation;
-using static _2_DataAccessLayer.Concrete.Enums.BotActivityTypes;
+using static _2_DataAccessLayer.Concrete.Enums.BotEnums.BotActivityTypes;
 
 namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers
 {
@@ -37,7 +37,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             // Move all initializations to the start
             EnsureInitialized(body);
 
-            // Context and instructions
+            // Content and instructions
             AddPostContext_ToRequest(databaseDataDto, body);
             AddEntryContext_ToRequest(databaseDataDto, body);
             AddFollowContext_ToRequest(databaseDataDto, body);
@@ -76,7 +76,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             {
                 var parts = new List<string>();
                 if (!string.IsNullOrWhiteSpace(post.Title)) parts.Add($"Post Title: {post.Title}");
-                if (!string.IsNullOrWhiteSpace(post.Context)) parts.Add($"Post Context: {post.Context}");
+                if (!string.IsNullOrWhiteSpace(post.Content)) parts.Add($"Post Content: {post.Content}");
                 if (parts.Count > 0)
                 {
                     body.Contents!.Add(new BotRequestBodyDto.InContent
@@ -100,11 +100,11 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                 var parts = new List<string>();
                 if (entry.OwnerBot != null) parts.Add($"Entry Owner Bot: {entry.OwnerBot.BotProfileName}");
                 if (entry.OwnerUser != null) parts.Add($"Entry Owner User: {entry.OwnerUser.ProfileName}");
-                if (!string.IsNullOrWhiteSpace(entry.Context)) parts.Add($"Entry Context: {entry.Context}");
+                if (!string.IsNullOrWhiteSpace(entry.Content)) parts.Add($"Entry Content: {entry.Content}");
                 if (entry.Post != null)
                 {
                     if (!string.IsNullOrWhiteSpace(entry.Post.Title)) parts.Add($"Post Title: {entry.Post.Title}");
-                    if (!string.IsNullOrWhiteSpace(entry.Post.Context)) parts.Add($"Post Context: {entry.Post.Context}");
+                    if (!string.IsNullOrWhiteSpace(entry.Post.Content)) parts.Add($"Post Content: {entry.Post.Content}");
                 }
                 if (parts.Count > 0)
                 {
@@ -129,7 +129,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             {
                 foreach (var u in databaseDataDto.Users)
                 {
-                    var text = $"User Id: {u.Id}" +
+                    var text = $"User ActorId: {u.ActorId}" +
                                (!string.IsNullOrWhiteSpace(u.ProfileName) ? $" | Profile Name: {u.ProfileName}" : string.Empty) +
                                $" | Interests: {u.Interests}";
                     body.Contents!.Add(new BotRequestBodyDto.InContent
@@ -145,7 +145,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             {
                 foreach (var b in databaseDataDto.Bots)
                 {
-                    var text = $"Bot Id: {b.Id}" +
+                    var text = $"Bot ActorId: {b.Id}" +
                                (!string.IsNullOrWhiteSpace(b.BotProfileName) ? $" | Bot Profile Name: {b.BotProfileName}" : string.Empty) +
                                $" | Interests: {b.Interests}";
                     body.Contents!.Add(new BotRequestBodyDto.InContent
@@ -168,7 +168,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             {
                 var parts = new List<string>();
                 if (!string.IsNullOrWhiteSpace(news.Title)) parts.Add($"News Title: {news.Title}");
-                if (!string.IsNullOrWhiteSpace(news.Content)) parts.Add($"News Context: {news.Content}");
+                if (!string.IsNullOrWhiteSpace(news.Content)) parts.Add($"News Content: {news.Content}");
                 if (parts.Count > 0)
                 {
                     body.Contents!.Add(new BotRequestBodyDto.InContent
@@ -190,7 +190,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             foreach (var memory in databaseDataDto.BotMemoryLogs)
             {
                 var parts = new List<string>();
-                if (!string.IsNullOrWhiteSpace(memory.MemoryContent)) parts.Add($"Memory Content: {memory.MemoryContent}");
+                if (!string.IsNullOrWhiteSpace(memory.Content)) parts.Add($"Memory Content: {memory.Content}");
                 parts.Add($"Bot Activity Type: {memory.BotActivityType}");
                 if (parts.Count > 0)
                 {

@@ -23,7 +23,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
             }
             return new EntryPostDto
             {
-                Context = entry.Context,
+                Context = entry.Content,
                 DateTime = entry.DateTime,
                 LikeCount = entry.LikeCount,
                 EntryId = entry.EntryId,
@@ -45,7 +45,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
             }
             return new EntryProfileDto
             {
-                Context = entry.Context,
+                Context = entry.Content,
                 DateTime = entry.DateTime,
                 EntryId = entry.EntryId,
                 LikeCount = entry.LikeCount,
@@ -61,14 +61,14 @@ namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
         {
             return new Entry
             {
-                Context = entry.Context,
+                Content = entry.Context,
                 DateTime = entry.DateTime,
             };
         }
 
         public static Entry Update___EditEntryDto_To_Entry(this EditEntryDto editEntryDto, Entry entry)
         {
-            entry.Context = editEntryDto.Context;
+            entry.Content = editEntryDto.Context;
             entry.DateTime = editEntryDto.DateTime;
             entry.EntryId = editEntryDto.EntryId;
             return entry;

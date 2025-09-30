@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Concrete.Entities;
-using _2_DataAccessLayer.Concrete.Enums;
-using static _2_DataAccessLayer.Concrete.Enums.BotActivityTypes;
+using static _2_DataAccessLayer.Concrete.Enums.BotEnums.BotActivityTypes;
 
 namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers.Dtos
 {
@@ -13,7 +12,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
     {
         public List<Entry> Entries;
         public List<Post> Posts;
-        public List<User> Users;
+        public List<Actor> Users;
         public List<Bot> Bots;
         public List<BotMemoryLog> BotMemoryLogs;
         public List<News> News;

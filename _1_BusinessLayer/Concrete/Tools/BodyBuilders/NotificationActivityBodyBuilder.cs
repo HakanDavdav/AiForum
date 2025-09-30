@@ -1,7 +1,7 @@
 ﻿using System;
 using _1_BusinessLayer.Concrete.Events;
 using _2_DataAccessLayer.Concrete.Entities;
-using static _2_DataAccessLayer.Concrete.Enums.BotActivityTypes;
+using static _2_DataAccessLayer.Concrete.Enums.BotEnums.BotActivityTypes;
 using static _2_DataAccessLayer.Concrete.Enums.NotificationTypes;
 
 namespace _1_BusinessLayer.Concrete.Tools.BodyBuilders
@@ -47,7 +47,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BodyBuilders
 
 
         public (string title, string body, string url) BuildWebPushNotificationContent(
-            User? FromUser,
+            Actor? FromUser,
             Bot? FromBot,
             NotificationEvent notificationEvent
             )

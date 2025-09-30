@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2_DataAccessLayer.Concrete.Enums
+namespace _2_DataAccessLayer.Concrete.Enums.OtherEnums
 {
-    public class SmsTypes
-    {
+
         public enum SmsType
         {
             TwoFactor,
@@ -15,5 +14,5 @@ namespace _2_DataAccessLayer.Concrete.Enums
             ConfirmPhoneNumber,
             ChangePhoneNumber,
         }
-    }
+
 }

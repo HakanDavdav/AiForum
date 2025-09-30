@@ -6,8 +6,7 @@ using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Abstractions.Generic;
 using _2_DataAccessLayer.Concrete.Entities;
 using _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers.Requests;
-using static _2_DataAccessLayer.Concrete.Enums.BotActivityTypes;
-using _2_DataAccessLayer.Concrete.Enums;
+using static _2_DataAccessLayer.Concrete.Enums.BotEnums.BotActivityTypes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
@@ -16,6 +15,8 @@ using static _2_DataAccessLayer.Concrete.Enums.NotificationTypes;
 using _1_BusinessLayer.Concrete.Tools.Factories;
 using static _2_DataAccessLayer.Concrete.Enums.MailTypes;
 using _1_BusinessLayer.Concrete.Tools.BackgroundServices.MessageBackgroundService;
+using _2_DataAccessLayer.Concrete.Enums.BotEnums;
+using _2_DataAccessLayer.Concrete.Enums.OtherEnums;
 
 namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers
 {
@@ -103,7 +104,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                     if (part?.Data == null) continue;
                     var entry = new Entry
                     {
-                        Context = part.Data.Context,
+                        Content = part.Data.Context,
                         PostId = part.Data.postId,
                         OwnerBotId = bot.Id,
                         DateTime = DateTime.Now,
@@ -117,30 +118,30 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                         BotActivityType = BotActivityType.BotCreatedEntry,
                         DateTime = DateTime.Now,
                         IsRead = false,
-                        AdditionalInfo = entry.Context,
+                        AdditionalInfo = entry.Content,
                         AdditionalId = entry.EntryId
                     };
                     var notification = new Notification
                     {
                         DateTime = DateTime.Now,
                         IsRead = false,
-                        OwnerUserId = bot.ParentUserId,
+                        ActorUserOwnerId = bot.ParentUserId,
                         AdditionalId = entry.EntryId,
-                        AdditionalInfo = entry.Context,
+                        AdditionalInfo = entry.Content,
                         NotificationType = NotificationType.BotActivity,
                         FromBotId = bot.Id
                     };
                     await _commandHandler.ManuallyInsertAsync(notification);
                     await _commandHandler.ManuallyInsertAsync(botActivity);
                     await _commandHandler.SaveChangesAsync();
-                    var notificationEvent = _notificationEventFactory.CreateNotificationEvents(null, bot, new List<int?> { bot.ParentUserId }, NotificationType.BotActivity, entry.Context, entry.EntryId);
-                    var mailEvent = _mailEventFactory.CreateMailEvents(null, bot, new List<int?> { bot.ParentUserId }, MailType.BotActivity, entry.Context, entry.EntryId);
+                    var notificationEvent = _notificationEventFactory.CreateNotificationEvents(null, bot, new List<int?> { bot.ParentUserId }, NotificationType.BotActivity, entry.Content, entry.EntryId);
+                    var mailEvent = _mailEventFactory.CreateMailEvents(null, bot, new List<int?> { bot.ParentUserId }, MailType.BotActivity, entry.Content, entry.EntryId);
                     await _queueSender.MailQueueSendAsync(mailEvent);
                     await _queueSender.NotificationQueueSendAsync(notificationEvent);
 
                 }
             }
-            LogCollection("Entries", added, e => $"PostId:{e.PostId} Ctx:{e.Context?.Substring(0, Math.Min(30, e.Context.Length))}");
+            LogCollection("Entries", added, e => $"PostId:{e.PostId} Ctx:{e.Content?.Substring(0, Math.Min(30, e.Content.Length))}");
             return IdentityResult.Success;
         }
         public async Task<IdentityResult> WriteOpposingEntry(Bot bot, BotResponseDto botResponse)
@@ -155,7 +156,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                     if (part?.Data == null) continue;
                     var entry = new Entry
                     {
-                        Context = part.Data.Context,
+                        Content = part.Data.Context,
                         PostId = part.Data.postId,
                         OwnerBotId = bot.Id,
                         DateTime = DateTime.Now,
@@ -166,7 +167,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                 }
             }
             await _commandHandler.SaveChangesAsync();
-            LogCollection("Entries", added, e => $"PostId:{e.PostId} Ctx:{e.Context?.Substring(0, Math.Min(30, e.Context.Length))}");
+            LogCollection("Entries", added, e => $"PostId:{e.PostId} Ctx:{e.Content?.Substring(0, Math.Min(30, e.Content.Length))}");
             return IdentityResult.Success;
         }
         public async Task<IdentityResult> WritePost(Bot bot, BotResponseDto botResponse)
@@ -181,7 +182,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                     if (part?.Data == null) continue;
                     var post = new Post
                     {
-                        Context = part.Data.Context,
+                        Content = part.Data.Context,
                         OwnerBotId = bot.Id,
                         Title = part.Data.Title,
                         DateTime = DateTime.Now,
@@ -193,7 +194,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                 }
             }
             await _commandHandler.SaveChangesAsync();
-            LogCollection("Posts", added, p => $"Title:{p.Title} Ctx:{p.Context?.Substring(0, Math.Min(30, p.Context.Length))}");
+            LogCollection("Posts", added, p => $"Title:{p.Title} Ctx:{p.Content?.Substring(0, Math.Min(30, p.Content.Length))}");
             return IdentityResult.Success;
         }
         public async Task<IdentityResult> WriteFollow(Bot bot, BotResponseDto botResponse)

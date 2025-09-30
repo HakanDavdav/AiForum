@@ -19,18 +19,18 @@ namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
 {
     public static class UserMappers
     {
-        public static MinimalUserDto User_To_MinimalUserDto(this User? user)
+        public static MinimalUserDto User_To_MinimalUserDto(this Actor? user)
         {
             if (user == null) return null;
             return new MinimalUserDto
             {
                 ImageUrl = user.ImageUrl,
                 ProfileName = user.ProfileName,
-                UserId = user.Id,
+                UserId = user.ActorId,
             };
         }
 
-        public static UserProfileSettingsDto User_To_UserProfileSettingsDto(this User user)
+        public static UserProfileSettingsDto User_To_UserProfileSettingsDto(this Actor user)
         {
 
             var botSettingsDtos = new List<BotSettingsDto>();
@@ -43,19 +43,19 @@ namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
                 City = user.City,
                 ProfileName = user.ProfileName,
                 ImageUrl = user.ImageUrl,
-                UserId = user.Id,
+                UserId = user.ActorId,
                 Bots = botSettingsDtos,
                 Date = user.DateTime,
-                UserPreference = user.UserPreference,
+                UserPreference = user.UserSettings,
             };
             return userSettingsDto;
         }
 
-        public static MinimalUserDto UserWithBotTree_To_MinimalVersion(this User user)
+        public static MinimalUserDto UserWithBotTree_To_MinimalVersion(this Actor user)
         {
             var minimalUserDto = new MinimalUserDto
             {
-                UserId = user.Id,
+                UserId = user.ActorId,
                 ProfileName = user.ProfileName,
                 ImageUrl = user.ImageUrl,
                 Bots = user.Bots?.Select(bot => ConvertBotTree(bot)).ToList()
@@ -75,7 +75,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
             }
         }
 
-        public static UserProfileDto User_To_UserProfileDto(this User user)
+        public static UserProfileDto User_To_UserProfileDto(this Actor user)
         {
             List<MinimalBotDto> minimalBotDtos = new List<MinimalBotDto>();
             List<PostProfileDto> postProfileDtos = new List<PostProfileDto>();
@@ -115,7 +115,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
                 Date = user.DateTime,
                 ProfileName = user.ProfileName,
                 ImageUrl = user.ImageUrl,
-                UserId = user.Id,
+                UserId = user.ActorId,
                 EntryCount = user.EntryCount,
                 PostCount = user.PostCount,
                 LikeCount = user.LikeCount,
@@ -129,7 +129,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
         }
 
 
-        public static User Update___UserEditProfileDto_To_User(this UserEditProfileDto userEditProfileDto, User user)
+        public static Actor Update___UserEditProfileDto_To_User(this UserEditProfileDto userEditProfileDto, Actor user)
         {
             user.ProfileName = userEditProfileDto.ProfileName;
             user.ImageUrl = userEditProfileDto.ImageUrl;
@@ -149,14 +149,14 @@ namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
                     }
                 }
             }
-            user.UserPreference.Theme = userEditProfileDto.UserPreferences.Theme;
-            user.UserPreference.EntryPerPage = userEditProfileDto.UserPreferences.EntryPerPage;
-            user.UserPreference.PostPerPage = userEditProfileDto.UserPreferences.PostPerPage;
-            user.UserPreference.SocialNotificationPreference = userEditProfileDto.UserPreferences.Notifications;
+            user.UserSettings.Theme = userEditProfileDto.UserPreferences.Theme;
+            user.UserSettings.EntryPerPage = userEditProfileDto.UserPreferences.EntryPerPage;
+            user.UserSettings.PostPerPage = userEditProfileDto.UserPreferences.PostPerPage;
+            user.UserSettings.SocialNotificationPreference = userEditProfileDto.UserPreferences.Notifications;
             return user;
         }
 
-        public static User Update___UserCreateProfileDto_To_User(this UserCreateProfileDto userCreateProfileDto, User user)
+        public static Actor Update___UserCreateProfileDto_To_User(this UserCreateProfileDto userCreateProfileDto, Actor user)
         {
             user.ProfileName = userCreateProfileDto.ProfileName;
             user.City = userCreateProfileDto.City;
@@ -165,9 +165,9 @@ namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
         }
 
 
-        public static User UserRegisterDto_To_User(this UserRegisterDto userRegisterDto)
+        public static Actor UserRegisterDto_To_User(this UserRegisterDto userRegisterDto)
         {
-            return new User
+            return new Actor
             {
                 UserName = userRegisterDto.Username,
                 Email = userRegisterDto.Email

@@ -26,7 +26,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
                 activity => new BotActivity
                 {
                     
-                    ActivityId = activity.ActivityId,
+                    BotActivityId = activity.ActivityId,
                     OwnerBotId = activity.OwnerBotId,
                     BotActivityType = activity.BotActivityType,
                     IsRead = activity.IsRead,
@@ -47,8 +47,8 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
 
         public override async Task<List<BotActivity>> GetBotActivityModulesForUserAsync(int id, int startInterval, int endInterval)
         {
-            var user = await _commandHandler.Export<User>()
-                             .Where(u => u.Id == id)
+            var user = await _commandHandler.Export<Actor>()
+                             .Where(u => u.ActorId == id)
                              .Include(u => u.Bots)
                              .FirstOrDefaultAsync();
 
@@ -82,7 +82,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
                 Where(activity => activity.OwnerBotId != null && botIds.Contains(activity.OwnerBotId.Value)).Skip(startInterval).Take(endInterval - startInterval).Select(
                 activity => new BotActivity
                 {
-                    ActivityId = activity.ActivityId,
+                    BotActivityId = activity.ActivityId,
                     OwnerBotId = activity.OwnerBotId,
                     BotActivityType = activity.BotActivityType,
                     IsRead = activity.IsRead,

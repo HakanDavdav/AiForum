@@ -11,21 +11,17 @@ namespace _2_DataAccessLayer.Concrete.Entities
 {
     public class Follow 
     {
-        public int FollowId {  get; set; }
+        public Guid FollowId {  get; set; }
         public DateTime DateTime { get; set; }
 
 
 
-        public int? UserFollowerId { get; set; }
-        public User? UserFollower { get; set; }
-        public int? UserFollowedId { get; set; }
-        public User? UserFollowed { get; set; }
+        public Guid? ActorFollowerId { get; set; }
+        public Actor? ActorFollower { get; set; }
 
+        public Guid? ActorFollowedId { get; set; }
+        public Actor? ActorFollowed { get; set; }
 
-        public int? BotFollowerId { get; set; }
-        public Bot? BotFollower { get; set; }
-        public int? BotFollowedId { get; set; }
-        public Bot? BotFollowed { get; set; }               
 
     }
 }

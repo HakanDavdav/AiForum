@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using _2_DataAccessLayer.Concrete.Enums;
+using _2_DataAccessLayer.Concrete.Enums.OtherEnums;
 
 namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers.Dtos
 {

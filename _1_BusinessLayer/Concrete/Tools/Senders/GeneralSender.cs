@@ -10,7 +10,7 @@ using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Abstractions.AbstractClasses;
 using _2_DataAccessLayer.Abstractions.Generic;
 using _2_DataAccessLayer.Concrete.Entities;
-using _2_DataAccessLayer.Concrete.Enums;
+using _2_DataAccessLayer.Concrete.Enums.OtherEnums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using static _2_DataAccessLayer.Concrete.Enums.MailTypes;
@@ -41,7 +41,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
 
         }
 
-        public async Task<IdentityResult> GeneralAuthenticationSend(User user, MailType? mailType, SmsType? smsType, string? newPhoneNumber, string? newEmail, string? newPassword)
+        public async Task<IdentityResult> GeneralAuthenticationSend(Actor user, MailType? mailType, SmsType? smsType, string? newPhoneNumber, string? newEmail, string? newPassword)
         {
             var token = string.Empty;
             var result = null as IdentityResult;
@@ -106,22 +106,22 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
 
         public async Task<IdentityResult> GeneralSocialSend(MailEvent? mailEvent, NotificationEvent? notificationEvent)
         {
-            var receiverUser = null as User;
+            var receiverUser = null as Actor;
             object fromUserOrBot = null;
             if (mailEvent != null)
             {
                 if(!mailEvent.SenderUserId.HasValue && !mailEvent.SenderBotId.HasValue) return IdentityResult.Failed(new NotFoundError("Sender not found from event"));
                 if (!mailEvent.ReceiverUserId.HasValue) return IdentityResult.Failed(new NotFoundError("User does not have any followers"));
-                if (mailEvent.SenderUserId.HasValue) fromUserOrBot = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == mailEvent.SenderUserId));
+                if (mailEvent.SenderUserId.HasValue) fromUserOrBot = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.ActorId == mailEvent.SenderUserId));
                 if (mailEvent.SenderBotId.HasValue) fromUserOrBot = await _botQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(b => b.Id == mailEvent.SenderBotId));
                 receiverUser = await _userQueryHandler.GetUserModuleAsync(mailEvent.ReceiverUserId.Value);
                 if (receiverUser == null) return IdentityResult.Failed(new NotFoundError("Receiver user been deleted or changed"));
                 if (receiverUser.Email == null) return IdentityResult.Failed(new NotFoundError("Receiver user does not have an email"));
                 if (!receiverUser.EmailConfirmed) return IdentityResult.Failed(new ForbiddenError("Receiver user email not confirmed"));
-                if (receiverUser.UserPreference.SocialEmailPreference == false) return IdentityResult.Failed(new ForbiddenError("Receiver user does not want to receive social emails"));
+                if (receiverUser.UserSettings.SocialEmailPreference == false) return IdentityResult.Failed(new ForbiddenError("Receiver user does not want to receive social emails"));
                 if (fromUserOrBot != null )
                 {
-                    var result = await _mailSender.SendSocialMailAsync(fromUserOrBot as User, fromUserOrBot as Bot, receiverUser, mailEvent);
+                    var result = await _mailSender.SendSocialMailAsync(fromUserOrBot as Actor, fromUserOrBot as Bot, receiverUser, mailEvent);
                     if (!result.Succeeded) return IdentityResult.Failed
                             (result.Errors.Concat(new[] { new UnexpectedError("Mail sending failed") }).ToArray());
 
@@ -134,15 +134,15 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
             {
                 if (!notificationEvent.SenderUserId.HasValue && !notificationEvent.SenderBotId.HasValue) return IdentityResult.Failed(new NotFoundError("Sender not found from event"));
                 if (!notificationEvent.ReceiverUserId.HasValue) return IdentityResult.Failed(new NotFoundError("User does not have any followers"));
-                if (notificationEvent.SenderUserId.HasValue) fromUserOrBot = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == notificationEvent.SenderUserId));
+                if (notificationEvent.SenderUserId.HasValue) fromUserOrBot = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.ActorId == notificationEvent.SenderUserId));
                 if (notificationEvent.SenderBotId.HasValue) fromUserOrBot = await _botQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(b => b.Id == notificationEvent.SenderBotId));
                 receiverUser = await _userQueryHandler.GetUserModuleAsync(notificationEvent.ReceiverUserId.Value);
                 if (receiverUser == null) return IdentityResult.Failed(new NotFoundError("Receiver user been deleted or changed"));
                 if (!receiverUser.EmailConfirmed) return IdentityResult.Failed(new ForbiddenError("Receiver user email not confirmed"));
-                if (receiverUser.UserPreference.SocialNotificationPreference == false) return IdentityResult.Failed(new ForbiddenError("Receiver user does not want to receive push notifications"));
+                if (receiverUser.UserSettings.SocialNotificationPreference == false) return IdentityResult.Failed(new ForbiddenError("Receiver user does not want to receive push notifications"));
                 if (fromUserOrBot != null)
                 {
-                    var result = await _notificationSender.SendSocialNotificationAsync(fromUserOrBot as User, fromUserOrBot as Bot, receiverUser, notificationEvent);
+                    var result = await _notificationSender.SendSocialNotificationAsync(fromUserOrBot as Actor, fromUserOrBot as Bot, receiverUser, notificationEvent);
                     if (!result.Succeeded) return IdentityResult.Failed
                             (result.Errors.Concat(new[] { new UnexpectedError("Notification sending failed") }).ToArray());
 

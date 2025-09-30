@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _2_DataAccessLayer.Concrete.Enums.OtherEnums;
 using static _2_DataAccessLayer.Concrete.Enums.NotificationTypes;
 
 
@@ -17,17 +18,14 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public NotificationType NotificationType { get; set; }
 
 
-        public int? FromUserId { get; set; }
-        public User? FromUser { get; set; }
-        public int? FromBotId { get; set; }
-        public Bot? FromBot { get; set; }
+        public Guid? FromActorId { get; set; }
+        public Actor? FromActor { get; set; }
         public int? AdditionalId { get; set; }
         public string? AdditionalInfo { get; set; }
 
 
-
-        public int? OwnerUserId {  get; set; } 
-        public User? OwnerUser { get; set; } 
+        public int? ActorUserOwnerId {  get; set; } 
+        public User? ActorUserOwner { get; set; } 
 
     }
 }

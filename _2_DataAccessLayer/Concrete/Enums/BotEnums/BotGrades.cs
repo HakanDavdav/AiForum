@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 
-namespace _2_DataAccessLayer.Concrete.Entities
+namespace _2_DataAccessLayer.Concrete.Enums.BotEnums
 {
-    public class UserRole : IdentityRole<int>
+    public enum BotGrades
     {
-
+        Low,
+        Medium,
+        High,
     }
 }

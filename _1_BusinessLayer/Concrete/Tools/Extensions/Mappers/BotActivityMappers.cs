@@ -21,7 +21,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
                 AdditionalId = botActivity.AdditionalId,
                 ActivityContext = activityContext,
                 ActivityTitle = activityTitle,
-                ActivityId = botActivity.ActivityId,
+                ActivityId = botActivity.BotActivityId,
                 DateTime = botActivity.DateTime,
                 IsRead = botActivity.IsRead,
 

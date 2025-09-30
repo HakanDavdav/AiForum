@@ -30,8 +30,8 @@ builder.Services.AddScoped<AbstractActivityRepository, BotActivityRepository>();
 builder.Services.AddScoped<AbstractTrendingPostRepository, TrendingPostRepository>();
 
 //autowiring of IdentityTools
-builder.Services.AddScoped<SignInManager<User>>();
-builder.Services.AddScoped<UserManager<User>>();
+builder.Services.AddScoped<SignInManager<Actor>>();
+builder.Services.AddScoped<UserManager<Actor>>();
 //autowiring authIntegration Tools
 builder.Services.AddScoped<AbstractTokenSender, TokenSender>();
 builder.Services.AddScoped<TokenFactory>();
@@ -69,7 +69,7 @@ builder.Logging.AddProvider(new SerilogLoggerProvider(logger));
 
 
 //adding Identity on project
-builder.Services.AddIdentity<User, UserRole>(options =>
+builder.Services.AddIdentity<Actor, UserRole>(options =>
 {
     // Password policy
     options.Password.RequireDigit = true;

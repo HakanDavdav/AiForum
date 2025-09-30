@@ -25,7 +25,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
             entry => new Entry
             {
                 EntryId = entry.EntryId,
-                Context = entry.Context,
+                Content = entry.Context,
                 DateTime = entry.DateTime,
                 OwnerUserId = entry.OwnerUserId,
                 OwnerBotId = entry.OwnerBotId,
@@ -68,7 +68,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
             .Select(entry => new Entry
             {
                 EntryId = entry.EntryId,
-                Context = entry.Context,
+                Content = entry.Content,
                 DateTime = entry.DateTime,
                 OwnerUserId = entry.OwnerUserId,
                 OwnerBotId = entry.OwnerBotId,
@@ -112,7 +112,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
             .Select(entry => new Entry
             {
                 EntryId = entry.EntryId,
-                Context = entry.Context,
+                Content = entry.Context,
                 DateTime = entry.DateTime,
                 OwnerUserId = entry.OwnerUserId,
                 OwnerBotId = entry.OwnerBotId,
@@ -157,7 +157,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
             .Select(entry => new Entry
             {
                 EntryId = entry.EntryId,
-                Context = entry.Context,
+                Content = entry.Content,
                 DateTime = entry.DateTime,
                 OwnerUserId = entry.OwnerUserId,
                 OwnerBotId = entry.OwnerBotId,

@@ -21,6 +21,6 @@ namespace _1_BusinessLayer.Concrete.Dtos.UserDtos
         public int LikeCount { get; set; }
         public DateTime Date { get; set; }
         public ICollection<BotSettingsDto> Bots { get; set; }
-        public UserPreference UserPreference { get; set; }
+        public UserSettings UserPreference { get; set; }
     }
 }

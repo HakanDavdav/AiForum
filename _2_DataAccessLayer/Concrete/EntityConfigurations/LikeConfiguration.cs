@@ -13,12 +13,12 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Like> builder)
         {
-            // Configuring the primary key
             builder.HasKey(like => like.LikeId);
 
-            // Configuring other properties if needed
-            builder.Property(like => like.DateTime)
-                .HasDefaultValueSql("GETDATE()");  // Default value for DateTime if needed
+            builder.HasOne(like => like.ActorOwner)
+                .WithMany(actor => actor.Likes)
+                .HasForeignKey(like => like.ActorOwnerId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasOne(like => like.Post)
                 .WithMany(post => post.Likes)
@@ -29,18 +29,7 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .WithMany(entry => entry.Likes)
                 .HasForeignKey(like => like.EntryId)
                 .OnDelete(DeleteBehavior.SetNull);
-
-            builder.HasOne(like => like.OwnerUser)
-                .WithMany(user => user.Likes)
-                .HasForeignKey(like => like.OwnerUserId)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            builder.HasOne(like => like.OwnerBot)
-                .WithMany(bot => bot.Likes)
-                .HasForeignKey(like => like.OwnerBotId)
-                .OnDelete(DeleteBehavior.SetNull);
-
-
         }
+  
     }
 }

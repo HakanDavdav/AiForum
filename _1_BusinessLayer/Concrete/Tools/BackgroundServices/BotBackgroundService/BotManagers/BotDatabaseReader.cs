@@ -11,11 +11,11 @@ using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Abstractions.AbstractClasses;
 using _2_DataAccessLayer.Abstractions.Generic;
 using _2_DataAccessLayer.Concrete.Entities;
-using _2_DataAccessLayer.Concrete.Enums;
+using _2_DataAccessLayer.Concrete.Enums.BotEnums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using static _2_DataAccessLayer.Concrete.Enums.BotActivityTypes;
+using static _2_DataAccessLayer.Concrete.Enums.BotEnums.BotActivityTypes;
 
 namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundService.BotManagers
 {
@@ -87,7 +87,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                 case BotActivityType.BotCreatedChildBot:
                     break;
                 default:
-                    _logger.LogWarning("Unsupported activity type {ActivityType} for BotId {BotId}", activityType, bot.Id);
+                    _logger.LogWarning("Unsupported activity type {ActivityType} for ActorId {ActorId}", activityType, bot.Id);
                     return ObjectIdentityResult<DatabaseDataDto>.Failed(null, new[] { new UnexpectedError("Unsupported activity type") });
             }
 
@@ -95,19 +95,19 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             {
                 LogEntityList("Posts", databaseDataDto.Posts, p => p.PostId);
                 LogEntityList("Entries", databaseDataDto.Entries, e => e.EntryId);
-                LogEntityList("Users", databaseDataDto.Users, u => u.Id);
+                LogEntityList("Users", databaseDataDto.Users, u => u.ActorId);
                 LogEntityList("Bots", databaseDataDto.Bots, b => b.Id);
                 LogEntityList("News", databaseDataDto.News, n => n.NewsId);
             }
 
-            _logger.LogInformation("BuildRequest finished: ActivityType={ActivityType}, BotId={BotId}", activityType, bot.Id);
+            _logger.LogInformation("BuildRequest finished: ActivityType={ActivityType}, ActorId={ActorId}", activityType, bot.Id);
 
             if (bot.BotCapabilities.HasFlag(BotCapabilities.StrongBotMemory))
             {
                 var memoryResult = await AddMemory(databaseDataDto, bot);
                 if (!memoryResult.Succeeded)
                 {
-                    _logger.LogWarning("AddMemory failed for BotId={BotId}", bot.Id);
+                    _logger.LogWarning("AddMemory failed for ActorId={ActorId}", bot.Id);
                     return memoryResult;
                 }
                 databaseDataDto = memoryResult.Data!;
@@ -124,7 +124,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             var randomNumber = random.Next(0, entryCount);
             var entries = await _entryQueryHandler.GetWithCustomSearchAsync(q => q.Skip(randomNumber).Take(takeCount).Include(e => e.Post));
             databaseData.Entries = entries;
-            _logger.LogInformation("ReadLikedEntryContext: BotId={BotId}, RetrievedEntries={Count}", bot.Id, entries.Count);
+            _logger.LogInformation("ReadLikedEntryContext: ActorId={ActorId}, RetrievedEntries={Count}", bot.Id, entries.Count);
         }
 
         private async Task ReadLikedPostContext(DatabaseDataDto databaseData, Bot bot)
@@ -135,7 +135,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             var randomNumber = random.Next(0, postCount);
             var posts = await _postQueryHandler.GetWithCustomSearchAsync(q => q.Skip(randomNumber).Take(takeCount));
             databaseData.Posts = posts;
-            _logger.LogInformation("ReadLikedPostContext: BotId={BotId}, RetrievedPosts={Count}", bot.Id, posts.Count);
+            _logger.LogInformation("ReadLikedPostContext: ActorId={ActorId}, RetrievedPosts={Count}", bot.Id, posts.Count);
         }
 
         private async Task ReadStartedFollowContext(DatabaseDataDto databaseData, Bot bot)
@@ -148,7 +148,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                 var randomNumber = random.Next(0, botCount);
                 var bots = await _botQueryHandler.GetWithCustomSearchAsync(q => q.Skip(randomNumber).Take(3));
                 databaseData.Bots = bots;
-                _logger.LogInformation("ReadStartedFollowContext: BotId={BotId}, RetrievedBots={Count}", bot.Id, bots.Count);
+                _logger.LogInformation("ReadStartedFollowContext: ActorId={ActorId}, RetrievedBots={Count}", bot.Id, bots.Count);
             }
             else
             {
@@ -156,7 +156,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
                 var randomNumber = random.Next(0, userCount);
                 var users = await _userQueryHandler.GetWithCustomSearchAsync(q => q.Skip(randomNumber).Take(3));
                 databaseData.Users = users;
-                _logger.LogInformation("ReadStartedFollowContext: BotId={BotId}, RetrievedUsers={Count}", bot.Id, users.Count);
+                _logger.LogInformation("ReadStartedFollowContext: ActorId={ActorId}, RetrievedUsers={Count}", bot.Id, users.Count);
             }
         }
 
@@ -168,7 +168,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             var randomNumber = random.Next(0, postCount);
             var posts = await _postQueryHandler.GetWithCustomSearchAsync(q => q.Skip(randomNumber).Take(takeCount));
             databaseData.Posts = posts;
-            _logger.LogInformation("ReadCreatedEntryContext: BotId={BotId}, RetrievedPosts={Count}", bot.Id, posts.Count);
+            _logger.LogInformation("ReadCreatedEntryContext: ActorId={ActorId}, RetrievedPosts={Count}", bot.Id, posts.Count);
         }
 
         private async Task ReadCreatedPostContext(DatabaseDataDto databaseData, Bot bot)
@@ -179,7 +179,7 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             var randomNumber = random.Next(0, newsCount);
             var news = await _newsQueryHandler.GetWithCustomSearchAsync(q => q.Skip(randomNumber).Take(takeCount));
             databaseData.News = news;
-            _logger.LogInformation("ReadCreatedPostContext: BotId={BotId}, RetrievedNews={Count}", bot.Id, news.Count);
+            _logger.LogInformation("ReadCreatedPostContext: ActorId={ActorId}, RetrievedNews={Count}", bot.Id, news.Count);
         }
 
         private async Task ReadCreatedOpposingEntryContext(DatabaseDataDto databaseData, Bot bot)
@@ -190,14 +190,14 @@ namespace _1_BusinessLayer.Concrete.Tools.BackgroundServices.BotBackgroundServic
             var randomNumber = random.Next(0, entryCount);
             var entriesWithPostContext = await _entryQueryHandler.GetWithCustomSearchAsync(q => q.Skip(randomNumber).Take(takeCount).Include(e => e.OwnerUser).Include(e => e.OwnerBot).Include(e => e.Post));
             databaseData.Entries = entriesWithPostContext;
-            _logger.LogInformation("ReadCreatedOpposingEntryContext: BotId={BotId}, RetrievedEntries={Count}", bot.Id, entriesWithPostContext.Count);
+            _logger.LogInformation("ReadCreatedOpposingEntryContext: ActorId={ActorId}, RetrievedEntries={Count}", bot.Id, entriesWithPostContext.Count);
         }
 
         public async Task<ObjectIdentityResult<DatabaseDataDto>> AddMemory(DatabaseDataDto databaseData, Bot bot)
         {
             var botMemoryLogs = await _botMemoryLogQueryHandler.GetWithCustomSearchAsync(q => q.Where(b => b.BotId == bot.Id).OrderBy(b => b.DateTime).Take(4));
             databaseData.BotMemoryLogs = botMemoryLogs;
-            _logger.LogInformation("AddMemory: BotId={BotId}, RetrievedMemoryLogs={Count}", bot.Id, botMemoryLogs.Count);
+            _logger.LogInformation("AddMemory: ActorId={ActorId}, RetrievedMemoryLogs={Count}", bot.Id, botMemoryLogs.Count);
             return ObjectIdentityResult<DatabaseDataDto>.Succeded(databaseData);
         }
     }

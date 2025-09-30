@@ -22,7 +22,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
             try
             {
                 var notifications = _commandHandler.Export<Notification>()
-            .Where(notification => notification.OwnerUserId == id)
+            .Where(notification => notification.ActorUserOwnerId == id)
             .OrderByDescending(notification => notification.DateTime)
             .Skip(startInterval)
             .Take(endInterval - startInterval)
@@ -33,7 +33,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
                 IsRead = notification.IsRead,
                 FromBot = notification.FromBot,
                 FromUser = notification.FromUser,
-                OwnerUser = notification.OwnerUser,
+                ActorUserOwner = notification.ActorUserOwner,
                 AdditionalId = notification.AdditionalId,
                 NotificationType = notification.NotificationType,
             });

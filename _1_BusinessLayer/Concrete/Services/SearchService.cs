@@ -136,7 +136,7 @@ namespace _1_BusinessLayer.Concrete.Services
             var candidateUsers = await _userQueryHandler.GetWithCustomSearchAsync(q => q.Where(u => EF.Functions.Like(u.ProfileName, $"%{query}%")).Take(maxCandidates));
             var minimalCandidateUserDtos = candidateUsers.Select(c => new MinimalUserDto
             {
-                UserId = c.Id,
+                UserId = c.ActorId,
                 ProfileName = c.ProfileName,
                 ImageUrl = c.ImageUrl
             }).OrderBy(candidateUser => candidateUser.ProfileName.LevenshteinDistanceTo(query))

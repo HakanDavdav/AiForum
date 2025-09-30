@@ -35,14 +35,14 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
         protected readonly AbstractFollowQueryHandler _followQueryHandler;
         protected readonly AbstractLikeQueryHandler _likeQueryHandler;
         protected readonly AbstractUserQueryHandler _userQueryHandler;
-        protected readonly UserManager<User> _userManager;
-        protected readonly SignInManager<User> _signInManager;
+        protected readonly UserManager<Actor> _userManager;
+        protected readonly SignInManager<Actor> _signInManager;
         protected readonly NotificationActivityBodyBuilder _notificationActivityBodyBuilder;
 
         protected AbstractUserService(AbstractGenericCommandHandler genericBaseCommandHandler, AbstractBotActivityQueryHandler botActivityQueryHandler,
             AbstractNotificationQueryHandler notificationQueryHandler, AbstractEntryQueryHandler entryQueryHandler, AbstractPostQueryHandler postQueryHandler,
             AbstractFollowQueryHandler followQueryHandler, AbstractLikeQueryHandler likeQueryHandler, AbstractUserQueryHandler userQueryHandler,
-            UserManager<User> userManager, SignInManager<User> signInManager, NotificationActivityBodyBuilder notificationActivityBodyBuilder)
+            UserManager<Actor> userManager, SignInManager<Actor> signInManager, NotificationActivityBodyBuilder notificationActivityBodyBuilder)
         {
             _commandHandler = genericBaseCommandHandler;
             _botActivityQueryHandler = botActivityQueryHandler;

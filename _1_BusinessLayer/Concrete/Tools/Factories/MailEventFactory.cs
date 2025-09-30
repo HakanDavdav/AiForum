@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using _1_BusinessLayer.Concrete.Events;
 using _2_DataAccessLayer.Concrete.Entities;
-using _2_DataAccessLayer.Concrete.Enums;
+using _2_DataAccessLayer.Concrete.Enums.OtherEnums;
 using static _2_DataAccessLayer.Concrete.Enums.MailTypes;
 
 namespace _1_BusinessLayer.Concrete.Tools.Factories
@@ -13,7 +13,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Factories
 
     public class MailEventFactory
     {
-        public List<MailEvent> CreateMailEvents(User fromUser, Bot fromBot, List<int?> toUserId, MailType type, string additonalInfo, int additionalId)
+        public List<MailEvent> CreateMailEvents(Actor fromUser, Bot fromBot, List<int?> toUserId, MailType type, string additonalInfo, int additionalId)
         {
             if (toUserId == null || toUserId.Count == 0)
                 return new List<MailEvent>();
@@ -28,7 +28,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Factories
                     ReceiverUserId = toUserId[i],
                     CreatedAt = DateTime.Now,
                     SenderBotId = fromBot.Id,
-                    SenderUserId = fromUser.Id,
+                    SenderUserId = fromUser.ActorId,
                 });
             }
             return mailEvents;

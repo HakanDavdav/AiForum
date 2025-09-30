@@ -8,10 +8,10 @@ using _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult;
 using _2_DataAccessLayer.Abstractions.Generic;
 using _2_DataAccessLayer.Concrete.CommandHandler;
 using _2_DataAccessLayer.Concrete.Entities;
-using _2_DataAccessLayer.Concrete.Enums;
+using _2_DataAccessLayer.Concrete.Enums.OtherEnums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Hosting;
-using static _2_DataAccessLayer.Concrete.Enums.BotActivityTypes;
+using static _2_DataAccessLayer.Concrete.Enums.BotEnums.BotActivityTypes;
 using static _2_DataAccessLayer.Concrete.Enums.NotificationTypes;
 
 namespace _1_BusinessLayer.Concrete.Tools.Managers
@@ -23,7 +23,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers
         {
             _commandHandler = commandHandler;
         }
-        public async Task<IdentityResult> CommitNotification(NotificationType notificationType, object entity, User? user, Bot? bot)
+        public async Task<IdentityResult> CommitNotification(NotificationType notificationType, object entity, Actor? user, Bot? bot)
         {
             object sender = (object)user ?? (object)bot;
             if (sender == null)
@@ -81,8 +81,8 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers
                 AdditionalId = post.PostId,
                 AdditionalInfo = post.Title,
                 IsRead = false,
-                OwnerUserId = post.OwnerUserId,
-                FromUserId = sender is User u ? u.Id : null,
+                ActorUserOwnerId = post.OwnerUserId,
+                FromUserId = sender is Actor u ? u.ActorId : null,
                 FromBotId = sender is Bot b ? b.Id : null
             };
             await _commandHandler.ManuallyInsertAsync<Notification>(postOwnerNotification);
@@ -96,10 +96,10 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers
                 NotificationType = NotificationType.EntryLike,
                 DateTime = DateTime.UtcNow,
                 AdditionalId = entry.EntryId,
-                AdditionalInfo = entry.Context,
+                AdditionalInfo = entry.Content,
                 IsRead = false,
-                OwnerUserId = entry.OwnerUserId,
-                FromUserId = sender is User u ? u.Id : null,
+                ActorUserOwnerId = entry.OwnerUserId,
+                FromUserId = sender is Actor u ? u.ActorId : null,
                 FromBotId = sender is Bot b ? b.Id : null
             };
             await _commandHandler.ManuallyInsertAsync<Notification>(entryOwnerNotification);
@@ -111,7 +111,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers
         {
             var notifications = new List<Notification>();
             var followerIds = new List<Guid?>();
-            if (sender is User user) { followerIds = user.Followers.Select(f => f.UserFollowerId).ToList(); }
+            if (sender is Actor user) { followerIds = user.Followers.Select(f => f.UserFollowerId).ToList(); }
             if (sender is Bot bot) { followerIds = bot.Followers.Select(f => f.UserFollowerId).ToList(); }
             {
                 notifications.Add(new Notification
@@ -119,10 +119,10 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers
                     NotificationType = NotificationType.CreatingEntry,
                     DateTime = DateTime.UtcNow,
                     AdditionalId = entry.EntryId,
-                    AdditionalInfo = entry.Context,
+                    AdditionalInfo = entry.Content,
                     IsRead = false,
-                    OwnerUserId = entry.Post?.OwnerUserId,
-                    FromUserId = sender is User u ? u.Id : null,
+                    ActorUserOwnerId = entry.Post?.OwnerUserId,
+                    FromUserId = sender is Actor u ? u.ActorId : null,
                     FromBotId = sender is Bot b ? b.Id : null
                 });
             }
@@ -133,10 +133,10 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers
                     NotificationType = NotificationType.CreatingEntry,
                     DateTime = DateTime.Now,
                     AdditionalId = entry.EntryId,
-                    AdditionalInfo = entry.Context,
+                    AdditionalInfo = entry.Content,
                     IsRead = false,
-                    OwnerUserId = followerId,
-                    FromUserId = sender is User u ? u.Id : null,
+                    ActorUserOwnerId = followerId,
+                    FromUserId = sender is Actor u ? u.ActorId : null,
                     FromBotId = sender is Bot b ? b.Id : null
                 });
             }
@@ -149,7 +149,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers
         {
             var notifications = new List<Notification>();
             var followerIds = new List<Guid?>();
-            if (sender is User user) { followerIds = user.Followers.Select(f => f.UserFollowerId).ToList(); }
+            if (sender is Actor user) { followerIds = user.Followers.Select(f => f.UserFollowerId).ToList(); }
             if (sender is Bot bot) { followerIds = bot.Followers.Select(f => f.BotFollowerId).ToList(); }
             foreach (var followerId in followerIds)
             {
@@ -160,8 +160,8 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers
                     AdditionalId = post.PostId,
                     AdditionalInfo = post.Title,
                     IsRead = false,
-                    OwnerUserId = followerId,
-                    FromUserId = sender is User u ? u.Id : null,
+                    ActorUserOwnerId = followerId,
+                    FromUserId = sender is Actor u ? u.ActorId : null,
                     FromBotId = sender is Bot b ? b.Id : null,
                 });
             }
@@ -178,10 +178,10 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers
             {
                 NotificationType = NotificationType.GainedFollower,
                 DateTime = DateTime.Now,
-                AdditionalId = sender is User u ? u.Id : sender is Bot b ? b.Id : null,
-                AdditionalInfo = sender is User uu ? uu.ProfileName : sender is Bot bb ? bb.BotProfileName : null,
-                OwnerUserId = follow.UserFollowedId,
-                FromUserId = sender is User uuu ? uuu.Id : null,
+                AdditionalId = sender is Actor u ? u.ActorId : sender is Bot b ? b.Id : null,
+                AdditionalInfo = sender is Actor uu ? uu.ProfileName : sender is Bot bb ? bb.BotProfileName : null,
+                ActorUserOwnerId = follow.UserFollowedId,
+                FromUserId = sender is Actor uuu ? uuu.ActorId : null,
                 FromBotId = sender is Bot bbb ? bbb.Id : null,
                 IsRead = false
             };
@@ -202,7 +202,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers
                 AdditionalId = null,
                 AdditionalInfo = null,
                 FromBotId = sender is Bot b ? b.Id : null,
-                OwnerUserId = sender is Bot bb ? bb.ParentUserId : null,
+                ActorUserOwnerId = sender is Bot bb ? bb.ParentUserId : null,
             });
             await _commandHandler.SaveChangesAsync();
             return IdentityResult.Success;
@@ -219,7 +219,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers
             {
                 case BotActivityType.BotLikedEntry when entity is Entry entry:
                     additonalId = entry.EntryId;
-                    additionalInfo = entry.Context;
+                    additionalInfo = entry.Content;
                     break;
                 case BotActivityType.BotLikedPost when entity is Post post:
                     additonalId = post.PostId;
@@ -231,11 +231,11 @@ namespace _1_BusinessLayer.Concrete.Tools.Managers
                     break;
                 case BotActivityType.BotEntryLiked when entity is Entry entry:
                     additonalId = entry.EntryId;
-                    additionalInfo = entry.Context;
+                    additionalInfo = entry.Content;
                     break;
                 case BotActivityType.BotCreatedEntry when entity is Entry entry:
                     additonalId = entry.EntryId;
-                    additionalInfo = entry.Context;
+                    additionalInfo = entry.Content;
                     break;
                 case BotActivityType.BotCreatedPost when entity is Post post:
                     additonalId = post.PostId;

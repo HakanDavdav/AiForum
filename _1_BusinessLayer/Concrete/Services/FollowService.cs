@@ -12,7 +12,7 @@ using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using static _2_DataAccessLayer.Concrete.Enums.BotActivityTypes;
+using static _2_DataAccessLayer.Concrete.Enums.BotEnums.BotActivityTypes;
 using static _2_DataAccessLayer.Concrete.Enums.MailTypes;
 using static _2_DataAccessLayer.Concrete.Enums.NotificationTypes;
 using _2_DataAccessLayer.Abstractions.AbstractClasses;
@@ -96,7 +96,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> FollowBot(int userId, int followedBotId)
         {
-            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
+            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.ActorId == userId));
             if (user == null) return IdentityResult.Failed(new NotFoundError("FollowerUser not found"));
             var bot = await _botQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(b => b.Id == followedBotId));
             if (bot == null) return IdentityResult.Failed(new NotFoundError("FollowedBot not found"));
@@ -125,9 +125,9 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<IdentityResult> FollowUser(int userId, int followedUserId)
         {
             if(userId == followedUserId) return IdentityResult.Failed(new ForbiddenError("You cannot follow yourself"));
-            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
+            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.ActorId == userId));
             if (user == null) return IdentityResult.Failed(new NotFoundError("FollowerUser not found"));
-            var followedUser = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == followedUserId));
+            var followedUser = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.ActorId == followedUserId));
             if (followedUser == null) return IdentityResult.Failed(new NotFoundError("FollowedUser not found"));          
             var follow = new Follow
             {
@@ -141,7 +141,7 @@ namespace _1_BusinessLayer.Concrete.Services
             var notification = new Notification
             {
                 FromUserId = userId,
-                OwnerUserId = followedUserId,
+                ActorUserOwnerId = followedUserId,
                 NotificationType = NotificationType.GainedFollower,
                 AdditionalId = userId,
                 AdditionalInfo = user.ProfileName,

@@ -45,7 +45,7 @@ namespace _1_BusinessLayer.Concrete.Services
                     postOwner = post.OwnerUser;
                 if (post.OwnerBot != null)
                     postOwner = post.OwnerBot;
-                var entryCreatorUser = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
+                var entryCreatorUser = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.ActorId == userId));
                 if (entryCreatorUser == null) 
                     return IdentityResult.Failed(new NotFoundError("User not found"));
                 var entry = createEntryDto.CreateEntryDto_To_Entry();
@@ -60,9 +60,9 @@ namespace _1_BusinessLayer.Concrete.Services
                     creatorUserFollowerNotifications.Add(new Notification
                     {
                         FromUserId = userId,
-                        OwnerUserId = toUserId,
+                        ActorUserOwnerId = toUserId,
                         NotificationType = NotificationType.CreatingEntry,
-                        AdditionalInfo = entry.Context,
+                        AdditionalInfo = entry.Content,
                         AdditionalId = entry.EntryId,
                         IsRead = false,
                         DateTime = DateTime.UtcNow,
@@ -76,14 +76,14 @@ namespace _1_BusinessLayer.Concrete.Services
                 await _genericCommandHandler.SaveChangesAsync();
                 await _unitOfWork.CommitTransactionAsync();
 
-                if (postOwner is User postOwnerUser)
+                if (postOwner is Actor postOwnerUser)
                 {
                     var postOwnerNotification = new Notification
                     {
                         FromUserId = userId,
-                        OwnerUserId = post.OwnerUserId,
+                        ActorUserOwnerId = post.OwnerUserId,
                         NotificationType = NotificationType.NewEntryForPost,
-                        AdditionalInfo = entry.Context,
+                        AdditionalInfo = entry.Content,
                         AdditionalId = entry.EntryId,
                         IsRead = false,
                         DateTime = DateTime.UtcNow,
@@ -91,12 +91,12 @@ namespace _1_BusinessLayer.Concrete.Services
                     postOwnerUser.ReceivedNotifications.Add(postOwnerNotification);
                     entryCreatorUser.SentNotifications.Add(postOwnerNotification);
                     await _genericCommandHandler.SaveChangesAsync();
-                    mailEvents.AddRange(_mailEventFactory.CreateMailEvents(entryCreatorUser, null, new List<int?> { post.OwnerUserId }, MailType.NewEntryForPost, entry.Context, entry.EntryId));
-                    notificationEvents.AddRange(_notificationEventFactory.CreateNotificationEvents(entryCreatorUser, null, new List<int?> { post.OwnerUserId }, NotificationType.NewEntryForPost, entry.Context, entry.EntryId));
+                    mailEvents.AddRange(_mailEventFactory.CreateMailEvents(entryCreatorUser, null, new List<int?> { post.OwnerUserId }, MailType.NewEntryForPost, entry.Content, entry.EntryId));
+                    notificationEvents.AddRange(_notificationEventFactory.CreateNotificationEvents(entryCreatorUser, null, new List<int?> { post.OwnerUserId }, NotificationType.NewEntryForPost, entry.Content, entry.EntryId));
                 }
 
-                mailEvents.AddRange(_mailEventFactory.CreateMailEvents(entryCreatorUser, null, toUserIds, MailType.CreatingEntry, entry.Context, entry.EntryId));
-                notificationEvents.AddRange(_notificationEventFactory.CreateNotificationEvents(entryCreatorUser, null, toUserIds, NotificationType.CreatingEntry, entry.Context, entry.EntryId));
+                mailEvents.AddRange(_mailEventFactory.CreateMailEvents(entryCreatorUser, null, toUserIds, MailType.CreatingEntry, entry.Content, entry.EntryId));
+                notificationEvents.AddRange(_notificationEventFactory.CreateNotificationEvents(entryCreatorUser, null, toUserIds, NotificationType.CreatingEntry, entry.Content, entry.EntryId));
                 await _queueSender.MailQueueSendAsync(mailEvents);
                 await _queueSender.NotificationQueueSendAsync(notificationEvents);
                 return IdentityResult.Success;

@@ -13,7 +13,7 @@ using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Abstractions.AbstractClasses;
 using _2_DataAccessLayer.Abstractions.Generic;
 using _2_DataAccessLayer.Concrete.Entities;
-using _2_DataAccessLayer.Concrete.Enums;
+using _2_DataAccessLayer.Concrete.Enums.OtherEnums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,8 +26,8 @@ namespace _1_BusinessLayer.Concrete.Services
     {
         public UserIdentityService(
             AbstractUserQueryHandler userQueryHandler,
-            UserManager<User> userManager,
-            SignInManager<User> signInManager,
+            UserManager<Actor> userManager,
+            SignInManager<Actor> signInManager,
             GeneralSender generalSender,
             AbstractGenericCommandHandler genericCommandHandler)
             : base(userQueryHandler, userManager, signInManager, generalSender, genericCommandHandler)
@@ -36,7 +36,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> ActivateTwoFactorAuthentication(int userId)
         {
-            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
+            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.ActorId == userId));
             if (user == null)
                 return IdentityResult.Failed(new NotFoundError("User not found"));
             var twoFactorResult = await _userManager.SetTwoFactorEnabledAsync(user, true);
@@ -45,7 +45,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> DisableTwoFactorAuthentication(int userId)
         {
-            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
+            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.ActorId == userId));
             if (user == null)
                 return IdentityResult.Failed(new NotFoundError("User not found"));
             var twoFactorResult = await _userManager.SetTwoFactorEnabledAsync(user, false);
@@ -54,7 +54,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> ConfirmChangeEmailToken(int userId, string newEmail, string changeEmailToken)
         {
-            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
+            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.ActorId == userId));
             if (user == null)
                 return IdentityResult.Failed(new NotFoundError("User not found"));
             var changeEmailResult = await _userManager.ChangeEmailAsync(user, newEmail, changeEmailToken);
@@ -75,7 +75,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> ConfirmPhoneNumberConfirmationToken(int userId, string phoneConfirmationToken)
         {
-            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
+            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.ActorId == userId));
             if (user == null)
                 return IdentityResult.Failed(new NotFoundError("User not found"));
             if (user.PhoneNumber == null)
@@ -98,7 +98,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> ChangeUsername(int userId, string oldUsername, string newUsername)
         {
-            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
+            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.ActorId == userId));
             if (user == null) return IdentityResult.Failed(new NotFoundError("User not found"));
             if (user.UserName == newUsername) return IdentityResult.Failed(new UnauthorizedError("New username cannot be the same as the old one"));
             user.UserName = newUsername;
@@ -115,7 +115,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> ChangePassword(int userId, string oldPassword, string newPassword)
         {
-            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
+            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.ActorId == userId));
             if (user == null) return IdentityResult.Failed(new NotFoundError("User not found"));
             var changePasswordResult = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
             return changePasswordResult;
@@ -123,7 +123,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> SetUnconfirmedPhoneNumber(int userId, string newPhoneNumber)
         {
-            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
+            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.ActorId == userId));
             if (user == null) return IdentityResult.Failed(new NotFoundError("User not found"));
             user.PhoneNumber = newPhoneNumber;
             try
@@ -172,7 +172,7 @@ namespace _1_BusinessLayer.Concrete.Services
         public override async Task<IdentityResult> ChooseProviderAndSendToken
             (int userId, string provider, MailType? mailType, SmsType? smsType, string? newEmail, string? newPhoneNumber, string? newPassword)
         {
-            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
+            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.ActorId == userId));
             if (user == null)
                 return IdentityResult.Failed(new NotFoundError("User not found"));
             switch (provider)
@@ -205,18 +205,18 @@ namespace _1_BusinessLayer.Concrete.Services
             if (result.Succeeded!)
                 return IdentityResult.Failed(result.Errors.ToArray());
             //Default preference
-            user.UserPreference = new UserPreference
+            user.UserSettings = new UserSettings
             {
                 Theme = "Light",
                 PostPerPage = 10,
                 EntryPerPage = 10,
-                OwnerUserId = user.Id
+                OwnerUserId = user.ActorId
             };
             var claims = new List<Claim>
                   {
-                     new Claim("Theme",user.UserPreference.Theme),
-                     new Claim("PostPerPage", user.UserPreference.PostPerPage.ToString()),
-                     new Claim("EntryPerPage", user.UserPreference.EntryPerPage.ToString())
+                     new Claim("Theme",user.UserSettings.Theme),
+                     new Claim("PostPerPage", user.UserSettings.PostPerPage.ToString()),
+                     new Claim("EntryPerPage", user.UserSettings.EntryPerPage.ToString())
                   };
             await _userManager.AddClaimsAsync(user, claims);
             await _userManager.AddToRoleAsync(user, "TempUser");

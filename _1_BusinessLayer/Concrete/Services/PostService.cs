@@ -18,7 +18,6 @@ using _1_BusinessLayer.Concrete.Tools.Factories;
 using _2_DataAccessLayer.Abstractions;
 using _2_DataAccessLayer.Concrete;
 using _2_DataAccessLayer.Concrete.Entities;
-using _2_DataAccessLayer.Concrete.Enums;
 using _2_DataAccessLayer.Concrete.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +25,7 @@ using static _2_DataAccessLayer.Concrete.Enums.MailTypes;
 using static _2_DataAccessLayer.Concrete.Enums.NotificationTypes;
 using _2_DataAccessLayer.Abstractions.AbstractClasses;
 using _2_DataAccessLayer.Abstractions.Generic;
+using _2_DataAccessLayer.Concrete.Enums.OtherEnums;
 
 namespace _1_BusinessLayer.Concrete.Services
 {
@@ -50,7 +50,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> CreatePost(int userId, CreatePostDto createPostDto)
         {
-            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.Id == userId));
+            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(q => q.Where(u => u.ActorId == userId));
             if (user == null)
                 return IdentityResult.Failed(new NotFoundError("User not found"));
 
@@ -63,7 +63,7 @@ namespace _1_BusinessLayer.Concrete.Services
             var notifications = toUserIds.Select(toUserId => new Notification
             {
                 FromUserId = userId,
-                OwnerUserId = toUserId,
+                ActorUserOwnerId = toUserId,
                 NotificationType = NotificationType.CreatingPost,
                 AdditionalId = post.PostId,
                 AdditionalInfo = post.Title,

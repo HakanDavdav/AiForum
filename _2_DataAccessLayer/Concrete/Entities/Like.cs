@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Concrete.Enums;
 using Azure.Core;
-using static _2_DataAccessLayer.Concrete.Enums.ContentType;
 
 namespace _2_DataAccessLayer.Concrete.Entities
 {
@@ -16,16 +15,15 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public int LikeId {  get; set; }
         public DateTime DateTime { get; set; }
 
-        public Guid? ContentId { get; set; }
-        public ContentTypes ContentType { get; set; }
+        public Guid? PostId { get; set; }
         public Post? Post { get; set; }
+        public Guid? EntryId { get; set; }  
         public Entry? Entry { get; set; }
 
 
-        public Guid? OwnerId { get; set; }
-        public ActorTypes OwnerActorType { get; set; }
-        public User? OwnerUser { get; set; }
-        public Bot? OwnerBot { get; set; }
+        public Guid? ActorOwnerId { get; set; }
+        public Actor? ActorOwner { get; set; }
+
     } 
         
  }

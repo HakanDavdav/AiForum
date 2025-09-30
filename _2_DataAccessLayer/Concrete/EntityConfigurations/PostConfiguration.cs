@@ -13,20 +13,7 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Post> builder)
         {
-            // Configuring the primary key
             builder.HasKey(post => post.PostId);
-
-            // Title: Maximum length of 50 characters
-            builder.Property(post => post.Title)
-                .HasMaxLength(50);  // Max length of 50 characters
-
-            // NotificationContext: Maximum length of 1000 characters
-            builder.Property(post => post.Context)
-                .HasMaxLength(1000);  // Max length of 1000 characters
-
-            // DateTime: Assuming this field should be required and defaults to the current time
-            builder.Property(post => post.DateTime)
-                .HasDefaultValueSql("GETDATE()");  // Default SQL Server current date
 
             builder.HasMany(post => post.Entries)
                 .WithOne(entry => entry.Post)
@@ -38,14 +25,9 @@ namespace _2_DataAccessLayer.Concrete.EntityConfigurations
                 .HasForeignKey(like => like.PostId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            builder.HasOne(post => post.OwnerUser)
-                .WithMany(user => user.Posts)
-                .HasForeignKey(post => post.OwnerUserId)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            builder.HasOne(post => post.OwnerBot)
-                .WithMany(bot => bot.Posts)
-                .HasForeignKey(post => post.OwnerBotId)
+            builder.HasOne(post => post.ActorOwner)
+                .WithMany(actor => actor.Posts)
+                .HasForeignKey(post => post.ActorOwnerId)
                 .OnDelete(DeleteBehavior.SetNull);
 
 

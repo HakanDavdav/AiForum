@@ -14,35 +14,35 @@ namespace _1_BusinessLayer.Concrete.Tools.Factories
 {
     public class TokenFactory 
     {
-        protected readonly UserManager<User> _userManager;
-        public TokenFactory(UserManager<User> userManager)
+        protected readonly UserManager<Actor> _userManager;
+        public TokenFactory(UserManager<Actor> userManager)
         {
             _userManager = userManager;
         }
 
-        public async Task<string> CreateChangeEmailTokenAsync(User user, string newEmail)
+        public async Task<string> CreateChangeEmailTokenAsync(Actor user, string newEmail)
         {
             return await _userManager.GenerateChangeEmailTokenAsync(user, newEmail);
         }
 
-        public async Task<string> CreateConfirmPhoneNumberTokenAsync(User user, string phoneNumber)
+        public async Task<string> CreateConfirmPhoneNumberTokenAsync(Actor user, string phoneNumber)
         {
             return await _userManager.GenerateChangePhoneNumberTokenAsync(user, phoneNumber);
         }
 
-        public async Task<string> CreateMailConfirmationTokenAsync(User user)
+        public async Task<string> CreateMailConfirmationTokenAsync(Actor user)
         {
             return await _userManager.GenerateEmailConfirmationTokenAsync(user);
         }
 
 
-        public async Task<string> CreatePasswordResetTokenAsync(User user)
+        public async Task<string> CreatePasswordResetTokenAsync(Actor user)
         {
             return await _userManager.GeneratePasswordResetTokenAsync(user);
         }
 
 
-        public async Task<string> CreateTwoFactorTokenAsync(User user, string provider)
+        public async Task<string> CreateTwoFactorTokenAsync(Actor user, string provider)
         {
             return await _userManager.GenerateTwoFactorTokenAsync(user, provider);
         }

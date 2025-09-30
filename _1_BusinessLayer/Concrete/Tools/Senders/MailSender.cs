@@ -9,7 +9,7 @@ using _1_BusinessLayer.Concrete.Events;
 using _1_BusinessLayer.Concrete.Tools.BodyBuilders;
 using _1_BusinessLayer.Concrete.Tools.ErrorHandling.Errors;
 using _2_DataAccessLayer.Concrete.Entities;
-using _2_DataAccessLayer.Concrete.Enums;
+using _2_DataAccessLayer.Concrete.Enums.OtherEnums;
 using MailKit;
 using Microsoft.AspNetCore.Identity;
 using static _2_DataAccessLayer.Concrete.Enums.MailTypes;
@@ -23,7 +23,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
         {
             _mailBodyBuilder = mailBodyBuilder;
         }
-        public async Task<IdentityResult> SendAuthenticationMailAsync(User user, string token, MailType? mailType)
+        public async Task<IdentityResult> SendAuthenticationMailAsync(Actor user, string token, MailType? mailType)
         {
             SmtpClient smtpClient = null;
             try
@@ -55,7 +55,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
             }
         }
 
-        public async Task<IdentityResult> SendSocialMailAsync(User? FromUser, Bot? FromBot, User toUser, MailEvent mailEvent)
+        public async Task<IdentityResult> SendSocialMailAsync(Actor? FromUser, Bot? FromBot, Actor toUser, MailEvent mailEvent)
         {
             var (body, subject) = _mailBodyBuilder.BuildSocialMailContent(FromUser, FromBot, mailEvent);
             SmtpClient smtpClient = null;

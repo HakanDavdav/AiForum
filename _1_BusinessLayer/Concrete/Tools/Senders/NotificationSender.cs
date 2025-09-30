@@ -18,7 +18,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Senders
         {
             _notificationActivityBodyBuilder = notificationActivityBodyBuilder;
         }
-        public async Task<IdentityResult> SendSocialNotificationAsync(User? FromUser, Bot? FromBot, User toUser, NotificationEvent notificationEvent)
+        public async Task<IdentityResult> SendSocialNotificationAsync(Actor? FromUser, Bot? FromBot, Actor toUser, NotificationEvent notificationEvent)
         {
             var (title, notificationContext, url) = _notificationActivityBodyBuilder.BuildWebPushNotificationContent(FromUser, FromBot, notificationEvent);
             //firebase

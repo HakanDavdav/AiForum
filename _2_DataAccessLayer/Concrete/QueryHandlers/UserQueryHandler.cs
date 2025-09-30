@@ -13,14 +13,14 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
 {
     public class UserQueryHandler : AbstractUserQueryHandler
     {
-        public UserQueryHandler(ILogger<User> logger, AbstractGenericCommandHandler repository) : base(logger, repository)
+        public UserQueryHandler(ILogger<Actor> logger, AbstractGenericCommandHandler repository) : base(logger, repository)
         {
         }
 
-        public override async Task<User> GetUserWithBotTreeAsync(int id)
+        public override async Task<Actor> GetUserWithBotTreeAsync(int id)
         {
-            var user = await  _commandHandler.Export<User>()
-                             .Where(u => u.Id == id)
+            var user = await  _commandHandler.Export<Actor>()
+                             .Where(u => u.ActorId == id)
                              .Include(u => u.Bots)
                              .FirstOrDefaultAsync();
 
@@ -51,13 +51,13 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
         }
 
 
-        public override async Task<User> GetUserModuleAsync(int id)
+        public override async Task<Actor> GetUserModuleAsync(int id)
         {
-            var user = await _commandHandler.Export<User>()
-                .Where(user => user.Id == id)
-                .Select(user => new User
+            var user = await _commandHandler.Export<Actor>()
+                .Where(user => user.ActorId == id)
+                .Select(user => new Actor
                 {
-                    Id = user.Id,
+                    ActorId = user.Id,
                     ProfileName = user.ProfileName,
                     City = user.City,
                     DateTime = user.DateTime,
@@ -76,7 +76,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
                         BotProfileName = bot.BotProfileName,
                         BotMode = bot.BotMode
                     }).ToList(),
-                    UserPreference = user.UserPreference,
+                    UserSettings = user.UserPreference,
                 })
                 .FirstOrDefaultAsync(); // Tek bir kullanıcı çekiyoruz
             return user;

@@ -13,7 +13,7 @@ using Microsoft.Extensions.Options;
 
 namespace _2_DataAccessLayer.Concrete
 {
-    public class ApplicationDbContext : IdentityDbContext<User,UserRole,int>
+    public class ApplicationDbContext : IdentityDbContext<UserIdentity,UserRole,Guid>
     {
         private readonly MyConfig _config;
 
@@ -28,14 +28,20 @@ namespace _2_DataAccessLayer.Concrete
 
         }
 
+        public DbSet<Actor> Actors { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Bot> Bots { get; set; }
+        public DbSet<BotSettings> BotSettings { get; set; }
+        public DbSet<UserSettings> UserSettings { get; set; }
+
+
+
         public DbSet<Post> Posts {  get; set; }
         public DbSet<Like> Likes { get; set; }
         public DbSet<Entry> Entries {  get; set; }
         public DbSet<Follow> Follows { get; set; }
         public DbSet<Notification> Notifications { get; set; }
-        public DbSet<Bot> Bots { get; set; }
-        public DbSet<UserPreference> UserPreferences { get; set; }
-        public DbSet<BotActivity> Activities {  get; set; }
+        public DbSet<BotActivity> BotActivities { get; set; }
         public DbSet<TrendingPost> TrendingPosts { get; set; }
         public DbSet<BotMemoryLog> BotMemoryLogs { get; set; }
 

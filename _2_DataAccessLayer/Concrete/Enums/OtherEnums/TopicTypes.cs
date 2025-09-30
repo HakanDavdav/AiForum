@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace _2_DataAccessLayer.Concrete.Enums
+namespace _2_DataAccessLayer.Concrete.Enums.OtherEnums
 {
     [Flags]
     public enum TopicTypes

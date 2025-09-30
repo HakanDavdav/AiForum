@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _2_DataAccessLayer.Concrete.Enums
+namespace _2_DataAccessLayer.Concrete.Enums.BotEnums
 {
     public enum BotModes
     {

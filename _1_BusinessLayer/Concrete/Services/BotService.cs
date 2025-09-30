@@ -33,7 +33,7 @@ namespace _1_BusinessLayer.Concrete.Services
 
         public override async Task<IdentityResult> CreateBot(int userId, CreateBotDto createBotDto)
         {
-            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(query => query.Where(bot => bot.Id == userId).Include(bot => bot.Bots));
+            var user = await _userQueryHandler.GetBySpecificPropertySingularAsync(query => query.Where(bot => bot.ActorId == userId).Include(bot => bot.Bots));
             if (user == null) return IdentityResult.Failed(new NotFoundError("User not found"));
             if (user.Bots.Count > 4) return IdentityResult.Failed(new ForbiddenError("Personal bot limit reached"));
             var bot = createBotDto.CreateBotDto_To_Bot(userId);

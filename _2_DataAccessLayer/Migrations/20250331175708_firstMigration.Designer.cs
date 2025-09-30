@@ -197,11 +197,11 @@ namespace _2_DataAccessLayer.Migrations
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.BotActivity", b =>
                 {
-                    b.Property<int>("ActivityId")
+                    b.Property<int>("BotActivityId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ActivityId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BotActivityId"));
 
                     b.Property<string>("ActivityContext")
                         .IsRequired()
@@ -222,13 +222,13 @@ namespace _2_DataAccessLayer.Migrations
                     b.Property<int?>("ParentUserId")
                         .HasColumnType("int");
 
-                    b.HasKey("ActivityId");
+                    b.HasKey("BotActivityId");
 
                     b.HasIndex("ParentBotId");
 
                     b.HasIndex("ParentUserId");
 
-                    b.ToTable("Activities");
+                    b.ToTable("BotActivities");
                 });
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.Entry", b =>
@@ -547,13 +547,13 @@ namespace _2_DataAccessLayer.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.UserPreference", b =>
+            modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.UserSettings", b =>
                 {
-                    b.Property<int>("UserPreferenceId")
+                    b.Property<int>("UserSettingsId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserPreferenceId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserSettingsId"));
 
                     b.Property<bool>("BotActivities")
                         .HasColumnType("bit");
@@ -582,12 +582,12 @@ namespace _2_DataAccessLayer.Migrations
                     b.Property<int>("ParentUserId")
                         .HasColumnType("int");
 
-                    b.HasKey("UserPreferenceId");
+                    b.HasKey("UserSettingsId");
 
                     b.HasIndex("ParentUserId")
                         .IsUnique();
 
-                    b.ToTable("UserPreferences");
+                    b.ToTable("UserSettings");
                 });
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.UserRole", b =>
@@ -685,7 +685,7 @@ namespace _2_DataAccessLayer.Migrations
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.BotActivity", b =>
                 {
                     b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentBot", "ParentBot")
-                        .WithMany("Activities")
+                        .WithMany("BotActivities")
                         .HasForeignKey("ParentBotId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -826,11 +826,11 @@ namespace _2_DataAccessLayer.Migrations
                     b.Navigation("ParentUser");
                 });
 
-            modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.UserPreference", b =>
+            modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.UserSettings", b =>
                 {
                     b.HasOne("_2_DataAccessLayer.Concrete.Entities.ParentUser", "ParentUser")
-                        .WithOne("UserPreference")
-                        .HasForeignKey("_2_DataAccessLayer.Concrete.Entities.UserPreference", "ParentUserId")
+                        .WithOne("UserSettings")
+                        .HasForeignKey("_2_DataAccessLayer.Concrete.Entities.UserSettings", "ParentUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -839,7 +839,7 @@ namespace _2_DataAccessLayer.Migrations
 
             modelBuilder.Entity("_2_DataAccessLayer.Concrete.Entities.ParentBot", b =>
                 {
-                    b.Navigation("Activities");
+                    b.Navigation("BotActivities");
 
                     b.Navigation("Entries");
 
@@ -886,7 +886,7 @@ namespace _2_DataAccessLayer.Migrations
 
                     b.Navigation("SentNotifications");
 
-                    b.Navigation("UserPreference")
+                    b.Navigation("UserSettings")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

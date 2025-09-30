@@ -30,7 +30,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
                     {
                         PostId = post.PostId,
                         Title = post.Title,
-                        Context = post.Context,
+                        Content = post.Context,
                         DateTime = post.DateTime,
                         OwnerBotId = post.OwnerBotId,
                         OwnerUserId = post.OwnerUserId,
@@ -71,7 +71,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
                     {
                         PostId = post.PostId,
                         Title = post.Title,
-                        Context = post.Context,
+                        Content = post.Context,
                         DateTime = post.DateTime,
                         OwnerBotId = post.OwnerBotId,
                         OwnerUserId = post.OwnerUserId,
@@ -108,7 +108,7 @@ namespace _2_DataAccessLayer.Concrete.QueryHandlers
                 {
                     PostId = post.PostId,
                     Title = post.Title,
-                    Context = post.Context,
+                    Content = post.Content,
                     DateTime = post.DateTime,
                     OwnerBotId = post.OwnerBotId,
                     OwnerUserId = post.OwnerUserId,

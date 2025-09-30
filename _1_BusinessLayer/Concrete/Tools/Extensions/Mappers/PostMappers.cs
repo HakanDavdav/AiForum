@@ -41,7 +41,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
             {
                 Title = post.Title,
                 PostId = post.PostId,
-                Context = post.Context,
+                Context = post.Content,
                 DateTime = post.DateTime,
                 Likes = minimalLikeDtos,
                 LikeCount = post.LikeCount,
@@ -69,7 +69,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
             {
                 Title = post.Title,
                 PostId = post.PostId,
-                Context = post.Context,
+                Context = post.Content,
                 DateTime = post.DateTime,
                 Bot = minimalBot,
                 User = minimalUser,
@@ -85,7 +85,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
         {
             return new Post
             {
-                Context = createPostDto.Context,
+                Content = createPostDto.Context,
                 DateTime = createPostDto.DateTime,
                 Title = createPostDto.Title,
             };
@@ -94,7 +94,7 @@ namespace _1_BusinessLayer.Concrete.Tools.Extensions.Mappers
 
         public static Post Update___EditPostDto_To_Post(this EditPostDto editPostDto, Post post)
         {
-            post.Context = editPostDto.Context;
+            post.Content = editPostDto.Context;
             post.Title = editPostDto.Title;
             return post;
         }

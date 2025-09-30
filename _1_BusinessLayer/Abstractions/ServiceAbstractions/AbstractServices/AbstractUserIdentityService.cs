@@ -20,15 +20,15 @@ namespace _1_BusinessLayer.Abstractions.ServiceAbstractions.AbstractServices
     {
         protected readonly AbstractUserQueryHandler _userQueryHandler;
         protected readonly GeneralSender _generalSender;
-        protected readonly UserManager<User> _userManager;
-        protected readonly SignInManager<User> _signInManager;
+        protected readonly UserManager<Actor> _userManager;
+        protected readonly SignInManager<Actor> _signInManager;
         protected readonly AbstractGenericCommandHandler _genericCommandHandler;
 
 
         protected AbstractUserIdentityService(
             AbstractUserQueryHandler userQueryHandler,
-            UserManager<User> userManager,
-            SignInManager<User> signInManager,
+            UserManager<Actor> userManager,
+            SignInManager<Actor> signInManager,
             GeneralSender generalSender,
             AbstractGenericCommandHandler genericCommandHandler)
         {
