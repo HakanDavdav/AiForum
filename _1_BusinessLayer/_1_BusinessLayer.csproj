@@ -7,15 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Concrete\Extensions\**" />
-    <Compile Remove="Concrete\Tools\AdditionalFilters\**" />
-    <Compile Remove="Concrete\Tools\Validators\**" />
-    <EmbeddedResource Remove="Concrete\Extensions\**" />
-    <EmbeddedResource Remove="Concrete\Tools\AdditionalFilters\**" />
-    <EmbeddedResource Remove="Concrete\Tools\Validators\**" />
-    <None Remove="Concrete\Extensions\**" />
-    <None Remove="Concrete\Tools\AdditionalFilters\**" />
-    <None Remove="Concrete\Tools\Validators\**" />
+    <Compile Remove="Codebase\Extensions\**" />
+    <EmbeddedResource Remove="Codebase\Extensions\**" />
+    <None Remove="Codebase\Extensions\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,7 +52,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Concrete\Tools\BackgroundServices\DatabaseMaintananceBackgroundService\" />
+    <Folder Include="Codebase\Services\_Abstract\" />
   </ItemGroup>
 
 </Project>

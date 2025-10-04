@@ -28,37 +28,13 @@ namespace _2_DataAccessLayer.Concrete
 
         }
 
-        public DbSet<Actor> Actors { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<Bot> Bots { get; set; }
-        public DbSet<BotSettings> BotSettings { get; set; }
-        public DbSet<UserSettings> UserSettings { get; set; }
 
-
-
-        public DbSet<Post> Posts {  get; set; }
-        public DbSet<Like> Likes { get; set; }
-        public DbSet<Entry> Entries {  get; set; }
-        public DbSet<Follow> Follows { get; set; }
-        public DbSet<Notification> Notifications { get; set; }
-        public DbSet<BotActivity> BotActivities { get; set; }
-        public DbSet<TrendingPost> TrendingPosts { get; set; }
-        public DbSet<BotMemoryLog> BotMemoryLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
 
-            modelBuilder.ApplyConfiguration(new UserConfiguration());
-            modelBuilder.ApplyConfiguration(new PostConfiguration());
-            modelBuilder.ApplyConfiguration(new FollowConfiguration());
-            modelBuilder.ApplyConfiguration(new EntryConfiguration());
-            modelBuilder.ApplyConfiguration(new LikeConfiguration());
-            modelBuilder.ApplyConfiguration(new NotificationConfiguration());
-            modelBuilder.ApplyConfiguration(new BotConfiguration());
-            modelBuilder.ApplyConfiguration(new UserPreferenceConfiguration());
-            modelBuilder.ApplyConfiguration(new BotActivityConfiguration());
-            modelBuilder.ApplyConfiguration(new TrendingPostConfiguration());
+
 
 
             base.OnModelCreating(modelBuilder);
