@@ -10,8 +10,8 @@ namespace _2_DataAccessLayer.Concrete.Entities
     {
         public Guid OutboxMessageId { get; set; }
         public DateTime OccurredOn { get; set; }
-        public string Type { get; set; } = null!;
-        public string Payload { get; set; } = null!;
+        public string? Type { get; set; }
+        public string? Payload { get; set; }
         public DateTime? ProcessedOn { get; set; }
         public int RetryCount { get; set; }
     }
