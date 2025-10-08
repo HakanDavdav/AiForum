@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Concrete.Entities;
 
-namespace _1_BusinessLayer.Codebase.Dtos.OtherDtos
+namespace _1_BusinessLayer.Codebase.Dtos.OtherDtos.OutputDtos
 {
     public class NotificationDto
     {

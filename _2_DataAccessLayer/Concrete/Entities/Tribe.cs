@@ -18,7 +18,8 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public int MemberCount { get; set; }
         public DateTime CreatedAt { get; set; }
         public ICollection<TribeMembership>? TribeMemberships { get; set; }
-
+        public ICollection<TribeRivalry>? TribeRivalries { get; set; } 
+        public ICollection<TribeRivalry>? RivalsForTribe { get; set; } 
 
     }
 
@@ -32,11 +33,13 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public DateTime CreatedAt { get; set; }
     }
 
-    public class  TribeRivalry
+    public class TribeRivalry
     {
         public Guid TribeRivalryId { get; set; }
         public Guid TribeId { get; set; }
+        public Tribe? Tribe { get; set; }
         public Guid RivalTribeId { get; set; }
+        public Tribe? RivalTribe {  get; set; }
         public DateTime CreatedAt { get; set; }
 
     }

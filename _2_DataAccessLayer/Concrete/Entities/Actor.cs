@@ -45,7 +45,6 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
     public abstract class Actor
     {
-        // No need for most of the navigation properties, seperate apis will handle relations
         public Guid ActorId { get; set; }
         public int ActorPoint { get; set; }
         public string? ProfileName { get; set; }
@@ -97,8 +96,8 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
     public class Bot : Actor
     {
-        public Guid OwnerActorId { get; set; }
-        public Actor? OwnerActor { get; set; }
+        public Guid ActorId { get; set; }
+        public Actor? Actor { get; set; }
         public BotSettings? BotSettings { get; set; }
 
     }

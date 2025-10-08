@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using _2_DataAccessLayer.Concrete.Entities;
 using _2_DataAccessLayer.Concrete.Entities._2_DataAccessLayer.Concrete.Enums.OtherEnums;
 
-namespace _1_BusinessLayer.Codebase.Dtos.ActorDtos
+namespace _1_BusinessLayer.Codebase.Dtos.ActorDtos.InputDtos
 {
     public class BotProfileCreateEditDto
     {

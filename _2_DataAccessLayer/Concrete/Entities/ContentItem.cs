@@ -14,7 +14,6 @@ namespace _2_DataAccessLayer.Concrete.Entities
         [Flags]
         public enum TopicTypes
         {
-            None = 0,               // Hiçbir tür yok
 
             // Haber ve güncel konular
             Politics = 1,           // Siyaset
@@ -52,6 +51,9 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public int LikeCount { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public ICollection<Entry>? ChildEntries { get; set; }
+        public ICollection<ContextForBotItemChain>? ContextForBotItemChainsAsRoot { get; set; }
+        public ICollection<ContextForBotItemChain>? ContextForBotItemChainsAsChild {  get; set; }
 
     }
 
@@ -59,7 +61,8 @@ namespace _2_DataAccessLayer.Concrete.Entities
     {
         public string? Title { get; set; }
         public int EntryCount { get; set; }
-        public TopicTypes TopicTypes { get; set; } 
+        public TopicTypes TopicTypes { get; set; }
+
     }
 
     public class Entry : ContentItem
@@ -68,7 +71,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public ContentItem? ParentContent { get; set; }
     }
 
-    public class ContentItemChain
+    public class ContextForBotItemChain
     {
         public Guid ContentItemChainId { get; set; }
         public Guid RootContentItemId { get; set; }

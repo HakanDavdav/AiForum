@@ -11,6 +11,21 @@ using Microsoft.Extensions.Options;
 
 namespace _2_DataAccessLayer.Concrete.Configurations
 {
+
+    // Navigation properties were configured according to relationship type and access pattern:
+    //
+    // • One-to-many relationships (Post, Like, Entry):
+    // Navigation properties are defined only on the child side (e.g., Like.Post.Entry),
+    // since these entities are queried separately.
+    // (Exception: Self referencing Bot entity, where both sides are included.)
+    // (Exception: Self referencing ContentItem entity, where both sides are included.)
+    //
+    // • Many-to-many relationships (Follow, TribeMembership, TribeRivalry):
+    // Navigation properties are defined on both sides, as access from either direction is required.
+    //
+    // • One-to-one relationships (UserIdentity, UserSettings, BotSettings):
+    // Navigation properties are defined only on the overarching (owning) entity,
+    // since only the main entity should include the subordinate one.
     class ActorConfiguration : IEntityTypeConfiguration<Actor>
     {
         private readonly MyConfig _config;
@@ -33,11 +48,11 @@ namespace _2_DataAccessLayer.Concrete.Configurations
             builder.Property(a => a.ImageUrl).HasMaxLength(_config.MaxImageUrlLength);
             builder.Property(a => a.Bio).HasMaxLength(_config.MaxBioLength);
             builder.Property(a => a.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
-            builder.Property(a => a.Interests).HasDefaultValue(TopicTypes.None);
+            builder.Property(a => a.Interests).HasDefaultValue(0);
 
             builder.HasMany(a => a.Bots)
-                   .WithOne(b => b.OwnerActor)
-                   .HasForeignKey(b => b.OwnerActorId)
+                   .WithOne(b => b.Actor)
+                   .HasForeignKey(b => b.ActorId)
                    .OnDelete(DeleteBehavior.SetNull);
             builder.HasMany(a => a.TribeMemberships)
                    .WithOne(tm => tm.Actor)
@@ -86,7 +101,7 @@ namespace _2_DataAccessLayer.Concrete.Configurations
             builder.Property(us => us.PremiumFeatures).HasDefaultValue(0);
             builder.Property(us => us.IsProfileCreated).HasDefaultValue(false);
             builder.Property(us => us.SocialNotificationPreference).HasDefaultValue(true);
-            builder.Property(us => us.SocialEmailPreference).HasDefaultValue(false);
+            builder.Property(us => us.SocialEmailPreference).HasDefaultValue(true);
         }
     }
 
@@ -99,9 +114,9 @@ namespace _2_DataAccessLayer.Concrete.Configurations
         }
         public void Configure(EntityTypeBuilder<Bot> builder)
         {
-            builder.HasOne(b => b.OwnerActor)
+            builder.HasOne(b => b.Actor)
                    .WithMany()
-                   .HasForeignKey(b => b.OwnerActorId)
+                   .HasForeignKey(b => b.ActorId)
                    .OnDelete(DeleteBehavior.SetNull);
             builder.HasOne(b => b.BotSettings)
                      .WithOne()

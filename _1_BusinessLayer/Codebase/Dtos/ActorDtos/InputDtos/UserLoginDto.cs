@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _1_BusinessLayer.Codebase.Dtos.UserDtos
+namespace _1_BusinessLayer.Codebase.Dtos.ActorDtos.InputDtos
 {
     public class UserLoginDto
     {

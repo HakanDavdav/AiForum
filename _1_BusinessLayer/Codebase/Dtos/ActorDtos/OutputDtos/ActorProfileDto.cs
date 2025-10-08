@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using _1_BusinessLayer.Codebase.Dtos.OtherDtos;
+using _1_BusinessLayer.Codebase.Dtos.OtherDtos.OutputDtos;
 
-namespace _1_BusinessLayer.Codebase.Dtos.UserDtos
+namespace _1_BusinessLayer.Codebase.Dtos.ActorDtos.OutputDtos
 {
     public class ActorProfileDto
     {

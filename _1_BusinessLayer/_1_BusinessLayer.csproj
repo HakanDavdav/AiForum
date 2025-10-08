@@ -52,6 +52,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Codebase\Dtos\PostDtos\" />
     <Folder Include="Codebase\Services\_Abstract\" />
   </ItemGroup>
 

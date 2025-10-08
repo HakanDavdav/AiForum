@@ -10,7 +10,20 @@ using Microsoft.Extensions.Options;
 
 namespace _2_DataAccessLayer.Concrete.Configurations
 {
-
+    // Navigation properties were configured according to relationship type and access pattern:
+    //
+    // • One-to-many relationships (Post, Like, Entry):
+    // Navigation properties are defined only on the child side (e.g., Like.Post.Entry),
+    // since these entities are queried separately.
+    // (Exception: Self referencing Bot entity, where both sides are included.)
+    // (Exception: Self referencing ContentItem entity, where both sides are included.)
+    //
+    // • Many-to-many relationships (Follow, TribeMembership, TribeRivalry):
+    // Navigation properties are defined on both sides, as access from either direction is required.
+    //
+    // • One-to-one relationships (UserIdentity, UserSettings, BotSettings):
+    // Navigation properties are defined only on the overarching (owning) entity,
+    // since only the main entity should include the subordinate one.
     public class ContentItemConfiguration : IEntityTypeConfiguration<ContentItem>
     {
         private readonly MyConfig _config;
@@ -21,18 +34,22 @@ namespace _2_DataAccessLayer.Concrete.Configurations
         public void Configure(EntityTypeBuilder<ContentItem> builder)
         {
             builder.UseTphMappingStrategy();
-            builder.HasKey(a => a.ContentItemId);
+            builder.HasKey(ci => ci.ContentItemId);
             builder.HasDiscriminator<string>("ContentType")
                 .HasValue<ContentItem>(nameof(ContentItem))
                 .HasValue<Post>(nameof(Post))
                 .HasValue<Entry>(nameof(Entry));
-            builder.Property(e => e.Content).HasMaxLength(_config.MaxContentLength);
-            builder.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
-            builder.Property(e => e.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
+            builder.Property(ci => ci.Content).HasMaxLength(_config.MaxContentLength);
+            builder.Property(ci => ci.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            builder.Property(ci => ci.UpdatedAt).HasDefaultValueSql("GETUTCDATE()");
             
-            builder.HasOne(e => e.Actor)
+            builder.HasOne(ci => ci.Actor)
                    .WithMany()
                    .HasForeignKey(e => e.ActorId)
+                   .OnDelete(DeleteBehavior.SetNull);
+            builder.HasMany(ci => ci.ChildEntries)
+                   .WithOne(e => e.ParentContent)
+                   .HasForeignKey(e => e.ParentContentId)
                    .OnDelete(DeleteBehavior.SetNull);
         }
     }
@@ -47,7 +64,7 @@ namespace _2_DataAccessLayer.Concrete.Configurations
         public void Configure(EntityTypeBuilder<Entry> builder)
         {
             builder.HasOne(e => e.ParentContent)
-                   .WithMany()
+                   .WithMany(ci => ci.ChildEntries)
                    .HasForeignKey(e => e.ParentContentId)
                    .OnDelete(DeleteBehavior.SetNull);
         }

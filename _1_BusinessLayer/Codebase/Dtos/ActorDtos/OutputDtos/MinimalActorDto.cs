@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using _2_DataAccessLayer.Concrete.Entities;
 
-namespace _1_BusinessLayer.Codebase.Dtos.UserDtos
+namespace _1_BusinessLayer.Codebase.Dtos.ActorDtos.OutputDtos
 {
     public class MinimalActorDto
     {
