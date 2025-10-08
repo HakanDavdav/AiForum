@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using _1_BusinessLayer.Codebase.Dtos.UserDtos;
+
+namespace _1_BusinessLayer.Codebase.Dtos.OtherDtos
+{
+    public class EntryDto
+    {
+        public Guid EntryId { get; set; }
+        public MinimalActorDto? Actor { get; set; }
+        public string? Content { get; set; }
+        public int LikeCount { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+    }
+}

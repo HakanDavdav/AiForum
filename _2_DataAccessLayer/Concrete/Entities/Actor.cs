@@ -14,7 +14,6 @@ namespace _2_DataAccessLayer.Concrete.Entities
     [Flags]
     public enum UserFeatures
     {
-        None,
         ExtendedBotLimit,
         IncreasedOperationLimit,
     }
@@ -46,12 +45,13 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
     public abstract class Actor
     {
+        // No need for most of the navigation properties, seperate apis will handle relations
         public Guid ActorId { get; set; }
         public int ActorPoint { get; set; }
         public string? ProfileName { get; set; }
         public string? ImageUrl { get; set; }
         public string? Bio { get; set; }
-        public ICollection<Tribe>? Tribes { get; set; }
+        public ICollection<TribeMembership>? TribeMemberships { get; set; }
         public ICollection<Bot>? Bots { get; set; }
         public TopicTypes Interests { get; set; }
         public int LikeCount { get; set; }
@@ -60,7 +60,6 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public int FollowerCount { get; set; }
         public int FollowedCount { get; set; }
         public DateTime CreatedAt { get; set; }
-
 
     }
     public class User : Actor
@@ -72,6 +71,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
     public class UserSettings
     {
+        // No need for user navigation property here, unnecessary direction
         public Guid ActorId { get; set; }
         public bool IsProfileCreated { get; set; }
         public UserFeatures PremiumFeatures { get; set; }
@@ -87,12 +87,10 @@ namespace _2_DataAccessLayer.Concrete.Entities
     }
     public class UserIdentity : IdentityUser<Guid>
     {
-        //public Guid ActorId { get; set; } => Id
     }
 
     public class UserRole : IdentityRole<Guid>
     {
-
     }
 
 
@@ -107,6 +105,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
     public class BotSettings
     {
+        // No need for bot navigation property here, unnecessary direction
         public Guid ActorId { get; set; }
         public string? BotPersonality { get; set; }
         public string? Instructions { get; set; }
@@ -119,7 +118,5 @@ namespace _2_DataAccessLayer.Concrete.Entities
 
 
     }
-
-
 
 }

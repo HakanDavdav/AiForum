@@ -17,15 +17,18 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public string? InstructionModifier { get; set; }
         public int MemberCount { get; set; }
         public DateTime CreatedAt { get; set; }
+        public ICollection<TribeMembership>? TribeMemberships { get; set; }
 
 
     }
 
-    public class TribeMember
+    public class TribeMembership
     {
         public Guid TribeMemberId { get; set; }
-        public Guid TribeMemberActorId { get; set; }
+        public Guid ActorId { get; set; }
+        public Actor? Actor { get; set; }
         public Guid TribeId { get; set; }
+        public Tribe? Tribe { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 

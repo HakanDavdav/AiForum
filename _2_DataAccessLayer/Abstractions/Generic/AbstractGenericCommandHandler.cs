@@ -5,98 +5,115 @@ using System.Threading.Tasks;
 using _2_DataAccessLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Runtime.CompilerServices;
 
 namespace _2_DataAccessLayer.Abstractions.Generic
 {
     public abstract class AbstractGenericCommandHandler
     {
         protected readonly ApplicationDbContext _context;
+        protected readonly ILogger _logger;
 
-        protected AbstractGenericCommandHandler(ApplicationDbContext context)
+        protected AbstractGenericCommandHandler(ApplicationDbContext context, ILogger logger)
         {
             _context = context;
+            _logger = logger;
         }
 
-        public virtual Task ManuallyInsertAsync<T>(T entity, ILogger logger, [CallerMemberName] string methodName = "") where T : class
+        public virtual Task ManuallyInsertAsync<T>(T entity) where T : class
         {
-            logger.LogInformation($"{this.GetType().Name}.{methodName}: Inserting entity of type {typeof(T).Name}");
+            _logger.LogInformation("{Handler}.{Method}: Inserting entity of type {EntityType}",
+                this.GetType().Name, nameof(ManuallyInsertAsync), typeof(T).Name);
+
             _context.Set<T>().Add(entity);
             return Task.CompletedTask;
         }
 
-        public virtual Task ManuallyInsertRangeAsync<T>(List<T> entities, ILogger logger, [CallerMemberName] string methodName = "") where T : class
+        public virtual Task ManuallyInsertRangeAsync<T>(List<T> entities) where T : class
         {
-            logger.LogInformation($"{this.GetType().Name}.{methodName}: Inserting {entities.Count} entities of type {typeof(T).Name}");
+            _logger.LogInformation("{Handler}.{Method}: Inserting {Count} entities of type {EntityType}",
+                this.GetType().Name, nameof(ManuallyInsertRangeAsync), entities.Count, typeof(T).Name);
+
             _context.Set<T>().AddRange(entities);
             return Task.CompletedTask;
         }
 
-        public virtual Task DeleteAsync<T>(T entity, ILogger logger, [CallerMemberName] string methodName = "") where T : class
+        public virtual Task DeleteAsync<T>(T entity) where T : class
         {
-            logger.LogInformation($"{this.GetType().Name}.{methodName}: Deleting entity of type {typeof(T).Name}");
+            _logger.LogInformation("{Handler}.{Method}: Deleting entity of type {EntityType}",
+                this.GetType().Name, nameof(DeleteAsync), typeof(T).Name);
+
             _context.Set<T>().Remove(entity);
             return Task.CompletedTask;
         }
 
-        public virtual Task DeleteRangeAsync<T>(List<T> entities, ILogger logger, [CallerMemberName] string methodName = "") where T : class
+        public virtual Task DeleteRangeAsync<T>(List<T> entities) where T : class
         {
-            logger.LogInformation($"{this.GetType().Name}.{methodName}: Deleting {entities.Count} entities of type {typeof(T).Name}");
+            _logger.LogInformation("{Handler}.{Method}: Deleting {Count} entities of type {EntityType}",
+                this.GetType().Name, nameof(DeleteRangeAsync), entities.Count, typeof(T).Name);
+
             _context.Set<T>().RemoveRange(entities);
             return Task.CompletedTask;
         }
 
-        public virtual async Task SaveChangesAsync(ILogger logger, [CallerMemberName] string methodName = "")
+        public virtual async Task SaveChangesAsync()
         {
-            try
+            using (_logger.BeginScope(new Dictionary<string, object>
             {
-                var entries = _context.ChangeTracker.Entries()
-                    .Where(e => e.State == EntityState.Added ||
-                                e.State == EntityState.Modified ||
-                                e.State == EntityState.Deleted)
-                    .ToList();
-
-                foreach (var entry in entries)
+                ["Handler"] = this.GetType().Name,
+                ["Method"] = nameof(SaveChangesAsync),
+                ["TransactionId"] = Guid.NewGuid()
+            }))
+            {
+                try
                 {
-                    var entityName = entry.Entity.GetType().Name;
+                    var entries = _context.ChangeTracker.Entries()
+                        .Where(e => e.State == EntityState.Added ||
+                                    e.State == EntityState.Modified ||
+                                    e.State == EntityState.Deleted)
+                        .ToList();
 
-                    switch (entry.State)
+                    foreach (var entry in entries)
                     {
-                        case EntityState.Added:
-                            logger.LogInformation("{Handler}.{Method}: Added entity {Entity}",
-                                this.GetType().Name, methodName, entityName);
-                            break;
+                        var entityName = entry.Entity.GetType().Name;
 
-                        case EntityState.Modified:
-                            var changes = entry.Properties
-                                .Where(p => p.IsModified)
-                                .Select(p => $"{p.Metadata.Name}: '{p.OriginalValue}' -> '{p.CurrentValue}'")
-                                .ToList();
+                        switch (entry.State)
+                        {
+                            case EntityState.Added:
+                                _logger.LogInformation("{Handler}.{Method}: Added entity {Entity}",
+                                    this.GetType().Name, nameof(SaveChangesAsync), entityName);
+                                break;
 
-                            logger.LogInformation("{Handler}.{Method}: Modified entity {Entity} with changes: {Changes}",
-                                this.GetType().Name, methodName, entityName, string.Join(", ", changes));
-                            break;
+                            case EntityState.Modified:
+                                var changes = entry.Properties
+                                    .Where(p => p.IsModified)
+                                    .Select(p => $"{p.Metadata.Name}: '{p.OriginalValue}' -> '{p.CurrentValue}'")
+                                    .ToList();
 
-                        case EntityState.Deleted:
-                            logger.LogInformation("{Handler}.{Method}: Deleted entity {Entity}",
-                                this.GetType().Name, methodName, entityName);
-                            break;
+                                _logger.LogInformation("{Handler}.{Method}: Modified entity {Entity} with changes: {Changes}",
+                                    this.GetType().Name, nameof(SaveChangesAsync), entityName, string.Join(", ", changes));
+                                break;
+
+                            case EntityState.Deleted:
+                                _logger.LogInformation("{Handler}.{Method}: Deleted entity {Entity}",
+                                    this.GetType().Name, nameof(SaveChangesAsync), entityName);
+                                break;
+                        }
                     }
+
+                    await _context.SaveChangesAsync();
+
+                    _logger.LogInformation("{Handler}.{Method}: SaveChangesAsync completed successfully",
+                        this.GetType().Name, nameof(SaveChangesAsync));
                 }
-
-                await _context.SaveChangesAsync();
-
-                logger.LogInformation("{Handler}.{Method}: SaveChangesAsync completed successfully",
-                    this.GetType().Name, methodName);
-            }
-            catch (Exception ex)
-            {
-                logger.LogWarning("{Handler}.{Method}: SaveChangesAsync failed", this.GetType().Name, methodName);
-                logger.LogError(ex, "{Handler}.{Method}: Exception occurred during SaveChangesAsync", this.GetType().Name, methodName);
-                throw;
+                catch (Exception ex)
+                {
+                    _logger.LogWarning("{Handler}.{Method}: SaveChangesAsync failed",
+                        this.GetType().Name, nameof(SaveChangesAsync));
+                    _logger.LogError(ex, "{Handler}.{Method}: Exception occurred during SaveChangesAsync",
+                        this.GetType().Name, nameof(SaveChangesAsync));
+                    throw;
+                }
             }
         }
-
-
     }
 }
