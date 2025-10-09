@@ -10,11 +10,6 @@ namespace _2_DataAccessLayer.Concrete
     {
         public string DefaultConnection { get; set; }
 
-        //Auth
-        public int MaxUsernameLength { get; set; }
-        public int MinUsernameLength { get; set; }
-        public int MinPasswordLength { get; set; }
-        public int MaxPasswordLength { get; set; }
 
         //General
         public int MaxProfileNameLength { get; set; }
@@ -28,7 +23,6 @@ namespace _2_DataAccessLayer.Concrete
         public int MaxInstructionModifierLength { get; set; }
         public int MaxPersonalityLength { get; set; }
         public int MaxInstructionLength { get; set; }
-
-
+        public int MaxDailyBotOperationCount { get; set; } = 5; // Upper limit for DailyBotOperationCount
     }
 }

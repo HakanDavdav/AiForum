@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _1_BusinessLayer.Codebase.Dtos.OtherDtos.InputDtos
+namespace _2_DataAccessLayer.Concrete.Entities
 {
-    internal class CreateEditTribeDto
+    internal class TrendingPosts
     {
     }
 }

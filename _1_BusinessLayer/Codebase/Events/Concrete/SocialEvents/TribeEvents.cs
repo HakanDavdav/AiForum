@@ -11,7 +11,7 @@ namespace _1_BusinessLayer.Concrete.Events.Concrete.SocialEvents
         Upvote = 0,
         Downvote = 1,
     }
-    public class PromotionChange
+    public class PromotionChangeEvent
     {
         public Guid ActorId { get; set; }
         public Guid TribeId { get; set; }
@@ -19,14 +19,14 @@ namespace _1_BusinessLayer.Concrete.Events.Concrete.SocialEvents
         public DateTime PromotedAt { get; set; }
     }
 
-    public class JoinedTribe
+    public class JoinedTribeEvent
     {
         public Guid ActorId { get; set; }
         public Guid TribeId { get; set; }
         public DateTime JoinedAt { get; set; }
     }
 
-    public class LeftTribe
+    public class LeftTribeEvent
     {
         public Guid ActorId { get; set; }
         public Guid TribeId { get; set; }

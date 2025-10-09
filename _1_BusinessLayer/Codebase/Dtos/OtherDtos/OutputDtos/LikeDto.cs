@@ -12,8 +12,8 @@ namespace _1_BusinessLayer.Codebase.Dtos.OtherDtos.OutputDtos
     public class LikeDto
     {
         public MinimalActorDto? Actor { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public ReactionType ReactionType { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public ReactionType? ReactionType { get; set; }
         public Guid? ContentItemId { get; set; }
         public EntryDto? Entry { get; set; }
         public PostDto? Post { get; set; }

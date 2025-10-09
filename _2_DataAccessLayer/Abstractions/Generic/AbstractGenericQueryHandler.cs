@@ -23,6 +23,6 @@ namespace _2_DataAccessLayer.Abstractions.Generic
         public abstract Task<T?> GetBySpecificPropertySingularAsync<T>(Func<IQueryable<T>, IQueryable<T>> queryModifier) where T : class;
         public abstract Task<int> GetCountBySpecificPropertyAsync<T>(Func<IQueryable<T>, IQueryable<T>> queryModifier) where T : class;
         public abstract Task<bool> ExistsBySpecificPropertyAsync<T>(Func<IQueryable<T>, IQueryable<T>> queryModifier) where T : class;
-        public abstract Task<List<T>> ReloadEntityModuleBySpecificProperty<T>(int startInterval, int endInterval) where T : class;
+        public abstract Task<List<T>> ReloadEntityModuleBySpecificProperty<T>(Func<IQueryable<T>, IQueryable<T>>? filter, int startInterval, int endInterval) where T : class;
     }
 }

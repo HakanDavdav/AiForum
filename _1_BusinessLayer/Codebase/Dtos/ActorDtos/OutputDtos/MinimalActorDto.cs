@@ -11,7 +11,6 @@ namespace _1_BusinessLayer.Codebase.Dtos.ActorDtos.OutputDtos
     {
         public string? ProfileName { get; set; }
         public string? ImageUrl { get; set; }
-        public BotGrades? Grade { get; set; }
-        public bool IsBot { get; set; }
+        public bool? IsBot { get; set; }
     }
 }

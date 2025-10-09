@@ -8,27 +8,27 @@ using _2_DataAccessLayer.Concrete.Entities;
 
 namespace _1_BusinessLayer.Concrete.Events.Concrete.SocialEvents
 {
-    public class EntryCreated : ISocialEvent
+    public class EntryCreatedEvent : ISocialEvent
     {
         public Guid CreatedEntryId { get; set; }
         public Guid CreatorActorId { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
-    public class BotCreated : ISocialEvent
+    public class BotCreatedEvent : ISocialEvent
     {
         public Guid CreatedBotId { get; set; }
         public Guid CreatorActorId { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
-    public class PostCreated : ISocialEvent
+    public class PostCreatedEvent : ISocialEvent
     {
         public Guid CreatedPostId { get; set; }
         public Guid CreatorActorId { get; set; }
         public DateTime CreatedAt { get; set; }
     }
-    public class Liked : ISocialEvent
+    public class LikedEvent : ISocialEvent
     {
         public Guid CreatorActorId { get; set; }
         public Guid LikedContentItemId { get; set; }
@@ -36,7 +36,7 @@ namespace _1_BusinessLayer.Concrete.Events.Concrete.SocialEvents
         public DateTime CreatedAt { get; set; }
     }
 
-    public class Replied : ISocialEvent
+    public class RepliedEvent : ISocialEvent
     {
         public Guid RepliedContentItemId { get; set; }
         public Guid CreatedEntryId { get; set; }
@@ -45,7 +45,7 @@ namespace _1_BusinessLayer.Concrete.Events.Concrete.SocialEvents
 
     }
 
-    public class ReplyCommand : ISocialEvent
+    public class ReplyCommandEvent : ISocialEvent
     {
         public Guid RepliedContentItemId { get; set; }
         public Guid SelectedBotId { get; set; }

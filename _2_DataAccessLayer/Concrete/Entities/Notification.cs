@@ -14,7 +14,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         tribe
     }
 
-    public class Notifications
+    public class Notification
     {
         public Guid NotificationId { get; set; }
         public Guid ReceiverUserId { get; set; }

@@ -38,7 +38,7 @@ namespace _1_BusinessLayer.Concrete.Services._Concrete
 
             _logger.LogInformation("{Handler}.{Method}: Logging out actor {UserId}", this.GetType().Name, nameof(Logout), userId);
             await _signInManager.SignOutAsync();
-            _logger.LogInformation("{Handler}.{Method}: Actor {UserId} logged out successfully", this.GetType().Name, nameof(Logout), userId);
+            _logger.LogInformation("{Handler}.{Method}: MinimalActor {UserId} logged out successfully", this.GetType().Name, nameof(Logout), userId);
             return IdentityResult.Success;
         }
 
@@ -355,7 +355,7 @@ namespace _1_BusinessLayer.Concrete.Services._Concrete
 
         public async Task<IdentityResult> CreateEmailConfirmEventAsync(Guid actorId)
         {
-            _logger.LogInformation("{Handler}.{Method}: Attempting to create EmailConfirm event for actor {ActorId}", this.GetType().Name, nameof(CreateEmailConfirmEventAsync), actorId);
+            _logger.LogInformation("{Handler}.{Method}: Attempting to create EmailConfirmEvent event for actor {ActorId}", this.GetType().Name, nameof(CreateEmailConfirmEventAsync), actorId);
             var userIdentity = await _queryHandler.GetBySpecificPropertySingularAsync<UserIdentity>(q => q.Where(u => u.Id == actorId));
             if (userIdentity == null)
             {
@@ -363,7 +363,7 @@ namespace _1_BusinessLayer.Concrete.Services._Concrete
                 return IdentityResult.Failed(new AppError(ErrorType.NotFound, "User not found."));
             }
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(userIdentity);
-            var evt = new EmailConfirm
+            var evt = new EmailConfirmEvent
             {
                 ActorId = actorId,
                 Token = Guid.NewGuid(),
@@ -373,20 +373,20 @@ namespace _1_BusinessLayer.Concrete.Services._Concrete
             {
                 OutboxMessageId = Guid.NewGuid(),
                 CreatedOn = DateTime.UtcNow,
-                Type = nameof(EmailConfirm),
+                Type = nameof(EmailConfirmEvent),
                 Payload = JsonSerializer.Serialize(evt),
                 ProcessedOn = null,
                 RetryCount = 0
             };
             await _commandHandler.ManuallyInsertAsync<OutboxMessage>(outbox);
             await _commandHandler.SaveChangesAsync();
-            _logger.LogInformation("{Handler}.{Method}: EmailConfirm event created and outbox message inserted for actor {ActorId}", this.GetType().Name, nameof(CreateEmailConfirmEventAsync), actorId);
+            _logger.LogInformation("{Handler}.{Method}: EmailConfirmEvent event created and outbox message inserted for actor {ActorId}", this.GetType().Name, nameof(CreateEmailConfirmEventAsync), actorId);
             return IdentityResult.Success;
         }
 
         public async Task<IdentityResult> CreateResetPasswordEventAsync(Guid actorId, AuthenticationStrategy strategy)
         {
-            _logger.LogInformation("{Handler}.{Method}: Attempting to create ResetPassword event for actor {ActorId}", this.GetType().Name, nameof(CreateResetPasswordEventAsync), actorId);
+            _logger.LogInformation("{Handler}.{Method}: Attempting to create ResetPasswordEvent event for actor {ActorId}", this.GetType().Name, nameof(CreateResetPasswordEventAsync), actorId);
             var userIdentity = await _queryHandler.GetBySpecificPropertySingularAsync<UserIdentity>(q => q.Where(u => u.Id == actorId));
             if (userIdentity == null)
             {
@@ -394,7 +394,7 @@ namespace _1_BusinessLayer.Concrete.Services._Concrete
                 return IdentityResult.Failed(new AppError(ErrorType.NotFound, "User not found."));
             }
             var token = await _userManager.GeneratePasswordResetTokenAsync(userIdentity);
-            var evt = new ResetPassword
+            var evt = new ResetPasswordEvent
             {
                 ActorId = actorId,
                 Token = Guid.NewGuid(),
@@ -405,20 +405,20 @@ namespace _1_BusinessLayer.Concrete.Services._Concrete
             {
                 OutboxMessageId = Guid.NewGuid(),
                 CreatedOn = DateTime.UtcNow,
-                Type = nameof(ResetPassword),
+                Type = nameof(ResetPasswordEvent),
                 Payload = JsonSerializer.Serialize(evt),
                 ProcessedOn = null,
                 RetryCount = 0
             };
             await _commandHandler.ManuallyInsertAsync<OutboxMessage>(outbox);
             await _commandHandler.SaveChangesAsync();
-            _logger.LogInformation("{Handler}.{Method}: ResetPassword event created and outbox message inserted for actor {ActorId}", this.GetType().Name, nameof(CreateResetPasswordEventAsync), actorId);
+            _logger.LogInformation("{Handler}.{Method}: ResetPasswordEvent event created and outbox message inserted for actor {ActorId}", this.GetType().Name, nameof(CreateResetPasswordEventAsync), actorId);
             return IdentityResult.Success;
         }
 
         public async Task<IdentityResult> CreateTwoFactorLoginEventAsync(Guid actorId, AuthenticationStrategy strategy, string provider)
         {
-            _logger.LogInformation("{Handler}.{Method}: Attempting to create TwoFactorLogin event for actor {ActorId}", this.GetType().Name, nameof(CreateTwoFactorLoginEventAsync), actorId);
+            _logger.LogInformation("{Handler}.{Method}: Attempting to create TwoFactorLoginEvent event for actor {ActorId}", this.GetType().Name, nameof(CreateTwoFactorLoginEventAsync), actorId);
             var userIdentity = await _queryHandler.GetBySpecificPropertySingularAsync<UserIdentity>(q => q.Where(u => u.Id == actorId));
             if (userIdentity == null)
             {
@@ -426,7 +426,7 @@ namespace _1_BusinessLayer.Concrete.Services._Concrete
                 return IdentityResult.Failed(new AppError(ErrorType.NotFound, "User not found."));
             }
             var token = await _userManager.GenerateTwoFactorTokenAsync(userIdentity, provider);
-            var evt = new TwoFactorLogin
+            var evt = new TwoFactorLoginEvent
             {
                 ActorId = actorId,
                 Token = Guid.NewGuid(),
@@ -437,20 +437,20 @@ namespace _1_BusinessLayer.Concrete.Services._Concrete
             {
                 OutboxMessageId = Guid.NewGuid(),
                 CreatedOn = DateTime.UtcNow,
-                Type = nameof(TwoFactorLogin),
+                Type = nameof(TwoFactorLoginEvent),
                 Payload = JsonSerializer.Serialize(evt),
                 ProcessedOn = null,
                 RetryCount = 0
             };
             await _commandHandler.ManuallyInsertAsync<OutboxMessage>(outbox);
             await _commandHandler.SaveChangesAsync();
-            _logger.LogInformation("{Handler}.{Method}: TwoFactorLogin event created and outbox message inserted for actor {ActorId}", this.GetType().Name, nameof(CreateTwoFactorLoginEventAsync), actorId);
+            _logger.LogInformation("{Handler}.{Method}: TwoFactorLoginEvent event created and outbox message inserted for actor {ActorId}", this.GetType().Name, nameof(CreateTwoFactorLoginEventAsync), actorId);
             return IdentityResult.Success;
         }
 
         public async Task<IdentityResult> CreateConfirmPhoneNumberEventAsync(Guid actorId, string phoneNumber)
         {
-            _logger.LogInformation("{Handler}.{Method}: Attempting to create ConfirmPhoneNumber event for actor {ActorId}", this.GetType().Name, nameof(CreateConfirmPhoneNumberEventAsync), actorId);
+            _logger.LogInformation("{Handler}.{Method}: Attempting to create ConfirmPhoneNumberEvent event for actor {ActorId}", this.GetType().Name, nameof(CreateConfirmPhoneNumberEventAsync), actorId);
             var userIdentity = await _queryHandler.GetBySpecificPropertySingularAsync<UserIdentity>(q => q.Where(u => u.Id == actorId));
             if (userIdentity == null)
             {
@@ -458,7 +458,7 @@ namespace _1_BusinessLayer.Concrete.Services._Concrete
                 return IdentityResult.Failed(new AppError(ErrorType.NotFound, "User not found."));
             }
             var token = await _userManager.GenerateChangePhoneNumberTokenAsync(userIdentity, phoneNumber);
-            var evt = new ConfirmPhoneNumber
+            var evt = new ConfirmPhoneNumberEvent
             {
                 ActorId = actorId,
                 Token = Guid.NewGuid(),
@@ -468,20 +468,20 @@ namespace _1_BusinessLayer.Concrete.Services._Concrete
             {
                 OutboxMessageId = Guid.NewGuid(),
                 CreatedOn = DateTime.UtcNow,
-                Type = nameof(ConfirmPhoneNumber),
+                Type = nameof(ConfirmPhoneNumberEvent),
                 Payload = JsonSerializer.Serialize(evt),
                 ProcessedOn = null,
                 RetryCount = 0
             };
             await _commandHandler.ManuallyInsertAsync<OutboxMessage>(outbox);
             await _commandHandler.SaveChangesAsync();
-            _logger.LogInformation("{Handler}.{Method}: ConfirmPhoneNumber event created and outbox message inserted for actor {ActorId}", this.GetType().Name, nameof(CreateConfirmPhoneNumberEventAsync), actorId);
+            _logger.LogInformation("{Handler}.{Method}: ConfirmPhoneNumberEvent event created and outbox message inserted for actor {ActorId}", this.GetType().Name, nameof(CreateConfirmPhoneNumberEventAsync), actorId);
             return IdentityResult.Success;
         }
 
         public async Task<IdentityResult> CreateChangePhoneNumberEventAsync(Guid actorId, string phoneNumber)
         {
-            _logger.LogInformation("{Handler}.{Method}: Attempting to create ChangePhoneNumber event for actor {ActorId}", this.GetType().Name, nameof(CreateChangePhoneNumberEventAsync), actorId);
+            _logger.LogInformation("{Handler}.{Method}: Attempting to create ChangePhoneNumberEvent event for actor {ActorId}", this.GetType().Name, nameof(CreateChangePhoneNumberEventAsync), actorId);
             var userIdentity = await _queryHandler.GetBySpecificPropertySingularAsync<UserIdentity>(q => q.Where(u => u.Id == actorId));
             if (userIdentity == null)
             {
@@ -489,7 +489,7 @@ namespace _1_BusinessLayer.Concrete.Services._Concrete
                 return IdentityResult.Failed(new AppError(ErrorType.NotFound, "User not found."));
             }
             var token = await _userManager.GenerateChangePhoneNumberTokenAsync(userIdentity, phoneNumber);
-            var evt = new ChangePhoneNumber
+            var evt = new ChangePhoneNumberEvent
             {
                 ActorId = actorId,
                 Token = Guid.NewGuid(),
@@ -499,14 +499,14 @@ namespace _1_BusinessLayer.Concrete.Services._Concrete
             {
                 OutboxMessageId = Guid.NewGuid(),
                 CreatedOn = DateTime.UtcNow,
-                Type = nameof(ChangePhoneNumber),
+                Type = nameof(ChangePhoneNumberEvent),
                 Payload = JsonSerializer.Serialize(evt),
                 ProcessedOn = null,
                 RetryCount = 0
             };
             await _commandHandler.ManuallyInsertAsync<OutboxMessage>(outbox);
             await _commandHandler.SaveChangesAsync();
-            _logger.LogInformation("{Handler}.{Method}: ChangePhoneNumber event created and outbox message inserted for actor {ActorId}", this.GetType().Name, nameof(CreateChangePhoneNumberEventAsync), actorId);
+            _logger.LogInformation("{Handler}.{Method}: ChangePhoneNumberEvent event created and outbox message inserted for actor {ActorId}", this.GetType().Name, nameof(CreateChangePhoneNumberEventAsync), actorId);
             return IdentityResult.Success;
         }
 

@@ -49,6 +49,7 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public Actor? Actor { get; set; }
         public string? Content { get; set; }
         public int LikeCount { get; set; }
+        public int EntryCount { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public ICollection<Entry>? ChildEntries { get; set; }
@@ -60,7 +61,6 @@ namespace _2_DataAccessLayer.Concrete.Entities
     public class Post : ContentItem
     {
         public string? Title { get; set; }
-        public int EntryCount { get; set; }
         public TopicTypes TopicTypes { get; set; }
 
     }

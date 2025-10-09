@@ -9,11 +9,13 @@ namespace _1_BusinessLayer.Codebase.Dtos.ContenItemDtos.OutputDtos
 {
     public class EntryDto
     {
-        public Guid EntryId { get; set; }
-        public MinimalActorDto? Actor { get; set; }
+        public Guid? EntryId { get; set; }
+        public MinimalActorDto? MinimalActor { get; set; }
+        public string? Title { get; set; }
         public string? Content { get; set; }
-        public int LikeCount { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public int? LikeCount { get; set; }
+        public int? EntryCount { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 }

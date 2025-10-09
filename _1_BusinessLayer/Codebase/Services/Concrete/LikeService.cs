@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _1_BusinessLayer.Codebase.DtoValidators
+namespace _1_BusinessLayer.Codebase.Services.Concrete
 {
-    public class InputValidators
+    public class LikeService
     {
     }
 }

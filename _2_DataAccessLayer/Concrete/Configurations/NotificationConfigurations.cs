@@ -23,9 +23,9 @@ namespace _2_DataAccessLayer.Concrete.Configurations
     // • One-to-one relationships (UserIdentity, UserSettings, BotSettings):
     // Navigation properties are defined only on the overarching (owning) entity,
     // since only the main entity should include the subordinate one.
-    public class NotificationConfigurations : IEntityTypeConfiguration<Notifications>
+    public class NotificationConfigurations : IEntityTypeConfiguration<Notification>
     {
-        public void Configure(EntityTypeBuilder<Notifications> builder)
+        public void Configure(EntityTypeBuilder<Notification> builder)
         {
             builder.HasKey(n => n.NotificationId);
             builder.Property(n => n.IsRead).HasDefaultValue(false);

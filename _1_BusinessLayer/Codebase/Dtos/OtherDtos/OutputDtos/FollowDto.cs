@@ -9,6 +9,7 @@ namespace _1_BusinessLayer.Codebase.Dtos.OtherDtos.OutputDtos
 {
     public class FollowDto
     {
+        public DateTime? CreatedAt { get; set; }
         public MinimalActorDto? Follower { get; set; }
         public MinimalActorDto? Followed { get; set; }
     }

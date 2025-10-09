@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Codebase\Dtos\PostDtos\**" />
     <Compile Remove="Codebase\Extensions\**" />
+    <EmbeddedResource Remove="Codebase\Dtos\PostDtos\**" />
     <EmbeddedResource Remove="Codebase\Extensions\**" />
+    <None Remove="Codebase\Dtos\PostDtos\**" />
     <None Remove="Codebase\Extensions\**" />
   </ItemGroup>
 
@@ -52,7 +55,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Codebase\Dtos\PostDtos\" />
+    <Folder Include="Codebase\Dtos\OtherDtos\InputDtos\" />
     <Folder Include="Codebase\Services\_Abstract\" />
   </ItemGroup>
 

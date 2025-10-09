@@ -47,14 +47,14 @@ namespace _2_DataAccessLayer.Concrete.Configurations
                 .HasForeignKey(tm => tm.TribeId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            builder.HasMany(t => t.TribeRivalries)
-                .WithOne(tm => tm.Tribe)
-                .HasForeignKey(tm => tm.TribeId)
+            builder.HasMany(t => t.OutgoingRivalries)
+                .WithOne(tm => tm.InitiatingTribe)
+                .HasForeignKey(tm => tm.InitiatingTribeId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            builder.HasMany(t => t.RivalsForTribe)
-                .WithOne(tm => tm.RivalTribe)
-                .HasForeignKey(tm => tm.RivalTribeId)
+            builder.HasMany(t => t.IncomingRivalries)
+                .WithOne(tm => tm.TargetTribe)
+                .HasForeignKey(tm => tm.TargetTribeId)
                 .OnDelete(DeleteBehavior.SetNull);
 
         }
@@ -82,14 +82,14 @@ namespace _2_DataAccessLayer.Concrete.Configurations
         public void Configure(EntityTypeBuilder<TribeRivalry> builder)
         {
             builder.HasKey(tr => tr.TribeRivalryId);
-            builder.HasIndex(tr => new { tr.TribeId, tr.RivalTribeId }).IsUnique();
-            builder.HasOne(tr => tr.Tribe)
-                   .WithMany(t => t.TribeRivalries)
-                   .HasForeignKey(tr => tr.TribeId)
+            builder.HasIndex(tr => new { tr.InitiatingTribeId, tr.TargetTribeId }).IsUnique();
+            builder.HasOne(tr => tr.InitiatingTribe)
+                   .WithMany(t => t.OutgoingRivalries)
+                   .HasForeignKey(tr => tr.InitiatingTribeId)
                    .OnDelete(DeleteBehavior.SetNull);
-            builder.HasOne(tr => tr.RivalTribe)
-                   .WithMany(t => t.RivalsForTribe)
-                   .HasForeignKey(tr => tr.RivalTribeId)
+            builder.HasOne(tr => tr.TargetTribe)
+                   .WithMany(t => t.IncomingRivalries)
+                   .HasForeignKey(tr => tr.TargetTribeId)
                    .OnDelete(DeleteBehavior.SetNull);
         }
     }

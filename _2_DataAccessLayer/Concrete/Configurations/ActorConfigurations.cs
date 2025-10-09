@@ -44,7 +44,7 @@ namespace _2_DataAccessLayer.Concrete.Configurations
                 .HasValue<User>(nameof(User));
 
             builder.HasIndex(a => a.ProfileName).IsUnique();
-            builder.Property(a => a.ProfileName).HasMaxLength(_config.MaxProfileNameLength);
+            builder.Property(a => a.ProfileName).HasMaxLength(_config.MaxProfileNameLength).IsRequired();
             builder.Property(a => a.ImageUrl).HasMaxLength(_config.MaxImageUrlLength);
             builder.Property(a => a.Bio).HasMaxLength(_config.MaxBioLength);
             builder.Property(a => a.CreatedAt).HasDefaultValueSql("GETUTCDATE()");

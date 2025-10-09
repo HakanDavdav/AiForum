@@ -92,12 +92,16 @@ namespace _2_DataAccessLayer.Concrete.Cqrs
             }
         }
 
-        public override async Task<List<T>> ReloadEntityModuleBySpecificProperty<T>(int startInterval, int endInterval) where T : class
+        public override async Task<List<T>> ReloadEntityModuleBySpecificProperty<T>(
+            Func<IQueryable<T>, IQueryable<T>>? filter
+            int startInterval,
+            int endInterval ) where T : class
         {
             try
             {
                 IQueryable<T> query = _repository.Export<T>(_logger);
 
+                // --- Include'lar ---
                 query = typeof(T) switch
                 {
                     Type t when t == typeof(Post) =>
@@ -126,15 +130,30 @@ namespace _2_DataAccessLayer.Concrete.Cqrs
                             .Include(b => b.Bot)
                             .Cast<T>(),
 
-                    Type t when t == typeof(Notifications) =>
-                        ((IQueryable<Notifications>)query)
+                    Type t when t == typeof(Notification) =>
+                        ((IQueryable<Notification>)query)
                             .Include(n => n.SenderActor)
                             .Include(n => n.BotActivity)
+                            .Cast<T>(),
+
+                    Type t when t == typeof(Tribe) =>
+                        ((IQueryable<Tribe>)query)
+                            .Include(t => t.OutgoingRivalries)
+                            .ThenInclude(or => or.TargetTribe)
+                            .Include(t => t.IncomingRivalries)
+                            .ThenInclude(ir => ir.InitiatingTribe)
+                            .Include(t => t.TribeMemberships)
+                            .ThenInclude(tm => tm.Actor)
                             .Cast<T>(),
 
                     _ => query
                 };
 
+                // --- Dışarıdan filtre uygulanabiliyor ---
+                if (filter is not null)
+                    query = filter(query);
+
+                // --- Pagination ---
                 query = query.Skip(startInterval).Take(endInterval - startInterval);
 
                 var result = await query.ToListAsync();

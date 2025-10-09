@@ -8,11 +8,7 @@ namespace _1_BusinessLayer.Codebase.Dtos.ContenItemDtos.InputDtos
 {
     public class CreateEditEntryDto
     {
-        public CreateEditEntryDto()
-        {
-            
-        }
+
         public string? Content { get; set; }
-        public int LikeCount { get; set; }
     }
 }

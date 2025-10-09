@@ -12,21 +12,21 @@ namespace _1_BusinessLayer.Concrete.Events.Concrete.AuthenticationEvents
         Phone,
         Email,
     }
-    public class EmailChange : IAuthenticationEvent
+    public class EmailChangeEvent : IAuthenticationEvent
     {
         public Guid ActorId { get; set; }
         public Guid Token { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
-    public class EmailConfirm : IAuthenticationEvent
+    public class EmailConfirmEvent : IAuthenticationEvent
     {
         public Guid ActorId { get; set; }
         public Guid Token { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
-    public class ResetPassword : IAuthenticationEvent
+    public class ResetPasswordEvent : IAuthenticationEvent
     {
         public Guid ActorId { get; set; }
         public Guid Token { get; set; }
@@ -34,7 +34,7 @@ namespace _1_BusinessLayer.Concrete.Events.Concrete.AuthenticationEvents
         public DateTime CreatedAt { get; set; }
     }
        
-    public class TwoFactorLogin : IAuthenticationEvent 
+    public class TwoFactorLoginEvent : IAuthenticationEvent 
     {
         public Guid ActorId { get; set; }
         public Guid Token { get; set; }
@@ -42,14 +42,14 @@ namespace _1_BusinessLayer.Concrete.Events.Concrete.AuthenticationEvents
         public DateTime CreatedAt { get; set; }
     }
 
-    public class ConfirmPhoneNumber : IAuthenticationEvent
+    public class ConfirmPhoneNumberEvent : IAuthenticationEvent
     {
         public Guid ActorId { get; set; }
         public Guid Token { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
-    public class ChangePhoneNumber : IAuthenticationEvent
+    public class ChangePhoneNumberEvent : IAuthenticationEvent
     {
         public Guid ActorId { get; set; }
         public Guid Token { get; set; }

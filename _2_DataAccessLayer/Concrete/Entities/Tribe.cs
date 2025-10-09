@@ -18,8 +18,8 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public int MemberCount { get; set; }
         public DateTime CreatedAt { get; set; }
         public ICollection<TribeMembership>? TribeMemberships { get; set; }
-        public ICollection<TribeRivalry>? TribeRivalries { get; set; } 
-        public ICollection<TribeRivalry>? RivalsForTribe { get; set; } 
+        public ICollection<TribeRivalry>? OutgoingRivalries { get; set; } 
+        public ICollection<TribeRivalry>? IncomingRivalries { get; set; } 
 
     }
 
@@ -36,10 +36,10 @@ namespace _2_DataAccessLayer.Concrete.Entities
     public class TribeRivalry
     {
         public Guid TribeRivalryId { get; set; }
-        public Guid TribeId { get; set; }
-        public Tribe? Tribe { get; set; }
-        public Guid RivalTribeId { get; set; }
-        public Tribe? RivalTribe {  get; set; }
+        public Guid InitiatingTribeId { get; set; }
+        public Tribe? InitiatingTribe { get; set; }
+        public Guid TargetTribeId { get; set; }
+        public Tribe? TargetTribe {  get; set; }
         public DateTime CreatedAt { get; set; }
 
     }
