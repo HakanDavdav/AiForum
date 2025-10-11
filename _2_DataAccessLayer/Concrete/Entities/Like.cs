@@ -15,11 +15,11 @@ namespace _2_DataAccessLayer.Concrete.Entities
     public class Like
     {
         public Guid LikeId { get; set; }
-        public Guid ActorId { get; set; }
+        public Guid? ActorId { get; set; }
         public Actor? Actor { get; set; }
-        public Guid ContentItemId { get; set; }
+        public Guid? ContentItemId { get; set; }
         public ContentItem? ContentItem { get; set; }
-        public ReactionType ReactionType { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public ReactionType? ReactionType { get; set; }
+        public DateTime? CreatedAt { get; set; }
     }
 }

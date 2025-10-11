@@ -46,19 +46,19 @@ namespace _2_DataAccessLayer.Concrete.Entities
     public abstract class Actor
     {
         public Guid ActorId { get; set; }
-        public int ActorPoint { get; set; }
+        public int? ActorPoint { get; set; }
         public string? ProfileName { get; set; }
         public string? ImageUrl { get; set; }
         public string? Bio { get; set; }
         public ICollection<TribeMembership>? TribeMemberships { get; set; }
         public ICollection<Bot>? Bots { get; set; }
         public TopicTypes Interests { get; set; }
-        public int LikeCount { get; set; }
-        public int EntryCount { get; set; }
-        public int PostCount { get; set; }
-        public int FollowerCount { get; set; }
-        public int FollowedCount { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public int? LikeCount { get; set; }
+        public int? EntryCount { get; set; }
+        public int? PostCount { get; set; }
+        public int? FollowerCount { get; set; }
+        public int? FollowedCount { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
     }
     public class User : Actor

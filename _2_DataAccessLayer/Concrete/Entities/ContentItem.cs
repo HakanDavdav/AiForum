@@ -50,8 +50,8 @@ namespace _2_DataAccessLayer.Concrete.Entities
         public string? Content { get; set; }
         public int? LikeCount { get; set; }
         public int? EntryCount { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
         public ICollection<Entry>? ChildEntries { get; set; }
         public ICollection<ContextForBotItemChain>? ContextForBotItemChainsAsRoot { get; set; }
         public ICollection<ContextForBotItemChain>? ContextForBotItemChainsAsChild {  get; set; }

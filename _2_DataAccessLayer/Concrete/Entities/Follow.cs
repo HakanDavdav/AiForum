@@ -9,10 +9,10 @@ namespace _2_DataAccessLayer.Concrete.Entities
     public class Follow
     {
         public Guid FollowId { get; set; }
-        public Guid FollowerActorId { get; set; }
+        public Guid? FollowerActorId { get; set; }
         public Actor? FollowerActor { get; set; }
-        public Guid FollowedActorId { get; set; }
+        public Guid? FollowedActorId { get; set; }
         public Actor? FollowedActor { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
     }
 }
