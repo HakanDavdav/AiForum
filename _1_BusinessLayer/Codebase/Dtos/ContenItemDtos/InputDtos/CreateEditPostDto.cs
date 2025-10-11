@@ -11,7 +11,7 @@ namespace _1_BusinessLayer.Codebase.Dtos.ContenItemDtos.InputDtos
     {
         public string? Title { get; set; }
         public string? Content { get; set; }
-        public TopicTypes TopicTypes { get; set; }
+        public TopicTypes? TopicTypes { get; set; }
 
     }
 }

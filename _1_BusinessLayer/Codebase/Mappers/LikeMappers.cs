@@ -18,7 +18,7 @@ namespace _1_BusinessLayer.Codebase.Mappers
                 ReactionType = like?.ReactionType,
                 Actor = like?.Actor.Actor_To_MinimalActorDto(),
                 Entry = like?.ContentItem is Entry entry ? entry.Entry_To_MinimalEntryDto() : null,
-                Post = like?.ContentItem is Post post ? post.Post_To_ExtendedPostDto() : null
+                Post = like?.ContentItem is Post post ? post.Post_To_MinimalPostDto(): null
 
             };
 

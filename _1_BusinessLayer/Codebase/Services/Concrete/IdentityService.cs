@@ -332,7 +332,7 @@ namespace _1_BusinessLayer.Concrete.Services._Concrete
                 return IdentityResult.Failed(new AppError(ErrorType.NotFound, "User not found."));
             }
             var token = await _userManager.GenerateChangeEmailTokenAsync(userIdentity, newEmail);
-            var evt = new EmailChange
+            var evt = new EmailChangeEvent
             {
                 ActorId = actorId,
                 Token = Guid.NewGuid(), // Identity tokens are string, but your event expects Guid
@@ -342,7 +342,7 @@ namespace _1_BusinessLayer.Concrete.Services._Concrete
             {
                 OutboxMessageId = Guid.NewGuid(),
                 CreatedOn = DateTime.UtcNow,
-                Type = nameof(EmailChange),
+                Type = nameof(EmailChangeEvent),
                 Payload = JsonSerializer.Serialize(evt),
                 ProcessedOn = null,
                 RetryCount = 0

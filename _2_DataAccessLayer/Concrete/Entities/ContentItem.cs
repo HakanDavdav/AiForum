@@ -45,11 +45,11 @@ namespace _2_DataAccessLayer.Concrete.Entities
     public class ContentItem
     {
         public Guid ContentItemId { get; set; }
-        public Guid ActorId { get; set; }
+        public Guid? ActorId { get; set; }
         public Actor? Actor { get; set; }
         public string? Content { get; set; }
-        public int LikeCount { get; set; }
-        public int EntryCount { get; set; }
+        public int? LikeCount { get; set; }
+        public int? EntryCount { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public ICollection<Entry>? ChildEntries { get; set; }
@@ -61,22 +61,22 @@ namespace _2_DataAccessLayer.Concrete.Entities
     public class Post : ContentItem
     {
         public string? Title { get; set; }
-        public TopicTypes TopicTypes { get; set; }
+        public TopicTypes? TopicTypes { get; set; }
 
     }
 
     public class Entry : ContentItem
     {
-        public Guid ParentContentId { get; set; }
+        public Guid? ParentContentId { get; set; }
         public ContentItem? ParentContent { get; set; }
     }
 
     public class ContextForBotItemChain
     {
         public Guid ContentItemChainId { get; set; }
-        public Guid RootContentItemId { get; set; }
+        public Guid? RootContentItemId { get; set; }
         public ContentItem? RootContentItem { get; set; }
-        public Guid ChildContentItemId { get; set; }
+        public Guid? ChildContentItemId { get; set; }
         public ContentItem? ChildContentItem { get; set; }
     }
 }

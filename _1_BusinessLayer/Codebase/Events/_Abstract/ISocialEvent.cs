@@ -8,7 +8,7 @@ namespace _1_BusinessLayer.Concrete.Events.Interfaces
 {
     public interface ISocialEvent
     {
-        public Guid CreatorActorId { get; set; }
+        public Guid ActorId { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

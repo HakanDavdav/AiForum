@@ -52,7 +52,7 @@ builder.Services.AddScoped<AbstractEntryService, EntryService>();
 builder.Services.AddScoped<AbstractFollowService, FollowService>();
 builder.Services.AddScoped<AbstractLikeService, LikeService>();
 builder.Services.AddScoped<AbstractPostService, PostService>();
-builder.Services.AddScoped<AbstractUserService, UserService>();
+builder.Services.AddScoped<AbstractUserService, ActorService>();
 builder.Services.AddScoped<AbstractUserIdentityService, UserIdentityService>();
 
 

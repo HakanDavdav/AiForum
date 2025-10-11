@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace _1_BusinessLayer.Codebase.DtoValidators.ActorValidators
 {
-    public class UserProfileCreateEditDtoValidator : AbstractValidator<UserProfileCreateEditDto>
+    public class UserProfileCreateEditDtoValidator : AbstractValidator<CreateEditUserProfileDto>
     {
         public UserProfileCreateEditDtoValidator(IOptions<MyConfig> cfg)
         {

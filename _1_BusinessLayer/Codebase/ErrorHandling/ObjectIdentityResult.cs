@@ -1,31 +1,36 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
-public class ObjectIdentityResult<T> : IdentityResult
+namespace _1_BusinessLayer.Concrete.Tools.ErrorHandling.ProxyResult
 {
-    public T? Data { get; set; }
-    public IdentityError[] ObjectIdentityErrors { get; set; } = Array.Empty<IdentityError>();
-
-    public new IEnumerable<IdentityError> Errors => ObjectIdentityErrors.AsEnumerable();
-
-    public static ObjectIdentityResult<T> Succeeded(T data)
+    public class ObjectIdentityResult<T> : IdentityResult
     {
-        var result = new ObjectIdentityResult<T>
-        {
-            Data = data
-        };
-        // Set Succeeded property using base class setter
-        result.GetType().BaseType?.GetProperty("Succeeded")?.SetValue(result, true);
-        return result;
-    }
+        public T? Data;
+        public new IEnumerable<IdentityError> Errors => ObjectIdentityErrors.AsEnumerable();
+        public IdentityError[] ObjectIdentityErrors;
 
-    public static ObjectIdentityResult<T> Failed(params IdentityError[] errors)
-    {
-        var result = new ObjectIdentityResult<T>
+        public static ObjectIdentityResult<T> Succeded(T data)
         {
-            ObjectIdentityErrors = errors
-        };
-        // Set Succeeded property using base class setter
-        result.GetType().BaseType?.GetProperty("Succeeded")?.SetValue(result, false);
-        return result;
+            return new ObjectIdentityResult<T>()
+            {
+                Succeeded = true,
+                Data = data
+            };
+
+        }
+        public static ObjectIdentityResult<T> Failed(T? data, IdentityError[] errors)
+        {
+            return new ObjectIdentityResult<T>()
+            {
+                Succeeded = false,
+                ObjectIdentityErrors = errors
+            };
+        }
+
+
     }
 }

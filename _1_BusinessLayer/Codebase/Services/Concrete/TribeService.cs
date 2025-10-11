@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _1_BusinessLayer.Concrete.Services._Concrete
+namespace _1_BusinessLayer.Codebase.Services.Concrete
 {
-    public class UserService
+    internal class TribeService
     {
-        
     }
 }
